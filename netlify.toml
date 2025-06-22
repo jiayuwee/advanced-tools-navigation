@@ -1,0 +1,22 @@
+# netlify.toml
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[[redirects]]
+  from = "http://ramusi.cn/*"
+  to = "https://ramusi.cn/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.ramusi.cn/*"
+  to = "https://ramusi.cn/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.ramusi.cn/*"
+  to = "https://ramusi.cn/:splat"
+  status = 301
+  force = true
