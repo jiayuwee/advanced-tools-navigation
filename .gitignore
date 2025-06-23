@@ -35,11 +35,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+
 # Build outputs
-dist
-dist-ssr
+dist-ssr/
 *.local
-.output
+.output/
 
 # Editor directories and files
 .vscode/*

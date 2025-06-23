@@ -41,7 +41,7 @@ echo "🚀 部署到服务器..."
 # rsync -avz --delete dist/ user@ramusi.cn:/var/www/ramusi.cn/
 
 # 方式2: 使用 scp 部署
-# scp -r dist/* user@ramusi.cn:/var/www/ramusi.cn/
+scp -r dist/* user@ramusi.cn:/var/www/ramusi.cn/
 
 # 方式3: 使用 Git 部署
 # git add dist/
