@@ -18,8 +18,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['vue', 'pinia'],
-          router: ['vue-router'],
+          vendor: ['vue', 'pinia', 'lucide-vue-next'],
         },
       },
     },
