@@ -69,8 +69,15 @@
                   <li>
                     <button
                       class="nav-item"
-                      :class="{ active: toolsStore.selectedCategory === 'all' }"
-                      @click="toolsStore.setSelectedCategory('all')"
+                      :class="{
+                        active: currentView === 'tools' && toolsStore.selectedCategory === 'all',
+                      }"
+                      @click="
+                        () => {
+                          setCurrentView('tools')
+                          toolsStore.setSelectedCategory('all')
+                        }
+                      "
                     >
                       <div class="nav-icon">🏠</div>
                       <span class="nav-text">全部工具</span>
@@ -80,18 +87,37 @@
                   <li>
                     <button
                       class="nav-item"
-                      :class="{ active: toolsStore.selectedCategory === 'favorites' }"
-                      @click="toolsStore.setSelectedCategory('favorites')"
+                      :class="{
+                        active:
+                          currentView === 'tools' && toolsStore.selectedCategory === 'favorites',
+                      }"
+                      @click="
+                        () => {
+                          setCurrentView('tools')
+                          toolsStore.setSelectedCategory('favorites')
+                        }
+                      "
                     >
                       <div class="nav-icon">⭐</div>
                       <span class="nav-text">我的收藏</span>
                       <span class="nav-count">{{ toolsStore.favoriteTools.length }}</span>
                     </button>
                   </li>
+                  <li>
+                    <button
+                      class="nav-item"
+                      :class="{ active: currentView === 'products' }"
+                      @click="setCurrentView('products')"
+                    >
+                      <div class="nav-icon">📦</div>
+                      <span class="nav-text">我的产品</span>
+                      <span class="nav-count">{{ products.length }}</span>
+                    </button>
+                  </li>
                 </ul>
               </div>
 
-              <div class="nav-section">
+              <div class="nav-section" v-if="currentView === 'tools'">
                 <h3 class="nav-title">分类</h3>
                 <ul class="nav-list">
                   <li v-for="category in toolsStore.categories" :key="category.id">
@@ -107,80 +133,163 @@
                   </li>
                 </ul>
               </div>
+
+              <!-- 产品分类 -->
+              <div class="nav-section" v-if="currentView === 'products'">
+                <h3 class="nav-title">产品分类</h3>
+                <ul class="nav-list">
+                  <li v-for="category in productCategories" :key="category.id">
+                    <button
+                      class="nav-item"
+                      :class="{ active: selectedProductCategory === category.id }"
+                      @click="setSelectedProductCategory(category.id)"
+                    >
+                      <div class="nav-icon">{{ category.icon }}</div>
+                      <span class="nav-text">{{ category.name }}</span>
+                      <span class="nav-count">{{ category.count }}</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </nav>
           </div>
         </aside>
 
         <!-- 内容区域 -->
         <main class="content" :class="{ 'sidebar-collapsed': toolsStore.sidebarCollapsed }">
-          <div class="content-header">
-            <div class="content-title">
-              <h2>{{ getCurrentCategoryName() }}</h2>
-              <span class="content-count">{{ toolsStore.filteredTools.length }} 个工具</span>
+          <!-- 工具视图 -->
+          <div v-if="currentView === 'tools'">
+            <div class="content-header">
+              <div class="content-title">
+                <h2>{{ getCurrentCategoryName() }}</h2>
+                <span class="content-count">{{ toolsStore.filteredTools.length }} 个工具</span>
+              </div>
+
+              <div class="content-actions">
+                <div class="view-options">
+                  <button class="view-button active">
+                    <GripIcon class="icon" />
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div class="content-actions">
-              <div class="view-options">
-                <button class="view-button active">
-                  <GripIcon class="icon" />
-                </button>
+            <!-- 工具网格 -->
+            <div v-if="toolsStore.filteredTools.length > 0" class="tools-grid">
+              <div
+                v-for="tool in toolsStore.filteredTools"
+                :key="tool.id"
+                class="tool-card"
+                @click="handleToolClick(tool)"
+              >
+                <div class="card-header">
+                  <div class="tool-icon">{{ tool.icon }}</div>
+                  <button
+                    class="favorite-button"
+                    :class="{ active: tool.isFavorite }"
+                    @click.stop="toolsStore.toggleFavorite(tool.id)"
+                  >
+                    <StarIcon class="icon" />
+                  </button>
+                </div>
+
+                <div class="card-content">
+                  <h3 class="tool-name">{{ tool.name }}</h3>
+                  <p class="tool-description">{{ tool.description }}</p>
+
+                  <div class="tool-tags">
+                    <span v-for="tag in tool.tags.slice(0, 3)" :key="tag" class="tag">
+                      {{ tag }}
+                    </span>
+                    <span v-if="tool.tags.length > 3" class="tag more">
+                      +{{ tool.tags.length - 3 }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="card-footer">
+                  <div class="tool-stats">
+                    <span class="stat">
+                      <EyeIcon class="stat-icon" />
+                      {{ tool.clickCount }}
+                    </span>
+                  </div>
+                  <ExternalLinkIcon class="external-icon" />
+                </div>
               </div>
+            </div>
+
+            <!-- 空状态 -->
+            <div v-else class="empty-state">
+              <div class="empty-icon">🔍</div>
+              <h3>未找到相关工具</h3>
+              <p>尝试使用其他关键词搜索，或浏览其他分类</p>
+              <button class="empty-action" @click="toolsStore.setSearchQuery('')">
+                清除搜索条件
+              </button>
             </div>
           </div>
 
-          <!-- 工具网格 -->
-          <div v-if="toolsStore.filteredTools.length > 0" class="tools-grid">
-            <div
-              v-for="tool in toolsStore.filteredTools"
-              :key="tool.id"
-              class="tool-card"
-              @click="handleToolClick(tool)"
-            >
-              <div class="card-header">
-                <div class="tool-icon">{{ tool.icon }}</div>
-                <button
-                  class="favorite-button"
-                  :class="{ active: tool.isFavorite }"
-                  @click.stop="toolsStore.toggleFavorite(tool.id)"
-                >
-                  <StarIcon class="icon" />
+          <!-- 产品视图 -->
+          <div v-else-if="currentView === 'products'">
+            <div class="content-header">
+              <div class="content-title">
+                <h2>{{ getCurrentProductCategoryName() }}</h2>
+                <span class="content-count">{{ filteredProducts.length }} 个产品</span>
+              </div>
+
+              <div class="content-actions">
+                <button class="add-product-btn" @click="showAddProductModal = true">
+                  ➕ 添加产品
                 </button>
               </div>
+            </div>
 
-              <div class="card-content">
-                <h3 class="tool-name">{{ tool.name }}</h3>
-                <p class="tool-description">{{ tool.description }}</p>
-
-                <div class="tool-tags">
-                  <span v-for="tag in tool.tags.slice(0, 3)" :key="tag" class="tag">
-                    {{ tag }}
-                  </span>
-                  <span v-if="tool.tags.length > 3" class="tag more">
-                    +{{ tool.tags.length - 3 }}
-                  </span>
+            <!-- 产品网格 -->
+            <div v-if="filteredProducts.length > 0" class="products-grid">
+              <div
+                v-for="product in filteredProducts"
+                :key="product.id"
+                class="product-card"
+                @click="handleProductClick(product)"
+              >
+                <div class="product-image">
+                  <img :src="product.image" :alt="product.name" />
+                  <div class="product-price">
+                    <span class="price">¥{{ product.price }}</span>
+                    <span v-if="product.originalPrice" class="original-price"
+                      >¥{{ product.originalPrice }}</span
+                    >
+                  </div>
                 </div>
-              </div>
 
-              <div class="card-footer">
-                <div class="tool-stats">
-                  <span class="stat">
-                    <EyeIcon class="stat-icon" />
-                    {{ tool.clickCount }}
-                  </span>
+                <div class="product-content">
+                  <h3 class="product-name">{{ product.name }}</h3>
+                  <p class="product-description">{{ product.description }}</p>
+
+                  <div class="product-tags">
+                    <span v-for="tag in product.tags.slice(0, 3)" :key="tag" class="tag">
+                      {{ tag }}
+                    </span>
+                  </div>
                 </div>
-                <ExternalLinkIcon class="external-icon" />
+
+                <div class="product-footer">
+                  <button class="buy-btn" @click.stop="handlePurchase(product)">💳 立即购买</button>
+                  <button v-if="product.demoUrl" class="demo-btn" @click.stop="openDemo(product)">
+                    👁️ 预览
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- 空状态 -->
-          <div v-else class="empty-state">
-            <div class="empty-icon">🔍</div>
-            <h3>未找到相关工具</h3>
-            <p>尝试使用其他关键词搜索，或浏览其他分类</p>
-            <button class="empty-action" @click="toolsStore.setSearchQuery('')">
-              清除搜索条件
-            </button>
+            <!-- 产品空状态 -->
+            <div v-else class="empty-state">
+              <div class="empty-icon">📦</div>
+              <h3>暂无产品</h3>
+              <p>还没有添加任何产品，点击上方按钮添加您的第一个产品</p>
+              <button class="empty-action" @click="showAddProductModal = true">添加产品</button>
+            </div>
           </div>
         </main>
       </div>
@@ -189,7 +298,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useToolsStore } from './stores/tools'
 import {
   MenuIcon,
@@ -201,9 +310,87 @@ import {
   EyeIcon,
 } from 'lucide-vue-next'
 
+// 产品接口定义
+interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  originalPrice?: number
+  image: string
+  category: string
+  tags: string[]
+  demoUrl?: string
+  downloadUrl?: string
+  status: 'active' | 'coming-soon' | 'discontinued'
+  createdAt: string
+}
+
+interface ProductCategory {
+  id: string
+  name: string
+  icon: string
+  color: string
+  count: number
+}
+
 const toolsStore = useToolsStore()
 const searchInput = ref<HTMLInputElement | null>(null)
 const searchFocused = ref(false)
+
+// 视图状态
+const currentView = ref<'tools' | 'products'>('tools')
+const selectedProductCategory = ref('all')
+const showAddProductModal = ref(false)
+
+// 产品分类数据
+const productCategories = ref<ProductCategory[]>([
+  { id: 'app', name: '应用程序', icon: '📱', color: '#0078d4', count: 0 },
+  { id: 'template', name: '开发模板', icon: '🎨', color: '#8764b8', count: 0 },
+  { id: 'course', name: '在线课程', icon: '📚', color: '#107c10', count: 0 },
+  { id: 'service', name: '技术服务', icon: '🔧', color: '#ff8c00', count: 0 },
+])
+
+// 产品数据
+const products = ref<Product[]>([
+  {
+    id: '1',
+    name: 'Vue 3 管理后台模板',
+    description: '基于 Vue 3 + TypeScript + Element Plus 的现代化管理后台模板',
+    price: 199,
+    originalPrice: 299,
+    image: '/placeholder.jpg',
+    category: 'template',
+    tags: ['Vue 3', 'TypeScript', 'Element Plus', '管理后台'],
+    demoUrl: 'https://demo.example.com',
+    downloadUrl: 'https://download.example.com',
+    status: 'active',
+    createdAt: '2024-01-15',
+  },
+  {
+    id: '2',
+    name: 'React Native 移动应用',
+    description: '跨平台移动应用开发解决方案，支持 iOS 和 Android',
+    price: 399,
+    image: '/placeholder.jpg',
+    category: 'app',
+    tags: ['React Native', '移动开发', '跨平台'],
+    demoUrl: 'https://demo.example.com',
+    status: 'active',
+    createdAt: '2024-02-01',
+  },
+  {
+    id: '3',
+    name: 'Web 开发实战课程',
+    description: '从零到一学习现代 Web 开发技术栈，包含实战项目',
+    price: 299,
+    image: '/placeholder.jpg',
+    category: 'course',
+    tags: ['Web开发', '实战教程', '前端'],
+    status: 'active',
+    createdAt: '2024-02-10',
+  },
+])
 
 // 处理快捷键
 const handleKeydown = (event: KeyboardEvent) => {
@@ -218,6 +405,24 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
 }
 
+// 计算属性
+const filteredProducts = computed(() => {
+  let filtered = products.value
+
+  if (selectedProductCategory.value !== 'all') {
+    filtered = filtered.filter(product => product.category === selectedProductCategory.value)
+  }
+
+  return filtered
+})
+
+// 更新产品分类计数
+const updateProductCategoryCounts = () => {
+  productCategories.value.forEach(category => {
+    category.count = products.value.filter(product => product.category === category.id).length
+  })
+}
+
 // 获取当前分类名称
 const getCurrentCategoryName = () => {
   if (toolsStore.selectedCategory === 'all') return '全部工具'
@@ -227,15 +432,54 @@ const getCurrentCategoryName = () => {
   return category ? category.name : '未知分类'
 }
 
+// 获取当前产品分类名称
+const getCurrentProductCategoryName = () => {
+  if (selectedProductCategory.value === 'all') return '全部产品'
+
+  const category = productCategories.value.find(c => c.id === selectedProductCategory.value)
+  return category ? category.name : '未知分类'
+}
+
+// 视图切换
+const setCurrentView = (view: 'tools' | 'products') => {
+  currentView.value = view
+}
+
+// 产品分类切换
+const setSelectedProductCategory = (categoryId: string) => {
+  selectedProductCategory.value = categoryId
+}
+
 // 处理工具点击
 const handleToolClick = (tool: any) => {
   toolsStore.incrementClickCount(tool.id)
   window.open(tool.url, '_blank', 'noopener,noreferrer')
 }
 
+// 处理产品点击
+const handleProductClick = (product: Product) => {
+  // 跳转到产品详情页
+  console.log('查看产品详情:', product)
+}
+
+// 处理购买
+const handlePurchase = (product: Product) => {
+  // 跳转到支付页面
+  console.log('购买产品:', product)
+  alert(`即将购买：${product.name} - ¥${product.price}`)
+}
+
+// 打开演示
+const openDemo = (product: Product) => {
+  if (product.demoUrl) {
+    window.open(product.demoUrl, '_blank', 'noopener,noreferrer')
+  }
+}
+
 // 监听全局键盘事件
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
+  updateProductCategoryCounts()
 })
 
 onUnmounted(() => {
@@ -612,6 +856,30 @@ onUnmounted(() => {
   gap: 20px;
 }
 
+/* 产品网格 */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+/* 添加产品按钮 */
+.add-product-btn {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-product-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
 .tool-card {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
@@ -749,6 +1017,137 @@ onUnmounted(() => {
 
 .tool-card:hover .external-icon {
   color: #0078d4;
+}
+
+/* 产品卡片 */
+.product-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.product-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+
+.product-price {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.price {
+  color: #ffb900;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.original-price {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  text-decoration: line-through;
+}
+
+.product-content {
+  padding: 20px;
+}
+
+.product-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #323130;
+}
+
+.product-description {
+  font-size: 14px;
+  color: #605e5c;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.product-footer {
+  padding: 0 20px 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.buy-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #0078d4, #106ebe);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buy-btn:hover {
+  background: linear-gradient(135deg, #106ebe, #005a9e);
+  transform: translateY(-1px);
+}
+
+.demo-btn {
+  padding: 10px 16px;
+  background: rgba(0, 120, 212, 0.1);
+  border: 1px solid rgba(0, 120, 212, 0.2);
+  border-radius: 8px;
+  color: #0078d4;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-btn:hover {
+  background: rgba(0, 120, 212, 0.2);
+  border-color: rgba(0, 120, 212, 0.3);
 }
 
 /* 空状态 */

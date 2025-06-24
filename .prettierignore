@@ -2,3 +2,5 @@ node_modules
 dist
 .output
 *.log 
+*.md
+{}claude_desktop_config.json
