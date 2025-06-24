@@ -1,26 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { ToolsService } from '../services/toolsService'
+import { CategoriesService } from '../services/categoriesService'
+import type { Tool, Category, SearchFilters, SearchResult } from '../types'
 
-export interface Tool {
-  id: string
-  name: string
-  description: string
-  url: string
-  icon: string
-  category: string
-  tags: string[]
-  isFavorite: boolean
-  clickCount: number
-  addedDate: string
-}
-
-export interface Category {
-  id: string
-  name: string
-  icon: string
-  color: string
-  count: number
-}
+// 导出类型以保持向后兼容
+export type { Tool, Category }
 
 export const useToolsStore = defineStore('tools', () => {
   // 状态
@@ -28,182 +13,171 @@ export const useToolsStore = defineStore('tools', () => {
   const selectedCategory = ref('all')
   const showFavoritesOnly = ref(false)
   const sidebarCollapsed = ref(false)
+  const loading = ref(false)
+  const error = ref<string | null>(null)
 
-  // 分类数据
-  const categories = ref<Category[]>([
-    { id: 'development', name: '开发工具', icon: '💻', color: '#0078d4', count: 0 },
-    { id: 'design', name: '设计工具', icon: '🎨', color: '#8764b8', count: 0 },
-    { id: 'productivity', name: '效率工具', icon: '⚡', color: '#107c10', count: 0 },
-    { id: 'ai', name: 'AI工具', icon: '🤖', color: '#ff8c00', count: 0 },
-    { id: 'network', name: '网络工具', icon: '🌐', color: '#00bcf2', count: 0 },
-    { id: 'media', name: '媒体工具', icon: '📸', color: '#e74856', count: 0 },
-    { id: 'utility', name: '实用工具', icon: '🔧', color: '#00b7c3', count: 0 },
-  ])
+  // 数据
+  const tools = ref<Tool[]>([])
+  const categories = ref<Category[]>([])
+  const searchResult = ref<SearchResult<Tool> | null>(null)
+  const popularTools = ref<Tool[]>([])
+  const featuredTools = ref<Tool[]>([])
 
-  // 工具数据
-  const tools = ref<Tool[]>([
-    {
-      id: '1',
-      name: 'GitHub',
-      description: '全球最大的代码托管平台，支持Git版本控制和团队协作开发',
-      url: 'https://github.com',
-      icon: '💻',
-      category: 'development',
-      tags: ['代码托管', 'Git', '开源', '协作', '版本控制'],
-      isFavorite: true,
-      clickCount: 156,
-      addedDate: '2024-01-15',
-    },
-    {
-      id: '2',
-      name: 'Visual Studio Code',
-      description: '微软开发的免费代码编辑器，支持多种编程语言和丰富的扩展',
-      url: 'https://code.visualstudio.com',
-      icon: '💻',
-      category: 'development',
-      tags: ['代码编辑器', '开发工具', '微软', 'IDE', '扩展'],
-      isFavorite: true,
-      clickCount: 234,
-      addedDate: '2024-01-10',
-    },
-    {
-      id: '3',
-      name: 'Figma',
-      description: '协作式界面设计工具，支持实时协作和原型制作，设计师必备',
-      url: 'https://figma.com',
-      icon: '🎨',
-      category: 'design',
-      tags: ['UI设计', '原型制作', '协作', '矢量设计', '界面设计'],
-      isFavorite: true,
-      clickCount: 189,
-      addedDate: '2024-01-20',
-    },
-    {
-      id: '4',
-      name: 'Adobe Photoshop',
-      description: '专业的图像编辑和设计软件，创意设计的行业标准',
-      url: 'https://www.adobe.com/products/photoshop.html',
-      icon: '🎨',
-      category: 'design',
-      tags: ['图像编辑', '设计软件', 'Adobe', '创意设计', '专业工具'],
-      isFavorite: false,
-      clickCount: 145,
-      addedDate: '2024-01-25',
-    },
-    {
-      id: '5',
-      name: 'ChatGPT',
-      description: 'OpenAI开发的AI对话助手，支持多种任务包括写作、编程和问答',
-      url: 'https://chat.openai.com',
-      icon: '🤖',
-      category: 'ai',
-      tags: ['AI助手', '对话', '写作', '编程', 'OpenAI'],
-      isFavorite: true,
-      clickCount: 312,
-      addedDate: '2024-02-01',
-    },
-    {
-      id: '6',
-      name: 'Midjourney',
-      description: 'AI图像生成工具，通过文本描述创建高质量的艺术作品',
-      url: 'https://midjourney.com',
-      icon: '🤖',
-      category: 'ai',
-      tags: ['AI绘画', '图像生成', '艺术创作', '文本转图像', '创意工具'],
-      isFavorite: false,
-      clickCount: 98,
-      addedDate: '2024-02-05',
-    },
-    {
-      id: '7',
-      name: 'Notion',
-      description: '全能的笔记和协作工具，支持数据库、模板和团队协作',
-      url: 'https://notion.so',
-      icon: '📝',
-      category: 'productivity',
-      tags: ['笔记工具', '数据库', '协作', '模板', '知识管理'],
-      isFavorite: true,
-      clickCount: 167,
-      addedDate: '2024-01-12',
-    },
-    {
-      id: '8',
-      name: 'Trello',
-      description: '基于看板的项目管理工具，简单直观的任务管理方式',
-      url: 'https://trello.com',
-      icon: '📋',
-      category: 'productivity',
-      tags: ['项目管理', '看板', '任务管理', '团队协作', '工作流'],
-      isFavorite: false,
-      clickCount: 87,
-      addedDate: '2024-01-30',
-    },
-    {
-      id: '9',
-      name: 'Ping.pe',
-      description: '网络连通性测试工具，支持全球多地点ping测试和网络诊断',
-      url: 'https://ping.pe',
-      icon: '🌐',
-      category: 'network',
-      tags: ['网络测试', 'ping测试', '网络诊断', '连通性', '监控'],
-      isFavorite: false,
-      clickCount: 43,
-      addedDate: '2024-02-10',
-    },
-    {
-      id: '10',
-      name: 'Speedtest',
-      description: '网络速度测试工具，准确测量上传下载速度和延迟',
-      url: 'https://speedtest.net',
-      icon: '🌐',
-      category: 'network',
-      tags: ['网速测试', '带宽测试', '网络性能', '延迟测试', '网络质量'],
-      isFavorite: true,
-      clickCount: 76,
-      addedDate: '2024-02-08',
-    },
-    {
-      id: '11',
-      name: 'Canva',
-      description: '在线图形设计平台，提供丰富的模板和设计素材',
-      url: 'https://canva.com',
-      icon: '🎨',
-      category: 'design',
-      tags: ['在线设计', '模板', '图形设计', '海报制作', '社交媒体'],
-      isFavorite: false,
-      clickCount: 65,
-      addedDate: '2024-02-12',
-    },
-    {
-      id: '12',
-      name: 'Unsplash',
-      description: '免费高质量图片素材库，摄影师和设计师的灵感来源',
-      url: 'https://unsplash.com',
-      icon: '📸',
-      category: 'media',
-      tags: ['免费图片', '高质量素材', '摄影', '设计素材', '版权友好'],
-      isFavorite: true,
-      clickCount: 92,
-      addedDate: '2024-01-28',
-    },
-  ])
+  // 初始化状态
+  const initialized = ref(false)
+  // 异步操作方法
+  const loadCategories = async () => {
+    try {
+      loading.value = true
+      error.value = null
+      const categoriesData = await CategoriesService.getCategoriesWithStats()
+      categories.value = categoriesData
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '加载分类失败'
+      console.error('Error loading categories:', err)
+    } finally {
+      loading.value = false
+    }
+  }
 
-  // 更新分类计数
-  const updateCategoryCounts = () => {
-    categories.value.forEach(category => {
-      category.count = tools.value.filter(tool => tool.category === category.id).length
-    })
+  const loadTools = async (filters?: SearchFilters) => {
+    try {
+      loading.value = true
+      error.value = null
+      const result = await ToolsService.getTools(filters)
+
+      if (filters) {
+        searchResult.value = result
+      } else {
+        tools.value = result.items
+        searchResult.value = null
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '加载工具失败'
+      console.error('Error loading tools:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const loadPopularTools = async () => {
+    try {
+      const popular = await ToolsService.getPopularTools(6)
+      popularTools.value = popular
+    } catch (err) {
+      console.error('Error loading popular tools:', err)
+    }
+  }
+
+  const loadFeaturedTools = async () => {
+    try {
+      const featured = await ToolsService.getFeaturedTools(6)
+      featuredTools.value = featured
+    } catch (err) {
+      console.error('Error loading featured tools:', err)
+    }
+  }
+
+  const searchTools = async (query: string) => {
+    if (!query.trim()) {
+      searchResult.value = null
+      return
+    }
+
+    try {
+      loading.value = true
+      error.value = null
+      const filters: SearchFilters = {
+        query: query.trim(),
+        category: selectedCategory.value !== 'all' ? selectedCategory.value : undefined,
+        limit: 20,
+      }
+      await loadTools(filters)
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '搜索失败'
+      console.error('Error searching tools:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const createTool = async (toolData: Partial<Tool>) => {
+    try {
+      loading.value = true
+      error.value = null
+      const newTool = await ToolsService.createTool(toolData)
+      tools.value.unshift(newTool)
+      return newTool
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '创建工具失败'
+      console.error('Error creating tool:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const updateTool = async (id: string, toolData: Partial<Tool>) => {
+    try {
+      loading.value = true
+      error.value = null
+      const updatedTool = await ToolsService.updateTool(id, toolData)
+      const index = tools.value.findIndex(t => t.id === id)
+      if (index !== -1) {
+        tools.value[index] = updatedTool
+      }
+      return updatedTool
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '更新工具失败'
+      console.error('Error updating tool:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const deleteTool = async (id: string) => {
+    try {
+      loading.value = true
+      error.value = null
+      await ToolsService.deleteTool(id)
+      tools.value = tools.value.filter(t => t.id !== id)
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '删除工具失败'
+      console.error('Error deleting tool:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const incrementClickCount = async (id: string) => {
+    try {
+      await ToolsService.incrementClickCount(id)
+      // 更新本地状态
+      const tool = tools.value.find(t => t.id === id)
+      if (tool) {
+        tool.clickCount++
+      }
+    } catch (err) {
+      console.error('Error incrementing click count:', err)
+    }
   }
 
   // 计算属性
   const filteredTools = computed(() => {
+    // 如果有搜索结果，优先显示搜索结果
+    if (searchResult.value) {
+      return searchResult.value.items
+    }
+
     let filtered = tools.value
 
-    // 特殊处理收藏分类
+    // 分类过滤
     if (selectedCategory.value === 'favorites') {
       filtered = filtered.filter(tool => tool.isFavorite)
     } else if (selectedCategory.value !== 'all') {
-      filtered = filtered.filter(tool => tool.category === selectedCategory.value)
+      filtered = filtered.filter(tool => tool.category.id === selectedCategory.value)
     }
 
     // 搜索过滤
@@ -213,7 +187,7 @@ export const useToolsStore = defineStore('tools', () => {
         tool =>
           tool.name.toLowerCase().includes(query) ||
           tool.description.toLowerCase().includes(query) ||
-          tool.tags.some(tag => tag.toLowerCase().includes(query))
+          tool.tags.some(tag => tag.name.toLowerCase().includes(query))
       )
     }
 
@@ -226,35 +200,55 @@ export const useToolsStore = defineStore('tools', () => {
   })
 
   const favoriteTools = computed(() => tools.value.filter(tool => tool.isFavorite))
-  const popularTools = computed(() =>
-    [...tools.value].sort((a, b) => b.clickCount - a.clickCount).slice(0, 6)
-  )
+
   const recentTools = computed(() =>
     [...tools.value]
-      .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 6)
   )
 
-  // 方法
+  const toolsByCategory = computed(() => {
+    const grouped = new Map<string, Tool[]>()
+    tools.value.forEach(tool => {
+      const categoryId = tool.category.id
+      if (!grouped.has(categoryId)) {
+        grouped.set(categoryId, [])
+      }
+      grouped.get(categoryId)!.push(tool)
+    })
+    return grouped
+  })
+
+  const totalTools = computed(() => {
+    return searchResult.value ? searchResult.value.total : tools.value.length
+  })
+
+  // 同步方法
   const setSearchQuery = (query: string) => {
     searchQuery.value = query
+    if (query.trim()) {
+      searchTools(query)
+    } else {
+      searchResult.value = null
+    }
   }
 
   const setSelectedCategory = (categoryId: string) => {
     selectedCategory.value = categoryId
-  }
-
-  const toggleFavorite = (toolId: string) => {
-    const tool = tools.value.find(t => t.id === toolId)
-    if (tool) {
-      tool.isFavorite = !tool.isFavorite
+    // 如果有搜索查询，重新搜索以应用新的分类过滤
+    if (searchQuery.value.trim()) {
+      searchTools(searchQuery.value)
     }
   }
 
-  const incrementClickCount = (toolId: string) => {
+  const toggleFavorite = async (toolId: string) => {
     const tool = tools.value.find(t => t.id === toolId)
     if (tool) {
-      tool.clickCount++
+      const newFavoriteStatus = !tool.isFavorite
+      tool.isFavorite = newFavoriteStatus
+
+      // TODO: 实现收藏功能的数据库操作
+      // await FavoritesService.toggleFavorite(toolId, newFavoriteStatus)
     }
   }
 
@@ -266,8 +260,21 @@ export const useToolsStore = defineStore('tools', () => {
     showFavoritesOnly.value = !showFavoritesOnly.value
   }
 
-  // 初始化
-  updateCategoryCounts()
+  const clearError = () => {
+    error.value = null
+  }
+
+  // 初始化方法
+  const initialize = async () => {
+    if (initialized.value) return
+
+    try {
+      await Promise.all([loadCategories(), loadTools(), loadPopularTools(), loadFeaturedTools()])
+      initialized.value = true
+    } catch (err) {
+      console.error('Error initializing tools store:', err)
+    }
+  }
 
   return {
     // 状态
@@ -275,22 +282,42 @@ export const useToolsStore = defineStore('tools', () => {
     selectedCategory,
     showFavoritesOnly,
     sidebarCollapsed,
-    categories,
+    loading,
+    error,
+    initialized,
+
+    // 数据
     tools,
+    categories,
+    searchResult,
+    popularTools,
+    featuredTools,
 
     // 计算属性
     filteredTools,
     favoriteTools,
-    popularTools,
     recentTools,
+    toolsByCategory,
+    totalTools,
 
-    // 方法
+    // 异步方法
+    initialize,
+    loadCategories,
+    loadTools,
+    loadPopularTools,
+    loadFeaturedTools,
+    searchTools,
+    createTool,
+    updateTool,
+    deleteTool,
+    incrementClickCount,
+
+    // 同步方法
     setSearchQuery,
     setSelectedCategory,
     toggleFavorite,
-    incrementClickCount,
     toggleSidebar,
     toggleFavoritesOnly,
-    updateCategoryCounts,
+    clearError,
   }
 })
