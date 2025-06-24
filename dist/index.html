@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ramusi 工具导航站 - 让工作更高效</title>
   <meta name="description" content="Ramusi 工具导航站，收录了开发、设计、AI、效率等各类优质工具，让您的工作更高效。" />
@@ -31,9 +32,9 @@
       font-size: 18px;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-CmnutkLK.js"></script>
-  <link rel="modulepreload" crossorigin href="./assets/vendor-Bni-Dbmr.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-BE5BRc_p.css">
+  <script type="module" crossorigin src="/assets/index-CmnutkLK.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/vendor-Bni-Dbmr.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-BE5BRc_p.css">
 </head>
 <body>
   <div id="app">
@@ -43,12 +44,16 @@
     // 错误处理
     window.addEventListener('error', function(e) {
       console.error('页面加载错误:', e.error);
-      document.getElementById('app').innerHTML = '<div class="loading">加载失败，请刷新页面重试</div>';
+      const app = document.getElementById('app');
+      if (app) {
+        app.innerHTML = '<div class="loading">加载失败，请刷新页面重试</div>';
+      }
     });
 
     // 检查资源加载
     setTimeout(function() {
-      if (document.getElementById('app').innerHTML.includes('正在加载')) {
+      const app = document.getElementById('app');
+      if (app && app.innerHTML.includes('正在加载')) {
         console.warn('Vue 应用可能未正确加载');
       }
     }, 3000);

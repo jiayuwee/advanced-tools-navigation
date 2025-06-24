@@ -18,6 +18,55 @@ export default defineConfig({
         }
       },
     },
+    // 自定义插件：修复HTML文件
+    {
+      name: 'fix-html',
+      transformIndexHtml(html) {
+        return html
+          .replace(
+            '<div id="app"></div>',
+            `<div id="app">
+    <div class="loading">正在加载工具导航站...</div>
+  </div>
+  <script>
+    // 错误处理
+    window.addEventListener('error', function(e) {
+      console.error('页面加载错误:', e.error);
+      const app = document.getElementById('app');
+      if (app) {
+        app.innerHTML = '<div class="loading">加载失败，请刷新页面重试</div>';
+      }
+    });
+
+    // 检查资源加载
+    setTimeout(function() {
+      const app = document.getElementById('app');
+      if (app && app.innerHTML.includes('正在加载')) {
+        console.warn('Vue 应用可能未正确加载');
+      }
+    }, 3000);
+  </script>`
+          )
+          .replace(
+            'min-height: 100vh;\n    }',
+            `min-height: 100vh;
+    }
+
+    #app {
+      min-height: 100vh;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: white;
+      font-size: 18px;
+    }`
+          )
+      },
+    },
   ],
   resolve: {
     alias: {
