@@ -1,6 +1,11 @@
 import { supabase } from '../lib/supabase'
 import type { Product, SearchFilters, SearchResult, ApiResponse } from '../types'
 import type { Database } from '../types/database'
+import {
+  requireCategoryId,
+  extractCategoryId,
+  validateRequiredFields,
+} from '../utils/dataTransform'
 
 type ProductRow = Database['public']['Tables']['products']['Row']
 type ProductInsert = Database['public']['Tables']['products']['Insert']
@@ -12,10 +17,12 @@ export class ProductsService {
     try {
       let query = supabase
         .from('products')
-        .select(`
+        .select(
+          `
           *,
           category:product_categories(*)
-        `)
+        `
+        )
         .eq('status', 'active')
 
       // 应用搜索过滤器
@@ -34,7 +41,7 @@ export class ProductsService {
       // 排序
       const sortBy = filters?.sortBy || 'created_at'
       const sortOrder = filters?.sortOrder || 'desc'
-      
+
       if (sortBy === 'name') {
         query = query.order('name', { ascending: sortOrder === 'asc' })
       } else if (sortBy === 'price') {
@@ -64,7 +71,7 @@ export class ProductsService {
         total: count || 0,
         page,
         limit,
-        hasMore: (count || 0) > page * limit
+        hasMore: (count || 0) > page * limit,
       }
     } catch (error) {
       console.error('获取产品列表失败:', error)
@@ -77,14 +84,16 @@ export class ProductsService {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select(`
+        .select(
+          `
           *,
           category:product_categories(*),
           reviews:product_reviews(
             *,
             user:user_profiles(*)
           )
-        `)
+        `
+        )
         .eq('id', id)
         .eq('status', 'active')
         .single()
@@ -104,10 +113,12 @@ export class ProductsService {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select(`
+        .select(
+          `
           *,
           category:product_categories(*)
-        `)
+        `
+        )
         .eq('status', 'active')
         .eq('is_featured', true)
         .order('sort_order', { ascending: true })
@@ -123,14 +134,20 @@ export class ProductsService {
   }
 
   // 获取相关产品
-  static async getRelatedProducts(productId: string, categoryId: string, limit = 4): Promise<Product[]> {
+  static async getRelatedProducts(
+    productId: string,
+    categoryId: string,
+    limit = 4
+  ): Promise<Product[]> {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select(`
+        .select(
+          `
           *,
           category:product_categories(*)
-        `)
+        `
+        )
         .eq('status', 'active')
         .eq('category_id', categoryId)
         .neq('id', productId)
@@ -152,10 +169,12 @@ export class ProductsService {
       const { data, error } = await supabase
         .from('products')
         .insert(productData)
-        .select(`
+        .select(
+          `
           *,
           category:product_categories(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -175,10 +194,12 @@ export class ProductsService {
         .from('products')
         .update({ ...updates, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           category:product_categories(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -194,10 +215,7 @@ export class ProductsService {
   // 删除产品
   static async deleteProduct(id: string): Promise<void> {
     try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id)
+      const { error } = await supabase.from('products').delete().eq('id', id)
 
       if (error) throw error
     } catch (error) {
@@ -207,10 +225,13 @@ export class ProductsService {
   }
 
   // 搜索产品
-  static async searchProducts(query: string, filters?: Partial<SearchFilters>): Promise<SearchResult<Product>> {
+  static async searchProducts(
+    query: string,
+    filters?: Partial<SearchFilters>
+  ): Promise<SearchResult<Product>> {
     return this.getProducts({
       ...filters,
-      query
+      query,
     })
   }
 
@@ -227,9 +248,7 @@ export class ProductsService {
 
       if (uploadError) throw uploadError
 
-      const { data } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath)
+      const { data } = supabase.storage.from('product-images').getPublicUrl(filePath)
 
       return data.publicUrl
     } catch (error) {
@@ -259,7 +278,7 @@ export class ProductsService {
         sortOrder: row.category.sort_order,
         isActive: row.category.is_active,
         createdAt: row.category.created_at,
-        updatedAt: row.category.updated_at
+        updatedAt: row.category.updated_at,
       },
       images: row.images || [],
       features: row.features || [],
@@ -275,35 +294,38 @@ export class ProductsService {
       metaTitle: row.meta_title,
       metaDescription: row.meta_description,
       sortOrder: row.sort_order,
-      reviews: row.reviews?.map((review: any) => ({
-        id: review.id,
-        userId: review.user_id,
-        user: review.user ? {
-          id: review.user.id,
-          email: review.user.email,
-          username: review.user.username,
-          fullName: review.user.full_name,
-          avatarUrl: review.user.avatar_url,
-          bio: review.user.bio,
-          website: review.user.website,
-          location: review.user.location,
-          role: review.user.role,
-          isActive: review.user.is_active,
-          emailVerified: review.user.email_verified,
-          createdAt: review.user.created_at,
-          updatedAt: review.user.updated_at,
-          lastLoginAt: review.user.last_login_at
-        } : undefined,
-        productId: review.product_id,
-        rating: review.rating,
-        title: review.title,
-        content: review.content,
-        isVerified: review.is_verified,
-        createdAt: review.created_at,
-        updatedAt: review.updated_at
-      })) || [],
+      reviews:
+        row.reviews?.map((review: any) => ({
+          id: review.id,
+          userId: review.user_id,
+          user: review.user
+            ? {
+                id: review.user.id,
+                email: review.user.email,
+                username: review.user.username,
+                fullName: review.user.full_name,
+                avatarUrl: review.user.avatar_url,
+                bio: review.user.bio,
+                website: review.user.website,
+                location: review.user.location,
+                role: review.user.role,
+                isActive: review.user.is_active,
+                emailVerified: review.user.email_verified,
+                createdAt: review.user.created_at,
+                updatedAt: review.user.updated_at,
+                lastLoginAt: review.user.last_login_at,
+              }
+            : undefined,
+          productId: review.product_id,
+          rating: review.rating,
+          title: review.title,
+          content: review.content,
+          isVerified: review.is_verified,
+          createdAt: review.created_at,
+          updatedAt: review.updated_at,
+        })) || [],
       averageRating: row.average_rating,
-      totalReviews: row.total_reviews
+      totalReviews: row.total_reviews,
     }
   }
 }

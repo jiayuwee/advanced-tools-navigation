@@ -38,6 +38,38 @@
 
 - Node.js >= 18.0.0
 - npm >= 8.0.0
+- Supabase CLI (可选，用于本地开发)
+
+### 数据库设置
+
+#### 选项 1: 使用现有 Supabase 项目
+
+1. 复制环境变量文件：
+
+```bash
+cp .env.example .env.local
+```
+
+2. 在 `.env.local` 中配置您的 Supabase 项目信息：
+
+```env
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+#### 选项 2: 自动设置新项目
+
+运行自动设置脚本：
+
+```bash
+# Linux/macOS
+npm run supabase:setup
+
+# Windows
+npm run supabase:setup-win
+```
+
+详细设置指南请参考：[Supabase 部署指南](docs/SUPABASE_SETUP.md)
 
 ### 本地开发
 
@@ -51,11 +83,29 @@ cd advanced-tools-navigation
 # 安装依赖
 npm install
 
+# 配置环境变量（参考上面的数据库设置）
+cp .env.example .env.local
+
 # 启动开发服务器
 npm run dev
 ```
 
 访问 [http://localhost:3000](http://localhost:3000) 查看效果。
+
+### 本地 Supabase 开发（可选）
+
+如果您想在本地运行完整的 Supabase 环境：
+
+```bash
+# 启动本地 Supabase 服务
+npm run supabase:start
+
+# 查看服务状态
+npm run supabase:status
+
+# 停止服务
+npm run supabase:stop
+```
 
 ### 生产构建
 
@@ -87,7 +137,36 @@ npm run type-check
 
 # 格式化代码
 npx prettier --write .
+
+# Supabase 相关脚本
+npm run supabase:start      # 启动本地 Supabase
+npm run supabase:stop       # 停止本地 Supabase
+npm run supabase:push       # 推送数据库迁移
+npm run supabase:setup      # 自动设置项目（Linux/macOS）
+npm run supabase:setup-win  # 自动设置项目（Windows）
 ```
+
+## 🚀 部署
+
+### 自动化部署
+
+#### Netlify 部署（推荐）
+
+- **生产环境**: [https://ramusi.cn](https://ramusi.cn)
+- **预览环境**: 每个 PR 都会自动生成预览链接
+- **触发方式**: 推送到 `main` 分支自动部署
+
+#### Supabase 数据库部署
+
+- **工作流**: `.github/workflows/supabase-deploy.yml`
+- **触发条件**: `supabase/` 目录文件变更
+- **功能**: 自动运行数据库迁移和前端构建
+
+#### 配置要求
+
+在使用 Supabase 自动部署前，需要配置 GitHub Secrets。详细配置指南：[GitHub Secrets 配置](docs/GITHUB_SECRETS_SETUP.md)
+
+**注意**: GitHub Actions 可能显示 secrets 访问警告，这是正常的，不会影响工作流运行。
 
 ## 🐳 Docker 部署
 
