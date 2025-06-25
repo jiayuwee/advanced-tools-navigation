@@ -1,6 +1,11 @@
 import { supabase, TABLES, handleSupabaseError } from '../lib/supabase'
 import type { Tool, Category, SearchFilters, SearchResult } from '../types'
 import type { Database } from '../types/database'
+import {
+  requireCategoryId,
+  extractCategoryId,
+  validateRequiredFields,
+} from '../utils/dataTransform'
 
 type ToolRow = Database['public']['Tables']['tools']['Row']
 type CategoryRow = Database['public']['Tables']['categories']['Row']
@@ -88,15 +93,21 @@ export class ToolsService {
   }
 
   // 创建工具
-  static async createTool(toolData: Partial<Tool>): Promise<Tool> {
+  static async createTool(toolData: Partial<Tool> | any): Promise<Tool> {
     try {
+      // 验证必需字段
+      validateRequiredFields(toolData, ['name', 'description', 'url'], 'Tool')
+
+      // 验证并提取分类 ID
+      const categoryId = requireCategoryId(toolData)
+
       const { data, error } = await supabase
         .from(TABLES.TOOLS)
         .insert({
-          name: toolData.name!,
-          description: toolData.description!,
-          url: toolData.url!,
-          category_id: toolData.category?.id!,
+          name: toolData.name,
+          description: toolData.description,
+          url: toolData.url,
+          category_id: categoryId,
           icon: toolData.icon,
           is_featured: toolData.isFeatured || false,
           status: 'active',
@@ -124,14 +135,20 @@ export class ToolsService {
   }
 
   // 更新工具
-  static async updateTool(id: string, toolData: Partial<Tool>): Promise<Tool> {
+  static async updateTool(id: string, toolData: Partial<Tool> | any): Promise<Tool> {
     try {
       const updateData: any = {}
 
       if (toolData.name) updateData.name = toolData.name
       if (toolData.description) updateData.description = toolData.description
       if (toolData.url) updateData.url = toolData.url
-      if (toolData.category?.id) updateData.category_id = toolData.category.id
+
+      // 处理分类 ID - 支持多种格式
+      const categoryId = extractCategoryId(toolData)
+      if (categoryId) {
+        updateData.category_id = categoryId
+      }
+
       if (toolData.icon !== undefined) updateData.icon = toolData.icon
       if (toolData.isFeatured !== undefined) updateData.is_featured = toolData.isFeatured
       if (toolData.status) updateData.status = toolData.status

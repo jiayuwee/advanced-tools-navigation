@@ -9,7 +9,20 @@
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "type-check": "vue-tsc --noEmit",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:reset": "supabase db reset",
+    "supabase:push": "supabase db push",
+    "supabase:pull": "supabase db pull",
+    "supabase:gen-types": "supabase gen types typescript --linked > src/types/database.ts",
+    "supabase:setup": "bash scripts/setup-supabase.sh",
+    "supabase:setup-win": "powershell -ExecutionPolicy Bypass -File scripts/setup-supabase.ps1",
+    "supabase:verify": "node verify-deployment.js",
+    "supabase:deploy": "powershell -ExecutionPolicy Bypass -File setup-supabase-auto.ps1",
+    "deployment:status": "node check-deployment-status.js",
+    "deployment:trigger": "node trigger-deployment.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.1",
