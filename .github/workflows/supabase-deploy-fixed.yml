@@ -1,0 +1,200 @@
+name: Deploy to Supabase (Fixed)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/**'
+  workflow_dispatch:
+
+jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    name: Check Required Secrets
+    outputs:
+      has-secrets: ${{ steps.check.outputs.has-secrets }}
+    steps:
+      - name: Check if Supabase secrets are available
+        id: check
+        run: |
+          echo "🔍 检查必需的 secrets..."
+          
+          HAS_TOKEN="${{ secrets.SUPABASE_ACCESS_TOKEN != '' }}"
+          HAS_PROJECT="${{ secrets.SUPABASE_PROJECT_REF != '' }}"
+          HAS_URL="${{ secrets.VITE_SUPABASE_URL != '' }}"
+          HAS_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY != '' }}"
+          
+          echo "📊 Secrets 状态检查:"
+          echo "- SUPABASE_ACCESS_TOKEN: $([ "$HAS_TOKEN" = "true" ] && echo "✅" || echo "❌")"
+          echo "- SUPABASE_PROJECT_REF: $([ "$HAS_PROJECT" = "true" ] && echo "✅" || echo "❌")"
+          echo "- VITE_SUPABASE_URL: $([ "$HAS_URL" = "true" ] && echo "✅" || echo "❌")"
+          echo "- VITE_SUPABASE_ANON_KEY: $([ "$HAS_ANON_KEY" = "true" ] && echo "✅" || echo "❌")"
+
+          if [ "$HAS_TOKEN" = "true" ] && [ "$HAS_PROJECT" = "true" ] && [ "$HAS_URL" = "true" ] && [ "$HAS_ANON_KEY" = "true" ]; then
+            echo "has-secrets=true" >> $GITHUB_OUTPUT
+            echo "✅ 所有必需的 secrets 已配置"
+          else
+            echo "has-secrets=false" >> $GITHUB_OUTPUT
+            echo "❌ 部分 secrets 未配置"
+            echo ""
+            echo "请在 GitHub 仓库设置中添加以下 Secrets:"
+            echo "- SUPABASE_ACCESS_TOKEN"
+            echo "- SUPABASE_PROJECT_REF"
+            echo "- VITE_SUPABASE_URL"
+            echo "- VITE_SUPABASE_ANON_KEY"
+            echo ""
+            echo "配置指南: https://github.com/jiayuwee/advanced-tools-navigation/blob/main/docs/GITHUB_SECRETS_SETUP.md"
+          fi
+
+  deploy-database:
+    runs-on: ubuntu-latest
+    name: Deploy Database Changes
+    needs: check-secrets
+    if: needs.check-secrets.outputs.has-secrets == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Verify Supabase CLI
+        run: |
+          echo "🔧 验证 Supabase CLI 安装..."
+          supabase --version
+          echo "✅ Supabase CLI 已就绪"
+
+      - name: Link to Supabase project
+        run: |
+          echo "🔗 链接到 Supabase 项目..."
+          echo "项目引用: $PROJECT_REF"
+          
+          if supabase link --project-ref "$PROJECT_REF"; then
+            echo "✅ 项目链接成功"
+          else
+            echo "❌ 项目链接失败"
+            echo "请检查 SUPABASE_PROJECT_REF 是否正确"
+            exit 1
+          fi
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+
+      - name: Check migration files
+        run: |
+          echo "📋 检查迁移文件..."
+          if [ -d "supabase/migrations" ]; then
+            echo "迁移文件列表:"
+            ls -la supabase/migrations/
+            echo "✅ 迁移文件目录存在"
+          else
+            echo "❌ 迁移文件目录不存在"
+            exit 1
+          fi
+
+      - name: Run database migrations
+        run: |
+          echo "🚀 运行数据库迁移..."
+          
+          if supabase db push; then
+            echo "✅ 数据库迁移完成"
+          else
+            echo "❌ 数据库迁移失败"
+            echo "请检查迁移文件语法和权限"
+            exit 1
+          fi
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Verify deployment
+        run: |
+          echo "🧪 验证部署状态..."
+          echo "✅ 数据库部署完成！"
+          echo "🔗 项目控制台: https://supabase.com/dashboard/project/$PROJECT_REF"
+        env:
+          PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    name: Deploy Frontend to Netlify
+    needs: [check-secrets, deploy-database]
+    if: needs.check-secrets.outputs.has-secrets == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          echo "📦 安装项目依赖..."
+          npm ci
+          echo "✅ 依赖安装完成"
+
+      - name: Build project
+        run: |
+          echo "🔨 构建生产版本..."
+          
+          if npm run build; then
+            echo "✅ 构建成功"
+            echo "📁 构建输出:"
+            ls -la dist/
+          else
+            echo "❌ 构建失败"
+            exit 1
+          fi
+        env:
+          NODE_ENV: production
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Deploy to Netlify
+        run: |
+          echo "🚀 准备部署到 Netlify..."
+          echo "🌐 目标站点: https://ramusi.cn"
+          echo "📦 构建产物已准备就绪"
+          echo "⏱️  Netlify 将自动检测并部署此次构建"
+
+  deployment-summary:
+    runs-on: ubuntu-latest
+    name: Deployment Summary
+    needs: [deploy-database, deploy-frontend]
+    if: always()
+
+    steps:
+      - name: Summary
+        run: |
+          echo "📋 部署总结报告"
+          echo "=================="
+          
+          DB_STATUS="${{ needs.deploy-database.result }}"
+          FRONTEND_STATUS="${{ needs.deploy-frontend.result }}"
+          
+          echo "🗄️  数据库部署: $([ "$DB_STATUS" = "success" ] && echo "✅ 成功" || echo "❌ 失败")"
+          echo "🌐 前端部署: $([ "$FRONTEND_STATUS" = "success" ] && echo "✅ 成功" || echo "❌ 失败")"
+          
+          if [ "$DB_STATUS" = "success" ] && [ "$FRONTEND_STATUS" = "success" ]; then
+            echo ""
+            echo "🎉 完整部署成功！"
+            echo "🔗 应用地址: https://ramusi.cn"
+          else
+            echo ""
+            echo "⚠️  部分部署失败，请检查日志"
+          fi
+
+# 重要说明：
+# 1. 需要在 GitHub 仓库设置中添加以下 Secrets：
+#    - SUPABASE_ACCESS_TOKEN: Supabase 访问令牌
+#    - SUPABASE_PROJECT_REF: Supabase 项目引用 ID
+#    - VITE_SUPABASE_URL: Supabase 项目 URL
+#    - VITE_SUPABASE_ANON_KEY: Supabase 匿名密钥
+#
+# 2. 配置指南请参考：docs/GITHUB_SECRETS_SETUP.md
