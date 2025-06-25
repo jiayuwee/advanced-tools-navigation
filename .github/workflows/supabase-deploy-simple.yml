@@ -15,7 +15,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy Database and Frontend
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,7 +31,7 @@ jobs:
 
       # 仅在配置了 Supabase secrets 时运行数据库部署
       - name: Setup Supabase CLI
-        if: env.SUPABASE_ACCESS_TOKEN != ''
+        if: ${{ secrets.SUPABASE_ACCESS_TOKEN != '' }}
         uses: supabase/setup-cli@v1
         with:
           version: latest
@@ -39,16 +39,16 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
       - name: Deploy database changes
-        if: env.SUPABASE_ACCESS_TOKEN != ''
+        if: ${{ secrets.SUPABASE_ACCESS_TOKEN != '' }}
         run: |
           echo "🚀 Deploying database changes..."
-          
+
           # 链接到项目
           supabase link --project-ref "$SUPABASE_PROJECT_REF"
-          
+
           # 运行迁移
           supabase db push
-          
+
           echo "✅ Database deployment completed"
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -68,14 +68,14 @@ jobs:
         run: |
           echo "📋 Deployment Summary:"
           echo "===================="
-          
+
           if [ -n "${{ secrets.SUPABASE_ACCESS_TOKEN }}" ]; then
             echo "✅ Database: Deployed to Supabase"
             echo "🔗 Dashboard: https://supabase.com/dashboard/project/${{ secrets.SUPABASE_PROJECT_REF }}"
           else
             echo "⚠️  Database: Skipped (secrets not configured)"
           fi
-          
+
           echo "✅ Frontend: Built successfully"
           echo "🌐 Site: https://ramusi.cn (via Netlify auto-deploy)"
           echo ""
