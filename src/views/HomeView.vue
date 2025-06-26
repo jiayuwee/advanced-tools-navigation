@@ -363,14 +363,14 @@ onUnmounted(() => {
 .fluent-app {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+  min-height: calc(100vh - 200px); /* 为Footer留出空间 */
   color: #323130;
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: calc(100vh - 200px); /* 改为min-height，为Footer留出空间 */
   outline: none;
 }
 
@@ -998,9 +998,9 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* 底部空间 - 减少高度，因为有全局Footer */
+/* 底部空间 - 为Footer和StatusBar留出空间 */
 .bottom-spacer {
-  height: 40px;
+  height: 60px; /* 增加高度为状态栏留出空间 */
   flex-shrink: 0;
 }
 
@@ -1018,7 +1018,7 @@ onUnmounted(() => {
     position: fixed;
     left: 0;
     top: 50px;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 250px); /* 为Footer留出空间 */
     z-index: 90;
     transform: translateX(-100%);
   }
