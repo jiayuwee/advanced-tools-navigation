@@ -80,7 +80,7 @@ export class CategoriesService {
   static async updateCategory(id: string, categoryData: Partial<Category>): Promise<Category> {
     try {
       const updateData: any = {}
-      
+
       if (categoryData.name) updateData.name = categoryData.name
       if (categoryData.description !== undefined) updateData.description = categoryData.description
       if (categoryData.icon) updateData.icon = categoryData.icon
@@ -140,10 +140,7 @@ export class CategoriesService {
         throw new Error('无法删除包含工具的分类，请先删除或移动工具')
       }
 
-      const { error } = await supabase
-        .from(TABLES.CATEGORIES)
-        .delete()
-        .eq('id', id)
+      const { error } = await supabase.from(TABLES.CATEGORIES).delete().eq('id', id)
 
       if (error) {
         throw new Error(handleSupabaseError(error))
@@ -186,10 +183,7 @@ export class CategoriesService {
   // 获取带统计信息的分类列表
   static async getCategoriesWithStats(): Promise<Category[]> {
     try {
-      const [categories, stats] = await Promise.all([
-        this.getCategories(),
-        this.getCategoryStats(),
-      ])
+      const [categories, stats] = await Promise.all([this.getCategories(), this.getCategoryStats()])
 
       const statsMap = new Map(stats.map(s => [s.categoryId, s.count]))
 
@@ -226,7 +220,7 @@ export class CategoriesService {
     // 构建树结构
     categories.forEach(category => {
       const categoryNode = categoryMap.get(category.id)!
-      
+
       if (category.parentId) {
         const parent = categoryMap.get(category.parentId)
         if (parent) {
@@ -245,7 +239,7 @@ export class CategoriesService {
   }
 
   // 转换数据库行为业务对象
-  private static transformCategoryRow(row: CategoryRow): Category {
+  public static transformCategoryRow(row: CategoryRow): Category {
     return {
       id: row.id,
       name: row.name,

@@ -1,26 +1,26 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
-import { copyFileSync } from 'fs'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import { resolve } from "path";
+import { copyFileSync } from "fs";
 
 export default defineConfig({
   plugins: [
     vue(),
     // 自定义插件：复制CNAME文件到构建目录
     {
-      name: 'copy-cname',
+      name: "copy-cname",
       writeBundle() {
         try {
-          copyFileSync('public/CNAME', 'dist/CNAME')
-          console.log('✅ CNAME文件已复制到dist目录')
+          copyFileSync("public/CNAME", "dist/CNAME");
+          console.log("✅ CNAME文件已复制到dist目录");
         } catch (error) {
-          console.warn('⚠️ 复制CNAME文件失败:', error)
+          console.warn("⚠️ 复制CNAME文件失败:", error);
         }
       },
     },
     // 自定义插件：修复HTML文件
     {
-      name: 'fix-html',
+      name: "fix-html",
       transformIndexHtml(html) {
         return html
           .replace(
@@ -48,7 +48,7 @@ export default defineConfig({
   </script>`
           )
           .replace(
-            'min-height: 100vh;\n    }',
+            "min-height: 100vh;\n    }",
             `min-height: 100vh;
     }
 
@@ -64,32 +64,35 @@ export default defineConfig({
       color: white;
       font-size: 18px;
     }`
-          )
+          );
       },
     },
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      "@": resolve(__dirname, "src"),
+      "@config": resolve(__dirname, "config"),
+      "@scripts": resolve(__dirname, "scripts"),
+      "@docs": resolve(__dirname, "docs"),
     },
   },
-  base: './',
+  base: "./",
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
+    outDir: "dist",
+    assetsDir: "assets",
     sourcemap: false,
-    minify: 'terser',
+    minify: "terser",
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['vue', 'pinia', 'lucide-vue-next'],
+          vendor: ["vue", "pinia", "lucide-vue-next"],
         },
       },
     },
   },
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 3000,
     open: true,
   },
-})
+});

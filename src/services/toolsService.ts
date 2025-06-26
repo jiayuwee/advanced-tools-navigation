@@ -6,6 +6,7 @@ import {
   extractCategoryId,
   validateRequiredFields,
 } from '../utils/dataTransform'
+import { CategoriesService } from './categoriesService'
 
 type ToolRow = Database['public']['Tables']['tools']['Row']
 type CategoryRow = Database['public']['Tables']['categories']['Row']
@@ -316,7 +317,7 @@ export class ToolsService {
       url: row.url,
       icon: row.icon,
       category: row.category
-        ? this.transformCategoryRow(row.category)
+        ? CategoriesService.transformCategoryRow(row.category)
         : {
             id: row.category_id,
             name: '未分类',

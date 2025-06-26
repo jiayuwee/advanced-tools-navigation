@@ -1,14 +1,9 @@
 <template>
   <div class="tools-view">
-    <!-- 工具页面头部 -->
-    <div class="tools-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="page-title">🔧 工具导航</h1>
-          <p class="page-subtitle">发现和管理您的常用工具</p>
-        </div>
-        
-        <div class="header-right">
+    <!-- 过滤器和排序 -->
+    <div class="filters-bar">
+      <div class="filters-content">
+        <div class="filter-group search-group">
           <div class="search-container">
             <SearchIcon class="search-icon" />
             <input
@@ -19,15 +14,33 @@
               class="search-input"
               @input="handleSearch"
             />
-            <button
-              v-if="searchQuery"
-              class="clear-search"
-              @click="clearSearch"
-            >
+            <button v-if="searchQuery" class="clear-search" @click="clearSearch">
               <XIcon class="icon" />
             </button>
           </div>
-          
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">排序：</label>
+          <select v-model="sortBy" class="filter-select">
+            <option value="name">名称</option>
+            <option value="click_count">热度</option>
+            <option value="created_at">最新</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <button
+            class="filter-button"
+            :class="{ active: showFavoritesOnly }"
+            @click="showFavoritesOnly = !showFavoritesOnly"
+          >
+            <StarIcon class="icon" />
+            只看收藏
+          </button>
+        </div>
+
+        <div class="filter-group">
           <div class="view-options">
             <button
               class="view-button"
@@ -45,50 +58,9 @@
             </button>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 过滤器和排序 -->
-    <div class="filters-bar">
-      <div class="filters-content">
-        <div class="filter-group">
-          <label class="filter-label">分类：</label>
-          <select v-model="selectedCategory" class="filter-select">
-            <option value="all">全部分类</option>
-            <option
-              v-for="category in toolsStore.categories"
-              :key="category.id"
-              :value="category.id"
-            >
-              {{ category.icon }} {{ category.name }}
-            </option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label class="filter-label">排序：</label>
-          <select v-model="sortBy" class="filter-select">
-            <option value="name">名称</option>
-            <option value="click_count">热度</option>
-            <option value="created_at">最新</option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <button
-            class="filter-button"
-            :class="{ active: showFavoritesOnly }"
-            @click="showFavoritesOnly = !showFavoritesOnly"
-          >
-            <StarIcon class="icon" />
-            只看收藏
-          </button>
-        </div>
-        
         <div class="results-info">
-          <span class="results-count">
-            找到 {{ filteredTools.length }} 个工具
-          </span>
+          <span class="results-count"> 找到 {{ filteredTools.length }} 个工具 </span>
         </div>
       </div>
     </div>
@@ -100,7 +72,7 @@
         <div class="loading-spinner"></div>
         <p>正在加载工具...</p>
       </div>
-      
+
       <!-- 错误状态 -->
       <div v-else-if="toolsStore.error" class="error-state">
         <div class="error-icon">❌</div>
@@ -108,12 +80,9 @@
         <p>{{ toolsStore.error }}</p>
         <button class="retry-button" @click="retryLoad">重试</button>
       </div>
-      
+
       <!-- 工具网格视图 -->
-      <div
-        v-else-if="filteredTools.length > 0 && viewMode === 'grid'"
-        class="tools-grid"
-      >
+      <div v-else-if="filteredTools.length > 0 && viewMode === 'grid'" class="tools-grid">
         <div
           v-for="tool in filteredTools"
           :key="tool.id"
@@ -130,11 +99,11 @@
               <StarIcon class="icon" />
             </button>
           </div>
-          
+
           <div class="card-content">
             <h3 class="tool-name">{{ tool.name }}</h3>
             <p class="tool-description">{{ tool.description }}</p>
-            
+
             <div class="tool-tags">
               <span v-for="tag in tool.tags.slice(0, 3)" :key="tag.id" class="tag">
                 {{ tag.name }}
@@ -144,7 +113,7 @@
               </span>
             </div>
           </div>
-          
+
           <div class="card-footer">
             <div class="tool-stats">
               <span class="stat">
@@ -160,12 +129,9 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 工具列表视图 -->
-      <div
-        v-else-if="filteredTools.length > 0 && viewMode === 'list'"
-        class="tools-list"
-      >
+      <div v-else-if="filteredTools.length > 0 && viewMode === 'list'" class="tools-list">
         <div
           v-for="tool in filteredTools"
           :key="tool.id"
@@ -184,7 +150,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="item-right">
             <div class="tool-tags">
               <span v-for="tag in tool.tags.slice(0, 2)" :key="tag.id" class="tag">
@@ -204,25 +170,23 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 空状态 -->
       <div v-else class="empty-state">
         <div class="empty-icon">🔍</div>
         <h3>未找到相关工具</h3>
-        <p v-if="searchQuery">
-          没有找到包含 "{{ searchQuery }}" 的工具，尝试使用其他关键词搜索
-        </p>
-        <p v-else-if="selectedCategory !== 'all'">
-          该分类下暂无工具，请选择其他分类
-        </p>
-        <p v-else>
-          暂无工具数据，请稍后再试
-        </p>
+        <p v-if="searchQuery">没有找到包含 "{{ searchQuery }}" 的工具，尝试使用其他关键词搜索</p>
+        <p v-else-if="selectedCategory !== 'all'">该分类下暂无工具，请选择其他分类</p>
+        <p v-else>暂无工具数据，请稍后再试</p>
         <div class="empty-actions">
           <button v-if="searchQuery" class="btn btn-primary" @click="clearSearch">
             清除搜索条件
           </button>
-          <button v-if="selectedCategory !== 'all'" class="btn btn-secondary" @click="selectedCategory = 'all'">
+          <button
+            v-if="selectedCategory !== 'all'"
+            class="btn btn-secondary"
+            @click="selectedCategory = 'all'"
+          >
             查看全部分类
           </button>
         </div>
@@ -304,18 +268,22 @@ const retryLoad = async () => {
 }
 
 // 监听路由参数
-watch(() => route.query, (newQuery) => {
-  if (newQuery.category && typeof newQuery.category === 'string') {
-    selectedCategory.value = newQuery.category
-  }
-  if (newQuery.search && typeof newQuery.search === 'string') {
-    searchQuery.value = newQuery.search
-    toolsStore.setSearchQuery(newQuery.search)
-  }
-}, { immediate: true })
+watch(
+  () => route.query,
+  newQuery => {
+    if (newQuery.category && typeof newQuery.category === 'string') {
+      selectedCategory.value = newQuery.category
+    }
+    if (newQuery.search && typeof newQuery.search === 'string') {
+      searchQuery.value = newQuery.search
+      toolsStore.setSearchQuery(newQuery.search)
+    }
+  },
+  { immediate: true }
+)
 
 // 监听分类变化
-watch(selectedCategory, (newCategory) => {
+watch(selectedCategory, newCategory => {
   toolsStore.setSelectedCategory(newCategory)
   // 更新 URL 参数
   const query = { ...route.query }
@@ -328,7 +296,7 @@ watch(selectedCategory, (newCategory) => {
 })
 
 // 监听搜索变化
-watch(searchQuery, (newQuery) => {
+watch(searchQuery, newQuery => {
   const query = { ...route.query }
   if (newQuery) {
     query.search = newQuery
@@ -352,45 +320,36 @@ onMounted(async () => {
   background: #f8f9fa;
 }
 
-/* 页面头部 */
-.tools-header {
+/* 过滤器栏 */
+.filters-bar {
   background: white;
   border-bottom: 1px solid #e1dfdd;
-  padding: 2rem 1.5rem;
+  padding: 1rem 2rem;
 }
 
-.header-content {
-  max-width: 1200px;
-  margin: 0 auto;
+.filters-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 2rem;
+  flex-wrap: wrap;
 }
 
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  color: #323130;
-}
-
-.page-subtitle {
-  margin: 0;
-  color: #605e5c;
-  font-size: 1rem;
-}
-
-.header-right {
+.filter-group {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+}
+
+.search-group {
+  flex: 1;
+  max-width: 400px;
 }
 
 .search-container {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .search-icon {
@@ -402,7 +361,7 @@ onMounted(async () => {
 }
 
 .search-input {
-  width: 300px;
+  width: 100%;
   padding: 12px 12px 12px 40px;
   border: 1px solid #e1dfdd;
   border-radius: 8px;
@@ -430,53 +389,6 @@ onMounted(async () => {
 
 .clear-search:hover {
   background: #f3f2f1;
-}
-
-.view-options {
-  display: flex;
-  border: 1px solid #e1dfdd;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.view-button {
-  background: white;
-  border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #605e5c;
-}
-
-.view-button:hover {
-  background: #f3f2f1;
-}
-
-.view-button.active {
-  background: #0078d4;
-  color: white;
-}
-
-/* 过滤器栏 */
-.filters-bar {
-  background: white;
-  border-bottom: 1px solid #e1dfdd;
-  padding: 1rem 1.5rem;
-}
-
-.filters-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.filter-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .filter-label {
@@ -517,6 +429,31 @@ onMounted(async () => {
   color: #8a6914;
 }
 
+.view-options {
+  display: flex;
+  border: 1px solid #e1dfdd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.view-button {
+  background: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #605e5c;
+}
+
+.view-button:hover {
+  background: #f3f2f1;
+}
+
+.view-button.active {
+  background: #0078d4;
+  color: white;
+}
+
 .results-info {
   margin-left: auto;
 }
@@ -528,9 +465,7 @@ onMounted(async () => {
 
 /* 工具内容 */
 .tools-content {
-  padding: 2rem 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 2rem;
 }
 
 /* 网格视图 */
@@ -736,8 +671,12 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .empty-icon,
@@ -799,46 +738,48 @@ onMounted(async () => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .header-content {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+  .filters-bar {
+    padding: 1rem;
   }
-  
-  .search-input {
-    width: 100%;
-  }
-  
+
   .filters-content {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
+  .search-group {
+    max-width: none;
+  }
+
   .filter-group {
     justify-content: space-between;
   }
-  
+
   .results-info {
     margin-left: 0;
     text-align: center;
   }
-  
+
+  .tools-content {
+    padding: 1rem;
+  }
+
   .tools-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .tool-item {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .item-left {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .item-right {
     justify-content: center;
   }
