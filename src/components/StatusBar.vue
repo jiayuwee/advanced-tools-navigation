@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from "vue";
 import {
   DatabaseIcon,
   UsersIcon,
@@ -53,98 +53,98 @@ import {
   ClockIcon,
   WifiIcon,
   MaximizeIcon,
-  MinimizeIcon
-} from 'lucide-vue-next'
+  MinimizeIcon,
+} from "lucide-vue-next";
 
 // 响应式状态
-const currentTime = ref('')
-const connectionStatus = ref('已连接')
-const connectionClass = ref('connected')
-const onlineUsers = ref(128)
-const totalTools = ref(1000)
-const networkStatus = ref('在线')
-const isFullscreen = ref(false)
-const version = ref('1.0.0')
+const currentTime = ref("");
+const connectionStatus = ref("已连接");
+const connectionClass = ref("connected");
+const onlineUsers = ref(128);
+const totalTools = ref(1000);
+const networkStatus = ref("在线");
+const isFullscreen = ref(false);
+const version = ref("1.0.0");
 
-let timeInterval: NodeJS.Timeout | null = null
+let timeInterval: NodeJS.Timeout | null = null;
 
 // 更新时间
 const updateTime = () => {
-  const now = new Date()
-  currentTime.value = now.toLocaleTimeString('zh-CN', {
+  const now = new Date();
+  currentTime.value = now.toLocaleTimeString("zh-CN", {
     hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  })
-}
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+};
 
 // 检查连接状态
 const checkConnection = () => {
   if (navigator.onLine) {
-    connectionStatus.value = '已连接'
-    connectionClass.value = 'connected'
-    networkStatus.value = '在线'
+    connectionStatus.value = "已连接";
+    connectionClass.value = "connected";
+    networkStatus.value = "在线";
   } else {
-    connectionStatus.value = '离线'
-    connectionClass.value = 'disconnected'
-    networkStatus.value = '离线'
+    connectionStatus.value = "离线";
+    connectionClass.value = "disconnected";
+    networkStatus.value = "离线";
   }
-}
+};
 
 // 全屏切换
 const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen()
-    isFullscreen.value = true
+    document.documentElement.requestFullscreen();
+    isFullscreen.value = true;
   } else {
-    document.exitFullscreen()
-    isFullscreen.value = false
+    document.exitFullscreen();
+    isFullscreen.value = false;
   }
-}
+};
 
 // 监听全屏状态变化
 const handleFullscreenChange = () => {
-  isFullscreen.value = !!document.fullscreenElement
-}
+  isFullscreen.value = !!document.fullscreenElement;
+};
 
 // 监听网络状态变化
 const handleOnline = () => {
-  checkConnection()
-}
+  checkConnection();
+};
 
 const handleOffline = () => {
-  checkConnection()
-}
+  checkConnection();
+};
 
 // 生命周期
 onMounted(() => {
-  updateTime()
-  checkConnection()
-  
+  updateTime();
+  checkConnection();
+
   // 设置定时器更新时间
-  timeInterval = setInterval(updateTime, 1000)
-  
+  timeInterval = setInterval(updateTime, 1000);
+
   // 监听事件
-  window.addEventListener('online', handleOnline)
-  window.addEventListener('offline', handleOffline)
-  document.addEventListener('fullscreenchange', handleFullscreenChange)
-  
+  window.addEventListener("online", handleOnline);
+  window.addEventListener("offline", handleOffline);
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+
   // 模拟动态数据更新
   setInterval(() => {
-    onlineUsers.value = Math.floor(Math.random() * 50) + 100
-  }, 30000) // 每30秒更新一次在线用户数
-})
+    onlineUsers.value = Math.floor(Math.random() * 50) + 100;
+  }, 30000); // 每30秒更新一次在线用户数
+});
 
 onUnmounted(() => {
   if (timeInterval) {
-    clearInterval(timeInterval)
+    clearInterval(timeInterval);
   }
-  
-  window.removeEventListener('online', handleOnline)
-  window.removeEventListener('offline', handleOffline)
-  document.removeEventListener('fullscreenchange', handleFullscreenChange)
-})
+
+  window.removeEventListener("online", handleOnline);
+  window.removeEventListener("offline", handleOffline);
+  document.removeEventListener("fullscreenchange", handleFullscreenChange);
+});
 </script>
 
 <style scoped>
@@ -153,13 +153,15 @@ onUnmounted(() => {
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
   height: 32px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 1000;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 9999; /* 提高 z-index 确保在最顶层 */
   font-size: 12px;
   color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .status-content {
@@ -239,7 +241,7 @@ onUnmounted(() => {
   padding: 2px 6px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 /* 响应式设计 */
@@ -248,27 +250,27 @@ onUnmounted(() => {
     padding: 0 12px;
     gap: 12px;
   }
-  
+
   .status-left,
   .status-center,
   .status-right {
     gap: 8px;
   }
-  
+
   .status-center {
     display: none; /* 在小屏幕上隐藏中间部分 */
   }
-  
+
   .status-text {
     font-size: 10px;
   }
 }
 
 @media (max-width: 480px) {
-  .status-left .status-item:nth-child(n+3) {
+  .status-left .status-item:nth-child(n + 3) {
     display: none; /* 在很小的屏幕上只显示前两个状态项 */
   }
-  
+
   .status-right .status-item:first-child {
     display: none; /* 隐藏网络状态 */
   }
