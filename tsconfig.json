@@ -20,7 +20,10 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@config/*": ["./config/*"],
+      "@scripts/*": ["./scripts/*"],
+      "@docs/*": ["./docs/*"]
     }
   }
 }

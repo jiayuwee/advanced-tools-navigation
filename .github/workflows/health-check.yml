@@ -1,0 +1,107 @@
+name: Health Check
+
+on:
+  schedule:
+    # 每小时运行一次健康检查
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    # 允许手动触发
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    name: System Health Check
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run health check
+        run: npm run monitor:health
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `🚨 系统健康检查失败 - ${new Date().toISOString().split('T')[0]}`
+            const body = `
+            ## 🚨 系统健康检查失败
+
+            **时间**: ${new Date().toLocaleString('zh-CN')}
+            **工作流**: [${context.workflow}](${context.payload.repository.html_url}/actions/runs/${context.runId})
+
+            ### 📋 检查项目
+            - 网站可访问性
+            - GitHub Actions 状态  
+            - Supabase 数据库连接
+
+            ### 🔧 处理步骤
+            1. 检查网站是否可以正常访问: https://ramusi.cn
+            2. 查看 GitHub Actions 工作流状态
+            3. 检查 Supabase 项目状态
+            4. 查看 Netlify 部署日志
+
+            ### 🔗 有用的链接
+            - 🌐 [网站](https://ramusi.cn)
+            - 📊 [GitHub Actions](https://github.com/jiayuwee/advanced-tools-navigation/actions)
+            - 📦 [Netlify 控制台](https://app.netlify.com/sites/spiffy-torrone-5454e1/deploys)
+            - 🗄️ [Supabase 控制台](https://supabase.com/dashboard/project/ndmxwdejswybvbwrxsai)
+
+            ---
+            *此问题由自动健康检查系统创建*
+            `
+
+            // 检查是否已存在相同的问题
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'health-check,automated'
+            })
+
+            const existingIssue = issues.find(issue => 
+              issue.title.includes('系统健康检查失败') && 
+              issue.title.includes(new Date().toISOString().split('T')[0])
+            )
+
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['health-check', 'automated', 'bug']
+              })
+              console.log('已创建健康检查失败问题')
+            } else {
+              console.log('今日已存在健康检查失败问题，跳过创建')
+            }
+
+  # 可选：发送通知到其他平台
+  notify-on-failure:
+    runs-on: ubuntu-latest
+    needs: health-check
+    if: failure()
+    name: Send Failure Notification
+    
+    steps:
+      - name: Send notification
+        run: |
+          echo "🚨 健康检查失败通知"
+          echo "时间: $(date)"
+          echo "可以在这里添加发送邮件、Slack 或其他通知的逻辑"
+          echo "工作流链接: https://github.com/jiayuwee/advanced-tools-navigation/actions/runs/${{ github.run_id }}"

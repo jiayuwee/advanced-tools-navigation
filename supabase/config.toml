@@ -9,15 +9,10 @@ max_rows = 1000
 
 [auth]
 enabled = true
-port = 54324
 site_url = "http://localhost:3000"
 additional_redirect_urls = ["https://ramusi.cn", "https://spiffy-torrone-5454e1.netlify.app"]
 jwt_expiry = 3600
-refresh_token_rotation_enabled = true
-security_update_password_require_reauthentication = true
 enable_signup = true
-enable_email_confirmations = true
-enable_sms_confirmations = false
 
 [auth.email]
 enable_signup = true
@@ -97,25 +92,23 @@ max_client_conn = 100
 
 [realtime]
 enabled = true
-port = 54323
-ip_version = "ipv4"
+ip_version = "IPv4"
 
 [studio]
 enabled = true
-port = 54323
 api_url = "http://localhost:54321"
 
 [inbucket]
 enabled = true
-port = 54324
 smtp_port = 54325
 pop3_port = 54326
 
 [storage]
 enabled = true
-port = 54325
 file_size_limit = "50MiB"
-image_transformation = true
+
+[storage.image_transformation]
+enabled = true
 
 [analytics]
 enabled = false
@@ -126,19 +119,9 @@ gcp_project_number = ""
 gcp_jwt_path = "supabase/gcp.json"
 
 [functions]
-enabled = true
-verify_jwt = false
+
+[functions.verify_jwt]
+enabled = false
 
 [edge_runtime]
 enabled = true
-ip_version = "ipv4"
-port = 54326
-inspector_port = 54327
-
-# 项目特定配置
-project_id = "jiayuwee-tools-navigation"
-
-# 环境变量
-[env]
-SITE_URL = "https://ramusi.cn"
-ADDITIONAL_REDIRECT_URLS = "https://ramusi.cn,https://spiffy-torrone-5454e1.netlify.app"
