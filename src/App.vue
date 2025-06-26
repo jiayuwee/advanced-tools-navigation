@@ -35,12 +35,5 @@ import StatusBar from "./components/StatusBar.vue";
   flex-shrink: 0;
 }
 
-/* 状态栏固定在底部 */
-#app > :last-child {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
+/* 状态栏固定在底部 - 移除这个样式，让组件自己控制 */
 </style>
