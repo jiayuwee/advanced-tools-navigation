@@ -5,13 +5,13 @@
     <!-- 全局Footer -->
     <AppFooter />
     <!-- 底部状态栏 -->
-    <StatusBar />
+    <SimpleStatusBar />
   </div>
 </template>
 
 <script setup lang="ts">
 import AppFooter from "./components/AppFooter.vue";
-import StatusBar from "./components/StatusBar.vue";
+import SimpleStatusBar from "./components/SimpleStatusBar.vue";
 </script>
 
 <style scoped>

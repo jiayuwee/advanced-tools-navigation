@@ -580,7 +580,7 @@ onUnmounted(() => {
 .app-main {
   display: flex;
   flex: 1;
-  overflow: hidden;
+  overflow: visible; /* 改为 visible 以确保状态栏可见 */
 }
 
 /* 侧边栏 */
