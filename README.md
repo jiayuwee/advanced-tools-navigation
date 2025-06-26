@@ -7,7 +7,9 @@
 
 基于 **Vue 3 + Vite + Pinia + TypeScript** 的现代化工具导航站，采用 Fluent Design 设计语言，帮助您高效管理和访问常用资源。
 
-🌐 **访问地址**: [https://wwwramusi.cn](https://www.ramusi.cn)
+🌐 **访问地址**: [https://ramusi.cn](https://ramusi.cn)
+
+> 🧪 **部署测试** - 验证 GitHub Actions + Netlify + Supabase 自动化工作流 (测试时间: 2024-12-19 15:30)
 
 ![网站截图](public/screenshot.png)
 
