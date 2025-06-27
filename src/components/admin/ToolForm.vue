@@ -288,7 +288,7 @@ const loadFormData = () => {
       categoryId: props.tool.category.id,
       tags: props.tool.tags.map((tag) => tag.name),
       icon: props.tool.icon || "",
-      isFeatured: props.tool.isFeature,
+      isFeatured: props.tool.isFeatured,
       metaTitle: props.tool.metaTitle || "",
       metaDescription: props.tool.metaDescription || "",
     });
@@ -312,7 +312,7 @@ watch(
   () => {
     loadFormData();
   },
-  { deep: true },
+  { deep: true }
 );
 </script>
 
