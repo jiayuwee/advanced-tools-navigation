@@ -5,10 +5,10 @@
         <div class="success-icon">
           <CheckCircleIcon class="icon" />
         </div>
-        
+
         <h1 class="success-title">支付成功！</h1>
         <p class="success-message">您的订单已成功支付，感谢您的购买</p>
-        
+
         <div class="order-info">
           <div class="info-item">
             <span class="label">订单号:</span>
@@ -27,7 +27,7 @@
             <span class="value">{{ paymentMethod }}</span>
           </div>
         </div>
-        
+
         <div class="next-steps">
           <h3>接下来您可以：</h3>
           <div class="steps-list">
@@ -41,7 +41,7 @@
                 </button>
               </div>
             </div>
-            
+
             <div class="step-item">
               <MailIcon class="step-icon" />
               <div class="step-content">
@@ -49,7 +49,7 @@
                 <p>我们已向您的邮箱发送了订单确认邮件</p>
               </div>
             </div>
-            
+
             <div class="step-item">
               <FileTextIcon class="step-icon" />
               <div class="step-content">
@@ -62,16 +62,14 @@
             </div>
           </div>
         </div>
-        
+
         <div class="action-buttons">
-          <router-link to="/" class="btn btn-secondary">
-            返回首页
-          </router-link>
+          <router-link to="/" class="btn btn-secondary"> 返回首页 </router-link>
           <router-link to="/products" class="btn btn-primary">
             继续购物
           </router-link>
         </div>
-        
+
         <div class="support-info">
           <p>如有任何问题，请联系我们的客服团队</p>
           <div class="contact-methods">
@@ -91,57 +89,57 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import {
   CheckCircleIcon,
   DownloadIcon,
   MailIcon,
   FileTextIcon,
-  PhoneIcon
-} from 'lucide-vue-next'
+  PhoneIcon,
+} from "lucide-vue-next";
 
-const route = useRoute()
+const route = useRoute();
 
 // 响应式状态
-const orderId = ref('ORD-20241224-001')
-const amount = ref(299)
-const paymentTime = ref('')
-const paymentMethod = ref('支付宝')
+const orderId = ref("ORD-20241224-001");
+const amount = ref(299);
+const paymentTime = ref("");
+const paymentMethod = ref("支付宝");
 
 // 方法
 const loadPaymentInfo = () => {
   // TODO: 从路由参数或API加载支付信息
-  const orderParam = route.query.order
-  const amountParam = route.query.amount
-  
+  const orderParam = route.query.order;
+  const amountParam = route.query.amount;
+
   if (orderParam) {
-    orderId.value = orderParam as string
+    orderId.value = orderParam as string;
   }
-  
+
   if (amountParam) {
-    amount.value = parseFloat(amountParam as string)
+    amount.value = parseFloat(amountParam as string);
   }
-  
+
   // 设置支付时间为当前时间
-  paymentTime.value = new Date().toLocaleString('zh-CN')
-}
+  paymentTime.value = new Date().toLocaleString("zh-CN");
+};
 
 const downloadProducts = () => {
   // TODO: 实现产品下载逻辑
-  console.log('开始下载产品...')
-  
+  console.log("开始下载产品...");
+
   // 模拟下载
-  const link = document.createElement('a')
-  link.href = '/sample-product.zip'
-  link.download = 'product.zip'
-  link.click()
-}
+  const link = document.createElement("a");
+  link.href = "/sample-product.zip";
+  link.download = "product.zip";
+  link.click();
+};
 
 // 生命周期
 onMounted(() => {
-  loadPaymentInfo()
-})
+  loadPaymentInfo();
+});
 </script>
 
 <style scoped>
@@ -375,29 +373,29 @@ onMounted(() => {
   .payment-success-view {
     padding: 1rem;
   }
-  
+
   .success-container {
     padding: 2rem 1.5rem;
   }
-  
+
   .success-title {
     font-size: 2rem;
   }
-  
+
   .action-buttons {
     flex-direction: column;
   }
-  
+
   .contact-methods {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .step-item {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .step-icon {
     align-self: center;
   }

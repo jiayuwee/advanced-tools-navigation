@@ -13,17 +13,17 @@ export function extractCategoryId(data: any): string | null {
   if (data.category?.id) {
     return data.category.id;
   }
-  
+
   // 其次使用直接的 categoryId
   if (data.categoryId) {
     return data.categoryId;
   }
-  
+
   // 最后使用 category_id（数据库字段名）
   if (data.category_id) {
     return data.category_id;
   }
-  
+
   return null;
 }
 
@@ -34,13 +34,13 @@ export function extractCategoryId(data: any): string | null {
  * @param fieldName 字段名称，用于错误消息
  * @returns 分类 ID
  */
-export function requireCategoryId(data: any, fieldName = 'Category'): string {
+export function requireCategoryId(data: any, fieldName = "Category"): string {
   const categoryId = extractCategoryId(data);
-  
+
   if (!categoryId) {
     throw new Error(`${fieldName} is required`);
   }
-  
+
   return categoryId;
 }
 
@@ -55,17 +55,17 @@ export function extractUserId(data: any): string | null {
   if (data.user?.id) {
     return data.user.id;
   }
-  
+
   // 其次使用直接的 userId
   if (data.userId) {
     return data.userId;
   }
-  
+
   // 最后使用 user_id（数据库字段名）
   if (data.user_id) {
     return data.user_id;
   }
-  
+
   return null;
 }
 
@@ -76,13 +76,13 @@ export function extractUserId(data: any): string | null {
  * @param fieldName 字段名称，用于错误消息
  * @returns 用户 ID
  */
-export function requireUserId(data: any, fieldName = 'User'): string {
+export function requireUserId(data: any, fieldName = "User"): string {
   const userId = extractUserId(data);
-  
+
   if (!userId) {
     throw new Error(`${fieldName} is required`);
   }
-  
+
   return userId;
 }
 
@@ -94,15 +94,15 @@ export function requireUserId(data: any, fieldName = 'User'): string {
  */
 export function transformFormToDatabase(
   formData: any,
-  fieldMappings: Record<string, string | ((value: any) => any)>
+  fieldMappings: Record<string, string | ((value: any) => any)>,
 ): Record<string, any> {
   const result: Record<string, any> = {};
-  
+
   for (const [formField, dbField] of Object.entries(fieldMappings)) {
     const value = formData[formField];
-    
+
     if (value !== undefined && value !== null) {
-      if (typeof dbField === 'function') {
+      if (typeof dbField === "function") {
         // 自定义转换函数
         const transformedValue = dbField(value);
         if (transformedValue !== undefined && transformedValue !== null) {
@@ -114,7 +114,7 @@ export function transformFormToDatabase(
       }
     }
   }
-  
+
   return result;
 }
 
@@ -126,15 +126,15 @@ export function transformFormToDatabase(
  */
 export function transformDatabaseToModel(
   dbRow: any,
-  fieldMappings: Record<string, string | ((value: any) => any)>
+  fieldMappings: Record<string, string | ((value: any) => any)>,
 ): Record<string, any> {
   const result: Record<string, any> = {};
-  
+
   for (const [dbField, modelField] of Object.entries(fieldMappings)) {
     const value = dbRow[dbField];
-    
+
     if (value !== undefined && value !== null) {
-      if (typeof modelField === 'function') {
+      if (typeof modelField === "function") {
         // 自定义转换函数
         const transformedValue = modelField(value);
         if (transformedValue !== undefined && transformedValue !== null) {
@@ -146,7 +146,7 @@ export function transformDatabaseToModel(
       }
     }
   }
-  
+
   return result;
 }
 
@@ -159,19 +159,19 @@ export function transformDatabaseToModel(
 export function validateRequiredFields(
   data: any,
   requiredFields: string[],
-  entityName = 'Entity'
+  entityName = "Entity",
 ): void {
   const missingFields: string[] = [];
-  
+
   for (const field of requiredFields) {
     if (!data[field]) {
       missingFields.push(field);
     }
   }
-  
+
   if (missingFields.length > 0) {
     throw new Error(
-      `${entityName} validation failed: missing required fields: ${missingFields.join(', ')}`
+      `${entityName} validation failed: missing required fields: ${missingFields.join(", ")}`,
     );
   }
 }
@@ -183,13 +183,13 @@ export function validateRequiredFields(
  */
 export function cleanData(data: Record<string, any>): Record<string, any> {
   const result: Record<string, any> = {};
-  
+
   for (const [key, value] of Object.entries(data)) {
     if (value !== undefined && value !== null) {
       result[key] = value;
     }
   }
-  
+
   return result;
 }
 
@@ -201,11 +201,11 @@ export function cleanData(data: Record<string, any>): Record<string, any> {
  */
 export function deepMerge(target: any, source: any): any {
   const result = { ...target };
-  
+
   for (const key in source) {
     if (source.hasOwnProperty(key)) {
       if (
-        typeof source[key] === 'object' &&
+        typeof source[key] === "object" &&
         source[key] !== null &&
         !Array.isArray(source[key])
       ) {
@@ -215,7 +215,7 @@ export function deepMerge(target: any, source: any): any {
       }
     }
   }
-  
+
   return result;
 }
 
@@ -226,18 +226,18 @@ export function deepMerge(target: any, source: any): any {
  * @returns 格式化的错误消息
  */
 export function formatErrorMessage(error: any, context?: string): string {
-  let message = 'An error occurred';
-  
+  let message = "An error occurred";
+
   if (error?.message) {
     message = error.message;
-  } else if (typeof error === 'string') {
+  } else if (typeof error === "string") {
     message = error;
   }
-  
+
   if (context) {
     message = `${context}: ${message}`;
   }
-  
+
   return message;
 }
 
@@ -250,15 +250,15 @@ export function formatErrorMessage(error: any, context?: string): string {
  */
 export function generateSortOrder(
   existingItems: any[],
-  sortField = 'sortOrder'
+  sortField = "sortOrder",
 ): number {
   if (!existingItems || existingItems.length === 0) {
     return 0;
   }
-  
+
   const maxOrder = Math.max(
-    ...existingItems.map(item => item[sortField] || 0)
+    ...existingItems.map((item) => item[sortField] || 0),
   );
-  
+
   return maxOrder + 1;
 }

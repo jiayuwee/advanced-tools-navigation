@@ -1,70 +1,70 @@
-import { supabase } from '../lib/supabase'
-import type { Product, SearchFilters, SearchResult, ApiResponse } from '../types'
-import type { Database } from '../types/database'
-import {
-  requireCategoryId,
-  extractCategoryId,
-  validateRequiredFields,
-} from '../utils/dataTransform'
+import { supabase } from "../lib/supabase";
+import type { Product, SearchFilters, SearchResult } from "../types";
+import type { Database } from "../types/database";
 
-type ProductRow = Database['public']['Tables']['products']['Row']
-type ProductInsert = Database['public']['Tables']['products']['Insert']
-type ProductUpdate = Database['public']['Tables']['products']['Update']
+type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
+type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
 
 export class ProductsService {
   // 获取所有产品
-  static async getProducts(filters?: SearchFilters): Promise<SearchResult<Product>> {
+  static async getProducts(
+    filters?: SearchFilters,
+  ): Promise<SearchResult<Product>> {
     try {
       let query = supabase
-        .from('products')
+        .from("products")
         .select(
           `
           *,
           category:product_categories(*)
-        `
+        `,
         )
-        .eq('status', 'active')
+        .eq("status", "active");
 
       // 应用搜索过滤器
       if (filters?.query) {
-        query = query.or(`name.ilike.%${filters.query}%,description.ilike.%${filters.query}%`)
+        query = query.or(
+          `name.ilike.%${filters.query}%,description.ilike.%${filters.query}%`,
+        );
       }
 
       if (filters?.category) {
-        query = query.eq('category_id', filters.category)
+        query = query.eq("category_id", filters.category);
       }
 
       if (filters?.priceRange) {
-        query = query.gte('price', filters.priceRange[0]).lte('price', filters.priceRange[1])
+        query = query
+          .gte("price", filters.priceRange[0])
+          .lte("price", filters.priceRange[1]);
       }
 
       // 排序
-      const sortBy = filters?.sortBy || 'created_at'
-      const sortOrder = filters?.sortOrder || 'desc'
+      const sortBy = filters?.sortBy || "created_at";
+      const sortOrder = filters?.sortOrder || "desc";
 
-      if (sortBy === 'name') {
-        query = query.order('name', { ascending: sortOrder === 'asc' })
-      } else if (sortBy === 'price') {
-        query = query.order('price', { ascending: sortOrder === 'asc' })
-      } else if (sortBy === 'created_at') {
-        query = query.order('created_at', { ascending: sortOrder === 'asc' })
+      if (sortBy === "name") {
+        query = query.order("name", { ascending: sortOrder === "asc" });
+      } else if (sortBy === "price") {
+        query = query.order("price", { ascending: sortOrder === "asc" });
+      } else if (sortBy === "created_at") {
+        query = query.order("created_at", { ascending: sortOrder === "asc" });
       } else {
-        query = query.order('sort_order', { ascending: true })
+        query = query.order("sort_order", { ascending: true });
       }
 
       // 分页
-      const page = filters?.page || 1
-      const limit = filters?.limit || 12
-      const from = (page - 1) * limit
-      const to = from + limit - 1
+      const page = filters?.page || 1;
+      const limit = filters?.limit || 12;
+      const from = (page - 1) * limit;
+      const to = from + limit - 1;
 
-      query = query.range(from, to)
+      query = query.range(from, to);
 
-      const { data, error, count } = await query
+      const { data, error, count } = await query;
 
-      if (error) throw error
+      if (error) throw error;
 
-      const products = data?.map(this.transformProduct) || []
+      const products = data?.map(this.transformProduct) || [];
 
       return {
         items: products,
@@ -72,10 +72,10 @@ export class ProductsService {
         page,
         limit,
         hasMore: (count || 0) > page * limit,
-      }
+      };
     } catch (error) {
-      console.error('获取产品列表失败:', error)
-      throw new Error('获取产品列表失败')
+      console.error("获取产品列表失败:", error);
+      throw new Error("获取产品列表失败");
     }
   }
 
@@ -83,7 +83,7 @@ export class ProductsService {
   static async getProduct(id: string): Promise<Product> {
     try {
       const { data, error } = await supabase
-        .from('products')
+        .from("products")
         .select(
           `
           *,
@@ -92,19 +92,19 @@ export class ProductsService {
             *,
             user:user_profiles(*)
           )
-        `
+        `,
         )
-        .eq('id', id)
-        .eq('status', 'active')
-        .single()
+        .eq("id", id)
+        .eq("status", "active")
+        .single();
 
-      if (error) throw error
-      if (!data) throw new Error('产品不存在')
+      if (error) throw error;
+      if (!data) throw new Error("产品不存在");
 
-      return this.transformProduct(data)
+      return this.transformProduct(data);
     } catch (error) {
-      console.error('获取产品详情失败:', error)
-      throw new Error('获取产品详情失败')
+      console.error("获取产品详情失败:", error);
+      throw new Error("获取产品详情失败");
     }
   }
 
@@ -112,24 +112,24 @@ export class ProductsService {
   static async getFeaturedProducts(limit = 6): Promise<Product[]> {
     try {
       const { data, error } = await supabase
-        .from('products')
+        .from("products")
         .select(
           `
           *,
           category:product_categories(*)
-        `
+        `,
         )
-        .eq('status', 'active')
-        .eq('is_featured', true)
-        .order('sort_order', { ascending: true })
-        .limit(limit)
+        .eq("status", "active")
+        .eq("is_featured", true)
+        .order("sort_order", { ascending: true })
+        .limit(limit);
 
-      if (error) throw error
+      if (error) throw error;
 
-      return data?.map(this.transformProduct) || []
+      return data?.map(this.transformProduct) || [];
     } catch (error) {
-      console.error('获取特色产品失败:', error)
-      throw new Error('获取特色产品失败')
+      console.error("获取特色产品失败:", error);
+      throw new Error("获取特色产品失败");
     }
   }
 
@@ -137,29 +137,29 @@ export class ProductsService {
   static async getRelatedProducts(
     productId: string,
     categoryId: string,
-    limit = 4
+    limit = 4,
   ): Promise<Product[]> {
     try {
       const { data, error } = await supabase
-        .from('products')
+        .from("products")
         .select(
           `
           *,
           category:product_categories(*)
-        `
+        `,
         )
-        .eq('status', 'active')
-        .eq('category_id', categoryId)
-        .neq('id', productId)
-        .order('created_at', { ascending: false })
-        .limit(limit)
+        .eq("status", "active")
+        .eq("category_id", categoryId)
+        .neq("id", productId)
+        .order("created_at", { ascending: false })
+        .limit(limit);
 
-      if (error) throw error
+      if (error) throw error;
 
-      return data?.map(this.transformProduct) || []
+      return data?.map(this.transformProduct) || [];
     } catch (error) {
-      console.error('获取相关产品失败:', error)
-      return []
+      console.error("获取相关产品失败:", error);
+      return [];
     }
   }
 
@@ -167,93 +167,101 @@ export class ProductsService {
   static async createProduct(productData: ProductInsert): Promise<Product> {
     try {
       const { data, error } = await supabase
-        .from('products')
+        .from("products")
         .insert(productData)
         .select(
           `
           *,
           category:product_categories(*)
-        `
+        `,
         )
-        .single()
+        .single();
 
-      if (error) throw error
-      if (!data) throw new Error('创建产品失败')
+      if (error) throw error;
+      if (!data) throw new Error("创建产品失败");
 
-      return this.transformProduct(data)
+      return this.transformProduct(data);
     } catch (error) {
-      console.error('创建产品失败:', error)
-      throw new Error('创建产品失败')
+      console.error("创建产品失败:", error);
+      throw new Error("创建产品失败");
     }
   }
 
   // 更新产品
-  static async updateProduct(id: string, updates: ProductUpdate): Promise<Product> {
+  static async updateProduct(
+    id: string,
+    updates: ProductUpdate,
+  ): Promise<Product> {
     try {
       const { data, error } = await supabase
-        .from('products')
+        .from("products")
         .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('id', id)
+        .eq("id", id)
         .select(
           `
           *,
           category:product_categories(*)
-        `
+        `,
         )
-        .single()
+        .single();
 
-      if (error) throw error
-      if (!data) throw new Error('更新产品失败')
+      if (error) throw error;
+      if (!data) throw new Error("更新产品失败");
 
-      return this.transformProduct(data)
+      return this.transformProduct(data);
     } catch (error) {
-      console.error('更新产品失败:', error)
-      throw new Error('更新产品失败')
+      console.error("更新产品失败:", error);
+      throw new Error("更新产品失败");
     }
   }
 
   // 删除产品
   static async deleteProduct(id: string): Promise<void> {
     try {
-      const { error } = await supabase.from('products').delete().eq('id', id)
+      const { error } = await supabase.from("products").delete().eq("id", id);
 
-      if (error) throw error
+      if (error) throw error;
     } catch (error) {
-      console.error('删除产品失败:', error)
-      throw new Error('删除产品失败')
+      console.error("删除产品失败:", error);
+      throw new Error("删除产品失败");
     }
   }
 
   // 搜索产品
   static async searchProducts(
     query: string,
-    filters?: Partial<SearchFilters>
+    filters?: Partial<SearchFilters>,
   ): Promise<SearchResult<Product>> {
     return this.getProducts({
       ...filters,
       query,
-    })
+    });
   }
 
   // 上传产品图片
-  static async uploadProductImage(file: File, productId: string): Promise<string> {
+  static async uploadProductImage(
+    file: File,
+    productId: string,
+  ): Promise<string> {
     try {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${productId}-${Date.now()}.${fileExt}`
-      const filePath = `products/${fileName}`
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${productId}-${Date.now()}.${fileExt}`;
+      const filePath = `products/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(filePath, file)
+        .from("product-images")
+        .upload(filePath, file);
 
-      if (uploadError) throw uploadError
+      if (uploadError) throw uploadError;
 
-      const { data } = supabase.storage.from('product-images').getPublicUrl(filePath)
+      const { data } = supabase.storage
+        .from("product-images")
+        .getPublicUrl(filePath);
 
-      return data.publicUrl
+      return data.publicUrl;
     } catch (error) {
-      console.error('上传产品图片失败:', error)
-      throw new Error('上传产品图片失败')
+      console.error("上传产品图片失败:", error);
+      throw new Error("上传产品图片失败");
     }
   }
 
@@ -326,6 +334,6 @@ export class ProductsService {
         })) || [],
       averageRating: row.average_rating,
       totalReviews: row.total_reviews,
-    }
+    };
   }
 }

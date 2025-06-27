@@ -12,25 +12,53 @@
         <div class="admin-layout">
           <!-- 侧边导航 -->
           <nav class="admin-nav">
-            <router-link to="/admin/dashboard" class="nav-item" active-class="active">
+            <router-link
+              to="/admin/dashboard"
+              class="nav-item"
+              active-class="active"
+            >
               <BarChart3Icon class="nav-icon" />
               仪表盘
             </router-link>
-            <router-link to="/admin/tools" class="nav-item" active-class="active">
+            <router-link
+              to="/admin/tools"
+              class="nav-item"
+              active-class="active"
+            >
               <WrenchIcon class="nav-icon" />
               工具管理
             </router-link>
-            <router-link to="/admin/products" class="nav-item" active-class="active">
+            <router-link
+              to="/admin/products"
+              class="nav-item"
+              active-class="active"
+            >
               <ShoppingBagIcon class="nav-icon" />
               产品管理
             </router-link>
-            <router-link to="/admin/users" class="nav-item" active-class="active">
+            <router-link
+              to="/admin/users"
+              class="nav-item"
+              active-class="active"
+            >
               <UsersIcon class="nav-icon" />
               用户管理
             </router-link>
-            <router-link to="/admin/orders" class="nav-item" active-class="active">
+            <router-link
+              to="/admin/orders"
+              class="nav-item"
+              active-class="active"
+            >
               <FileTextIcon class="nav-icon" />
               订单管理
+            </router-link>
+            <router-link
+              to="/admin/local"
+              class="nav-item"
+              active-class="active"
+            >
+              <HardDriveIcon class="nav-icon" />
+              本地管理
             </router-link>
             <div class="nav-divider"></div>
             <router-link to="/" class="nav-item">
@@ -54,49 +82,50 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 import {
   BarChart3Icon,
   WrenchIcon,
   ShoppingBagIcon,
   UsersIcon,
   FileTextIcon,
+  HardDriveIcon,
   HomeIcon,
-  LogOutIcon
-} from 'lucide-vue-next'
-import { AuthService } from '../services/authService'
-import { UserService } from '../services/userService'
+  LogOutIcon,
+} from "lucide-vue-next";
+import { AuthService } from "../services/authService";
+import { UserService } from "../services/userService";
 
-const router = useRouter()
+const router = useRouter();
 
 // 方法
 const checkAdminAccess = async () => {
   try {
-    const user = await UserService.getCurrentUser()
-    if (!user || (user.role !== 'admin' && user.role !== 'super_admin')) {
-      router.push('/')
-      return
+    const user = await UserService.getCurrentUser();
+    if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
+      router.push("/");
+      return;
     }
   } catch (error) {
-    console.error('检查管理员权限失败:', error)
-    router.push('/auth/login')
+    console.error("检查管理员权限失败:", error);
+    router.push("/auth/login");
   }
-}
+};
 
 const handleLogout = async () => {
   try {
-    await AuthService.logout()
-    router.push('/')
+    await AuthService.logout();
+    router.push("/");
   } catch (error) {
-    console.error('退出登录失败:', error)
+    console.error("退出登录失败:", error);
   }
-}
+};
 
 // 生命周期
 onMounted(() => {
-  checkAdminAccess()
-})
+  checkAdminAccess();
+});
 </script>
 
 <style scoped>
@@ -211,16 +240,16 @@ onMounted(() => {
   .admin-header {
     padding: 1.5rem 0;
   }
-  
+
   .admin-header h1 {
     font-size: 2rem;
   }
-  
+
   .admin-layout {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .admin-nav {
     position: static;
     order: 2;
@@ -229,17 +258,17 @@ onMounted(() => {
     padding: 1rem;
     gap: 0.5rem;
   }
-  
+
   .nav-item {
     white-space: nowrap;
     margin-bottom: 0;
     flex-shrink: 0;
   }
-  
+
   .nav-divider {
     display: none;
   }
-  
+
   .admin-main {
     order: 1;
     padding: 1.5rem;

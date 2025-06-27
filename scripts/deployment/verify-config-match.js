@@ -174,7 +174,7 @@ function generateConfigSummary() {
   console.log(`- 主域名: ${expectedConfig.netlify.domain}`);
   console.log(`- Netlify 站点: ${expectedConfig.netlify.siteId}`);
   console.log(
-    `- GitHub 仓库: ${expectedConfig.github.owner}/${expectedConfig.github.repo}`
+    `- GitHub 仓库: ${expectedConfig.github.owner}/${expectedConfig.github.repo}`,
   );
   console.log("");
 
@@ -182,7 +182,7 @@ function generateConfigSummary() {
   console.log(`- 项目引用 ID: ${expectedConfig.supabase.projectRef}`);
   console.log(`- API URL: ${expectedConfig.supabase.url}`);
   console.log(
-    `- 控制台: https://supabase.com/dashboard/project/${expectedConfig.supabase.projectRef}`
+    `- 控制台: https://supabase.com/dashboard/project/${expectedConfig.supabase.projectRef}`,
   );
 }
 

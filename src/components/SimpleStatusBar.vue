@@ -9,32 +9,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from "vue";
 
-const currentTime = ref('')
+const currentTime = ref("");
 
 const updateTime = () => {
-  const now = new Date()
-  currentTime.value = now.toLocaleTimeString('zh-CN', {
+  const now = new Date();
+  currentTime.value = now.toLocaleTimeString("zh-CN", {
     hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  })
-}
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+};
 
-let timeInterval: NodeJS.Timeout | null = null
+let timeInterval: NodeJS.Timeout | null = null;
 
 onMounted(() => {
-  updateTime()
-  timeInterval = setInterval(updateTime, 1000)
-})
+  updateTime();
+  timeInterval = setInterval(updateTime, 1000);
+});
 
 onUnmounted(() => {
   if (timeInterval) {
-    clearInterval(timeInterval)
+    clearInterval(timeInterval);
   }
-})
+});
 </script>
 
 <style scoped>

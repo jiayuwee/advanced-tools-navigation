@@ -1,7 +1,11 @@
-import type { RouteRecordRaw } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+} from "vue-router";
 
 // 路由配置
-export const routes: RouteRecordRaw[] = [
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",
@@ -180,6 +184,26 @@ export const routes: RouteRecordRaw[] = [
           requiresAdmin: true,
         },
       },
+      {
+        path: "local",
+        name: "AdminLocal",
+        component: () => import("../views/admin/LocalManagementView.vue"),
+        meta: {
+          title: "本地管理",
+          requiresAuth: true,
+          requiresAdmin: true,
+        },
+      },
+      {
+        path: "local-test",
+        name: "AdminLocalTest",
+        component: () => import("../views/admin/LocalManagementTestView.vue"),
+        meta: {
+          title: "本地管理测试",
+          requiresAuth: true,
+          requiresAdmin: true,
+        },
+      },
     ],
   },
   {
@@ -219,4 +243,36 @@ export const routes: RouteRecordRaw[] = [
       description: "您访问的页面不存在",
     },
   },
+  // 添加开发者工具路由
+  {
+    path: "/dev",
+    name: "DevelopmentTools",
+    component: () => import("../views/DevelopmentToolsView.vue"),
+    meta: {
+      title: "开发者工具",
+      description: "开发者调试和测试工具集",
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+    children: [
+      {
+        path: "console",
+        name: "DevelopmentConsole",
+        component: () => import("../views/dev/ConsoleView.vue"),
+        meta: {
+          title: "开发控制台",
+          requiresAuth: true,
+          requiresAdmin: true,
+        },
+      },
+    ],
+  },
 ];
+
+// 创建路由实例
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+export { router, routes };

@@ -12,22 +12,12 @@
 
           <!-- 增强搜索区域 -->
           <div class="search-section">
-            <div class="search-box">
-              <SearchIcon class="search-icon" />
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="搜索工具、分类或功能..."
-                class="search-input"
-                @input="handleSearch"
-                @keydown.enter="performSearch"
-              />
-              <button class="search-button" @click="performSearch">
-                <SearchIcon class="icon" />
-                搜索
-              </button>
-              <div class="search-shortcut">Ctrl+K</div>
-            </div>
+            <EnhancedSearchBox
+              placeholder="搜索工具、分类或功能..."
+              :auto-focus="false"
+              @search="handleSearchResult"
+              @clear="clearSearch"
+            />
           </div>
         </div>
       </div>
@@ -78,7 +68,7 @@
           <!-- 工具卡片区域 -->
           <section class="tools-grid">
             <div
-              v-for="(tool, index) in filteredTools"
+              v-for="(tool, index) in displayTools"
               :key="tool.id"
               class="tool-card"
               :style="{ '--index': index }"
@@ -121,7 +111,7 @@
             </div>
 
             <!-- 空状态 -->
-            <div v-if="filteredTools.length === 0" class="empty-state">
+            <div v-if="displayTools.length === 0" class="empty-state">
               <div class="empty-icon">🔍</div>
               <h3>未找到相关工具</h3>
               <p>尝试使用其他关键词搜索，或浏览其他分类</p>
@@ -149,13 +139,8 @@ import { useRouter } from "vue-router";
 import { useToolsStore } from "@/stores/tools";
 import { useCategoriesStore } from "@/stores/categories";
 import { useAuthStore } from "@/stores/auth";
-import {
-  SearchIcon,
-  GridIcon,
-  StarIcon,
-  PackageIcon,
-  HeartIcon,
-} from "lucide-vue-next";
+import { GridIcon, StarIcon, PackageIcon, HeartIcon } from "lucide-vue-next";
+import EnhancedSearchBox from "@/components/search/EnhancedSearchBox.vue";
 
 // 状态管理
 const toolsStore = useToolsStore();
@@ -164,12 +149,17 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 // 响应式数据
-const searchQuery = ref("");
 const selectedCategory = ref<string | null>(null);
+const searchResults = ref<any>(null);
 
 // 计算属性
 const categories = computed(() => categoriesStore.categories);
-const filteredTools = computed(() => {
+const displayTools = computed(() => {
+  if (searchResults.value) {
+    // 如果有搜索结果，显示搜索结果
+    return searchResults.value.items || [];
+  }
+
   let tools = toolsStore.tools;
 
   // 分类过滤
@@ -177,31 +167,16 @@ const filteredTools = computed(() => {
     tools = tools.filter((tool) => tool.category_id === selectedCategory.value);
   }
 
-  // 搜索过滤
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    tools = tools.filter(
-      (tool) =>
-        tool.name.toLowerCase().includes(query) ||
-        tool.description.toLowerCase().includes(query) ||
-        tool.tags?.some((tag) => tag.name.toLowerCase().includes(query))
-    );
-  }
-
   return tools;
 });
 
 // 方法
-const handleSearch = () => {
-  // 实时搜索逻辑已在计算属性中处理
+const handleSearchResult = (result: any) => {
+  searchResults.value = result;
 };
 
-const performSearch = () => {
-  // 执行搜索并跳转到工具页面
-  router.push({
-    name: "Tools",
-    query: { search: searchQuery.value },
-  });
+const clearSearch = () => {
+  searchResults.value = null;
 };
 
 const selectCategory = (categoryId: string) => {
@@ -226,7 +201,7 @@ const toggleFavorite = async (tool: any) => {
 };
 
 const clearFilters = () => {
-  searchQuery.value = "";
+  searchResults.value = null;
   selectedCategory.value = null;
 };
 
@@ -309,72 +284,6 @@ onMounted(async () => {
 .search-section {
   max-width: 600px;
   margin: 0 auto;
-}
-
-.search-box {
-  display: flex;
-  background: white;
-  border-radius: 50px;
-  box-shadow: var(--card-shadow);
-  overflow: hidden;
-  position: relative;
-  border: 2px solid transparent;
-  transition: var(--transition);
-}
-
-.search-box:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 6px 24px rgba(67, 97, 238, 0.3);
-}
-
-.search-icon {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gray);
-  width: 20px;
-  height: 20px;
-}
-
-.search-input {
-  flex: 1;
-  padding: 18px 25px 18px 55px;
-  border: none;
-  font-size: 1.1rem;
-  outline: none;
-  color: var(--dark);
-}
-
-.search-button {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 0 30px;
-  cursor: pointer;
-  transition: var(--transition);
-  font-weight: 600;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.search-button:hover {
-  background: var(--secondary);
-}
-
-.search-shortcut {
-  position: absolute;
-  right: 120px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--light-gray);
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  color: var(--gray);
-  pointer-events: none;
 }
 
 /* 主要内容区域 */

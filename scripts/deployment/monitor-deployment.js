@@ -62,7 +62,7 @@ async function checkSiteHealth() {
     const controller = new AbortController();
     const timeoutId = setTimeout(
       () => controller.abort(),
-      monitorConfig.timeout
+      monitorConfig.timeout,
     );
 
     const response = await fetch(SITE_URL, {
@@ -107,7 +107,7 @@ async function checkGitHubActions() {
 
     const latestRun = runs.workflow_runs[0];
     const failedRuns = runs.workflow_runs.filter(
-      (run) => run.conclusion === "failure"
+      (run) => run.conclusion === "failure",
     ).length;
 
     if (latestRun.conclusion === "failure") {
@@ -224,7 +224,7 @@ async function runHealthChecks() {
 
   console.log("");
   console.log(
-    `📊 检查完成 - 关键失败: ${criticalFailures}, 连续失败: ${failureCount}`
+    `📊 检查完成 - 关键失败: ${criticalFailures}, 连续失败: ${failureCount}`,
   );
 
   return results;
@@ -257,13 +257,13 @@ async function triggerAlert(results, criticalFailures) {
   console.log("🔗 有用的链接:");
   console.log(`🌐 网站: ${SITE_URL}`);
   console.log(
-    `📊 GitHub Actions: https://github.com/${REPO_OWNER}/${REPO_NAME}/actions`
+    `📊 GitHub Actions: https://github.com/${REPO_OWNER}/${REPO_NAME}/actions`,
   );
   console.log(
-    "📦 Netlify: https://app.netlify.com/sites/spiffy-torrone-5454e1/deploys"
+    "📦 Netlify: https://app.netlify.com/sites/spiffy-torrone-5454e1/deploys",
   );
   console.log(
-    "🗄️ Supabase: https://supabase.com/dashboard/project/ndmxwdejswybvbwrxsai"
+    "🗄️ Supabase: https://supabase.com/dashboard/project/ndmxwdejswybvbwrxsai",
   );
 }
 
@@ -322,7 +322,7 @@ async function runSingleCheck() {
   const healthy = results.filter((r) => r.status === "healthy").length;
   const warnings = results.filter((r) => r.status === "warning").length;
   const unhealthy = results.filter(
-    (r) => r.status === "unhealthy" || r.status === "error"
+    (r) => r.status === "unhealthy" || r.status === "error",
   ).length;
 
   console.log(`✅ 正常: ${healthy}`);

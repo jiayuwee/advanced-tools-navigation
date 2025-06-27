@@ -53,7 +53,7 @@
             </button>
             <button class="favorite-btn" @click="toggleFavorite">
               <HeartIcon class="icon" :class="{ filled: isFavorite }" />
-              {{ isFavorite ? '已收藏' : '收藏' }}
+              {{ isFavorite ? "已收藏" : "收藏" }}
             </button>
           </div>
         </div>
@@ -70,110 +70,120 @@
         <div class="error-icon">❌</div>
         <h3>产品未找到</h3>
         <p>抱歉，您访问的产品不存在或已下架</p>
-        <button class="error-action" @click="goBack">
-          返回产品列表
-        </button>
+        <button class="error-action" @click="goBack">返回产品列表</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import {
   ArrowLeftIcon,
   ShoppingCartIcon,
   EyeIcon,
   HeartIcon,
-} from 'lucide-vue-next'
+} from "lucide-vue-next";
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
 // 响应式状态
-const product = ref<any>(null)
-const loading = ref(true)
-const isFavorite = ref(false)
+const product = ref<any>(null);
+const loading = ref(true);
+const isFavorite = ref(false);
 
 // 模拟产品数据
 const mockProducts = [
   {
     id: 1,
-    name: '高效办公套件',
-    description: '提升办公效率的完整解决方案，包含文档处理、项目管理、时间管理、团队协作等多个模块。支持多平台同步，让您随时随地高效办公。',
+    name: "高效办公套件",
+    description:
+      "提升办公效率的完整解决方案，包含文档处理、项目管理、时间管理、团队协作等多个模块。支持多平台同步，让您随时随地高效办公。",
     price: 299,
     originalPrice: 399,
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
-    category: 'office',
-    tags: ['办公', '效率', '文档', '项目管理', '团队协作'],
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
+    category: "office",
+    tags: ["办公", "效率", "文档", "项目管理", "团队协作"],
   },
   {
     id: 2,
-    name: '设计师工具包',
-    description: '专业设计师必备工具集合，包含UI设计、图标制作、原型设计、色彩搭配等功能。提供丰富的设计素材和模板，助力创意实现。',
+    name: "设计师工具包",
+    description:
+      "专业设计师必备工具集合，包含UI设计、图标制作、原型设计、色彩搭配等功能。提供丰富的设计素材和模板，助力创意实现。",
     price: 199,
-    image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=600&fit=crop',
-    category: 'design',
-    tags: ['设计', 'UI', '图标', '创意', '原型'],
+    image:
+      "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=600&fit=crop",
+    category: "design",
+    tags: ["设计", "UI", "图标", "创意", "原型"],
   },
   {
     id: 3,
-    name: '开发者助手',
-    description: '程序员开发必备工具，代码编辑、调试、部署一站式解决。支持多种编程语言，集成版本控制，提供智能代码补全和错误检测。',
+    name: "开发者助手",
+    description:
+      "程序员开发必备工具，代码编辑、调试、部署一站式解决。支持多种编程语言，集成版本控制，提供智能代码补全和错误检测。",
     price: 399,
     originalPrice: 499,
-    image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
-    category: 'development',
-    tags: ['开发', '编程', '调试', '部署', '版本控制'],
+    image:
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop",
+    category: "development",
+    tags: ["开发", "编程", "调试", "部署", "版本控制"],
   },
-]
+];
 
 // 方法
 const loadProduct = () => {
-  const productId = parseInt(route.params.id as string)
-  
+  const productId = parseInt(route.params.id as string);
+
   // 模拟API调用
   setTimeout(() => {
-    const foundProduct = mockProducts.find(p => p.id === productId)
+    const foundProduct = mockProducts.find((p) => p.id === productId);
     if (foundProduct) {
-      product.value = foundProduct
+      product.value = foundProduct;
       // 模拟检查收藏状态
-      isFavorite.value = Math.random() > 0.5
+      isFavorite.value = Math.random() > 0.5;
     }
-    loading.value = false
-  }, 1000)
-}
+    loading.value = false;
+  }, 300); // 优化：减少延迟提升用户体验
+};
 
 const goBack = () => {
-  router.push('/products')
-}
+  // 优先使用浏览器历史记录返回
+  if (window.history.length > 1) {
+    router.go(-1);
+  } else {
+    // 如果没有历史记录，跳转到产品列表
+    router.push("/products");
+  }
+};
 
 const buyProduct = () => {
   if (product.value) {
-    console.log('购买产品:', product.value.name)
+    console.log("购买产品:", product.value.name);
     // TODO: 实现购买逻辑
-    router.push('/payment')
+    router.push("/payment");
   }
-}
+};
 
 const viewDemo = () => {
   if (product.value) {
-    console.log('预览产品:', product.value.name)
+    console.log("预览产品:", product.value.name);
     // TODO: 实现预览逻辑
   }
-}
+};
 
 const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value
-  console.log(isFavorite.value ? '已添加到收藏' : '已取消收藏')
+  isFavorite.value = !isFavorite.value;
+  console.log(isFavorite.value ? "已添加到收藏" : "已取消收藏");
   // TODO: 实现收藏逻辑
-}
+};
 
 // 生命周期
 onMounted(() => {
-  loadProduct()
-})
+  loadProduct();
+});
 </script>
 
 <style scoped>
@@ -387,8 +397,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-icon {

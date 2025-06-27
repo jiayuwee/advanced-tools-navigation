@@ -41,7 +41,7 @@ VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-### 2. 创建 Supabase 项目（如未创建）
+### 2. 创建 Supabase 项目（已创建）
 1. 访问：https://supabase.com/dashboard
 2. 创建新项目：`advanced-tools-navigation`
 3. 选择组织：`jiayuwee`

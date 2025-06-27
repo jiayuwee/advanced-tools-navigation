@@ -5,7 +5,11 @@
       <p>输入您的邮箱地址，我们将发送重置密码的链接</p>
     </div>
 
-    <form v-if="!emailSent" @submit.prevent="handleForgotPassword" class="forgot-form">
+    <form
+      v-if="!emailSent"
+      class="forgot-form"
+      @submit.prevent="handleForgotPassword"
+    >
       <div class="form-group">
         <label for="email">邮箱地址</label>
         <input
@@ -20,7 +24,7 @@
 
       <button type="submit" class="submit-btn" :disabled="loading || !email">
         <div v-if="loading" class="loading-spinner"></div>
-        <span>{{ loading ? '发送中...' : '发送重置链接' }}</span>
+        <span>{{ loading ? "发送中..." : "发送重置链接" }}</span>
       </button>
 
       <div v-if="error" class="error-message">
@@ -31,12 +35,20 @@
     <div v-else class="success-state">
       <div class="success-icon">✅</div>
       <h3>邮件已发送</h3>
-      <p>我们已向 <strong>{{ email }}</strong> 发送了重置密码的链接</p>
-      <p class="help-text">请检查您的邮箱（包括垃圾邮件文件夹），并点击链接重置密码</p>
-      
+      <p>
+        我们已向 <strong>{{ email }}</strong> 发送了重置密码的链接
+      </p>
+      <p class="help-text">
+        请检查您的邮箱（包括垃圾邮件文件夹），并点击链接重置密码
+      </p>
+
       <div class="success-actions">
-        <button class="resend-btn" @click="handleResend" :disabled="resendCooldown > 0">
-          {{ resendCooldown > 0 ? `${resendCooldown}秒后可重发` : '重新发送' }}
+        <button
+          class="resend-btn"
+          :disabled="resendCooldown > 0"
+          @click="handleResend"
+        >
+          {{ resendCooldown > 0 ? `${resendCooldown}秒后可重发` : "重新发送" }}
         </button>
         <router-link to="/auth/login" class="back-btn">返回登录</router-link>
       </div>
@@ -52,76 +64,76 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue'
+import { ref, onUnmounted } from "vue";
 
 // 响应式状态
-const loading = ref(false)
-const error = ref<string | null>(null)
-const email = ref('')
-const emailSent = ref(false)
-const resendCooldown = ref(0)
+const loading = ref(false);
+const error = ref<string | null>(null);
+const email = ref("");
+const emailSent = ref(false);
+const resendCooldown = ref(0);
 
-let cooldownTimer: number | null = null
+let cooldownTimer: number | null = null;
 
 // 方法
 const handleForgotPassword = async () => {
   try {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
 
     // TODO: 实现忘记密码逻辑
     // await AuthService.forgotPassword(email.value)
-    
+
     // 模拟发送邮件
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    emailSent.value = true
-    startResendCooldown()
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    emailSent.value = true;
+    startResendCooldown();
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '发送失败，请重试'
+    error.value = err instanceof Error ? err.message : "发送失败，请重试";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const handleResend = async () => {
-  if (resendCooldown.value > 0) return
-  
+  if (resendCooldown.value > 0) return;
+
   try {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
 
     // TODO: 实现重新发送逻辑
     // await AuthService.forgotPassword(email.value)
-    
+
     // 模拟重新发送
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    startResendCooldown()
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    startResendCooldown();
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '重新发送失败，请重试'
+    error.value = err instanceof Error ? err.message : "重新发送失败，请重试";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const startResendCooldown = () => {
-  resendCooldown.value = 60
+  resendCooldown.value = 60;
   cooldownTimer = setInterval(() => {
-    resendCooldown.value--
+    resendCooldown.value--;
     if (resendCooldown.value <= 0) {
-      clearInterval(cooldownTimer!)
-      cooldownTimer = null
+      clearInterval(cooldownTimer!);
+      cooldownTimer = null;
     }
-  }, 1000)
-}
+  }, 1000);
+};
 
 // 生命周期
 onUnmounted(() => {
   if (cooldownTimer) {
-    clearInterval(cooldownTimer)
+    clearInterval(cooldownTimer);
   }
-})
+});
 </script>
 
 <style scoped>
@@ -218,8 +230,12 @@ onUnmounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {

@@ -5,7 +5,7 @@
       <p>创建您的账户，开始使用工具导航站</p>
     </div>
 
-    <form @submit.prevent="handleRegister" class="register-form">
+    <form class="register-form" @submit.prevent="handleRegister">
       <div class="form-group">
         <label for="fullName">姓名</label>
         <input
@@ -51,7 +51,11 @@
         </div>
         <div class="password-strength">
           <div class="strength-bar">
-            <div class="strength-fill" :class="passwordStrength.class" :style="{ width: passwordStrength.width }"></div>
+            <div
+              class="strength-fill"
+              :class="passwordStrength.class"
+              :style="{ width: passwordStrength.width }"
+            ></div>
           </div>
           <span class="strength-text">{{ passwordStrength.text }}</span>
         </div>
@@ -67,7 +71,10 @@
           placeholder="请再次输入密码"
           :disabled="loading"
         />
-        <div v-if="form.confirmPassword && form.password !== form.confirmPassword" class="error-hint">
+        <div
+          v-if="form.confirmPassword && form.password !== form.confirmPassword"
+          class="error-hint"
+        >
           密码不匹配
         </div>
       </div>
@@ -83,9 +90,13 @@
         </label>
       </div>
 
-      <button type="submit" class="register-btn" :disabled="loading || !isFormValid">
+      <button
+        type="submit"
+        class="register-btn"
+        :disabled="loading || !isFormValid"
+      >
         <div v-if="loading" class="loading-spinner"></div>
-        <span>{{ loading ? '注册中...' : '注册' }}</span>
+        <span>{{ loading ? "注册中..." : "注册" }}</span>
       </button>
 
       <div v-if="error" class="error-message">
@@ -103,71 +114,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { EyeIcon, EyeOffIcon } from 'lucide-vue-next'
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import { EyeIcon, EyeOffIcon } from "lucide-vue-next";
 
-const router = useRouter()
+const router = useRouter();
 
 // 响应式状态
-const loading = ref(false)
-const error = ref<string | null>(null)
-const showPassword = ref(false)
+const loading = ref(false);
+const error = ref<string | null>(null);
+const showPassword = ref(false);
 const form = ref({
-  fullName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  agreeToTerms: false
-})
+  fullName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  agreeToTerms: false,
+});
 
 // 计算属性
 const passwordStrength = computed(() => {
-  const password = form.value.password
-  if (!password) return { class: '', width: '0%', text: '' }
-  
-  let score = 0
-  if (password.length >= 8) score++
-  if (/[a-z]/.test(password)) score++
-  if (/[A-Z]/.test(password)) score++
-  if (/[0-9]/.test(password)) score++
-  if (/[^A-Za-z0-9]/.test(password)) score++
-  
-  if (score < 2) return { class: 'weak', width: '20%', text: '弱' }
-  if (score < 3) return { class: 'fair', width: '40%', text: '一般' }
-  if (score < 4) return { class: 'good', width: '60%', text: '良好' }
-  if (score < 5) return { class: 'strong', width: '80%', text: '强' }
-  return { class: 'very-strong', width: '100%', text: '很强' }
-})
+  const password = form.value.password;
+  if (!password) return { class: "", width: "0%", text: "" };
+
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score < 2) return { class: "weak", width: "20%", text: "弱" };
+  if (score < 3) return { class: "fair", width: "40%", text: "一般" };
+  if (score < 4) return { class: "good", width: "60%", text: "良好" };
+  if (score < 5) return { class: "strong", width: "80%", text: "强" };
+  return { class: "very-strong", width: "100%", text: "很强" };
+});
 
 const isFormValid = computed(() => {
-  return form.value.email &&
-         form.value.password &&
-         form.value.password === form.value.confirmPassword &&
-         form.value.agreeToTerms &&
-         form.value.password.length >= 8
-})
+  return (
+    form.value.email &&
+    form.value.password &&
+    form.value.password === form.value.confirmPassword &&
+    form.value.agreeToTerms &&
+    form.value.password.length >= 8
+  );
+});
 
 // 方法
 const handleRegister = async () => {
   try {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
 
     // TODO: 实现注册逻辑
     // const result = await AuthService.register(form.value)
-    
+
     // 模拟注册
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    console.log('注册成功:', form.value.email)
-    router.push('/auth/login')
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    console.log("注册成功:", form.value.email);
+    router.push("/auth/login");
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '注册失败，请重试'
+    error.value = err instanceof Error ? err.message : "注册失败，请重试";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
 
 <style scoped>
@@ -268,11 +281,21 @@ const handleRegister = async () => {
   transition: all 0.3s ease;
 }
 
-.strength-fill.weak { background: #dc2626; }
-.strength-fill.fair { background: #f59e0b; }
-.strength-fill.good { background: #10b981; }
-.strength-fill.strong { background: #059669; }
-.strength-fill.very-strong { background: #047857; }
+.strength-fill.weak {
+  background: #dc2626;
+}
+.strength-fill.fair {
+  background: #f59e0b;
+}
+.strength-fill.good {
+  background: #10b981;
+}
+.strength-fill.strong {
+  background: #059669;
+}
+.strength-fill.very-strong {
+  background: #047857;
+}
 
 .strength-text {
   font-size: 0.75rem;
@@ -317,7 +340,7 @@ const handleRegister = async () => {
 }
 
 .checkbox-label input:checked + .checkmark::after {
-  content: '✓';
+  content: "✓";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -370,8 +393,12 @@ const handleRegister = async () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {

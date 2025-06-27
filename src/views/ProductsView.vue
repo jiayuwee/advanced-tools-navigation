@@ -28,7 +28,7 @@
             class="search-input"
           />
         </div>
-        
+
         <div class="filter-tabs">
           <button
             v-for="category in categories"
@@ -83,11 +83,11 @@
                 </span>
               </div>
             </div>
-            
+
             <div class="product-content">
               <h3 class="product-name">{{ product.name }}</h3>
               <p class="product-description">{{ product.description }}</p>
-              
+
               <div class="product-tags">
                 <span
                   v-for="tag in product.tags.slice(0, 3)"
@@ -128,7 +128,11 @@
     </div>
 
     <!-- 添加产品模态框 -->
-    <div v-if="showAddProductModal" class="modal-overlay" @click="showAddProductModal = false">
+    <div
+      v-if="showAddProductModal"
+      class="modal-overlay"
+      @click="showAddProductModal = false"
+    >
       <div class="modal-content" @click.stop>
         <div class="modal-header">
           <h3>添加新产品</h3>
@@ -145,8 +149,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import {
   PlusIcon,
   SearchIcon,
@@ -155,99 +159,105 @@ import {
   ShoppingCartIcon,
   EyeIcon,
   XIcon,
-} from 'lucide-vue-next'
+} from "lucide-vue-next";
 
-const router = useRouter()
+const router = useRouter();
 
 // 响应式状态
-const searchQuery = ref('')
-const selectedCategory = ref('all')
-const viewMode = ref<'grid' | 'list'>('grid')
-const showAddProductModal = ref(false)
+const searchQuery = ref("");
+const selectedCategory = ref("all");
+const viewMode = ref<"grid" | "list">("grid");
+const showAddProductModal = ref(false);
 
 // 模拟产品数据
 const products = ref([
   {
     id: 1,
-    name: '高效办公套件',
-    description: '提升办公效率的完整解决方案，包含文档处理、项目管理等功能',
+    name: "高效办公套件",
+    description: "提升办公效率的完整解决方案，包含文档处理、项目管理等功能",
     price: 299,
     originalPrice: 399,
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
-    category: 'office',
-    tags: ['办公', '效率', '文档', '项目管理'],
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
+    category: "office",
+    tags: ["办公", "效率", "文档", "项目管理"],
   },
   {
     id: 2,
-    name: '设计师工具包',
-    description: '专业设计师必备工具集合，包含UI设计、图标制作等',
+    name: "设计师工具包",
+    description: "专业设计师必备工具集合，包含UI设计、图标制作等",
     price: 199,
-    image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop',
-    category: 'design',
-    tags: ['设计', 'UI', '图标', '创意'],
+    image:
+      "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop",
+    category: "design",
+    tags: ["设计", "UI", "图标", "创意"],
   },
   {
     id: 3,
-    name: '开发者助手',
-    description: '程序员开发必备工具，代码编辑、调试、部署一站式解决',
+    name: "开发者助手",
+    description: "程序员开发必备工具，代码编辑、调试、部署一站式解决",
     price: 399,
     originalPrice: 499,
-    image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
-    category: 'development',
-    tags: ['开发', '编程', '调试', '部署'],
+    image:
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop",
+    category: "development",
+    tags: ["开发", "编程", "调试", "部署"],
   },
-])
+]);
 
 // 分类数据
 const categories = ref([
-  { id: 'all', name: '全部', count: 3 },
-  { id: 'office', name: '办公工具', count: 1 },
-  { id: 'design', name: '设计工具', count: 1 },
-  { id: 'development', name: '开发工具', count: 1 },
-])
+  { id: "all", name: "全部", count: 3 },
+  { id: "office", name: "办公工具", count: 1 },
+  { id: "design", name: "设计工具", count: 1 },
+  { id: "development", name: "开发工具", count: 1 },
+]);
 
 // 计算属性
 const filteredProducts = computed(() => {
-  let filtered = products.value
+  let filtered = products.value;
 
   // 按分类筛选
-  if (selectedCategory.value !== 'all') {
-    filtered = filtered.filter(product => product.category === selectedCategory.value)
+  if (selectedCategory.value !== "all") {
+    filtered = filtered.filter(
+      (product) => product.category === selectedCategory.value,
+    );
   }
 
   // 按搜索关键词筛选
   if (searchQuery.value.trim()) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(product =>
-      product.name.toLowerCase().includes(query) ||
-      product.description.toLowerCase().includes(query) ||
-      product.tags.some(tag => tag.toLowerCase().includes(query))
-    )
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query) ||
+        product.tags.some((tag) => tag.toLowerCase().includes(query)),
+    );
   }
 
-  return filtered
-})
+  return filtered;
+});
 
 // 方法
 const goToProduct = (productId: number) => {
-  router.push(`/product/${productId}`)
-}
+  router.push(`/product/${productId}`);
+};
 
 const buyProduct = (product: any) => {
-  console.log('购买产品:', product.name)
+  console.log("购买产品:", product.name);
   // TODO: 实现购买逻辑
-}
+};
 
 const viewDemo = (product: any) => {
-  console.log('预览产品:', product.name)
+  console.log("预览产品:", product.name);
   // TODO: 实现预览逻辑
-}
+};
 
 // 生命周期
 onMounted(() => {
   // 初始化数据
-  console.log('产品页面已加载')
-})
+  console.log("产品页面已加载");
+});
 </script>
 
 <style scoped>

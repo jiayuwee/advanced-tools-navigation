@@ -9,7 +9,11 @@
       <!-- 头像部分 -->
       <div class="avatar-section">
         <div class="avatar-container">
-          <img :src="profile.avatarUrl || '/placeholder-user.jpg'" :alt="profile.fullName" class="avatar" />
+          <img
+            :src="profile.avatarUrl || '/placeholder-user.jpg'"
+            :alt="profile.fullName"
+            class="avatar"
+          />
           <button class="avatar-upload" @click="triggerFileUpload">
             <CameraIcon class="icon" />
           </button>
@@ -22,16 +26,16 @@
           />
         </div>
         <div class="avatar-info">
-          <h3>{{ profile.fullName || '未设置姓名' }}</h3>
+          <h3>{{ profile.fullName || "未设置姓名" }}</h3>
           <p>{{ profile.email }}</p>
         </div>
       </div>
 
       <!-- 个人信息表单 -->
-      <form @submit.prevent="handleSave" class="profile-form">
+      <form class="profile-form" @submit.prevent="handleSave">
         <div class="form-section">
           <h3>基本信息</h3>
-          
+
           <div class="form-row">
             <div class="form-group">
               <label for="fullName">姓名</label>
@@ -43,7 +47,7 @@
                 :disabled="loading"
               />
             </div>
-            
+
             <div class="form-group">
               <label for="username">用户名</label>
               <input
@@ -90,7 +94,7 @@
                 :disabled="loading"
               />
             </div>
-            
+
             <div class="form-group">
               <label for="location">所在地</label>
               <input
@@ -105,12 +109,21 @@
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn btn-secondary" @click="handleReset" :disabled="loading">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            :disabled="loading"
+            @click="handleReset"
+          >
             重置
           </button>
-          <button type="submit" class="btn btn-primary" :disabled="loading || !hasChanges">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            :disabled="loading || !hasChanges"
+          >
             <div v-if="loading" class="loading-spinner"></div>
-            <span>{{ loading ? '保存中...' : '保存更改' }}</span>
+            <span>{{ loading ? "保存中..." : "保存更改" }}</span>
           </button>
         </div>
 
@@ -118,156 +131,157 @@
           {{ error }}
         </div>
 
-        <div v-if="success" class="success-message">
-          个人资料已成功更新！
-        </div>
+        <div v-if="success" class="success-message">个人资料已成功更新！</div>
       </form>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { CameraIcon } from 'lucide-vue-next'
+import { ref, computed, onMounted } from "vue";
+import { CameraIcon } from "lucide-vue-next";
 
 // 响应式状态
-const loading = ref(false)
-const error = ref<string | null>(null)
-const success = ref(false)
-const fileInput = ref<HTMLInputElement>()
+const loading = ref(false);
+const error = ref<string | null>(null);
+const success = ref(false);
+const fileInput = ref<HTMLInputElement>();
 
 const profile = ref({
-  id: '',
-  email: '',
-  username: '',
-  fullName: '',
-  avatarUrl: '',
-  bio: '',
-  website: '',
-  location: ''
-})
+  id: "",
+  email: "",
+  username: "",
+  fullName: "",
+  avatarUrl: "",
+  bio: "",
+  website: "",
+  location: "",
+});
 
 const form = ref({
-  fullName: '',
-  username: '',
-  email: '',
-  bio: '',
-  website: '',
-  location: ''
-})
+  fullName: "",
+  username: "",
+  email: "",
+  bio: "",
+  website: "",
+  location: "",
+});
 
 const originalForm = ref({
-  fullName: '',
-  username: '',
-  email: '',
-  bio: '',
-  website: '',
-  location: ''
-})
+  fullName: "",
+  username: "",
+  email: "",
+  bio: "",
+  website: "",
+  location: "",
+});
 
 // 计算属性
 const hasChanges = computed(() => {
-  return Object.keys(form.value).some(key => {
-    return form.value[key as keyof typeof form.value] !== originalForm.value[key as keyof typeof originalForm.value]
-  })
-})
+  return Object.keys(form.value).some((key) => {
+    return (
+      form.value[key as keyof typeof form.value] !==
+      originalForm.value[key as keyof typeof originalForm.value]
+    );
+  });
+});
 
 // 方法
 const loadProfile = async () => {
   try {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
 
     // TODO: 实现加载用户资料逻辑
     // const userProfile = await UserService.getProfile()
-    
+
     // 模拟数据
     const mockProfile = {
-      id: 'user-1',
-      email: 'user@example.com',
-      username: 'user123',
-      fullName: '张三',
-      avatarUrl: '',
-      bio: '这是我的个人简介',
-      website: 'https://example.com',
-      location: '北京'
-    }
-    
-    profile.value = mockProfile
-    form.value = { ...mockProfile }
-    originalForm.value = { ...mockProfile }
+      id: "user-1",
+      email: "user@example.com",
+      username: "user123",
+      fullName: "张三",
+      avatarUrl: "",
+      bio: "这是我的个人简介",
+      website: "https://example.com",
+      location: "北京",
+    };
+
+    profile.value = mockProfile;
+    form.value = { ...mockProfile };
+    originalForm.value = { ...mockProfile };
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '加载用户资料失败'
+    error.value = err instanceof Error ? err.message : "加载用户资料失败";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const handleSave = async () => {
   try {
-    loading.value = true
-    error.value = null
-    success.value = false
+    loading.value = true;
+    error.value = null;
+    success.value = false;
 
     // TODO: 实现保存用户资料逻辑
     // await UserService.updateProfile(form.value)
-    
+
     // 模拟保存
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    profile.value = { ...profile.value, ...form.value }
-    originalForm.value = { ...form.value }
-    success.value = true
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    profile.value = { ...profile.value, ...form.value };
+    originalForm.value = { ...form.value };
+    success.value = true;
+
     setTimeout(() => {
-      success.value = false
-    }, 3000)
+      success.value = false;
+    }, 3000);
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '保存失败，请重试'
+    error.value = err instanceof Error ? err.message : "保存失败，请重试";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const handleReset = () => {
-  form.value = { ...originalForm.value }
-  error.value = null
-  success.value = false
-}
+  form.value = { ...originalForm.value };
+  error.value = null;
+  success.value = false;
+};
 
 const triggerFileUpload = () => {
-  fileInput.value?.click()
-}
+  fileInput.value?.click();
+};
 
 const handleAvatarUpload = async (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  
-  if (!file) return
-  
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (!file) return;
+
   try {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
 
     // TODO: 实现头像上传逻辑
     // const avatarUrl = await UserService.uploadAvatar(file)
-    
+
     // 模拟上传
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    const avatarUrl = URL.createObjectURL(file)
-    
-    profile.value.avatarUrl = avatarUrl
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const avatarUrl = URL.createObjectURL(file);
+
+    profile.value.avatarUrl = avatarUrl;
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '头像上传失败'
+    error.value = err instanceof Error ? err.message : "头像上传失败";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 // 生命周期
 onMounted(() => {
-  loadProfile()
-})
+  loadProfile();
+});
 </script>
 
 <style scoped>
@@ -487,8 +501,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {
@@ -514,20 +532,20 @@ onMounted(() => {
   .profile-view {
     padding: 1rem;
   }
-  
+
   .profile-content {
     padding: 1.5rem;
   }
-  
+
   .avatar-section {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }

@@ -5,7 +5,7 @@
         <div class="error-code">404</div>
         <h1 class="error-title">页面未找到</h1>
         <p class="error-message">抱歉，您访问的页面不存在或已被移除</p>
-        
+
         <div class="error-actions">
           <router-link to="/" class="btn btn-primary">
             <HomeIcon class="icon" />
@@ -16,7 +16,7 @@
             返回上页
           </button>
         </div>
-        
+
         <div class="suggestions">
           <h3>您可能在寻找：</h3>
           <div class="suggestion-links">
@@ -27,7 +27,7 @@
                 <div class="suggestion-desc">发现实用工具</div>
               </div>
             </router-link>
-            
+
             <router-link to="/products" class="suggestion-item">
               <ShoppingBagIcon class="suggestion-icon" />
               <div>
@@ -35,7 +35,7 @@
                 <div class="suggestion-desc">浏览优质产品</div>
               </div>
             </router-link>
-            
+
             <router-link to="/user/profile" class="suggestion-item">
               <UserIcon class="suggestion-icon" />
               <div>
@@ -46,7 +46,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="not-found-illustration">
         <div class="illustration-content">
           <div class="floating-elements">
@@ -66,18 +66,24 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { HomeIcon, ArrowLeftIcon, WrenchIcon, ShoppingBagIcon, UserIcon } from 'lucide-vue-next'
+import { useRouter } from "vue-router";
+import {
+  HomeIcon,
+  ArrowLeftIcon,
+  WrenchIcon,
+  ShoppingBagIcon,
+  UserIcon,
+} from "lucide-vue-next";
 
-const router = useRouter()
+const router = useRouter();
 
 const goBack = () => {
   if (window.history.length > 1) {
-    router.go(-1)
+    router.go(-1);
   } else {
-    router.push('/')
+    router.push("/");
   }
-}
+};
 </script>
 
 <style scoped>
@@ -292,7 +298,8 @@ const goBack = () => {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -301,7 +308,8 @@ const goBack = () => {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -310,7 +318,8 @@ const goBack = () => {
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   25% {
@@ -328,37 +337,37 @@ const goBack = () => {
     gap: 2rem;
     text-align: center;
   }
-  
+
   .error-code {
     font-size: 6rem;
   }
-  
+
   .error-title {
     font-size: 2rem;
   }
-  
+
   .error-actions {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .not-found-illustration {
     order: -1;
   }
-  
+
   .illustration-content {
     width: 200px;
     height: 200px;
   }
-  
+
   .element {
     font-size: 1.5rem;
   }
-  
+
   .search-icon {
     font-size: 3rem;
   }
-  
+
   .broken-link {
     font-size: 2rem;
   }
@@ -368,20 +377,20 @@ const goBack = () => {
   .not-found-view {
     padding: 1rem;
   }
-  
+
   .error-code {
     font-size: 4rem;
   }
-  
+
   .error-title {
     font-size: 1.5rem;
   }
-  
+
   .error-actions {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .btn {
     width: 100%;
     max-width: 200px;

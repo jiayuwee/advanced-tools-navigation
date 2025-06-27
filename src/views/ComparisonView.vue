@@ -88,7 +88,7 @@
                     <button>搜索</button>
                   </div>
                   <div class="preview-grid">
-                    <div class="preview-card" v-for="i in 6" :key="i">
+                    <div v-for="i in 6" :key="i" class="preview-card">
                       <div class="card-header"></div>
                       <div class="card-content"></div>
                     </div>

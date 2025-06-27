@@ -29,12 +29,15 @@
             class="favorite-item tool-item"
           >
             <div class="item-header">
-              <div class="item-icon">{{ tool.icon || '🔧' }}</div>
-              <button class="remove-btn" @click="removeFavorite('tool', tool.id)">
+              <div class="item-icon">{{ tool.icon || "🔧" }}</div>
+              <button
+                class="remove-btn"
+                @click="removeFavorite('tool', tool.id)"
+              >
                 <XIcon class="icon" />
               </button>
             </div>
-            
+
             <div class="item-content">
               <h3 class="item-name">{{ tool.name }}</h3>
               <p class="item-description">{{ tool.description }}</p>
@@ -43,7 +46,7 @@
                 <span class="clicks">{{ tool.clickCount }} 次访问</span>
               </div>
             </div>
-            
+
             <div class="item-actions">
               <button class="action-btn primary" @click="openTool(tool)">
                 <ExternalLinkIcon class="icon" />
@@ -52,7 +55,7 @@
             </div>
           </div>
         </div>
-        
+
         <div v-else class="empty-state">
           <div class="empty-icon">🔧</div>
           <h3>暂无收藏的工具</h3>
@@ -71,26 +74,43 @@
           >
             <div class="item-header">
               <div class="item-image">
-                <img :src="product.images[0] || '/placeholder.jpg'" :alt="product.name" />
+                <img
+                  :src="product.images[0] || '/placeholder.jpg'"
+                  :alt="product.name"
+                />
               </div>
-              <button class="remove-btn" @click="removeFavorite('product', product.id)">
+              <button
+                class="remove-btn"
+                @click="removeFavorite('product', product.id)"
+              >
                 <XIcon class="icon" />
               </button>
             </div>
-            
+
             <div class="item-content">
               <h3 class="item-name">{{ product.name }}</h3>
-              <p class="item-description">{{ product.shortDescription || product.description }}</p>
+              <p class="item-description">
+                {{ product.shortDescription || product.description }}
+              </p>
               <div class="item-price">
                 <span class="current-price">¥{{ product.price }}</span>
-                <span v-if="product.originalPrice && product.originalPrice > product.price" class="original-price">
+                <span
+                  v-if="
+                    product.originalPrice &&
+                    product.originalPrice > product.price
+                  "
+                  class="original-price"
+                >
                   ¥{{ product.originalPrice }}
                 </span>
               </div>
             </div>
-            
+
             <div class="item-actions">
-              <button class="action-btn secondary" @click="viewProduct(product)">
+              <button
+                class="action-btn secondary"
+                @click="viewProduct(product)"
+              >
                 <EyeIcon class="icon" />
                 查看详情
               </button>
@@ -101,12 +121,14 @@
             </div>
           </div>
         </div>
-        
+
         <div v-else class="empty-state">
           <div class="empty-icon">🛍️</div>
           <h3>暂无收藏的产品</h3>
           <p>去发现一些优质产品并收藏它们吧！</p>
-          <router-link to="/products" class="empty-action">浏览产品</router-link>
+          <router-link to="/products" class="empty-action"
+            >浏览产品</router-link
+          >
         </div>
       </div>
     </div>
@@ -120,132 +142,156 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import {
   WrenchIcon,
   ShoppingBagIcon,
   XIcon,
   ExternalLinkIcon,
   EyeIcon,
-  ShoppingCartIcon
-} from 'lucide-vue-next'
-import type { Tool, Product } from '../../types'
+  ShoppingCartIcon,
+} from "lucide-vue-next";
+import type { Tool, Product } from "../../types";
 
-const router = useRouter()
+const router = useRouter();
 
 // 响应式状态
-const loading = ref(true)
-const activeTab = ref('tools')
-const favoriteTools = ref<Tool[]>([])
-const favoriteProducts = ref<Product[]>([])
+const loading = ref(true);
+const activeTab = ref("tools");
+const favoriteTools = ref<Tool[]>([]);
+const favoriteProducts = ref<Product[]>([]);
 
 const tabs = [
-  { key: 'tools', label: '工具', icon: WrenchIcon },
-  { key: 'products', label: '产品', icon: ShoppingBagIcon }
-]
+  { key: "tools", label: "工具", icon: WrenchIcon },
+  { key: "products", label: "产品", icon: ShoppingBagIcon },
+];
 
 // 计算属性
 const getTabCount = (tabKey: string) => {
-  if (tabKey === 'tools') return favoriteTools.value.length
-  if (tabKey === 'products') return favoriteProducts.value.length
-  return 0
-}
+  if (tabKey === "tools") return favoriteTools.value.length;
+  if (tabKey === "products") return favoriteProducts.value.length;
+  return 0;
+};
 
 // 方法
 const loadFavorites = async () => {
   try {
-    loading.value = true
+    loading.value = true;
 
     // TODO: 实现加载收藏逻辑
     // const [tools, products] = await Promise.all([
     //   FavoritesService.getFavoriteTools(),
     //   FavoritesService.getFavoriteProducts()
     // ])
-    
+
     // 模拟数据
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     favoriteTools.value = [
       {
-        id: '1',
-        name: 'VS Code',
-        description: '强大的代码编辑器',
-        url: 'https://code.visualstudio.com',
-        icon: '💻',
-        category: { id: '1', name: '开发工具', icon: '💻', color: '#0078d4', count: 0, sortOrder: 0, isActive: true, createdAt: '', updatedAt: '' },
+        id: "1",
+        name: "VS Code",
+        description: "强大的代码编辑器",
+        url: "https://code.visualstudio.com",
+        icon: "💻",
+        category: {
+          id: "1",
+          name: "开发工具",
+          icon: "💻",
+          color: "#0078d4",
+          count: 0,
+          sortOrder: 0,
+          isActive: true,
+          createdAt: "",
+          updatedAt: "",
+        },
         tags: [],
         isFavorite: true,
         clickCount: 150,
         isFeature: true,
-        status: 'active' as const,
+        status: "active" as const,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        sortOrder: 0
-      }
-    ]
-    
+        sortOrder: 0,
+      },
+    ];
+
     favoriteProducts.value = [
       {
-        id: '1',
-        name: '高效办公套件',
-        description: '提升办公效率的完整解决方案',
-        shortDescription: '办公效率工具',
+        id: "1",
+        name: "高效办公套件",
+        description: "提升办公效率的完整解决方案",
+        shortDescription: "办公效率工具",
         price: 299,
         originalPrice: 399,
-        currency: 'CNY',
-        category: { id: '1', name: '办公软件', icon: '📊', color: '#0078d4', count: 0, sortOrder: 0, isActive: true, createdAt: '', updatedAt: '' },
-        images: ['/placeholder.jpg'],
-        features: ['文档处理', '项目管理'],
+        currency: "CNY",
+        category: {
+          id: "1",
+          name: "办公软件",
+          icon: "📊",
+          color: "#0078d4",
+          count: 0,
+          sortOrder: 0,
+          isActive: true,
+          createdAt: "",
+          updatedAt: "",
+        },
+        images: ["/placeholder.jpg"],
+        features: ["文档处理", "项目管理"],
         isFeatured: true,
         isDigital: true,
-        status: 'active' as const,
+        status: "active" as const,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        createdBy: 'user1',
-        sortOrder: 0
-      }
-    ]
+        createdBy: "user1",
+        sortOrder: 0,
+      },
+    ];
   } catch (error) {
-    console.error('加载收藏失败:', error)
+    console.error("加载收藏失败:", error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-const removeFavorite = async (type: 'tool' | 'product', id: string) => {
+const removeFavorite = async (type: "tool" | "product", id: string) => {
   try {
     // TODO: 实现取消收藏逻辑
     // await FavoritesService.removeFavorite(type, id)
-    
-    if (type === 'tool') {
-      favoriteTools.value = favoriteTools.value.filter(item => item.id !== id)
+
+    if (type === "tool") {
+      favoriteTools.value = favoriteTools.value.filter(
+        (item) => item.id !== id,
+      );
     } else {
-      favoriteProducts.value = favoriteProducts.value.filter(item => item.id !== id)
+      favoriteProducts.value = favoriteProducts.value.filter(
+        (item) => item.id !== id,
+      );
     }
   } catch (error) {
-    console.error('取消收藏失败:', error)
+    console.error("取消收藏失败:", error);
   }
-}
+};
 
 const openTool = (tool: Tool) => {
   // TODO: 增加点击次数
-  window.open(tool.url, '_blank', 'noopener,noreferrer')
-}
+  window.open(tool.url, "_blank", "noopener,noreferrer");
+};
 
 const viewProduct = (product: Product) => {
-  router.push(`/product/${product.id}`)
-}
+  router.push(`/product/${product.id}`);
+};
 
 const buyProduct = (product: Product) => {
   // TODO: 实现购买逻辑
-  router.push(`/payment?product=${product.id}`)
-}
+  router.push(`/payment?product=${product.id}`);
+};
 
 // 生命周期
 onMounted(() => {
-  loadFavorites()
-})
+  loadFavorites();
+});
 </script>
 
 <style scoped>
@@ -534,8 +580,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .icon {
@@ -548,15 +598,15 @@ onMounted(() => {
   .favorites-view {
     padding: 1rem;
   }
-  
+
   .favorites-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .favorites-tabs {
     flex-direction: column;
   }
-  
+
   .item-actions {
     flex-direction: column;
   }

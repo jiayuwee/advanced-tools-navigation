@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'supabase/**'
+      - "supabase/**"
   workflow_dispatch:
 
 jobs:
@@ -18,12 +18,12 @@ jobs:
         id: check
         run: |
           echo "🔍 检查必需的 secrets..."
-          
+
           HAS_TOKEN="${{ secrets.SUPABASE_ACCESS_TOKEN != '' }}"
           HAS_PROJECT="${{ secrets.SUPABASE_PROJECT_REF != '' }}"
           HAS_URL="${{ secrets.VITE_SUPABASE_URL != '' }}"
           HAS_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY != '' }}"
-          
+
           echo "📊 Secrets 状态检查:"
           echo "- SUPABASE_ACCESS_TOKEN: $([ "$HAS_TOKEN" = "true" ] && echo "✅" || echo "❌")"
           echo "- SUPABASE_PROJECT_REF: $([ "$HAS_PROJECT" = "true" ] && echo "✅" || echo "❌")"
@@ -71,7 +71,7 @@ jobs:
         run: |
           echo "🔗 链接到 Supabase 项目..."
           echo "项目引用: $PROJECT_REF"
-          
+
           if supabase link --project-ref "$PROJECT_REF"; then
             echo "✅ 项目链接成功"
           else
@@ -98,7 +98,7 @@ jobs:
       - name: Run database migrations
         run: |
           echo "🚀 运行数据库迁移..."
-          
+
           if supabase db push; then
             echo "✅ 数据库迁移完成"
           else
@@ -131,7 +131,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: |
@@ -139,10 +139,26 @@ jobs:
           npm ci
           echo "✅ 依赖安装完成"
 
+      - name: Run tests
+        run: |
+          echo "🧪 运行测试套件..."
+
+          # 运行单元测试和集成测试
+          if npm run test:run; then
+            echo "✅ 所有测试通过"
+          else
+            echo "❌ 测试失败，停止部署"
+            exit 1
+          fi
+
+          # 生成测试覆盖率报告
+          echo "📊 生成测试覆盖率报告..."
+          npm run test:coverage || echo "⚠️ 覆盖率报告生成失败，但不影响部署"
+
       - name: Build project
         run: |
           echo "🔨 构建生产版本..."
-          
+
           if npm run build; then
             echo "✅ 构建成功"
             echo "📁 构建输出:"
@@ -174,13 +190,13 @@ jobs:
         run: |
           echo "📋 部署总结报告"
           echo "=================="
-          
+
           DB_STATUS="${{ needs.deploy-database.result }}"
           FRONTEND_STATUS="${{ needs.deploy-frontend.result }}"
-          
+
           echo "🗄️  数据库部署: $([ "$DB_STATUS" = "success" ] && echo "✅ 成功" || echo "❌ 失败")"
           echo "🌐 前端部署: $([ "$FRONTEND_STATUS" = "success" ] && echo "✅ 成功" || echo "❌ 失败")"
-          
+
           if [ "$DB_STATUS" = "success" ] && [ "$FRONTEND_STATUS" = "success" ]; then
             echo ""
             echo "🎉 完整部署成功！"

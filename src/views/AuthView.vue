@@ -7,11 +7,11 @@
           <div class="logo-text">工具导航站</div>
         </router-link>
       </div>
-      
+
       <div class="auth-content">
         <router-view />
       </div>
-      
+
       <div class="auth-footer">
         <p>&copy; 2024 工具导航站. 保留所有权利.</p>
       </div>
@@ -84,7 +84,7 @@
   .auth-view {
     padding: 1rem;
   }
-  
+
   .auth-container {
     padding: 1.5rem;
   }

@@ -1,15 +1,15 @@
 <template>
   <div class="tool-form">
-    <form @submit.prevent="handleSubmit" class="form">
+    <form class="form" @submit.prevent="handleSubmit">
       <div class="form-header">
-        <h2>{{ isEditing ? '编辑工具' : '添加工具' }}</h2>
+        <h2>{{ isEditing ? "编辑工具" : "添加工具" }}</h2>
       </div>
 
       <div class="form-body">
         <!-- 基本信息 -->
         <div class="form-section">
           <h3>基本信息</h3>
-          
+
           <div class="form-group">
             <label for="name" class="required">工具名称</label>
             <input
@@ -20,7 +20,9 @@
               :class="{ error: errors.name }"
               required
             />
-            <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
+            <span v-if="errors.name" class="error-message">{{
+              errors.name
+            }}</span>
           </div>
 
           <div class="form-group">
@@ -33,7 +35,9 @@
               :class="{ error: errors.description }"
               required
             ></textarea>
-            <span v-if="errors.description" class="error-message">{{ errors.description }}</span>
+            <span v-if="errors.description" class="error-message">{{
+              errors.description
+            }}</span>
           </div>
 
           <div class="form-group">
@@ -46,7 +50,9 @@
               :class="{ error: errors.url }"
               required
             />
-            <span v-if="errors.url" class="error-message">{{ errors.url }}</span>
+            <span v-if="errors.url" class="error-message">{{
+              errors.url
+            }}</span>
           </div>
 
           <div class="form-group">
@@ -66,14 +72,16 @@
                 {{ category.icon }} {{ category.name }}
               </option>
             </select>
-            <span v-if="errors.categoryId" class="error-message">{{ errors.categoryId }}</span>
+            <span v-if="errors.categoryId" class="error-message">{{
+              errors.categoryId
+            }}</span>
           </div>
         </div>
 
         <!-- 可选信息 -->
         <div class="form-section">
           <h3>可选信息</h3>
-          
+
           <div class="form-group">
             <label for="icon">图标</label>
             <input
@@ -86,10 +94,7 @@
 
           <div class="form-group">
             <label class="checkbox-label">
-              <input
-                v-model="form.isFeatured"
-                type="checkbox"
-              />
+              <input v-model="form.isFeatured" type="checkbox" />
               <span class="checkmark"></span>
               推荐工具
             </label>
@@ -99,7 +104,7 @@
         <!-- SEO 信息 -->
         <div class="form-section">
           <h3>SEO 信息</h3>
-          
+
           <div class="form-group">
             <label for="metaTitle">SEO 标题</label>
             <input
@@ -123,12 +128,16 @@
       </div>
 
       <div class="form-footer">
-        <button type="button" @click="$emit('cancel')" class="btn btn-secondary">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="$emit('cancel')"
+        >
           取消
         </button>
         <button type="submit" :disabled="loading" class="btn btn-primary">
           <span v-if="loading" class="loading-spinner"></span>
-          {{ isEditing ? '更新' : '创建' }}
+          {{ isEditing ? "更新" : "创建" }}
         </button>
       </div>
     </form>
@@ -136,137 +145,139 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { useToolsStore } from '../../stores/tools'
-import { useCategoriesStore } from '../../stores/categories'
-import type { Tool, ToolForm } from '../../types'
-import { validateRequiredFields, requireCategoryId } from '../../utils/dataTransform'
+import { ref, reactive, computed, onMounted, watch } from "vue";
+import { useToolsStore } from "../../stores/tools";
+import { useCategoriesStore } from "../../stores/categories";
+import type { Tool, ToolForm } from "../../types";
+import {
+  validateRequiredFields,
+  requireCategoryId,
+} from "../../utils/dataTransform";
 
 // Props
 interface Props {
-  tool?: Tool
-  isEditing?: boolean
+  tool?: Tool;
+  isEditing?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  isEditing: false
-})
+  isEditing: false,
+});
 
 // Emits
 const emit = defineEmits<{
-  submit: [data: ToolForm]
-  cancel: []
-}>()
+  submit: [data: ToolForm];
+  cancel: [];
+}>();
 
 // Stores
-const toolsStore = useToolsStore()
-const categoriesStore = useCategoriesStore()
+const toolsStore = useToolsStore();
+const categoriesStore = useCategoriesStore();
 
 // State
-const loading = ref(false)
+const loading = ref(false);
 const form = reactive<ToolForm>({
-  name: '',
-  description: '',
-  url: '',
-  categoryId: '',
+  name: "",
+  description: "",
+  url: "",
+  categoryId: "",
   tags: [],
-  icon: '',
+  icon: "",
   isFeatured: false,
-  metaTitle: '',
-  metaDescription: ''
-})
+  metaTitle: "",
+  metaDescription: "",
+});
 
-const errors = reactive<Record<string, string>>({})
+const errors = reactive<Record<string, string>>({});
 
 // Computed
-const categories = computed(() => categoriesStore.categories)
+const categories = computed(() => categoriesStore.categories);
 
 // Methods
 const validateForm = (): boolean => {
   // 清空之前的错误
-  Object.keys(errors).forEach(key => {
-    delete errors[key]
-  })
+  Object.keys(errors).forEach((key) => {
+    delete errors[key];
+  });
 
   try {
     // 验证必需字段
-    validateRequiredFields(form, ['name', 'description', 'url'], 'Tool')
-    
+    validateRequiredFields(form, ["name", "description", "url"], "Tool");
+
     // 验证分类
-    requireCategoryId(form)
-    
+    requireCategoryId(form);
+
     // 验证 URL 格式
     if (form.url && !isValidUrl(form.url)) {
-      errors.url = '请输入有效的URL地址'
-      return false
+      errors.url = "请输入有效的URL地址";
+      return false;
     }
 
-    return true
+    return true;
   } catch (error) {
     // 处理验证错误
-    const message = error instanceof Error ? error.message : '验证失败'
-    
-    if (message.includes('name')) {
-      errors.name = '工具名称不能为空'
+    const message = error instanceof Error ? error.message : "验证失败";
+
+    if (message.includes("name")) {
+      errors.name = "工具名称不能为空";
     }
-    if (message.includes('description')) {
-      errors.description = '工具描述不能为空'
+    if (message.includes("description")) {
+      errors.description = "工具描述不能为空";
     }
-    if (message.includes('url')) {
-      errors.url = '工具链接不能为空'
+    if (message.includes("url")) {
+      errors.url = "工具链接不能为空";
     }
-    if (message.includes('Category')) {
-      errors.categoryId = '请选择分类'
+    if (message.includes("Category")) {
+      errors.categoryId = "请选择分类";
     }
-    
-    return false
+
+    return false;
   }
-}
+};
 
 const isValidUrl = (url: string): boolean => {
   try {
-    new URL(url)
-    return true
+    new URL(url);
+    return true;
   } catch {
-    return false
+    return false;
   }
-}
+};
 
 const handleSubmit = async () => {
   if (!validateForm()) {
-    return
+    return;
   }
 
   try {
-    loading.value = true
-    
+    loading.value = true;
+
     // 发送表单数据
-    emit('submit', { ...form })
-    
+    emit("submit", { ...form });
   } catch (error) {
-    console.error('提交表单失败:', error)
+    console.error("提交表单失败:", error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const resetForm = () => {
   Object.assign(form, {
-    name: '',
-    description: '',
-    url: '',
-    categoryId: '',
+    name: "",
+    description: "",
+    url: "",
+    categoryId: "",
     tags: [],
-    icon: '',
+    icon: "",
     isFeatured: false,
-    metaTitle: '',
-    metaDescription: ''
-  })
-  
-  Object.keys(errors).forEach(key => {
-    delete errors[key]
-  })
-}
+    metaTitle: "",
+    metaDescription: "",
+  });
+
+  Object.keys(errors).forEach((key) => {
+    delete errors[key];
+  });
+};
 
 const loadFormData = () => {
   if (props.tool) {
@@ -275,30 +286,34 @@ const loadFormData = () => {
       description: props.tool.description,
       url: props.tool.url,
       categoryId: props.tool.category.id,
-      tags: props.tool.tags.map(tag => tag.name),
-      icon: props.tool.icon || '',
+      tags: props.tool.tags.map((tag) => tag.name),
+      icon: props.tool.icon || "",
       isFeatured: props.tool.isFeature,
-      metaTitle: props.tool.metaTitle || '',
-      metaDescription: props.tool.metaDescription || ''
-    })
+      metaTitle: props.tool.metaTitle || "",
+      metaDescription: props.tool.metaDescription || "",
+    });
   }
-}
+};
 
 // Lifecycle
 onMounted(async () => {
   // 加载分类数据
   if (categories.value.length === 0) {
-    await categoriesStore.loadCategories()
+    await categoriesStore.loadCategories();
   }
-  
+
   // 加载表单数据
-  loadFormData()
-})
+  loadFormData();
+});
 
 // Watch for tool changes
-watch(() => props.tool, () => {
-  loadFormData()
-}, { deep: true })
+watch(
+  () => props.tool,
+  () => {
+    loadFormData();
+  },
+  { deep: true },
+);
 </script>
 
 <style scoped>
@@ -360,7 +375,7 @@ watch(() => props.tool, () => {
 }
 
 .form-group label.required::after {
-  content: ' *';
+  content: " *";
   color: #d13438;
 }
 
@@ -473,21 +488,21 @@ watch(() => props.tool, () => {
   .tool-form {
     margin: 0;
   }
-  
+
   .form {
     border-radius: 0;
   }
-  
+
   .form-header,
   .form-body,
   .form-footer {
     padding: 1rem;
   }
-  
+
   .form-footer {
     flex-direction: column;
   }
-  
+
   .btn {
     width: 100%;
     justify-content: center;

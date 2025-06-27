@@ -11,11 +11,7 @@
         <div class="order-summary">
           <h3>订单信息</h3>
           <div class="order-items">
-            <div
-              v-for="item in orderItems"
-              :key="item.id"
-              class="order-item"
-            >
+            <div v-for="item in orderItems" :key="item.id" class="order-item">
               <div class="item-image">
                 <img :src="item.image" :alt="item.name" />
               </div>
@@ -29,7 +25,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="order-total">
             <div class="total-row">
               <span>商品总额</span>
@@ -104,7 +100,7 @@
                 />
               </div>
             </div>
-            
+
             <div class="form-row">
               <div class="form-group">
                 <label for="country">国家/地区 *</label>
@@ -126,7 +122,7 @@
                 />
               </div>
             </div>
-            
+
             <div class="form-group">
               <label for="address">详细地址 *</label>
               <input
@@ -142,16 +138,16 @@
 
         <!-- 支付按钮 -->
         <div class="payment-actions">
-          <button class="cancel-btn" @click="goBack">
-            取消订单
-          </button>
+          <button class="cancel-btn" @click="goBack">取消订单</button>
           <button
             class="pay-btn"
             :disabled="!canPay || loading"
             @click="handlePayment"
           >
             <div v-if="loading" class="loading-spinner"></div>
-            <span>{{ loading ? '处理中...' : `立即支付 ¥${finalAmount}` }}</span>
+            <span>{{
+              loading ? "处理中..." : `立即支付 ¥${finalAmount}`
+            }}</span>
           </button>
         </div>
 
@@ -164,95 +160,100 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { CheckIcon } from 'lucide-vue-next'
+import { ref, computed, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { CheckIcon } from "lucide-vue-next";
 
-const router = useRouter()
-const route = useRoute()
+const router = useRouter();
+const route = useRoute();
 
 // 响应式状态
-const loading = ref(false)
-const error = ref<string | null>(null)
-const selectedMethod = ref('')
+const loading = ref(false);
+const error = ref<string | null>(null);
+const selectedMethod = ref("");
 
 const orderItems = ref([
   {
-    id: '1',
-    name: '高效办公套件',
-    description: '提升办公效率的完整解决方案',
+    id: "1",
+    name: "高效办公套件",
+    description: "提升办公效率的完整解决方案",
     quantity: 1,
     price: 299,
-    image: '/placeholder.jpg'
-  }
-])
+    image: "/placeholder.jpg",
+  },
+]);
 
 const billingInfo = ref({
-  fullName: '',
-  email: '',
-  country: '',
-  city: '',
-  address: ''
-})
+  fullName: "",
+  email: "",
+  country: "",
+  city: "",
+  address: "",
+});
 
 const paymentMethods = [
   {
-    id: 'alipay',
-    name: '支付宝',
-    description: '使用支付宝安全快捷支付',
-    icon: '/payment-alipay.png'
+    id: "alipay",
+    name: "支付宝",
+    description: "使用支付宝安全快捷支付",
+    icon: "/payment-alipay.png",
   },
   {
-    id: 'wechat',
-    name: '微信支付',
-    description: '使用微信支付便捷支付',
-    icon: '/payment-wechat.png'
+    id: "wechat",
+    name: "微信支付",
+    description: "使用微信支付便捷支付",
+    icon: "/payment-wechat.png",
   },
   {
-    id: 'stripe',
-    name: '信用卡',
-    description: '支持 Visa、MasterCard 等',
-    icon: '/payment-stripe.png'
-  }
-]
+    id: "stripe",
+    name: "信用卡",
+    description: "支持 Visa、MasterCard 等",
+    icon: "/payment-stripe.png",
+  },
+];
 
 // 计算属性
 const subtotal = computed(() => {
-  return orderItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
-})
+  return orderItems.value.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+});
 
-const discount = computed(() => 0) // 暂时没有折扣
+const discount = computed(() => 0); // 暂时没有折扣
 
-const finalAmount = computed(() => subtotal.value - discount.value)
+const finalAmount = computed(() => subtotal.value - discount.value);
 
 const canPay = computed(() => {
-  return selectedMethod.value &&
-         billingInfo.value.fullName &&
-         billingInfo.value.email &&
-         billingInfo.value.country &&
-         billingInfo.value.city &&
-         billingInfo.value.address
-})
+  return (
+    selectedMethod.value &&
+    billingInfo.value.fullName &&
+    billingInfo.value.email &&
+    billingInfo.value.country &&
+    billingInfo.value.city &&
+    billingInfo.value.address
+  );
+});
 
 // 方法
 const loadOrderData = () => {
   // TODO: 根据路由参数加载订单数据
-  const productId = route.query.product
-  const orderId = route.query.order
-  
+  const productId = route.query.product;
+  const orderId = route.query.order;
+
   if (productId) {
     // 从产品创建订单
-    console.log('从产品创建订单:', productId)
+    console.log("从产品创建订单:", productId);
   } else if (orderId) {
     // 加载现有订单
-    console.log('加载现有订单:', orderId)
+    console.log("加载现有订单:", orderId);
   }
-}
+};
 
 const handlePayment = async () => {
   try {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
 
     // TODO: 实现支付逻辑
     // const paymentResult = await PaymentService.processPayment({
@@ -263,29 +264,29 @@ const handlePayment = async () => {
     // })
 
     // 模拟支付处理
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // 支付成功，跳转到成功页面
-    router.push('/payment/success')
+    router.push("/payment/success");
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '支付失败，请重试'
+    error.value = err instanceof Error ? err.message : "支付失败，请重试";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const goBack = () => {
-  router.go(-1)
-}
+  router.go(-1);
+};
 
 // 生命周期
 onMounted(() => {
-  loadOrderData()
+  loadOrderData();
   // 默认选择第一个支付方式
   if (paymentMethods.length > 0) {
-    selectedMethod.value = paymentMethods[0].id
+    selectedMethod.value = paymentMethods[0].id;
   }
-})
+});
 </script>
 
 <style scoped>
@@ -598,8 +599,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {
@@ -617,19 +622,19 @@ onMounted(() => {
   .payment-view {
     padding: 1rem;
   }
-  
+
   .payment-container {
     padding: 1.5rem;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .payment-actions {
     flex-direction: column;
   }
-  
+
   .method-content {
     flex-direction: column;
     text-align: center;
