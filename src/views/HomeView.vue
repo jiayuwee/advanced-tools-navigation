@@ -272,7 +272,7 @@ import {
   SearchIcon,
   StarIcon,
   UserIcon,
-  GridIcon,
+  GripIcon as GridIcon,
   ExternalLinkIcon,
   EyeIcon,
 } from "lucide-vue-next";
@@ -287,7 +287,7 @@ const getCurrentCategoryName = () => {
   if (toolsStore.selectedCategory === "favorites") return "我的收藏";
 
   const category = toolsStore.categories.find(
-    (c) => c.id === toolsStore.selectedCategory,
+    (c) => c.id === toolsStore.selectedCategory
   );
   return category ? category.name : "未知分类";
 };

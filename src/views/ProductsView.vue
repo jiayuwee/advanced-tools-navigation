@@ -154,7 +154,7 @@ import { useRouter } from "vue-router";
 import {
   PlusIcon,
   SearchIcon,
-  GridIcon,
+  GripIcon as GridIcon,
   ListIcon,
   ShoppingCartIcon,
   EyeIcon,
@@ -220,7 +220,7 @@ const filteredProducts = computed(() => {
   // 按分类筛选
   if (selectedCategory.value !== "all") {
     filtered = filtered.filter(
-      (product) => product.category === selectedCategory.value,
+      (product) => product.category === selectedCategory.value
     );
   }
 
@@ -231,7 +231,7 @@ const filteredProducts = computed(() => {
       (product) =>
         product.name.toLowerCase().includes(query) ||
         product.description.toLowerCase().includes(query) ||
-        product.tags.some((tag) => tag.toLowerCase().includes(query)),
+        product.tags.some((tag) => tag.toLowerCase().includes(query))
     );
   }
 
