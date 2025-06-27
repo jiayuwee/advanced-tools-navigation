@@ -230,7 +230,7 @@ import { useToolsStore } from "../stores/tools";
 import {
   SearchIcon,
   XIcon,
-  GridIcon,
+  GripIcon as GridIcon,
   ListIcon,
   StarIcon,
   EyeIcon,
@@ -309,7 +309,7 @@ watch(
       toolsStore.setSearchQuery(newQuery.search);
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 // 监听分类变化

@@ -139,7 +139,12 @@ import { useRouter } from "vue-router";
 import { useToolsStore } from "@/stores/tools";
 import { useCategoriesStore } from "@/stores/categories";
 import { useAuthStore } from "@/stores/auth";
-import { GridIcon, StarIcon, PackageIcon, HeartIcon } from "lucide-vue-next";
+import {
+  GripIcon as GridIcon,
+  StarIcon,
+  PackageIcon,
+  HeartIcon,
+} from "lucide-vue-next";
 import EnhancedSearchBox from "@/components/search/EnhancedSearchBox.vue";
 
 // 状态管理
