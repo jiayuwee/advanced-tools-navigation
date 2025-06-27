@@ -9,19 +9,19 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",
-    component: () => import("../views/HomeView.vue"),
+    component: () => import("../views/EnhancedHomeView.vue"),
     meta: {
       title: "工具导航站",
       description: "高效的工具导航和产品展示平台",
     },
   },
   {
-    path: "/enhanced",
-    name: "EnhancedHome",
-    component: () => import("../views/EnhancedHomeView.vue"),
+    path: "/legacy",
+    name: "LegacyHome",
+    component: () => import("../views/HomeView.vue"),
     meta: {
-      title: "增强版工具导航站",
-      description: "全新设计的工具导航和产品展示平台",
+      title: "传统版工具导航站",
+      description: "传统版本的工具导航和产品展示平台",
     },
   },
   {
