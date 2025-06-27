@@ -243,30 +243,7 @@ const routes: RouteRecordRaw[] = [
       description: "您访问的页面不存在",
     },
   },
-  // 添加开发者工具路由
-  {
-    path: "/dev",
-    name: "DevelopmentTools",
-    component: () => import("../views/DevelopmentToolsView.vue"),
-    meta: {
-      title: "开发者工具",
-      description: "开发者调试和测试工具集",
-      requiresAuth: true,
-      requiresAdmin: true,
-    },
-    children: [
-      {
-        path: "console",
-        name: "DevelopmentConsole",
-        component: () => import("../views/dev/ConsoleView.vue"),
-        meta: {
-          title: "开发控制台",
-          requiresAuth: true,
-          requiresAdmin: true,
-        },
-      },
-    ],
-  },
+  // 开发者工具路由已移除 - 文件不存在
 ];
 
 // 创建路由实例
