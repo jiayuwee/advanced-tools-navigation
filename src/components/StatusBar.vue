@@ -35,7 +35,7 @@
         <div class="status-item version">
           <span class="status-text">v{{ version }}</span>
         </div>
-        <button class="status-btn" @click="toggleFullscreen" title="全屏切换">
+        <button class="status-btn" title="全屏切换" @click="toggleFullscreen">
           <MaximizeIcon v-if="!isFullscreen" class="status-icon" />
           <MinimizeIcon v-else class="status-icon" />
         </button>

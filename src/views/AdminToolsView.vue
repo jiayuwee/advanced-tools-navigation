@@ -6,18 +6,15 @@
     </div>
 
     <div class="admin-actions">
-      <button 
+      <button
         class="action-button primary"
         :disabled="loading"
         @click="addNewTools"
       >
-        {{ loading ? '添加中...' : '添加新工具' }}
+        {{ loading ? "添加中..." : "添加新工具" }}
       </button>
-      
-      <button 
-        class="action-button secondary"
-        @click="refreshTools"
-      >
+
+      <button class="action-button secondary" @click="refreshTools">
         刷新工具列表
       </button>
     </div>
@@ -47,11 +44,7 @@
     <div class="tools-preview">
       <h2>最新添加的工具</h2>
       <div class="tools-grid">
-        <div 
-          v-for="tool in recentTools" 
-          :key="tool.id"
-          class="tool-card"
-        >
+        <div v-for="tool in recentTools" :key="tool.id" class="tool-card">
           <div class="tool-icon">{{ tool.icon }}</div>
           <div class="tool-info">
             <h3>{{ tool.name }}</h3>
@@ -68,66 +61,70 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useToolsStore } from '../stores/tools'
-import { useCategoriesStore } from '../stores/categories'
-import { addAdditionalTools } from '../utils/add-tools'
+import { ref, computed, onMounted } from "vue";
+import { useToolsStore } from "../stores/tools";
+import { useCategoriesStore } from "../stores/categories";
+import { addAdditionalTools } from "../utils/add-tools";
 
-const toolsStore = useToolsStore()
-const categoriesStore = useCategoriesStore()
+const toolsStore = useToolsStore();
+const categoriesStore = useCategoriesStore();
 
-const loading = ref(false)
-const message = ref('')
-const messageType = ref<'success' | 'error'>('success')
+const loading = ref(false);
+const message = ref("");
+const messageType = ref<"success" | "error">("success");
 
-const featuredCount = computed(() => 
-  toolsStore.tools.filter(tool => tool.isFeatured).length
-)
+const featuredCount = computed(
+  () => toolsStore.tools.filter((tool) => tool.isFeatured).length,
+);
 
-const recentTools = computed(() => 
+const recentTools = computed(() =>
   toolsStore.tools
     .slice()
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 6)
-)
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .slice(0, 6),
+);
 
 const addNewTools = async () => {
   try {
-    loading.value = true
-    message.value = ''
-    
-    await addAdditionalTools()
-    
+    loading.value = true;
+    message.value = "";
+
+    await addAdditionalTools();
+
     // 刷新工具列表
-    await toolsStore.initialize()
-    
-    message.value = '成功添加新工具！'
-    messageType.value = 'success'
+    await toolsStore.initialize();
+
+    message.value = "成功添加新工具！";
+    messageType.value = "success";
   } catch (error) {
-    console.error('添加工具失败:', error)
-    message.value = '添加工具失败: ' + (error instanceof Error ? error.message : '未知错误')
-    messageType.value = 'error'
+    console.error("添加工具失败:", error);
+    message.value =
+      "添加工具失败: " + (error instanceof Error ? error.message : "未知错误");
+    messageType.value = "error";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const refreshTools = async () => {
   try {
-    await toolsStore.initialize()
-    await categoriesStore.initialize()
-    message.value = '工具列表已刷新'
-    messageType.value = 'success'
+    await toolsStore.initialize();
+    await categoriesStore.initialize();
+    message.value = "工具列表已刷新";
+    messageType.value = "success";
   } catch (error) {
-    message.value = '刷新失败'
-    messageType.value = 'error'
+    message.value = "刷新失败";
+    messageType.value = "error";
   }
-}
+};
 
 onMounted(async () => {
-  await toolsStore.initialize()
-  await categoriesStore.initialize()
-})
+  await toolsStore.initialize();
+  await categoriesStore.initialize();
+});
 </script>
 
 <style scoped>

@@ -1,9 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
-import type { Database } from '../types/database'
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "../types/database";
 
 // Supabase 配置
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key'
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL || "https://your-project.supabase.co";
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY || "your-anon-key";
 
 // 创建 Supabase 客户端
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
@@ -12,134 +14,134 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     detectSessionInUrl: true,
   },
-})
+});
 
 // 数据库表名常量
 export const TABLES = {
-  TOOLS: 'tools',
-  CATEGORIES: 'categories',
-  PRODUCTS: 'products',
-  PRODUCT_CATEGORIES: 'product_categories',
-  USERS: 'users',
-  USER_PROFILES: 'user_profiles',
-  FAVORITES: 'favorites',
-  ORDERS: 'orders',
-  ORDER_ITEMS: 'order_items',
-  PAYMENTS: 'payments',
-  REVIEWS: 'reviews',
-  TAGS: 'tags',
-  TOOL_TAGS: 'tool_tags',
-  ANALYTICS: 'analytics',
-} as const
+  TOOLS: "tools",
+  CATEGORIES: "categories",
+  PRODUCTS: "products",
+  PRODUCT_CATEGORIES: "product_categories",
+  USERS: "users",
+  USER_PROFILES: "user_profiles",
+  FAVORITES: "favorites",
+  ORDERS: "orders",
+  ORDER_ITEMS: "order_items",
+  PAYMENTS: "payments",
+  REVIEWS: "reviews",
+  TAGS: "tags",
+  TOOL_TAGS: "tool_tags",
+  ANALYTICS: "analytics",
+} as const;
 
 // 存储桶名称常量
 export const STORAGE_BUCKETS = {
-  AVATARS: 'avatars',
-  PRODUCT_IMAGES: 'product-images',
-  TOOL_ICONS: 'tool-icons',
-  UPLOADS: 'uploads',
-} as const
+  AVATARS: "avatars",
+  PRODUCT_IMAGES: "product-images",
+  TOOL_ICONS: "tool-icons",
+  UPLOADS: "uploads",
+} as const;
 
 // 实时订阅配置
 export const REALTIME_CHANNELS = {
-  TOOLS: 'tools-channel',
-  PRODUCTS: 'products-channel',
-  ORDERS: 'orders-channel',
-  ANALYTICS: 'analytics-channel',
-} as const
+  TOOLS: "tools-channel",
+  PRODUCTS: "products-channel",
+  ORDERS: "orders-channel",
+  ANALYTICS: "analytics-channel",
+} as const;
 
 // 错误处理工具函数
 export const handleSupabaseError = (error: any) => {
-  console.error('Supabase Error:', error)
-  
+  console.error("Supabase Error:", error);
+
   if (error?.message) {
-    return error.message
+    return error.message;
   }
-  
+
   if (error?.error_description) {
-    return error.error_description
+    return error.error_description;
   }
-  
-  return '操作失败，请稍后重试'
-}
+
+  return "操作失败，请稍后重试";
+};
 
 // 检查用户是否已认证
 export const isAuthenticated = async () => {
-  const { data: { session } } = await supabase.auth.getSession()
-  return !!session
-}
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  return !!session;
+};
 
 // 获取当前用户
 export const getCurrentUser = async () => {
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
-}
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
+};
 
 // 获取用户角色
 export const getUserRole = async (userId: string) => {
   const { data, error } = await supabase
     .from(TABLES.USER_PROFILES)
-    .select('role')
-    .eq('id', userId)
-    .single()
-  
+    .select("role")
+    .eq("id", userId)
+    .single();
+
   if (error) {
-    console.error('Error fetching user role:', error)
-    return 'user'
+    console.error("Error fetching user role:", error);
+    return "user";
   }
-  
-  return data?.role || 'user'
-}
+
+  return data?.role || "user";
+};
 
 // 检查用户是否为管理员
 export const isAdmin = async (userId?: string) => {
   if (!userId) {
-    const user = await getCurrentUser()
-    if (!user) return false
-    userId = user.id
+    const user = await getCurrentUser();
+    if (!user) return false;
+    userId = user.id;
   }
-  
-  const role = await getUserRole(userId)
-  return role === 'admin' || role === 'super_admin'
-}
+
+  const role = await getUserRole(userId);
+  return role === "admin" || role === "super_admin";
+};
 
 // 文件上传工具函数
 export const uploadFile = async (
   bucket: string,
   path: string,
   file: File,
-  options?: { upsert?: boolean }
+  options?: { upsert?: boolean },
 ) => {
   const { data, error } = await supabase.storage
     .from(bucket)
-    .upload(path, file, options)
-  
+    .upload(path, file, options);
+
   if (error) {
-    throw new Error(handleSupabaseError(error))
+    throw new Error(handleSupabaseError(error));
   }
-  
-  return data
-}
+
+  return data;
+};
 
 // 获取文件公共URL
 export const getPublicUrl = (bucket: string, path: string) => {
-  const { data } = supabase.storage
-    .from(bucket)
-    .getPublicUrl(path)
-  
-  return data.publicUrl
-}
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+
+  return data.publicUrl;
+};
 
 // 删除文件
 export const deleteFile = async (bucket: string, path: string) => {
-  const { error } = await supabase.storage
-    .from(bucket)
-    .remove([path])
-  
+  const { error } = await supabase.storage.from(bucket).remove([path]);
+
   if (error) {
-    throw new Error(handleSupabaseError(error))
+    throw new Error(handleSupabaseError(error));
   }
-}
+};
 
 // 数据库查询工具函数
 export const createRecord = async <T>(table: string, data: Partial<T>) => {
@@ -147,99 +149,99 @@ export const createRecord = async <T>(table: string, data: Partial<T>) => {
     .from(table)
     .insert(data)
     .select()
-    .single()
-  
+    .single();
+
   if (error) {
-    throw new Error(handleSupabaseError(error))
+    throw new Error(handleSupabaseError(error));
   }
-  
-  return result
-}
+
+  return result;
+};
 
 export const updateRecord = async <T>(
   table: string,
   id: string,
-  data: Partial<T>
+  data: Partial<T>,
 ) => {
   const { data: result, error } = await supabase
     .from(table)
     .update(data)
-    .eq('id', id)
+    .eq("id", id)
     .select()
-    .single()
-  
+    .single();
+
   if (error) {
-    throw new Error(handleSupabaseError(error))
+    throw new Error(handleSupabaseError(error));
   }
-  
-  return result
-}
+
+  return result;
+};
 
 export const deleteRecord = async (table: string, id: string) => {
-  const { error } = await supabase
-    .from(table)
-    .delete()
-    .eq('id', id)
-  
+  const { error } = await supabase.from(table).delete().eq("id", id);
+
   if (error) {
-    throw new Error(handleSupabaseError(error))
+    throw new Error(handleSupabaseError(error));
   }
-}
+};
 
 export const getRecord = async <T>(table: string, id: string) => {
   const { data, error } = await supabase
     .from(table)
-    .select('*')
-    .eq('id', id)
-    .single()
-  
+    .select("*")
+    .eq("id", id)
+    .single();
+
   if (error) {
-    throw new Error(handleSupabaseError(error))
+    throw new Error(handleSupabaseError(error));
   }
-  
-  return data as T
-}
+
+  return data as T;
+};
 
 export const getRecords = async <T>(
   table: string,
   options?: {
-    select?: string
-    filter?: Record<string, any>
-    orderBy?: { column: string; ascending?: boolean }
-    limit?: number
-    offset?: number
-  }
+    select?: string;
+    filter?: Record<string, any>;
+    orderBy?: { column: string; ascending?: boolean };
+    limit?: number;
+    offset?: number;
+  },
 ) => {
-  let query = supabase.from(table).select(options?.select || '*')
-  
+  let query = supabase.from(table).select(options?.select || "*");
+
   // 应用过滤条件
   if (options?.filter) {
     Object.entries(options.filter).forEach(([key, value]) => {
-      query = query.eq(key, value)
-    })
+      query = query.eq(key, value);
+    });
   }
-  
+
   // 应用排序
   if (options?.orderBy) {
     query = query.order(options.orderBy.column, {
       ascending: options.orderBy.ascending ?? true,
-    })
+    });
   }
-  
+
   // 应用分页
   if (options?.limit) {
-    query = query.limit(options.limit)
+    query = query.limit(options.limit);
   }
-  
+
   if (options?.offset) {
-    query = query.range(options.offset, options.offset + (options.limit || 10) - 1)
+    query = query.range(
+      options.offset,
+      options.offset + (options.limit || 10) - 1,
+    );
   }
-  
-  const { data, error } = await query
-  
+
+  const { data, error } = await query;
+
   if (error) {
-    throw new Error(handleSupabaseError(error))
+    throw new Error(handleSupabaseError(error));
   }
-  
-  return data as T[]
-}
+
+  return data as T[];
+};

@@ -50,7 +50,7 @@ function checkSecretsConfiguration() {
 
   console.log("🔧 配置步骤:");
   console.log(
-    "1. 访问 GitHub 仓库: https://github.com/jiayuwee/advanced-tools-navigation"
+    "1. 访问 GitHub 仓库: https://github.com/jiayuwee/advanced-tools-navigation",
   );
   console.log('2. 点击 "Settings" 标签页');
   console.log('3. 在左侧菜单中点击 "Secrets and variables" > "Actions"');
@@ -65,7 +65,7 @@ function checkSecretsConfiguration() {
     console.log("✅ 本地环境变量已配置");
     console.log(`   VITE_SUPABASE_URL: ${supabaseUrl.substring(0, 30)}...`);
     console.log(
-      `   VITE_SUPABASE_ANON_KEY: ${supabaseKey.substring(0, 20)}...`
+      `   VITE_SUPABASE_ANON_KEY: ${supabaseKey.substring(0, 20)}...`,
     );
 
     // 测试连接
@@ -153,7 +153,7 @@ function showTroubleshooting() {
   console.log("- GitHub Actions 文档: https://docs.github.com/en/actions");
   console.log("- Supabase 文档: https://supabase.com/docs");
   console.log(
-    "- 项目 Issues: https://github.com/jiayuwee/advanced-tools-navigation/issues"
+    "- 项目 Issues: https://github.com/jiayuwee/advanced-tools-navigation/issues",
   );
 }
 

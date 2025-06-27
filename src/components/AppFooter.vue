@@ -95,8 +95,7 @@
           <div class="copyright">
             <p>&copy; 2024 工具导航站. 保留所有权利.</p>
             <p>
-              <a href="#">隐私政策</a> | 
-              <a href="#">服务条款</a> | 
+              <a href="#">隐私政策</a> | <a href="#">服务条款</a> |
               <a href="#">网站地图</a>
             </p>
           </div>
@@ -128,8 +127,8 @@ import {
   MailIcon,
   PhoneIcon,
   MapPinIcon,
-  ClockIcon
-} from 'lucide-vue-next'
+  ClockIcon,
+} from "lucide-vue-next";
 </script>
 
 <style scoped>

@@ -15,7 +15,9 @@
           <div class="stat-info">
             <div class="stat-number">{{ stats.totalTools }}</div>
             <div class="stat-label">工具总数</div>
-            <div class="stat-change positive">+{{ stats.newToolsThisMonth }} 本月新增</div>
+            <div class="stat-change positive">
+              +{{ stats.newToolsThisMonth }} 本月新增
+            </div>
           </div>
         </div>
 
@@ -26,7 +28,9 @@
           <div class="stat-info">
             <div class="stat-number">{{ stats.totalProducts }}</div>
             <div class="stat-label">产品总数</div>
-            <div class="stat-change positive">+{{ stats.newProductsThisMonth }} 本月新增</div>
+            <div class="stat-change positive">
+              +{{ stats.newProductsThisMonth }} 本月新增
+            </div>
           </div>
         </div>
 
@@ -37,7 +41,9 @@
           <div class="stat-info">
             <div class="stat-number">{{ stats.totalUsers }}</div>
             <div class="stat-label">用户总数</div>
-            <div class="stat-change positive">+{{ stats.newUsersThisMonth }} 本月新增</div>
+            <div class="stat-change positive">
+              +{{ stats.newUsersThisMonth }} 本月新增
+            </div>
           </div>
         </div>
 
@@ -46,9 +52,13 @@
             <DollarSignIcon class="icon" />
           </div>
           <div class="stat-info">
-            <div class="stat-number">¥{{ formatNumber(stats.totalRevenue) }}</div>
+            <div class="stat-number">
+              ¥{{ formatNumber(stats.totalRevenue) }}
+            </div>
             <div class="stat-label">总收入</div>
-            <div class="stat-change positive">+{{ stats.revenueGrowth }}% 本月增长</div>
+            <div class="stat-change positive">
+              +{{ stats.revenueGrowth }}% 本月增长
+            </div>
           </div>
         </div>
       </div>
@@ -69,7 +79,15 @@
             <div class="chart-placeholder">
               <TrendingUpIcon class="chart-icon" />
               <p>访问量图表</p>
-              <small>{{ visitsPeriod === '7d' ? '7天' : visitsPeriod === '30d' ? '30天' : '90天' }}内的访问趋势</small>
+              <small
+                >{{
+                  visitsPeriod === "7d"
+                    ? "7天"
+                    : visitsPeriod === "30d"
+                      ? "30天"
+                      : "90天"
+                }}内的访问趋势</small
+              >
             </div>
           </div>
         </div>
@@ -78,12 +96,18 @@
         <div class="dashboard-card">
           <div class="card-header">
             <h3>热门工具</h3>
-            <router-link to="/admin/tools" class="view-all">查看全部</router-link>
+            <router-link to="/admin/tools" class="view-all"
+              >查看全部</router-link
+            >
           </div>
           <div class="card-content">
             <div class="popular-items">
-              <div v-for="tool in popularTools" :key="tool.id" class="popular-item">
-                <div class="item-icon">{{ tool.icon || '🔧' }}</div>
+              <div
+                v-for="tool in popularTools"
+                :key="tool.id"
+                class="popular-item"
+              >
+                <div class="item-icon">{{ tool.icon || "🔧" }}</div>
                 <div class="item-info">
                   <div class="item-name">{{ tool.name }}</div>
                   <div class="item-stats">{{ tool.clickCount }} 次访问</div>
@@ -100,14 +124,24 @@
         <div class="dashboard-card">
           <div class="card-header">
             <h3>最新订单</h3>
-            <router-link to="/admin/orders" class="view-all">查看全部</router-link>
+            <router-link to="/admin/orders" class="view-all"
+              >查看全部</router-link
+            >
           </div>
           <div class="card-content">
             <div class="recent-orders">
-              <div v-for="order in recentOrders" :key="order.id" class="order-item">
+              <div
+                v-for="order in recentOrders"
+                :key="order.id"
+                class="order-item"
+              >
                 <div class="order-info">
-                  <div class="order-id">#{{ order.id.slice(-8).toUpperCase() }}</div>
-                  <div class="order-user">{{ order.user?.fullName || '匿名用户' }}</div>
+                  <div class="order-id">
+                    #{{ order.id.slice(-8).toUpperCase() }}
+                  </div>
+                  <div class="order-user">
+                    {{ order.user?.fullName || "匿名用户" }}
+                  </div>
                 </div>
                 <div class="order-amount">¥{{ order.totalAmount }}</div>
                 <div class="order-status" :class="order.status">
@@ -155,17 +189,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from "vue";
 import {
   WrenchIcon,
   ShoppingBagIcon,
   UsersIcon,
   DollarSignIcon,
-  TrendingUpIcon
-} from 'lucide-vue-next'
+  TrendingUpIcon,
+} from "lucide-vue-next";
 
 // 响应式状态
-const visitsPeriod = ref('30d')
+const visitsPeriod = ref("30d");
 const stats = ref({
   totalTools: 0,
   totalProducts: 0,
@@ -174,29 +208,29 @@ const stats = ref({
   newToolsThisMonth: 0,
   newProductsThisMonth: 0,
   newUsersThisMonth: 0,
-  revenueGrowth: 0
-})
+  revenueGrowth: 0,
+});
 
 const popularTools = ref([
-  { id: '1', name: 'VS Code', icon: '💻', clickCount: 1250 },
-  { id: '2', name: 'Figma', icon: '🎨', clickCount: 980 },
-  { id: '3', name: 'Notion', icon: '📝', clickCount: 756 }
-])
+  { id: "1", name: "VS Code", icon: "💻", clickCount: 1250 },
+  { id: "2", name: "Figma", icon: "🎨", clickCount: 980 },
+  { id: "3", name: "Notion", icon: "📝", clickCount: 756 },
+]);
 
 const recentOrders = ref([
   {
-    id: 'order-1',
-    user: { fullName: '张三' },
+    id: "order-1",
+    user: { fullName: "张三" },
     totalAmount: 299,
-    status: 'paid' as const
+    status: "paid" as const,
   },
   {
-    id: 'order-2',
-    user: { fullName: '李四' },
+    id: "order-2",
+    user: { fullName: "李四" },
     totalAmount: 199,
-    status: 'pending' as const
-  }
-])
+    status: "pending" as const,
+  },
+]);
 
 // 方法
 const loadDashboardData = async () => {
@@ -211,31 +245,31 @@ const loadDashboardData = async () => {
       newToolsThisMonth: 12,
       newProductsThisMonth: 5,
       newUsersThisMonth: 89,
-      revenueGrowth: 15.6
-    }
+      revenueGrowth: 15.6,
+    };
   } catch (error) {
-    console.error('加载仪表盘数据失败:', error)
+    console.error("加载仪表盘数据失败:", error);
   }
-}
+};
 
 const formatNumber = (num: number): string => {
-  return new Intl.NumberFormat('zh-CN').format(num)
-}
+  return new Intl.NumberFormat("zh-CN").format(num);
+};
 
 const getStatusText = (status: string): string => {
   const statusMap = {
-    pending: '待支付',
-    paid: '已支付',
-    cancelled: '已取消',
-    refunded: '已退款'
-  }
-  return statusMap[status as keyof typeof statusMap] || status
-}
+    pending: "待支付",
+    paid: "已支付",
+    cancelled: "已取消",
+    refunded: "已退款",
+  };
+  return statusMap[status as keyof typeof statusMap] || status;
+};
 
 // 生命周期
 onMounted(() => {
-  loadDashboardData()
-})
+  loadDashboardData();
+});
 </script>
 
 <style scoped>
@@ -285,20 +319,36 @@ onMounted(() => {
   justify-content: center;
 }
 
-.stat-icon.tools { background: #e3f2fd; }
-.stat-icon.products { background: #f3e5f5; }
-.stat-icon.users { background: #e8f5e8; }
-.stat-icon.revenue { background: #fff3e0; }
+.stat-icon.tools {
+  background: #e3f2fd;
+}
+.stat-icon.products {
+  background: #f3e5f5;
+}
+.stat-icon.users {
+  background: #e8f5e8;
+}
+.stat-icon.revenue {
+  background: #fff3e0;
+}
 
 .stat-icon .icon {
   width: 24px;
   height: 24px;
 }
 
-.stat-icon.tools .icon { color: #1976d2; }
-.stat-icon.products .icon { color: #7b1fa2; }
-.stat-icon.users .icon { color: #388e3c; }
-.stat-icon.revenue .icon { color: #f57c00; }
+.stat-icon.tools .icon {
+  color: #1976d2;
+}
+.stat-icon.products .icon {
+  color: #7b1fa2;
+}
+.stat-icon.users .icon {
+  color: #388e3c;
+}
+.stat-icon.revenue .icon {
+  color: #f57c00;
+}
 
 .stat-info {
   flex: 1;
@@ -498,11 +548,11 @@ onMounted(() => {
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .stat-card {
     flex-direction: column;
     text-align: center;

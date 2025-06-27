@@ -25,15 +25,15 @@
       </div>
 
       <div v-else-if="filteredOrders.length > 0" class="orders-list">
-        <div
-          v-for="order in filteredOrders"
-          :key="order.id"
-          class="order-item"
-        >
+        <div v-for="order in filteredOrders" :key="order.id" class="order-item">
           <div class="order-header">
             <div class="order-info">
-              <h3 class="order-number">订单号: {{ order.id.slice(-8).toUpperCase() }}</h3>
-              <p class="order-date">下单时间: {{ formatDate(order.createdAt) }}</p>
+              <h3 class="order-number">
+                订单号: {{ order.id.slice(-8).toUpperCase() }}
+              </h3>
+              <p class="order-date">
+                下单时间: {{ formatDate(order.createdAt) }}
+              </p>
             </div>
             <div class="order-status">
               <span class="status-badge" :class="order.status">
@@ -49,19 +49,22 @@
               class="order-item-detail"
             >
               <div class="item-image">
-                <img :src="item.product?.images?.[0] || '/placeholder.jpg'" :alt="item.product?.name" />
+                <img
+                  :src="item.product?.images?.[0] || '/placeholder.jpg'"
+                  :alt="item.product?.name"
+                />
               </div>
               <div class="item-info">
                 <h4 class="item-name">{{ item.product?.name }}</h4>
-                <p class="item-description">{{ item.product?.shortDescription }}</p>
+                <p class="item-description">
+                  {{ item.product?.shortDescription }}
+                </p>
                 <div class="item-meta">
                   <span class="item-quantity">数量: {{ item.quantity }}</span>
                   <span class="item-price">单价: ¥{{ item.unitPrice }}</span>
                 </div>
               </div>
-              <div class="item-total">
-                ¥{{ item.totalPrice }}
-              </div>
+              <div class="item-total">¥{{ item.totalPrice }}</div>
             </div>
           </div>
 
@@ -108,190 +111,192 @@
         <div class="empty-icon">📦</div>
         <h3>{{ getEmptyStateTitle() }}</h3>
         <p>{{ getEmptyStateDescription() }}</p>
-        <router-link to="/products" class="empty-action">去购买产品</router-link>
+        <router-link to="/products" class="empty-action"
+          >去购买产品</router-link
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { DownloadIcon } from 'lucide-vue-next'
-import type { Order } from '../../types'
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { DownloadIcon } from "lucide-vue-next";
+import type { Order } from "../../types";
 
-const router = useRouter()
+const router = useRouter();
 
 // 响应式状态
-const loading = ref(true)
-const activeFilter = ref('all')
-const orders = ref<Order[]>([])
+const loading = ref(true);
+const activeFilter = ref("all");
+const orders = ref<Order[]>([]);
 
 const statusFilters = [
-  { key: 'all', label: '全部订单' },
-  { key: 'pending', label: '待支付' },
-  { key: 'paid', label: '已支付' },
-  { key: 'cancelled', label: '已取消' },
-  { key: 'refunded', label: '已退款' }
-]
+  { key: "all", label: "全部订单" },
+  { key: "pending", label: "待支付" },
+  { key: "paid", label: "已支付" },
+  { key: "cancelled", label: "已取消" },
+  { key: "refunded", label: "已退款" },
+];
 
 // 计算属性
 const filteredOrders = computed(() => {
-  if (activeFilter.value === 'all') {
-    return orders.value
+  if (activeFilter.value === "all") {
+    return orders.value;
   }
-  return orders.value.filter(order => order.status === activeFilter.value)
-})
+  return orders.value.filter((order) => order.status === activeFilter.value);
+});
 
 const getFilterCount = (filterKey: string) => {
-  if (filterKey === 'all') return orders.value.length
-  return orders.value.filter(order => order.status === filterKey).length
-}
+  if (filterKey === "all") return orders.value.length;
+  return orders.value.filter((order) => order.status === filterKey).length;
+};
 
 // 方法
 const loadOrders = async () => {
   try {
-    loading.value = true
+    loading.value = true;
 
     // TODO: 实现加载订单逻辑
     // const userOrders = await OrdersService.getUserOrders()
-    
+
     // 模拟数据
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     orders.value = [
       {
-        id: 'order-1',
-        userId: 'user-1',
+        id: "order-1",
+        userId: "user-1",
         items: [
           {
-            id: 'item-1',
-            orderId: 'order-1',
-            productId: 'product-1',
+            id: "item-1",
+            orderId: "order-1",
+            productId: "product-1",
             quantity: 1,
             unitPrice: 299,
             totalPrice: 299,
             createdAt: new Date().toISOString(),
             product: {
-              id: 'product-1',
-              name: '高效办公套件',
-              shortDescription: '提升办公效率的完整解决方案',
-              images: ['/placeholder.jpg']
-            }
-          }
+              id: "product-1",
+              name: "高效办公套件",
+              shortDescription: "提升办公效率的完整解决方案",
+              images: ["/placeholder.jpg"],
+            },
+          },
         ],
         totalAmount: 299,
-        currency: 'CNY',
-        status: 'paid' as const,
-        paymentMethod: 'alipay',
+        currency: "CNY",
+        status: "paid" as const,
+        paymentMethod: "alipay",
         createdAt: new Date(Date.now() - 86400000).toISOString(),
         updatedAt: new Date().toISOString(),
-        completedAt: new Date().toISOString()
+        completedAt: new Date().toISOString(),
       },
       {
-        id: 'order-2',
-        userId: 'user-1',
+        id: "order-2",
+        userId: "user-1",
         items: [
           {
-            id: 'item-2',
-            orderId: 'order-2',
-            productId: 'product-2',
+            id: "item-2",
+            orderId: "order-2",
+            productId: "product-2",
             quantity: 1,
             unitPrice: 199,
             totalPrice: 199,
             createdAt: new Date().toISOString(),
             product: {
-              id: 'product-2',
-              name: '设计师工具包',
-              shortDescription: '专业设计师必备工具集合',
-              images: ['/placeholder.jpg']
-            }
-          }
+              id: "product-2",
+              name: "设计师工具包",
+              shortDescription: "专业设计师必备工具集合",
+              images: ["/placeholder.jpg"],
+            },
+          },
         ],
         totalAmount: 199,
-        currency: 'CNY',
-        status: 'pending' as const,
+        currency: "CNY",
+        status: "pending" as const,
         createdAt: new Date(Date.now() - 3600000).toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-    ]
+        updatedAt: new Date().toISOString(),
+      },
+    ];
   } catch (error) {
-    console.error('加载订单失败:', error)
+    console.error("加载订单失败:", error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const getStatusText = (status: string) => {
   const statusMap = {
-    pending: '待支付',
-    paid: '已支付',
-    cancelled: '已取消',
-    refunded: '已退款'
-  }
-  return statusMap[status as keyof typeof statusMap] || status
-}
+    pending: "待支付",
+    paid: "已支付",
+    cancelled: "已取消",
+    refunded: "已退款",
+  };
+  return statusMap[status as keyof typeof statusMap] || status;
+};
 
 const getEmptyStateTitle = () => {
   const titleMap = {
-    all: '暂无订单',
-    pending: '暂无待支付订单',
-    paid: '暂无已支付订单',
-    cancelled: '暂无已取消订单',
-    refunded: '暂无已退款订单'
-  }
-  return titleMap[activeFilter.value as keyof typeof titleMap] || '暂无订单'
-}
+    all: "暂无订单",
+    pending: "暂无待支付订单",
+    paid: "暂无已支付订单",
+    cancelled: "暂无已取消订单",
+    refunded: "暂无已退款订单",
+  };
+  return titleMap[activeFilter.value as keyof typeof titleMap] || "暂无订单";
+};
 
 const getEmptyStateDescription = () => {
   const descMap = {
-    all: '您还没有任何订单，去购买一些产品吧！',
-    pending: '您没有待支付的订单',
-    paid: '您没有已支付的订单',
-    cancelled: '您没有已取消的订单',
-    refunded: '您没有已退款的订单'
-  }
-  return descMap[activeFilter.value as keyof typeof descMap] || '暂无相关订单'
-}
+    all: "您还没有任何订单，去购买一些产品吧！",
+    pending: "您没有待支付的订单",
+    paid: "您没有已支付的订单",
+    cancelled: "您没有已取消的订单",
+    refunded: "您没有已退款的订单",
+  };
+  return descMap[activeFilter.value as keyof typeof descMap] || "暂无相关订单";
+};
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+  return new Date(dateString).toLocaleString("zh-CN");
+};
 
 const payOrder = (order: Order) => {
-  router.push(`/payment?order=${order.id}`)
-}
+  router.push(`/payment?order=${order.id}`);
+};
 
 const cancelOrder = async (order: Order) => {
-  if (!confirm('确定要取消这个订单吗？')) return
-  
+  if (!confirm("确定要取消这个订单吗？")) return;
+
   try {
     // TODO: 实现取消订单逻辑
     // await OrdersService.cancelOrder(order.id)
-    
-    const orderIndex = orders.value.findIndex(o => o.id === order.id)
+
+    const orderIndex = orders.value.findIndex((o) => o.id === order.id);
     if (orderIndex !== -1) {
-      orders.value[orderIndex].status = 'cancelled'
+      orders.value[orderIndex].status = "cancelled";
     }
   } catch (error) {
-    console.error('取消订单失败:', error)
+    console.error("取消订单失败:", error);
   }
-}
+};
 
 const downloadOrder = (order: Order) => {
   // TODO: 实现下载逻辑
-  console.log('下载订单产品:', order.id)
-}
+  console.log("下载订单产品:", order.id);
+};
 
 const viewOrderDetail = (order: Order) => {
   // TODO: 实现查看订单详情
-  console.log('查看订单详情:', order.id)
-}
+  console.log("查看订单详情:", order.id);
+};
 
 // 生命周期
 onMounted(() => {
-  loadOrders()
-})
+  loadOrders();
+});
 </script>
 
 <style scoped>
@@ -615,8 +620,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .icon {
@@ -629,33 +638,33 @@ onMounted(() => {
   .orders-view {
     padding: 1rem;
   }
-  
+
   .orders-filters {
     flex-wrap: wrap;
   }
-  
+
   .order-header {
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
   }
-  
+
   .order-footer {
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
   }
-  
+
   .order-actions {
     width: 100%;
     justify-content: flex-end;
   }
-  
+
   .order-item-detail {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .item-info {
     text-align: center;
   }

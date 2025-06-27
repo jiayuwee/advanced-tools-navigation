@@ -5,11 +5,11 @@
         <div class="cancel-icon">
           <XCircleIcon class="icon" />
         </div>
-        
+
         <h1 class="cancel-title">支付已取消</h1>
         <p class="cancel-message">您的支付已被取消，订单未完成</p>
-        
-        <div class="order-info" v-if="orderId">
+
+        <div v-if="orderId" class="order-info">
           <div class="info-item">
             <span class="label">订单号:</span>
             <span class="value">{{ orderId }}</span>
@@ -19,7 +19,7 @@
             <span class="value">{{ cancelTime }}</span>
           </div>
         </div>
-        
+
         <div class="next-steps">
           <h3>接下来您可以：</h3>
           <div class="steps-list">
@@ -33,7 +33,7 @@
                 </button>
               </div>
             </div>
-            
+
             <div class="step-item">
               <ShoppingCartIcon class="step-icon" />
               <div class="step-content">
@@ -44,7 +44,7 @@
                 </router-link>
               </div>
             </div>
-            
+
             <div class="step-item">
               <HeadphonesIcon class="step-icon" />
               <div class="step-content">
@@ -54,16 +54,14 @@
             </div>
           </div>
         </div>
-        
+
         <div class="action-buttons">
-          <router-link to="/" class="btn btn-secondary">
-            返回首页
-          </router-link>
+          <router-link to="/" class="btn btn-secondary"> 返回首页 </router-link>
           <router-link to="/products" class="btn btn-primary">
             继续购物
           </router-link>
         </div>
-        
+
         <div class="support-info">
           <p>如需帮助，请联系我们的客服团队</p>
           <div class="contact-methods">
@@ -83,49 +81,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import {
   XCircleIcon,
   RefreshCwIcon,
   ShoppingCartIcon,
   HeadphonesIcon,
   MailIcon,
-  PhoneIcon
-} from 'lucide-vue-next'
+  PhoneIcon,
+} from "lucide-vue-next";
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
 // 响应式状态
-const orderId = ref('')
-const cancelTime = ref('')
+const orderId = ref("");
+const cancelTime = ref("");
 
 // 方法
 const loadCancelInfo = () => {
   // TODO: 从路由参数或API加载取消信息
-  const orderParam = route.query.order
-  
+  const orderParam = route.query.order;
+
   if (orderParam) {
-    orderId.value = orderParam as string
+    orderId.value = orderParam as string;
   }
-  
+
   // 设置取消时间为当前时间
-  cancelTime.value = new Date().toLocaleString('zh-CN')
-}
+  cancelTime.value = new Date().toLocaleString("zh-CN");
+};
 
 const retryPayment = () => {
   if (orderId.value) {
-    router.push(`/payment?order=${orderId.value}`)
+    router.push(`/payment?order=${orderId.value}`);
   } else {
-    router.push('/payment')
+    router.push("/payment");
   }
-}
+};
 
 // 生命周期
 onMounted(() => {
-  loadCancelInfo()
-})
+  loadCancelInfo();
+});
 </script>
 
 <style scoped>
@@ -354,29 +352,29 @@ onMounted(() => {
   .payment-cancel-view {
     padding: 1rem;
   }
-  
+
   .cancel-container {
     padding: 2rem 1.5rem;
   }
-  
+
   .cancel-title {
     font-size: 2rem;
   }
-  
+
   .action-buttons {
     flex-direction: column;
   }
-  
+
   .contact-methods {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .step-item {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .step-icon {
     align-self: center;
   }

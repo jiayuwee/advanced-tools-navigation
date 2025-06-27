@@ -57,7 +57,11 @@
           class="table-row"
         >
           <div class="col-image">
-            <img :src="product.image" :alt="product.name" class="product-image" />
+            <img
+              :src="product.image"
+              :alt="product.name"
+              class="product-image"
+            />
           </div>
           <div class="col-name">
             <div class="product-name">{{ product.name }}</div>
@@ -81,7 +85,10 @@
             <button class="action-btn edit" @click="editProduct(product)">
               <EditIcon class="icon" />
             </button>
-            <button class="action-btn delete" @click="deleteProduct(product.id)">
+            <button
+              class="action-btn delete"
+              @click="deleteProduct(product.id)"
+            >
               <TrashIcon class="icon" />
             </button>
           </div>
@@ -90,10 +97,14 @@
     </div>
 
     <!-- 添加/编辑产品模态框 -->
-    <div v-if="showAddModal || showEditModal" class="modal-overlay" @click="closeModal">
+    <div
+      v-if="showAddModal || showEditModal"
+      class="modal-overlay"
+      @click="closeModal"
+    >
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h3>{{ showAddModal ? '添加产品' : '编辑产品' }}</h3>
+          <h3>{{ showAddModal ? "添加产品" : "编辑产品" }}</h3>
           <button class="close-btn" @click="closeModal">
             <XIcon class="icon" />
           </button>
@@ -104,7 +115,9 @@
         </div>
         <div class="modal-footer">
           <button class="btn secondary" @click="closeModal">取消</button>
-          <button class="btn primary">{{ showAddModal ? '添加' : '保存' }}</button>
+          <button class="btn primary">
+            {{ showAddModal ? "添加" : "保存" }}
+          </button>
         </div>
       </div>
     </div>
@@ -112,113 +125,119 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from "vue";
 import {
   PlusIcon,
   SearchIcon,
   EditIcon,
   TrashIcon,
   XIcon,
-  ShoppingBagIcon
-} from 'lucide-vue-next'
+  ShoppingBagIcon,
+} from "lucide-vue-next";
 
 // 响应式状态
-const loading = ref(true)
-const searchQuery = ref('')
-const statusFilter = ref('')
-const showAddModal = ref(false)
-const showEditModal = ref(false)
-const editingProduct = ref(null)
+const loading = ref(true);
+const searchQuery = ref("");
+const statusFilter = ref("");
+const showAddModal = ref(false);
+const showEditModal = ref(false);
+const editingProduct = ref(null);
 
 // 模拟产品数据
 const products = ref([
   {
     id: 1,
-    name: '高效办公套件',
-    description: '提升办公效率的完整解决方案',
+    name: "高效办公套件",
+    description: "提升办公效率的完整解决方案",
     price: 299,
     originalPrice: 399,
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=100&h=100&fit=crop',
-    category: '办公工具',
-    status: 'active'
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=100&h=100&fit=crop",
+    category: "办公工具",
+    status: "active",
   },
   {
     id: 2,
-    name: '设计师工具包',
-    description: '专业设计师必备工具集合',
+    name: "设计师工具包",
+    description: "专业设计师必备工具集合",
     price: 199,
-    image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=100&h=100&fit=crop',
-    category: '设计工具',
-    status: 'active'
+    image:
+      "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=100&h=100&fit=crop",
+    category: "设计工具",
+    status: "active",
   },
   {
     id: 3,
-    name: '开发者助手',
-    description: '程序员开发必备工具',
+    name: "开发者助手",
+    description: "程序员开发必备工具",
     price: 399,
     originalPrice: 499,
-    image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=100&h=100&fit=crop',
-    category: '开发工具',
-    status: 'draft'
-  }
-])
+    image:
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=100&h=100&fit=crop",
+    category: "开发工具",
+    status: "draft",
+  },
+]);
 
 // 计算属性
 const filteredProducts = computed(() => {
-  let filtered = products.value
+  let filtered = products.value;
 
   // 按搜索关键词筛选
   if (searchQuery.value.trim()) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(product =>
-      product.name.toLowerCase().includes(query) ||
-      product.description.toLowerCase().includes(query)
-    )
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query),
+    );
   }
 
   // 按状态筛选
   if (statusFilter.value) {
-    filtered = filtered.filter(product => product.status === statusFilter.value)
+    filtered = filtered.filter(
+      (product) => product.status === statusFilter.value,
+    );
   }
 
-  return filtered
-})
+  return filtered;
+});
 
 // 方法
 const getStatusText = (status: string) => {
   const statusMap = {
-    active: '已发布',
-    draft: '草稿',
-    inactive: '已下架'
-  }
-  return statusMap[status] || status
-}
+    active: "已发布",
+    draft: "草稿",
+    inactive: "已下架",
+  };
+  return statusMap[status] || status;
+};
 
 const editProduct = (product: any) => {
-  editingProduct.value = product
-  showEditModal.value = true
-}
+  editingProduct.value = product;
+  showEditModal.value = true;
+};
 
 const deleteProduct = (productId: number) => {
-  if (confirm('确定要删除这个产品吗？')) {
-    products.value = products.value.filter(p => p.id !== productId)
-    console.log('删除产品:', productId)
+  if (confirm("确定要删除这个产品吗？")) {
+    products.value = products.value.filter((p) => p.id !== productId);
+    console.log("删除产品:", productId);
   }
-}
+};
 
 const closeModal = () => {
-  showAddModal.value = false
-  showEditModal.value = false
-  editingProduct.value = null
-}
+  showAddModal.value = false;
+  showEditModal.value = false;
+  editingProduct.value = null;
+};
 
 // 生命周期
 onMounted(() => {
   // 模拟加载数据
   setTimeout(() => {
-    loading.value = false
-  }, 1000)
-})
+    loading.value = false;
+  }, 1000);
+});
 </script>
 
 <style scoped>
@@ -433,8 +452,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .empty-icon {

@@ -5,7 +5,7 @@
       <p>欢迎回来，请登录您的账户</p>
     </div>
 
-    <form @submit.prevent="handleLogin" class="login-form">
+    <form class="login-form" @submit.prevent="handleLogin">
       <div class="form-group">
         <label for="email">邮箱地址</label>
         <input
@@ -53,7 +53,7 @@
 
       <button type="submit" class="login-btn" :disabled="loading">
         <div v-if="loading" class="loading-spinner"></div>
-        <span>{{ loading ? '登录中...' : '登录' }}</span>
+        <span>{{ loading ? "登录中..." : "登录" }}</span>
       </button>
 
       <div v-if="error" class="error-message">
@@ -64,49 +64,51 @@
     <div class="login-footer">
       <p>
         还没有账户？
-        <router-link to="/auth/register" class="register-link">立即注册</router-link>
+        <router-link to="/auth/register" class="register-link"
+          >立即注册</router-link
+        >
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { EyeIcon, EyeOffIcon } from 'lucide-vue-next'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { EyeIcon, EyeOffIcon } from "lucide-vue-next";
 
-const router = useRouter()
+const router = useRouter();
 
 // 响应式状态
-const loading = ref(false)
-const error = ref<string | null>(null)
-const showPassword = ref(false)
+const loading = ref(false);
+const error = ref<string | null>(null);
+const showPassword = ref(false);
 const form = ref({
-  email: '',
-  password: '',
-  remember: false
-})
+  email: "",
+  password: "",
+  remember: false,
+});
 
 // 方法
 const handleLogin = async () => {
   try {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
 
     // TODO: 实现登录逻辑
     // const result = await AuthService.login(form.value)
-    
+
     // 模拟登录
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    console.log('登录成功:', form.value.email)
-    router.push('/')
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log("登录成功:", form.value.email);
+    router.push("/");
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '登录失败，请重试'
+    error.value = err instanceof Error ? err.message : "登录失败，请重试";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
 
 <style scoped>
@@ -221,7 +223,7 @@ const handleLogin = async () => {
 }
 
 .checkbox-label input:checked + .checkmark::after {
-  content: '✓';
+  content: "✓";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -275,8 +277,12 @@ const handleLogin = async () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {

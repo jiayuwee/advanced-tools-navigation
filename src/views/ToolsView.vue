@@ -14,7 +14,11 @@
               class="search-input"
               @input="handleSearch"
             />
-            <button v-if="searchQuery" class="clear-search" @click="clearSearch">
+            <button
+              v-if="searchQuery"
+              class="clear-search"
+              @click="clearSearch"
+            >
               <XIcon class="icon" />
             </button>
           </div>
@@ -60,7 +64,9 @@
         </div>
 
         <div class="results-info">
-          <span class="results-count"> 找到 {{ filteredTools.length }} 个工具 </span>
+          <span class="results-count">
+            找到 {{ filteredTools.length }} 个工具
+          </span>
         </div>
       </div>
     </div>
@@ -82,7 +88,10 @@
       </div>
 
       <!-- 工具网格视图 -->
-      <div v-else-if="filteredTools.length > 0 && viewMode === 'grid'" class="tools-grid">
+      <div
+        v-else-if="filteredTools.length > 0 && viewMode === 'grid'"
+        class="tools-grid"
+      >
         <div
           v-for="tool in filteredTools"
           :key="tool.id"
@@ -90,7 +99,7 @@
           @click="handleToolClick(tool)"
         >
           <div class="card-header">
-            <div class="tool-icon">{{ tool.icon || '🔧' }}</div>
+            <div class="tool-icon">{{ tool.icon || "🔧" }}</div>
             <button
               class="favorite-button"
               :class="{ active: tool.isFavorite }"
@@ -105,7 +114,11 @@
             <p class="tool-description">{{ tool.description }}</p>
 
             <div class="tool-tags">
-              <span v-for="tag in tool.tags.slice(0, 3)" :key="tag.id" class="tag">
+              <span
+                v-for="tag in tool.tags.slice(0, 3)"
+                :key="tag.id"
+                class="tag"
+              >
                 {{ tag.name }}
               </span>
               <span v-if="tool.tags.length > 3" class="tag more">
@@ -131,7 +144,10 @@
       </div>
 
       <!-- 工具列表视图 -->
-      <div v-else-if="filteredTools.length > 0 && viewMode === 'list'" class="tools-list">
+      <div
+        v-else-if="filteredTools.length > 0 && viewMode === 'list'"
+        class="tools-list"
+      >
         <div
           v-for="tool in filteredTools"
           :key="tool.id"
@@ -139,7 +155,7 @@
           @click="handleToolClick(tool)"
         >
           <div class="item-left">
-            <div class="tool-icon">{{ tool.icon || '🔧' }}</div>
+            <div class="tool-icon">{{ tool.icon || "🔧" }}</div>
             <div class="tool-info">
               <h3 class="tool-name">{{ tool.name }}</h3>
               <p class="tool-description">{{ tool.description }}</p>
@@ -153,7 +169,11 @@
 
           <div class="item-right">
             <div class="tool-tags">
-              <span v-for="tag in tool.tags.slice(0, 2)" :key="tag.id" class="tag">
+              <span
+                v-for="tag in tool.tags.slice(0, 2)"
+                :key="tag.id"
+                class="tag"
+              >
                 {{ tag.name }}
               </span>
             </div>
@@ -175,11 +195,19 @@
       <div v-else class="empty-state">
         <div class="empty-icon">🔍</div>
         <h3>未找到相关工具</h3>
-        <p v-if="searchQuery">没有找到包含 "{{ searchQuery }}" 的工具，尝试使用其他关键词搜索</p>
-        <p v-else-if="selectedCategory !== 'all'">该分类下暂无工具，请选择其他分类</p>
+        <p v-if="searchQuery">
+          没有找到包含 "{{ searchQuery }}" 的工具，尝试使用其他关键词搜索
+        </p>
+        <p v-else-if="selectedCategory !== 'all'">
+          该分类下暂无工具，请选择其他分类
+        </p>
         <p v-else>暂无工具数据，请稍后再试</p>
         <div class="empty-actions">
-          <button v-if="searchQuery" class="btn btn-primary" @click="clearSearch">
+          <button
+            v-if="searchQuery"
+            class="btn btn-primary"
+            @click="clearSearch"
+          >
             清除搜索条件
           </button>
           <button
@@ -196,9 +224,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useToolsStore } from '../stores/tools'
+import { ref, computed, watch, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useToolsStore } from "../stores/tools";
 import {
   SearchIcon,
   XIcon,
@@ -208,110 +236,112 @@ import {
   EyeIcon,
   FolderIcon,
   ExternalLinkIcon,
-} from 'lucide-vue-next'
+} from "lucide-vue-next";
 
-const route = useRoute()
-const router = useRouter()
-const toolsStore = useToolsStore()
+const route = useRoute();
+const router = useRouter();
+const toolsStore = useToolsStore();
 
 // 响应式状态
-const searchInput = ref<HTMLInputElement>()
-const searchQuery = ref('')
-const selectedCategory = ref('all')
-const sortBy = ref('name')
-const showFavoritesOnly = ref(false)
-const viewMode = ref<'grid' | 'list'>('grid')
+const searchInput = ref<HTMLInputElement>();
+const searchQuery = ref("");
+const selectedCategory = ref("all");
+const sortBy = ref("name");
+const showFavoritesOnly = ref(false);
+const viewMode = ref<"grid" | "list">("grid");
 
 // 计算属性
 const filteredTools = computed(() => {
-  let tools = toolsStore.filteredTools
+  let tools = toolsStore.filteredTools;
 
   // 收藏过滤
   if (showFavoritesOnly.value) {
-    tools = tools.filter(tool => tool.isFavorite)
+    tools = tools.filter((tool) => tool.isFavorite);
   }
 
   // 排序
   tools = [...tools].sort((a, b) => {
     switch (sortBy.value) {
-      case 'click_count':
-        return b.clickCount - a.clickCount
-      case 'created_at':
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      case 'name':
+      case "click_count":
+        return b.clickCount - a.clickCount;
+      case "created_at":
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      case "name":
       default:
-        return a.name.localeCompare(b.name)
+        return a.name.localeCompare(b.name);
     }
-  })
+  });
 
-  return tools
-})
+  return tools;
+});
 
 // 方法
 const handleSearch = () => {
-  toolsStore.setSearchQuery(searchQuery.value)
-}
+  toolsStore.setSearchQuery(searchQuery.value);
+};
 
 const clearSearch = () => {
-  searchQuery.value = ''
-  toolsStore.setSearchQuery('')
-}
+  searchQuery.value = "";
+  toolsStore.setSearchQuery("");
+};
 
 const handleToolClick = async (tool: any) => {
-  await toolsStore.incrementClickCount(tool.id)
-  window.open(tool.url, '_blank', 'noopener,noreferrer')
-}
+  await toolsStore.incrementClickCount(tool.id);
+  window.open(tool.url, "_blank", "noopener,noreferrer");
+};
 
 const retryLoad = async () => {
-  toolsStore.clearError()
-  await toolsStore.initialize()
-}
+  toolsStore.clearError();
+  await toolsStore.initialize();
+};
 
 // 监听路由参数
 watch(
   () => route.query,
-  newQuery => {
-    if (newQuery.category && typeof newQuery.category === 'string') {
-      selectedCategory.value = newQuery.category
+  (newQuery) => {
+    if (newQuery.category && typeof newQuery.category === "string") {
+      selectedCategory.value = newQuery.category;
     }
-    if (newQuery.search && typeof newQuery.search === 'string') {
-      searchQuery.value = newQuery.search
-      toolsStore.setSearchQuery(newQuery.search)
+    if (newQuery.search && typeof newQuery.search === "string") {
+      searchQuery.value = newQuery.search;
+      toolsStore.setSearchQuery(newQuery.search);
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 // 监听分类变化
-watch(selectedCategory, newCategory => {
-  toolsStore.setSelectedCategory(newCategory)
+watch(selectedCategory, (newCategory) => {
+  toolsStore.setSelectedCategory(newCategory);
   // 更新 URL 参数
-  const query = { ...route.query }
-  if (newCategory === 'all') {
-    delete query.category
+  const query = { ...route.query };
+  if (newCategory === "all") {
+    delete query.category;
   } else {
-    query.category = newCategory
+    query.category = newCategory;
   }
-  router.replace({ query })
-})
+  router.replace({ query });
+});
 
 // 监听搜索变化
-watch(searchQuery, newQuery => {
-  const query = { ...route.query }
+watch(searchQuery, (newQuery) => {
+  const query = { ...route.query };
   if (newQuery) {
-    query.search = newQuery
+    query.search = newQuery;
   } else {
-    delete query.search
+    delete query.search;
   }
-  router.replace({ query })
-})
+  router.replace({ query });
+});
 
 // 初始化
 onMounted(async () => {
   if (!toolsStore.initialized) {
-    await toolsStore.initialize()
+    await toolsStore.initialize();
   }
-})
+});
 </script>
 
 <style scoped>

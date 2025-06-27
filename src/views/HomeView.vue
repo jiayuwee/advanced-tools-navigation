@@ -46,8 +46,8 @@
               <button
                 v-if="toolsStore.searchQuery.trim()"
                 class="external-search-btn"
-                @click="searchExternal"
                 title="在Google中搜索"
+                @click="searchExternal"
               >
                 🌐
               </button>
@@ -287,7 +287,7 @@ const getCurrentCategoryName = () => {
   if (toolsStore.selectedCategory === "favorites") return "我的收藏";
 
   const category = toolsStore.categories.find(
-    (c) => c.id === toolsStore.selectedCategory
+    (c) => c.id === toolsStore.selectedCategory,
   );
   return category ? category.name : "未知分类";
 };
