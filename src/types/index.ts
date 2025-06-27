@@ -9,7 +9,7 @@ export interface Tool {
   icon: string;
   category_id: string; // 修改为 category_id
   tags: string[]; // 简化为字符串数组
-  isFavorite: boolean;
+  is_favorite?: boolean; // 修改为 is_favorite
   click_count: number; // 修改为 click_count
   is_featured: boolean; // 修改为 is_featured
   status: "active" | "inactive" | "pending";
@@ -19,6 +19,7 @@ export interface Tool {
   meta_title?: string; // 修改为 meta_title
   meta_description?: string; // 修改为 meta_description
   sort_order: number;
+  category?: Category; // 关联的分类信息（查询时包含）
 }
 
 // 分类相关类型
