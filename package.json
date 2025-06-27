@@ -38,6 +38,8 @@
     "test:e2e": "vitest run src/tests/e2e",
     "test:deployment": "node scripts/deployment/test-deployment-workflow.js",
     "pre-deploy": "node scripts/deployment/pre-deploy-check.mjs",
+    "build:optimize": "node scripts/performance/optimize-build.mjs",
+    "analyze": "npm run build && npx vite-bundle-analyzer dist",
     "monitor:health": "node scripts/deployment/monitor-deployment.js",
     "monitor:watch": "node scripts/deployment/monitor-deployment.js --monitor",
     "config:verify": "node scripts/deployment/verify-config-match.js",

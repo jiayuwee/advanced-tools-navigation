@@ -20,6 +20,9 @@
 
     <!-- 开发环境状态栏 -->
     <SimpleStatusBar v-if="isDev" />
+
+    <!-- 反馈组件 -->
+    <FeedbackWidget />
   </div>
 </template>
 
@@ -28,6 +31,7 @@ import { ref, onMounted, onErrorCaptured } from "vue";
 // import { useRouter } from "vue-router"; // 已移除未使用
 import AppFooter from "./components/AppFooter.vue";
 import SimpleStatusBar from "./components/SimpleStatusBar.vue";
+import FeedbackWidget from "./components/feedback/FeedbackWidget.vue";
 
 // 开发环境判断
 const isDev = import.meta.env.DEV;
