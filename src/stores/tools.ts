@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/supabase'
 import type { Tables } from '@/types/database'
 
 // 定义 Tool 类型，并扩展以包含关联的 category 数据
