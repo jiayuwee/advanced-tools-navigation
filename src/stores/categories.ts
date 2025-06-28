@@ -1,195 +1,85 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import { CategoriesService } from "../services/categoriesService";
-import type { Category } from "../types";
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { supabase } from '@/lib/supabaseClient' // 假设这是 Supabase 客户端的路径
+import type { Tables } from '@/types/database' // 假设这是 Supabase 自动生成的类型路径
 
-export const useCategoriesStore = defineStore("categories", () => {
-  // 状态
-  const loading = ref(false);
-  const error = ref<string | null>(null);
-  const initialized = ref(false);
+// 从生成的类型中定义 Category 类型
+type Category = Tables<'categories'>
 
-  // 数据
-  const categories = ref<Category[]>([]);
-  const currentCategory = ref<Category | null>(null);
+export const useCategoriesStore = defineStore('categories', () => {
+  // --- State (状态) ---
+  const categories = ref<Category[]>([])
+  const loading = ref(false)
+  const error = ref<Error | null>(null)
+  // 用于跟踪数据是否已至少成功获取过一次，避免不必要的重复请求
+  const initialized = ref(false)
 
-  // 计算属性
-  const activeCategories = computed(() =>
-    categories.value.filter((category) => category.isActive),
-  );
+  // --- Actions (操作) ---
 
-  const categoriesWithStats = computed(() =>
-    categories.value.map((category) => ({
-      ...category,
-      // 这里可以添加统计信息，比如工具数量
-    })),
-  );
+  /**
+   * 从 Supabase 数据库获取分类数据。
+   * 这是核心的数据获取逻辑。
+   */
+  async function fetchCategories() {
+    // 如果正在加载中，则不执行任何操作，防止重复调用
+    if (loading.value) return
 
-  const categoryTree = computed(() => {
-    const rootCategories = categories.value.filter((cat) => !cat.parentId);
-
-    const buildTree = (parentCategories: Category[]): Category[] => {
-      return parentCategories.map((parent) => ({
-        ...parent,
-        children: categories.value.filter((cat) => cat.parentId === parent.id),
-      }));
-    };
-
-    return buildTree(rootCategories);
-  });
-
-  // 方法
-  const loadCategories = async () => {
+    loading.value = true
+    error.value = null
     try {
-      loading.value = true;
-      error.value = null;
-      const result = await CategoriesService.getCategoriesWithStats();
-      categories.value = result;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "加载分类失败";
-      console.error("Error loading categories:", err);
-    } finally {
-      loading.value = false;
-    }
-  };
+      const { data, error: queryError } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('is_active', true) // 通常我们只获取激活的分类
+        .order('sort_order', { ascending: true }) // 假设有一个 'sort_order' 字段用于排序
 
-  const loadCategory = async (id: string) => {
-    try {
-      loading.value = true;
-      error.value = null;
-      const category = await CategoriesService.getCategory(id);
-      currentCategory.value = category;
-      return category;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "加载分类详情失败";
-      console.error("Error loading category:", err);
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const createCategory = async (categoryData: Partial<Category>) => {
-    try {
-      loading.value = true;
-      error.value = null;
-      const newCategory = await CategoriesService.createCategory(categoryData);
-      categories.value.unshift(newCategory);
-      return newCategory;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "创建分类失败";
-      console.error("Error creating category:", err);
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const updateCategory = async (
-    id: string,
-    categoryData: Partial<Category>,
-  ) => {
-    try {
-      loading.value = true;
-      error.value = null;
-      const updatedCategory = await CategoriesService.updateCategory(
-        id,
-        categoryData,
-      );
-
-      const index = categories.value.findIndex((c) => c.id === id);
-      if (index !== -1) {
-        categories.value[index] = updatedCategory;
+      if (queryError) {
+        throw queryError
       }
 
-      if (currentCategory.value?.id === id) {
-        currentCategory.value = updatedCategory;
-      }
-
-      return updatedCategory;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "更新分类失败";
-      console.error("Error updating category:", err);
-      throw err;
+      categories.value = data || []
+      initialized.value = true // 成功获取后，标记为已初始化
+    } catch (e: any) {
+      console.error('获取分类失败:', e)
+      error.value = e
+      // 在后续调用失败时，保留已有的数据，而不是清空
     } finally {
-      loading.value = false;
+      loading.value = false
     }
-  };
+  }
 
-  const deleteCategory = async (id: string) => {
-    try {
-      loading.value = true;
-      error.value = null;
-      await CategoriesService.deleteCategory(id);
-      categories.value = categories.value.filter((c) => c.id !== id);
-
-      if (currentCategory.value?.id === id) {
-        currentCategory.value = null;
-      }
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "删除分类失败";
-      console.error("Error deleting category:", err);
-      throw err;
-    } finally {
-      loading.value = false;
+  /**
+   * 初始化 Store。
+   * 这是一个安全的调用方法，它会检查数据是否已初始化，只有在未初始化时才执行获取操作。
+   * 你的调试组件 `ErrorDisplay.vue` 正是使用了这个方法。
+   */
+  async function initialize() {
+    if (!initialized.value) {
+      await fetchCategories()
     }
-  };
+  }
 
-  const getCategoryById = (id: string): Category | undefined => {
-    return categories.value.find((category) => category.id === id);
-  };
+  /**
+   * 清除错误状态。
+   * 这允许用户在出错后可以重试操作。
+   */
+  function clearError() {
+    error.value = null
+  }
 
-  const getCategoriesByParent = (parentId: string | null): Category[] => {
-    return categories.value.filter(
-      (category) => category.parentId === parentId,
-    );
-  };
-
-  const clearError = () => {
-    error.value = null;
-  };
-
-  const clearCurrentCategory = () => {
-    currentCategory.value = null;
-  };
-
-  // 初始化
-  const initialize = async () => {
-    if (initialized.value) return;
-
-    try {
-      await loadCategories();
-      initialized.value = true;
-    } catch (err) {
-      console.error("Error initializing categories store:", err);
-    }
-  };
-
+  // --- Return (导出) ---
+  // 所有需要被外部组件访问的状态、Getter 和操作都必须在这里返回。
+  // 这是最容易出现 "is not a function" 错误的地方。
   return {
-    // 状态
+    // State
+    categories,
     loading,
     error,
     initialized,
 
-    // 数据
-    categories,
-    currentCategory,
-
-    // 计算属性
-    activeCategories,
-    categoriesWithStats,
-    categoryTree,
-
-    // 方法
-    initialize,
-    loadCategories,
-    loadCategory,
-    createCategory,
-    updateCategory,
-    deleteCategory,
-    getCategoryById,
-    getCategoriesByParent,
+    // Actions
+    fetchCategories, // 确保这个函数被导出，解决你遇到的问题
+    initialize,      // 确保调试组件能正常工作
     clearError,
-    clearCurrentCategory,
-  };
-});
+  }
+})

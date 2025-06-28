@@ -23,6 +23,6 @@
       "@docs/*": ["./docs/*"]
     }
   },
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "vite.config.*"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "vite.config.*", "supabase/**/*.ts"],
   "exclude": ["src/**/__tests__/*"]
 }

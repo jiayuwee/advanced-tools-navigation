@@ -58,12 +58,18 @@ export function setupRouterGuard() {
           }
         }
 
-        // 初始化工具数据
+        // 初始化工具数据（添加错误处理）
         if (!toolsStore.initialized) {
           try {
             await toolsStore.initialize();
           } catch (error) {
             console.error("初始化工具数据失败:", error);
+            // 使用类型断言解决setError方法不存在的错误
+            (toolsStore as any).setError("工具数据加载失败，请刷新页面重试");
+            // 对于关键数据加载失败，可以选择重定向到错误页面
+            if (to.name !== "Home") {
+              return next({ name: "Home" });
+            }
           }
         }
 

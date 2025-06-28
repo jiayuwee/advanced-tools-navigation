@@ -33,15 +33,7 @@ const routes: RouteRecordRaw[] = [
       description: "展示原HTML代码与Vue组件化改造后的效果对比",
     },
   },
-  {
-    path: "/test-statusbar",
-    name: "TestStatusBar",
-    component: () => import("../views/TestStatusBar.vue"),
-    meta: {
-      title: "状态栏测试",
-      description: "测试底部状态栏组件功能",
-    },
-  },
+
   {
     path: "/tools",
     name: "Tools",

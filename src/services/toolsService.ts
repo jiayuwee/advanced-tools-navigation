@@ -1,18 +1,42 @@
 import { supabase, TABLES, handleSupabaseError } from "../lib/supabase";
 import type { Tool, SearchFilters, SearchResult } from "../types";
-// import type { Database } from "../types/database"; // 已移除未使用
 import {
   requireCategoryId,
   extractCategoryId,
   validateRequiredFields,
 } from "../utils/dataTransform";
-// import { CategoriesService } from "./categoriesService"; // 已移除未使用
 
-// type CategoryRow = Database["public"]["Tables"]["categories"]["Row"]; // 已移除未使用
+// 状态常量
+const TOOL_STATUS = {
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+};
 
-// 工具服务类
+// 工具输入类型（用于创建和更新），使用蛇形命名以匹配数据库字段
+interface ToolInput {
+  name: string;
+  description: string;
+  url: string;
+  category_id: string;
+  icon?: string;
+  is_featured?: boolean;
+  status?: string;
+  meta_title?: string;
+  meta_description?: string;
+  sort_order?: number;
+  updated_at?: string; // 添加更新字段
+}
+
+/**
+ * 工具服务类
+ * 提供工具数据的CRUD操作和搜索功能
+ */
 export class ToolsService {
-  // 获取所有工具
+  /**
+   * 获取所有工具
+   * @param {SearchFilters} [filters] - 搜索过滤器
+   * @returns {Promise<SearchResult<Tool>>} 搜索结果
+   */
   static async getTools(filters?: SearchFilters): Promise<SearchResult<Tool>> {
     try {
       let query = supabase
@@ -23,7 +47,7 @@ export class ToolsService {
           category:categories(*)
         `,
         )
-        .eq("status", "active");
+        .eq("status", TOOL_STATUS.ACTIVE);
 
       // 应用搜索过滤器
       if (filters?.query) {
@@ -94,8 +118,12 @@ export class ToolsService {
     }
   }
 
-  // 创建工具
-  static async createTool(toolData: Partial<Tool> | any): Promise<Tool> {
+  /**
+   * 创建新工具
+   * @param {ToolInput} toolData - 工具数据
+   * @returns {Promise<Tool>} 新创建的工具
+   */
+  static async createTool(toolData: ToolInput): Promise<Tool> {
     try {
       // 验证必需字段
       validateRequiredFields(toolData, ["name", "description", "url"], "Tool");
@@ -111,11 +139,11 @@ export class ToolsService {
           url: toolData.url,
           category_id: categoryId,
           icon: toolData.icon,
-          is_featured: toolData.isFeatured || false,
-          status: "active",
-          meta_title: toolData.metaTitle,
-          meta_description: toolData.metaDescription,
-          sort_order: toolData.sortOrder || 0,
+          is_featured: toolData.is_featured || false,
+          status: TOOL_STATUS.ACTIVE,
+          meta_title: toolData.meta_title,
+          meta_description: toolData.meta_description,
+          sort_order: toolData.sort_order || 0,
         })
         .select(
           `
@@ -136,13 +164,18 @@ export class ToolsService {
     }
   }
 
-  // 更新工具
+  /**
+   * 更新工具
+   * @param {string} id - 工具ID
+   * @param {Partial<ToolInput>} toolData - 要更新的工具数据
+   * @returns {Promise<Tool>} 更新后的工具
+   */
   static async updateTool(
     id: string,
-    toolData: Partial<Tool> | any,
+    toolData: Partial<ToolInput>,
   ): Promise<Tool> {
     try {
-      const updateData: any = {};
+      const updateData: Partial<ToolInput> = {};
 
       if (toolData.name) updateData.name = toolData.name;
       if (toolData.description) updateData.description = toolData.description;
@@ -155,15 +188,15 @@ export class ToolsService {
       }
 
       if (toolData.icon !== undefined) updateData.icon = toolData.icon;
-      if (toolData.isFeatured !== undefined)
-        updateData.is_featured = toolData.isFeatured;
+      if (toolData.is_featured !== undefined)
+        updateData.is_featured = toolData.is_featured;
       if (toolData.status) updateData.status = toolData.status;
-      if (toolData.metaTitle !== undefined)
-        updateData.meta_title = toolData.metaTitle;
-      if (toolData.metaDescription !== undefined)
-        updateData.meta_description = toolData.metaDescription;
-      if (toolData.sortOrder !== undefined)
-        updateData.sort_order = toolData.sortOrder;
+      if (toolData.meta_title !== undefined)
+        updateData.meta_title = toolData.meta_title;
+      if (toolData.meta_description !== undefined)
+        updateData.meta_description = toolData.meta_description;
+      if (toolData.sort_order !== undefined)
+        updateData.sort_order = toolData.sort_order;
 
       updateData.updated_at = new Date().toISOString();
 
@@ -204,24 +237,32 @@ export class ToolsService {
     }
   }
 
-  // 增加点击次数
+  // 增加点击次数（原子操作）
   static async incrementClickCount(id: string): Promise<void> {
     try {
-      // 先获取当前点击次数，然后更新
-      const { data: currentTool, error: fetchError } = await supabase
-        .from(TABLES.TOOLS)
-        .select("click_count")
-        .eq("id", id)
-        .single();
+      const { error } = await supabase.rpc("increment_click_count", {
+        tool_id: id,
+      });
 
-      if (fetchError) {
-        throw new Error(handleSupabaseError(fetchError));
+      if (error) {
+        throw new Error(handleSupabaseError(error));
       }
+    } catch (error) {
+      console.error("Error incrementing click count:", error);
+      throw error;
+    }
+  }
 
+  // 更新收藏状态
+  static async updateFavoriteStatus(
+    id: string,
+    isFavorite: boolean,
+  ): Promise<void> {
+    try {
       const { error } = await supabase
         .from(TABLES.TOOLS)
         .update({
-          click_count: (currentTool?.click_count || 0) + 1,
+          is_favorite: isFavorite,
           updated_at: new Date().toISOString(),
         })
         .eq("id", id);
@@ -230,7 +271,7 @@ export class ToolsService {
         throw new Error(handleSupabaseError(error));
       }
     } catch (error) {
-      console.error("Error incrementing click count:", error);
+      console.error("Error updating favorite status:", error);
       throw error;
     }
   }
@@ -246,7 +287,7 @@ export class ToolsService {
           category:categories(*)
         `,
         )
-        .eq("status", "active")
+        .eq("status", TOOL_STATUS.ACTIVE)
         .order("click_count", { ascending: false })
         .limit(limit);
 
@@ -272,7 +313,7 @@ export class ToolsService {
           category:categories(*)
         `,
         )
-        .eq("status", "active")
+        .eq("status", TOOL_STATUS.ACTIVE)
         .eq("is_featured", true)
         .order("sort_order", { ascending: true })
         .limit(limit);
@@ -299,7 +340,7 @@ export class ToolsService {
           category:categories(*)
         `,
         )
-        .eq("status", "active")
+        .eq("status", TOOL_STATUS.ACTIVE)
         .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
         .order("click_count", { ascending: false })
         .limit(limit);
@@ -325,7 +366,7 @@ export class ToolsService {
       icon: row.icon,
       category_id: row.category_id,
       tags: [], // TODO: 实现标签关联
-      isFavorite: false, // TODO: 根据用户状态设置
+      is_favorite: row.is_favorite,
       click_count: row.click_count,
       is_featured: row.is_featured,
       status: row.status,
