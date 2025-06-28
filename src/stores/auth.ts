@@ -1,240 +1,141 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import { AuthService } from "../services/authService";
-import { UserService } from "../services/userService";
-import type { User, LoginForm, RegisterForm } from "../types";
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { supabase } from '@/lib/supabase'
+import type { User as SupabaseUser, AuthError } from '@supabase/supabase-js'
+import type { Tables } from '@/types/database'
 
-export const useAuthStore = defineStore("auth", () => {
-  // 状态
-  const user = ref<User | null>(null);
-  const session = ref<any>(null);
-  const loading = ref(false);
-  const error = ref<string | null>(null);
-  const initialized = ref(false);
+/**
+ * 扩展的用户信息类型，
+ * 结合了 Supabase Auth User 和我们自定义的 user_profiles 表数据。
+ */
+export type UserProfile = SupabaseUser & {
+  username: string
+  avatar_url: string
+  role: 'user' | 'admin' | 'super_admin'
+}
 
-  // 计算属性
-  const isAuthenticated = computed(() => !!user.value && !!session.value);
-  const isAdmin = computed(
-    () => user.value?.role === "admin" || user.value?.role === "super_admin",
-  );
-  const userInitials = computed(() => {
-    if (!user.value?.fullName) return "U";
-    return user.value.fullName
-      .split(" ")
-      .map((name) => name.charAt(0))
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  });
+export const useAuthStore = defineStore('auth', () => {
+  // --- State (状态) ---
+  const user = ref<UserProfile | null>(null)
+  const loading = ref(false)
+  const initialized = ref(false) // 标记是否已完成首次认证状态检查
+  const error = ref<AuthError | null>(null)
 
-  // 方法
-  const login = async (credentials: LoginForm) => {
-    try {
-      loading.value = true;
-      error.value = null;
+  // --- Getters (计算属性) ---
 
-      const result = await AuthService.login(credentials);
-      user.value = result.user;
-      session.value = result.session;
+  /**
+   * 用户是否已登录。
+   */
+  const isAuthenticated = computed(() => !!user.value)
 
-      return result;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "登录失败";
-      throw err;
-    } finally {
-      loading.value = false;
+  /**
+   * 用户是否为管理员。
+   * 这在 AppHeader.vue 中用于显示“管理后台”链接。
+   */
+  const isAdmin = computed(() => {
+    return user.value?.role === 'admin' || user.value?.role === 'super_admin'
+  })
+
+  // --- Actions (操作) ---
+
+  /**
+   * 从 user_profiles 表中获取用户的详细信息。
+   * @param userId - Supabase 用户的 ID。
+   */
+  async function fetchUserProfile(userId: string): Promise<Tables<'user_profiles'> | null> {
+    const { data, error: profileError } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
+
+    if (profileError) {
+      console.error('获取用户资料失败:', profileError)
+      return null
     }
-  };
+    return data
+  }
 
-  const register = async (userData: RegisterForm) => {
-    try {
-      loading.value = true;
-      error.value = null;
+  /**
+   * 初始化认证 Store。
+   * 这是 Store 最核心的方法，它会监听 Supabase 的认证状态变化。
+   * 应该在应用启动时调用一次。
+   */
+  function initialize() {
+    if (initialized.value) return
 
-      const result = await AuthService.register(userData);
-      user.value = result.user;
-      session.value = result.session;
-
-      return result;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "注册失败";
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const logout = async () => {
-    try {
-      loading.value = true;
-      error.value = null;
-
-      await AuthService.logout();
-      user.value = null;
-      session.value = null;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "登出失败";
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const forgotPassword = async (email: string) => {
-    try {
-      loading.value = true;
-      error.value = null;
-
-      await AuthService.forgotPassword(email);
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "发送重置邮件失败";
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const resetPassword = async (newPassword: string) => {
-    try {
-      loading.value = true;
-      error.value = null;
-
-      await AuthService.resetPassword(newPassword);
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "重置密码失败";
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const updateProfile = async (profileData: any) => {
-    try {
-      loading.value = true;
-      error.value = null;
-
-      if (!user.value) throw new Error("用户未登录");
-
-      const updatedUser = await UserService.updateProfile(
-        user.value.id,
-        profileData,
-      );
-      user.value = updatedUser;
-
-      return updatedUser;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "更新资料失败";
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const refreshSession = async () => {
-    try {
-      const newSession = await AuthService.refreshSession();
-      session.value = newSession;
-      return newSession;
-    } catch (err) {
-      console.error("刷新会话失败:", err);
-      // 如果刷新失败，清除用户状态
-      user.value = null;
-      session.value = null;
-      throw err;
-    }
-  };
-
-  const checkAuth = async () => {
-    try {
-      const currentUser = await UserService.getCurrentUser();
-      const currentSession = await AuthService.getSession();
-
-      if (currentUser && currentSession) {
-        user.value = currentUser;
-        session.value = currentSession;
-        return true;
-      } else {
-        user.value = null;
-        session.value = null;
-        return false;
-      }
-    } catch (err) {
-      console.error("检查认证状态失败:", err);
-      user.value = null;
-      session.value = null;
-      return false;
-    }
-  };
-
-  const initialize = async () => {
-    if (initialized.value) return;
-
-    try {
-      loading.value = true;
-      await checkAuth();
-
-      // 监听认证状态变化
-      AuthService.onAuthStateChange((event, session) => {
-        if (event === "SIGNED_IN") {
-          checkAuth();
-        } else if (event === "SIGNED_OUT") {
-          user.value = null;
-          session.value = null;
-        } else if (event === "TOKEN_REFRESHED") {
-          session.value = session;
+    loading.value = true
+    
+    supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        const profile = await fetchUserProfile(session.user.id)
+        if (profile) {
+          // 组合 Supabase Auth User 和 user_profiles 数据
+          user.value = {
+            ...session.user,
+            username: profile.username || '未设置用户名',
+            avatar_url: profile.avatar_url || '',
+            role: profile.role || 'user',
+          }
+        } else {
+          // 如果没有 profile，也设置基础 user 信息，避免应用卡死
+          user.value = {
+            ...session.user,
+            username: session.user.email || '新用户',
+            avatar_url: '',
+            role: 'user',
+          }
         }
-      });
+      } else {
+        user.value = null
+      }
+      // 标记为已初始化，无论成功与否
+      initialized.value = true
+      loading.value = false
+    })
+  }
 
-      initialized.value = true;
-    } catch (err) {
-      console.error("初始化认证状态失败:", err);
+  /**
+   * 用户登出。
+   * 由 AppHeader.vue 调用。
+   */
+  async function logout() {
+    loading.value = true
+    error.value = null
+    try {
+      const { error: signOutError } = await supabase.auth.signOut()
+      if (signOutError) throw signOutError
+      // onAuthStateChange 会自动将 user.value 设置为 null
+    } catch (e: any) {
+      error.value = e
+      console.error('退出登录失败:', e)
     } finally {
-      loading.value = false;
+      loading.value = false
     }
-  };
+  }
 
-  const clearError = () => {
-    error.value = null;
-  };
+  /**
+   * 清除错误状态。
+   * 由 ErrorDisplay.vue 调用。
+   */
+  function clearError() {
+    error.value = null
+  }
 
-  const requireAuth = () => {
-    if (!isAuthenticated.value) {
-      throw new Error("需要登录才能访问");
-    }
-  };
-
-  const requireAdmin = () => {
-    requireAuth();
-    if (!isAdmin.value) {
-      throw new Error("需要管理员权限");
-    }
-  };
-
+  // --- Return (导出) ---
   return {
-    // 状态
+    // State
     user,
-    session,
     loading,
-    error,
     initialized,
-
-    // 计算属性
+    error,
+    // Getters
     isAuthenticated,
     isAdmin,
-    userInitials,
-
-    // 方法
-    login,
-    register,
-    logout,
-    forgotPassword,
-    resetPassword,
-    updateProfile,
-    refreshSession,
-    checkAuth,
+    // Actions
     initialize,
+    logout,
     clearError,
-    requireAuth,
-    requireAdmin,
-  };
-});
+    // 可以根据需要添加 login, register, etc.
+  }
+})
