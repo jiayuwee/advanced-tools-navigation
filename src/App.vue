@@ -8,6 +8,9 @@
       </div>
     </div>
 
+    <!-- 全局顶部导航栏 -->
+    <AppHeader />
+
     <!-- 路由视图 -->
     <RouterView v-slot="{ Component }">
       <transition name="fade" mode="out-in">
@@ -18,9 +21,6 @@
     <!-- 全局Footer -->
     <AppFooter />
 
-    <!-- 开发环境状态栏 -->
-    <SimpleStatusBar v-if="isDev" />
-
     <!-- 反馈组件 -->
     <FeedbackWidget />
   </div>
@@ -28,13 +28,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onErrorCaptured } from "vue";
-// import { useRouter } from "vue-router"; // 已移除未使用
+import AppHeader from "./components/AppHeader.vue";
 import AppFooter from "./components/AppFooter.vue";
-import SimpleStatusBar from "./components/SimpleStatusBar.vue";
 import FeedbackWidget from "./components/feedback/FeedbackWidget.vue";
-
-// 开发环境判断
-const isDev = import.meta.env.DEV;
 
 // 全局错误处理
 const error = ref<string | null>(null);

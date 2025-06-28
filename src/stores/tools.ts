@@ -1,214 +1,121 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import { ToolsService } from "../services/toolsService";
-import { CategoriesService } from "../services/categoriesService";
-import type { Tool, Category } from "../types";
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { supabase } from '@/lib/supabaseClient'
+import type { Tables } from '@/types/database'
 
-export const useToolsStore = defineStore("tools", () => {
-  // 状态
-  const searchQuery = ref("");
-  const selectedCategory = ref("all");
-  const showFavoritesOnly = ref(false);
-  const sidebarCollapsed = ref(false);
-  const loading = ref(false);
-  const error = ref<string | null>(null);
-  const initialized = ref(false);
+// 定义 Tool 类型，并扩展以包含关联的 category 数据
+// 这使得在组件中直接访问 tool.category.name 成为可能
+export type Tool = Tables<'tools'> & {
+  categories: Tables<'categories'> | null
+}
 
-  // 数据
-  const tools = ref<Tool[]>([
-    {
-      id: "1",
-      name: "Visual Studio Code",
-      description: "微软开发的免费代码编辑器，支持多种编程语言和丰富的插件生态",
-      url: "https://code.visualstudio.com/",
-      icon: "📝",
-      category_id: "1",
-      tags: ["编辑器", "开发", "免费", "微软"],
-      is_featured: true,
-      click_count: 1250,
-      isFavorite: false,
-      status: "active",
-      sort_order: 1,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      meta_title: "Visual Studio Code - 强大的代码编辑器",
-      meta_description:
-        "微软出品的轻量级但功能强大的代码编辑器，支持多种编程语言和丰富的插件生态",
-    },
-    {
-      id: "2",
-      name: "GitHub",
-      description: "全球最大的代码托管平台，支持Git版本控制和协作开发",
-      url: "https://github.com/",
-      icon: "🐙",
-      category_id: "1",
-      tags: ["代码托管", "Git", "协作", "开源"],
-      is_featured: true,
-      click_count: 2100,
-      isFavorite: false,
-      status: "active",
-      sort_order: 2,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      meta_title: "GitHub - 代码托管平台",
-      meta_description: "全球最大的代码托管平台，支持Git版本控制和开源协作",
-    },
-  ]);
+export const useToolsStore = defineStore('tools', () => {
+  // --- State (状态) ---
+  const tools = ref<Tool[]>([])
+  const loading = ref(false)
+  const error = ref<Error | null>(null)
+  const initialized = ref(false)
 
-  const categories = ref<Category[]>([
-    {
-      id: "1",
-      name: "开发工具",
-      description: "编程开发相关工具",
-      icon: "💻",
-      color: "#3498db",
-      count: 5,
-      sort_order: 1,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      name: "设计工具",
-      description: "UI/UX设计工具",
-      icon: "🎨",
-      color: "#e74c3c",
-      count: 3,
-      sort_order: 2,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-  ]);
+  // 状态：搜索查询，由 AppHeader.vue 使用
+  const searchQuery = ref('')
+  // 状态：侧边栏折叠状态，由 AppHeader.vue 使用
+  const sidebarCollapsed = ref(false)
 
-  // 计算属性
+  // --- Getters (计算属性) ---
+
+  /**
+   * 根据搜索查询动态过滤工具列表。
+   * 这是响应式的，当 searchQuery 或 tools 变化时会自动重新计算。
+   */
   const filteredTools = computed(() => {
-    let result = tools.value;
-
-    if (searchQuery.value) {
-      const query = searchQuery.value.toLowerCase();
-      result = result.filter(
-        (tool) =>
-          tool.name.toLowerCase().includes(query) ||
-          tool.description.toLowerCase().includes(query) ||
-          tool.tags.some((tag) => tag.toLowerCase().includes(query)),
-      );
+    if (!searchQuery.value) {
+      return tools.value
     }
+    const lowerCaseQuery = searchQuery.value.toLowerCase()
+    return tools.value.filter(tool =>
+      tool.name.toLowerCase().includes(lowerCaseQuery) ||
+      tool.description.toLowerCase().includes(lowerCaseQuery) ||
+      (tool.categories && tool.categories.name.toLowerCase().includes(lowerCaseQuery))
+    )
+  })
 
-    if (selectedCategory.value !== "all") {
-      result = result.filter(
-        (tool) => tool.category_id === selectedCategory.value,
-      );
-    }
+  // --- Actions (操作) ---
 
-    if (showFavoritesOnly.value) {
-      result = result.filter((tool) => tool.isFavorite);
-    }
+  /**
+   * 从 Supabase 数据库获取所有工具数据。
+   * 它会同时获取关联的分类信息。
+   */
+  async function fetchTools() {
+    if (loading.value) return
 
-    return result;
-  });
-
-  const favoriteTools = computed(() =>
-    tools.value.filter((tool) => tool.isFavorite),
-  );
-  const popularTools = computed(() =>
-    [...tools.value].sort((a, b) => b.click_count - a.click_count).slice(0, 5),
-  );
-  const featuredTools = computed(() =>
-    tools.value.filter((tool) => tool.is_featured),
-  );
-
-  // 方法
-  const initialize = async () => {
-    if (initialized.value) return;
-
+    loading.value = true
+    error.value = null
     try {
-      loading.value = true;
-      error.value = null;
+      const { data, error: queryError } = await supabase
+        .from('tools')
+        .select(`
+          *,
+          categories ( * )
+        `)
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
 
-      // 并行加载数据
-      await Promise.all([loadTools(), loadCategories()]);
+      if (queryError) {
+        throw queryError
+      }
 
-      initialized.value = true;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : "初始化失败";
-      console.error("Error initializing state:", err);
+      // Supabase 的类型生成器可能将单关系定义为对象而非数组
+      tools.value = (data as unknown as Tool[]) || []
+      initialized.value = true
+    } catch (e: any) {
+      console.error('获取工具列表失败:', e)
+      error.value = e
     } finally {
-      loading.value = false;
+      loading.value = false
     }
-  };
+  }
 
-  const loadTools = async () => {
-    try {
-      const toolsData = await ToolsService.getTools();
-      tools.value = (toolsData as any).items
-        ? (toolsData as any).items
-        : toolsData;
-    } catch (err) {
-      throw new Error("加载工具失败");
+  /**
+   * 初始化 Store，仅在未初始化时获取数据。
+   * 由 ErrorDisplay.vue 和应用主入口调用。
+   */
+  async function initialize() {
+    if (!initialized.value) {
+      await fetchTools()
     }
-  };
+  }
 
-  const loadCategories = async () => {
-    try {
-      const categoriesData = await CategoriesService.getCategories();
-      categories.value = categoriesData;
-    } catch (err) {
-      throw new Error("加载分类失败");
-    }
-  };
+  /**
+   * 切换侧边栏的折叠状态。
+   * 由 AppHeader.vue 调用。
+   */
+  function toggleSidebar() {
+    sidebarCollapsed.value = !sidebarCollapsed.value
+  }
 
-  const toggleFavorite = async (toolId: string) => {
-    const tool = tools.value.find((t) => t.id === toolId);
-    if (tool) {
-      tool.isFavorite = !tool.isFavorite;
-      // TODO: 同步到后端
-    }
-  };
+  /**
+   * 清除错误状态。
+   */
+  function clearError() {
+    error.value = null
+  }
 
-  const incrementClickCount = async (toolId: string) => {
-    const tool = tools.value.find((t) => t.id === toolId);
-    if (tool) {
-      tool.click_count++;
-      // TODO: 同步到后端
-    }
-  };
-
-  const clearError = () => {
-    error.value = null;
-  };
-
+  // --- Return (导出) ---
+  // 确保所有外部需要访问的状态、计算属性和方法都在此导出。
   return {
-    // 状态
-    searchQuery,
-    selectedCategory,
-    showFavoritesOnly,
-    sidebarCollapsed,
+    // State
+    tools,
     loading,
     error,
     initialized,
-
-    // 数据
-    tools,
-    categories,
+    searchQuery,
+    sidebarCollapsed,
+    // Getters
     filteredTools,
-    favoriteTools,
-    popularTools,
-    featuredTools,
-
-    // 方法
+    // Actions
+    fetchTools,
     initialize,
-    toggleFavorite,
-    incrementClickCount,
+    toggleSidebar,
     clearError,
-
-    // Setter
-    setSearchQuery: (query: string) => (searchQuery.value = query),
-    setSelectedCategory: (category: string) =>
-      (selectedCategory.value = category),
-    setSidebarCollapsed: (collapsed: boolean) =>
-      (sidebarCollapsed.value = collapsed),
-    toggleSidebar: () => (sidebarCollapsed.value = !sidebarCollapsed.value),
-  };
-});
+  }
+})

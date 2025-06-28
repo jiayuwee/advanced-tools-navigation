@@ -1,5 +1,8 @@
 <template>
-  <div class="enhanced-search-box" :class="{ 'is-focused': isFocused, 'is-expanded': isExpanded }">
+  <div
+    class="enhanced-search-box"
+    :class="{ 'is-focused': isFocused, 'is-expanded': isExpanded }"
+  >
     <!-- 搜索输入框 -->
     <div class="search-input-container">
       <div class="search-input-wrapper">
@@ -23,7 +26,7 @@
             <option value="products">产品</option>
             <option value="categories">分类</option>
           </select>
-          
+
           <!-- 清除按钮 -->
           <button
             v-if="query"
@@ -33,7 +36,7 @@
           >
             <XIcon class="icon" />
           </button>
-          
+
           <!-- 高级搜索按钮 -->
           <button
             @click="toggleAdvanced"
@@ -47,7 +50,13 @@
       </div>
 
       <!-- 搜索建议下拉框 -->
-      <div v-if="showSuggestions && (suggestions.length > 0 || searchHistory.length > 0)" class="suggestions-dropdown">
+      <div
+        v-if="
+          showSuggestions &&
+          (suggestions.length > 0 || searchHistory.length > 0)
+        "
+        class="suggestions-dropdown"
+      >
         <!-- 搜索建议 -->
         <div v-if="suggestions.length > 0" class="suggestions-section">
           <div class="suggestions-header">搜索建议</div>
@@ -59,17 +68,27 @@
             @click="selectSuggestion(suggestion.text)"
             @mouseenter="selectedIndex = index"
           >
-            <component :is="getSuggestionIcon(suggestion.type)" class="suggestion-icon" />
+            <component
+              :is="getSuggestionIcon(suggestion.type)"
+              class="suggestion-icon"
+            />
             <span class="suggestion-text">{{ suggestion.text }}</span>
-            <span class="suggestion-type">{{ getSuggestionTypeText(suggestion.type) }}</span>
+            <span class="suggestion-type">{{
+              getSuggestionTypeText(suggestion.type)
+            }}</span>
           </div>
         </div>
 
         <!-- 搜索历史 -->
-        <div v-if="searchHistory.length > 0 && !query" class="suggestions-section">
+        <div
+          v-if="searchHistory.length > 0 && !query"
+          class="suggestions-section"
+        >
           <div class="suggestions-header">
             <span>最近搜索</span>
-            <button @click="clearHistory" class="clear-history-button">清除</button>
+            <button @click="clearHistory" class="clear-history-button">
+              清除
+            </button>
           </div>
           <div
             v-for="(history, index) in searchHistory"
@@ -81,12 +100,17 @@
           >
             <ClockIcon class="suggestion-icon" />
             <span class="suggestion-text">{{ history.query }}</span>
-            <span class="suggestion-meta">{{ formatTime(history.timestamp) }}</span>
+            <span class="suggestion-meta">{{
+              formatTime(history.timestamp)
+            }}</span>
           </div>
         </div>
 
         <!-- 热门搜索 -->
-        <div v-if="popularSearches.length > 0 && !query" class="suggestions-section">
+        <div
+          v-if="popularSearches.length > 0 && !query"
+          class="suggestions-section"
+        >
           <div class="suggestions-header">热门搜索</div>
           <div class="popular-searches">
             <button
@@ -110,7 +134,11 @@
             <label class="advanced-label">分类</label>
             <select v-model="filters.category" class="advanced-select">
               <option value="">所有分类</option>
-              <option v-for="category in categories" :key="category.id" :value="category.id">
+              <option
+                v-for="category in categories"
+                :key="category.id"
+                :value="category.id"
+              >
                 {{ category.name }}
               </option>
             </select>
@@ -189,7 +217,10 @@
                   class="tag-option"
                   @click="addTag(tag)"
                 >
-                  <span class="tag-color" :style="{ backgroundColor: tag.color }"></span>
+                  <span
+                    class="tag-color"
+                    :style="{ backgroundColor: tag.color }"
+                  ></span>
                   {{ tag.name }}
                 </div>
               </div>
@@ -214,247 +245,262 @@
 
     <!-- 搜索结果统计 -->
     <div v-if="lastSearchResult" class="search-stats">
-      找到 {{ lastSearchResult.total }} 个结果，用时 {{ lastSearchResult.searchTime }}ms
+      找到 {{ lastSearchResult.total }} 个结果，用时
+      {{ lastSearchResult.searchTime }}ms
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
-import { useDebounceFn } from '@vueuse/core'
-import { 
-  SearchIcon, 
-  XIcon, 
-  FilterIcon, 
+import { ref, computed, watch, onMounted, nextTick } from "vue";
+import { useRouter } from "vue-router";
+import { useDebounceFn } from "@vueuse/core";
+import {
+  SearchIcon,
+  XIcon,
+  FilterIcon,
   ClockIcon,
   TagIcon,
   FolderIcon,
   PackageIcon,
-  TrendingUpIcon
-} from 'lucide-vue-next'
-import { searchService } from '@/services/searchService'
-import { useCategoriesStore } from '@/stores/categories'
-import type { SearchResult, SearchSuggestion, SearchHistory } from '@/services/searchService'
-import type { Category, Tag } from '@/types'
+  TrendingUpIcon,
+} from "lucide-vue-next";
+import { searchService } from "@/services/searchService";
+import { useCategoriesStore } from "@/stores/categories";
+import type {
+  SearchResult,
+  SearchSuggestion,
+  SearchHistory,
+} from "@/services/searchService";
+import type { Category, Tag } from "@/types";
 
 interface Props {
-  placeholder?: string
-  autoFocus?: boolean
-  showAdvanced?: boolean
-  defaultType?: string
+  placeholder?: string;
+  autoFocus?: boolean;
+  showAdvanced?: boolean;
+  defaultType?: string;
 }
 
 interface Emits {
-  (e: 'search', result: SearchResult<any>): void
-  (e: 'clear'): void
-  (e: 'focus'): void
-  (e: 'blur'): void
+  (e: "search", result: SearchResult<any>): void;
+  (e: "clear"): void;
+  (e: "focus"): void;
+  (e: "blur"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  placeholder: '搜索工具、产品、分类...',
+  placeholder: "搜索工具、产品、分类...",
   autoFocus: false,
   showAdvanced: false,
-  defaultType: 'all'
-})
+  defaultType: "all",
+});
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
-const router = useRouter()
-const categoriesStore = useCategoriesStore()
+const router = useRouter();
+const categoriesStore = useCategoriesStore();
 
 // 引用
-const searchInput = ref<HTMLInputElement>()
+const searchInput = ref<HTMLInputElement>();
 
 // 状态
-const query = ref('')
-const searchType = ref(props.defaultType)
-const isFocused = ref(false)
-const isExpanded = ref(false)
-const showSuggestions = ref(false)
-const showAdvanced = ref(props.showAdvanced)
-const isSearching = ref(false)
-const selectedIndex = ref(-1)
+const query = ref("");
+const searchType = ref(props.defaultType);
+const isFocused = ref(false);
+const isExpanded = ref(false);
+const showSuggestions = ref(false);
+const showAdvanced = ref(props.showAdvanced);
+const isSearching = ref(false);
+const selectedIndex = ref(-1);
 
 // 搜索建议
-const suggestions = ref<SearchSuggestion[]>([])
-const searchHistory = ref<SearchHistory[]>([])
-const popularSearches = ref<string[]>([])
+const suggestions = ref<SearchSuggestion[]>([]);
+const searchHistory = ref<SearchHistory[]>([]);
+const popularSearches = ref<string[]>([]);
 
 // 高级搜索
 const filters = ref({
-  category: '',
-  sortBy: 'relevance',
-  sortOrder: 'desc',
+  category: "",
+  sortBy: "relevance",
+  sortOrder: "desc",
   priceMin: null as number | null,
-  priceMax: null as number | null
-})
+  priceMax: null as number | null,
+});
 
 // 标签相关
-const selectedTags = ref<Tag[]>([])
-const tagQuery = ref('')
-const availableTags = ref<Tag[]>([])
+const selectedTags = ref<Tag[]>([]);
+const tagQuery = ref("");
+const availableTags = ref<Tag[]>([]);
 
 // 搜索结果
-const lastSearchResult = ref<SearchResult<any> | null>(null)
+const lastSearchResult = ref<SearchResult<any> | null>(null);
 
 // 计算属性
-const categories = computed(() => categoriesStore.categories)
+const categories = computed(() => categoriesStore.categories);
 
 const allSuggestions = computed(() => [
   ...suggestions.value,
-  ...searchHistory.value.map(h => ({ text: h.query, type: 'query' as const }))
-])
+  ...searchHistory.value.map((h) => ({
+    text: h.query,
+    type: "query" as const,
+  })),
+]);
 
 // 方法
 const handleFocus = () => {
-  isFocused.value = true
-  isExpanded.value = true
-  showSuggestions.value = true
-  emit('focus')
-  loadSuggestions()
-}
+  isFocused.value = true;
+  isExpanded.value = true;
+  showSuggestions.value = true;
+  emit("focus");
+  loadSuggestions();
+};
 
 const handleBlur = () => {
   // 延迟隐藏，允许点击建议
   setTimeout(() => {
-    isFocused.value = false
-    showSuggestions.value = false
-    selectedIndex.value = -1
-  }, 200)
-  emit('blur')
-}
+    isFocused.value = false;
+    showSuggestions.value = false;
+    selectedIndex.value = -1;
+  }, 200);
+  emit("blur");
+};
 
 const handleInput = () => {
-  selectedIndex.value = -1
-  debouncedLoadSuggestions()
-}
+  selectedIndex.value = -1;
+  debouncedLoadSuggestions();
+};
 
 const handleKeydown = (event: KeyboardEvent) => {
   switch (event.key) {
-    case 'ArrowDown':
-      event.preventDefault()
-      selectedIndex.value = Math.min(selectedIndex.value + 1, allSuggestions.value.length - 1)
-      break
-    case 'ArrowUp':
-      event.preventDefault()
-      selectedIndex.value = Math.max(selectedIndex.value - 1, -1)
-      break
-    case 'Enter':
-      event.preventDefault()
+    case "ArrowDown":
+      event.preventDefault();
+      selectedIndex.value = Math.min(
+        selectedIndex.value + 1,
+        allSuggestions.value.length - 1
+      );
+      break;
+    case "ArrowUp":
+      event.preventDefault();
+      selectedIndex.value = Math.max(selectedIndex.value - 1, -1);
+      break;
+    case "Enter":
+      event.preventDefault();
       if (selectedIndex.value >= 0) {
-        selectSuggestion(allSuggestions.value[selectedIndex.value].text)
+        selectSuggestion(allSuggestions.value[selectedIndex.value].text);
       } else {
-        performSearch()
+        performSearch();
       }
-      break
-    case 'Escape':
-      searchInput.value?.blur()
-      break
+      break;
+    case "Escape":
+      searchInput.value?.blur();
+      break;
   }
-}
+};
 
 const loadSuggestions = async () => {
   try {
     if (query.value) {
-      suggestions.value = await searchService.getSmartSuggestions(query.value)
+      suggestions.value = await searchService.getSmartSuggestions(query.value);
     } else {
-      suggestions.value = []
-      searchHistory.value = searchService.getSearchHistory(5)
-      popularSearches.value = await searchService.getPopularSearches(8)
+      suggestions.value = [];
+      searchHistory.value = searchService.getSearchHistory(5);
+      popularSearches.value = await searchService.getPopularSearches(8);
     }
   } catch (error) {
-    console.error('加载搜索建议失败:', error)
+    console.error("加载搜索建议失败:", error);
   }
-}
+};
 
-const debouncedLoadSuggestions = useDebounceFn(loadSuggestions, 300)
+const debouncedLoadSuggestions = useDebounceFn(loadSuggestions, 300);
 
 const selectSuggestion = (text: string) => {
-  query.value = text
-  showSuggestions.value = false
-  performSearch()
-}
+  query.value = text;
+  showSuggestions.value = false;
+  performSearch();
+};
 
 const performSearch = async () => {
-  if (!query.value.trim()) return
+  if (!query.value.trim()) return;
 
   try {
-    isSearching.value = true
-    
+    isSearching.value = true;
+
     const searchOptions = {
       query: query.value.trim(),
       type: searchType.value as any,
       category: filters.value.category || undefined,
-      tags: selectedTags.value.map(tag => tag.id),
-      priceRange: filters.value.priceMin && filters.value.priceMax 
-        ? [filters.value.priceMin, filters.value.priceMax] as [number, number]
-        : undefined,
+      tags: selectedTags.value.map((tag) => tag.id),
+      priceRange:
+        filters.value.priceMin && filters.value.priceMax
+          ? ([filters.value.priceMin, filters.value.priceMax] as [
+              number,
+              number,
+            ])
+          : undefined,
       sortBy: filters.value.sortBy as any,
       sortOrder: filters.value.sortOrder as any,
-      limit: 20
-    }
+      limit: 20,
+    };
 
-    const result = await searchService.search(searchOptions)
-    lastSearchResult.value = result
-    emit('search', result)
+    const result = await searchService.search(searchOptions);
+    lastSearchResult.value = result;
+    emit("search", result);
 
     // 导航到搜索结果页面
     router.push({
-      name: 'SearchResults',
+      name: "SearchResults",
       query: {
         q: query.value,
         type: searchType.value,
-        ...filters.value
-      }
-    })
+        ...filters.value,
+      },
+    });
   } catch (error) {
-    console.error('搜索失败:', error)
+    console.error("搜索失败:", error);
   } finally {
-    isSearching.value = false
+    isSearching.value = false;
   }
-}
+};
 
 const clearSearch = () => {
-  query.value = ''
-  lastSearchResult.value = null
-  emit('clear')
-  searchInput.value?.focus()
-}
+  query.value = "";
+  lastSearchResult.value = null;
+  emit("clear");
+  searchInput.value?.focus();
+};
 
 const clearHistory = () => {
-  searchService.clearSearchHistory()
-  searchHistory.value = []
-}
+  searchService.clearSearchHistory();
+  searchHistory.value = [];
+};
 
 const toggleAdvanced = () => {
-  showAdvanced.value = !showAdvanced.value
-  isExpanded.value = showAdvanced.value
-}
+  showAdvanced.value = !showAdvanced.value;
+  isExpanded.value = showAdvanced.value;
+};
 
 const resetFilters = () => {
   filters.value = {
-    category: '',
-    sortBy: 'relevance',
-    sortOrder: 'desc',
+    category: "",
+    sortBy: "relevance",
+    sortOrder: "desc",
     priceMin: null,
-    priceMax: null
-  }
-  selectedTags.value = []
-}
+    priceMax: null,
+  };
+  selectedTags.value = [];
+};
 
 const applyFilters = () => {
   if (query.value) {
-    performSearch()
+    performSearch();
   }
-}
+};
 
 // 标签相关方法
 const searchTags = async () => {
   if (!tagQuery.value) {
-    availableTags.value = []
-    return
+    availableTags.value = [];
+    return;
   }
 
   try {
@@ -462,82 +508,92 @@ const searchTags = async () => {
     // const tags = await tagService.searchTags(tagQuery.value)
     // availableTags.value = tags.filter(tag => !selectedTags.value.find(t => t.id === tag.id))
   } catch (error) {
-    console.error('搜索标签失败:', error)
+    console.error("搜索标签失败:", error);
   }
-}
+};
 
 const addTag = (tag: Tag) => {
-  if (!selectedTags.value.find(t => t.id === tag.id)) {
-    selectedTags.value.push(tag)
+  if (!selectedTags.value.find((t) => t.id === tag.id)) {
+    selectedTags.value.push(tag);
   }
-  tagQuery.value = ''
-  availableTags.value = []
-}
+  tagQuery.value = "";
+  availableTags.value = [];
+};
 
 const removeTag = (tag: Tag) => {
-  selectedTags.value = selectedTags.value.filter(t => t.id !== tag.id)
-}
+  selectedTags.value = selectedTags.value.filter((t) => t.id !== tag.id);
+};
 
 // 工具方法
 const getSuggestionIcon = (type: string) => {
   switch (type) {
-    case 'category': return FolderIcon
-    case 'tag': return TagIcon
-    case 'tool': return PackageIcon
-    case 'product': return PackageIcon
-    default: return TrendingUpIcon
+    case "category":
+      return FolderIcon;
+    case "tag":
+      return TagIcon;
+    case "tool":
+      return PackageIcon;
+    case "product":
+      return PackageIcon;
+    default:
+      return TrendingUpIcon;
   }
-}
+};
 
 const getSuggestionTypeText = (type: string) => {
   switch (type) {
-    case 'category': return '分类'
-    case 'tag': return '标签'
-    case 'tool': return '工具'
-    case 'product': return '产品'
-    default: return '搜索'
+    case "category":
+      return "分类";
+    case "tag":
+      return "标签";
+    case "tool":
+      return "工具";
+    case "product":
+      return "产品";
+    default:
+      return "搜索";
   }
-}
+};
 
 const formatTime = (date: Date) => {
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  const minutes = Math.floor(diff / 60000)
-  const hours = Math.floor(diff / 3600000)
-  const days = Math.floor(diff / 86400000)
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
 
-  if (minutes < 1) return '刚刚'
-  if (minutes < 60) return `${minutes}分钟前`
-  if (hours < 24) return `${hours}小时前`
-  return `${days}天前`
-}
+  if (minutes < 1) return "刚刚";
+  if (minutes < 60) return `${minutes}分钟前`;
+  if (hours < 24) return `${hours}小时前`;
+  return `${days}天前`;
+};
 
 // 生命周期
 onMounted(async () => {
   if (props.autoFocus) {
-    await nextTick()
-    searchInput.value?.focus()
+    await nextTick();
+    searchInput.value?.focus();
   }
-  
+
   // 加载分类数据
   if (categoriesStore.categories.length === 0) {
-    await categoriesStore.fetchCategories()
+    await categoriesStore.loadCategories();
   }
-})
+});
 
 // 监听器
 watch(query, () => {
   if (!query.value) {
-    lastSearchResult.value = null
+    lastSearchResult.value = null;
   }
-})
+});
 
 // 暴露方法
 defineExpose({
   focus: () => searchInput.value?.focus(),
   clear: clearSearch,
-  search: performSearch
-})
+  search: performSearch,
+});
 </script>
 
 <style scoped>
@@ -928,7 +984,9 @@ defineExpose({
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .search-stats {
@@ -945,12 +1003,12 @@ defineExpose({
   .advanced-row {
     grid-template-columns: 1fr;
   }
-  
+
   .search-actions {
     flex-direction: column;
     gap: 0.25rem;
   }
-  
+
   .advanced-actions {
     flex-direction: column;
   }
