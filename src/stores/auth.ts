@@ -1,8 +1,8 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabaseClient'
 import type { User as SupabaseUser, AuthError } from '@supabase/supabase-js'
-import type { Tables } from '@/types/database'
+import type { Database } from '@/types/database'
 
 /**
  * 扩展的用户信息类型，
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
    * 从 user_profiles 表中获取用户的详细信息。
    * @param userId - Supabase 用户的 ID。
    */
-  async function fetchUserProfile(userId: string): Promise<Tables<'user_profiles'> | null> {
+  async function fetchUserProfile(userId: string): Promise<Database['public']['Tables']['user_profiles']['Row'] | null> {
     const { data, error: profileError } = await supabase
       .from('user_profiles')
       .select('*')

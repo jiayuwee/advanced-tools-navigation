@@ -18,25 +18,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
+          # 为 npm 添加缓存
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Skip linting (temporary)
-        run: |
-          echo "⚠️ 临时跳过代码检查以解决部署问题"
-          echo "✅ 跳过 linting 步骤"
-
-      - name: Skip type checking (temporary)
-        run: |
-          echo "⚠️ 临时跳过类型检查以解决部署问题"
-          echo "✅ 跳过 type checking 步骤"
+      # 提示：Linting 和 Type Checking 应该在单独的 PR 检查工作流中进行，
+      # 而不是在部署工作流中。当前已跳过。
 
       - name: Build project
         run: |
           echo "🔨 开始生产构建..."
           npm run build
-          echo "✅ 构建完成"
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
@@ -45,15 +39,13 @@ jobs:
       - name: Verify build output
         run: |
           echo "🔍 验证构建输出..."
-          ls -la dist/ || echo "dist 目录不存在"
-          if [ -f "dist/index.html" ]; then
-            echo "✅ index.html 存在"
-          else
-            echo "⚠️ index.html 不存在，但继续执行"
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ 构建验证失败: dist/index.html 不存在！"
+            exit 1
           fi
-          echo "✅ 构建验证完成"
-          echo "📁 构建输出:"
-          ls -la dist/ || echo "无法列出 dist 内容"
+          echo "✅ 构建输出验证成功。"
+          echo "--- dist 目录内容 ---"
+          ls -la dist/
 
       # Netlify 自动部署
       - name: Deploy to Netlify

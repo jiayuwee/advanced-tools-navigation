@@ -1,12 +1,13 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { supabase } from '@/lib/supabase'
-import type { Tables } from '@/types/database'
+import { supabase } from '@/lib/supabaseClient'
+import type { Database } from '@/types/database'
+type Tables = Database['public']['Tables']
 
 // 定义 Tool 类型，并扩展以包含关联的 category 数据
 // 这使得在组件中直接访问 tool.category.name 成为可能
-export type Tool = Tables<'tools'> & {
-  categories: Tables<'categories'> | null
+export type Tool = Tables['tools']['Row'] & {
+  categories: Tables['categories']['Row'] | null
 }
 
 export const useToolsStore = defineStore('tools', () => {

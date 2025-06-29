@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabase";
+import { supabase } from "../lib/supabaseClient";
 import { additionalTools } from "../data/additional-tools";
 
 export async function addAdditionalTools() {

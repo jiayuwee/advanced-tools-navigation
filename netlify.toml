@@ -1,15 +1,12 @@
 [build]
-  command = "rm -rf node_modules package-lock.json && npm install && npm run build"
+  command = "npm ci && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
-  # 强制安装可选依赖，包括平台特定的 Rollup 二进制文件
-  NPM_CONFIG_OPTIONAL = "true"
-  # 确保安装所有平台依赖
-  NPM_CONFIG_PLATFORM = "linux"
-  NPM_CONFIG_ARCH = "x64"
-
+  # 仅安装必要依赖
+  NPM_CONFIG_OPTIONAL = "false"
+  
 # SPA重定向规则 - 所有请求重定向到index.html
 [[redirects]]
   from = "/*"

@@ -1,4 +1,4 @@
-import { supabase, TABLES } from "@/lib/supabase";
+import { supabase, TABLES } from "@/lib/supabaseClient";
 import { databaseService } from "./databaseService";
 import type { Tool, Product, Category } from "@/types";
 

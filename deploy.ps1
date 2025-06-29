@@ -1,48 +1,48 @@
-# Windows 部署脚本
-# 1. 安装依赖
-# 2. 构建项目
-# 3. 验证构建输出
-# 4. 部署到 Netlify (如果配置了CLI)
+# Windows Deployment Script
+# 1. Install dependencies
+# 2. Build project
+# 3. Verify build output
+# 4. Deploy to Netlify (if CLI is configured)
 
-Write-Host "🚀 开始部署流程..."
+Write-Host "Starting deployment process..."
 
-# 安装依赖
-Write-Host "🔧 安装依赖..."
+# Install dependencies (using npm ci for consistency)
+Write-Host "Installing dependencies (npm ci)..."
 npm ci
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ 依赖安装失败"
+    Write-Host "Dependency installation failed"
     exit 1
 }
 
-# 构建项目
-Write-Host "🔨 构建项目..."
+# Build project
+Write-Host "Building project..."
 npm run build
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ 构建失败"
+    Write-Host "Build failed"
     exit 1
 }
 
-# 验证构建输出
-Write-Host "🔍 验证构建输出..."
+# Verify build output
+Write-Host "Verifying build output..."
 if (-not (Test-Path -Path "dist")) {
-    Write-Host "❌ 构建失败: dist 目录不存在"
+    Write-Host "Build failed: dist directory does not exist"
     exit 1
 }
 
 if (-not (Test-Path -Path "dist/index.html")) {
-    Write-Host "❌ 构建失败: index.html 不存在"
+    Write-Host "Build failed: index.html does not exist"
     exit 1
 }
 
-Write-Host "✅ 构建成功"
+Write-Host "Build successful"
 
-# 检查是否安装了 Netlify CLI
+# Check if Netlify CLI is installed
 if (Get-Command netlify -ErrorAction SilentlyContinue) {
-    Write-Host "🚀 使用 Netlify CLI 部署..."
+    Write-Host "Deploying using Netlify CLI..."
     netlify deploy --prod
 } else {
-    Write-Host "ℹ️ Netlify CLI 未安装，请手动部署"
-    Write-Host "🔗 部署指南: https://docs.netlify.com/site-deploys/create-deploys/"
+    Write-Host "Netlify CLI not installed, please deploy manually"
+    Write-Host "Deployment guide: https://docs.netlify.com/site-deploys/create-deploys/"
 }
 
-Write-Host "🎉 部署流程完成"
+Write-Host "Deployment process completed"
