@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabase";
+import { supabase } from "../lib/supabaseClient";
 import { UserService } from "./userService";
 import type { User, LoginForm, RegisterForm } from "../types";
 

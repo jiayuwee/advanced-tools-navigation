@@ -1,11 +1,31 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../types/database";
 
-// Supabase 配置
+// 获取环境变量 (支持开发和生产环境)
 const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL || "https://your-project.supabase.co";
+  import.meta.env.MODE === 'production'
+    ? process.env.VITE_SUPABASE_URL
+    : import.meta.env.VITE_SUPABASE_URL;
+    
 const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY || "your-anon-key";
+  import.meta.env.MODE === 'production'
+    ? process.env.VITE_SUPABASE_ANON_KEY
+    : import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// 验证环境变量
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(`
+    Supabase 环境变量未配置!
+    
+    开发环境: 请检查 .env 文件中是否设置了:
+      VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
+      
+    生产环境: 请确保 GitHub Secrets 已设置:
+      VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
+      
+    配置指南: docs/GITHUB_SECRETS_SETUP.md
+  `);
+}
 
 // 创建 Supabase 客户端
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {

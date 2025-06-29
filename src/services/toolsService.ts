@@ -1,4 +1,4 @@
-import { supabase, TABLES, handleSupabaseError } from "../lib/supabase";
+import { supabase, TABLES, handleSupabaseError } from "../lib/supabaseClient";
 import type { Tool, SearchFilters, SearchResult } from "../types";
 import {
   requireCategoryId,

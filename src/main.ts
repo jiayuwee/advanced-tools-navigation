@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
-import router from './router' // 假设路由文件在 src/router/index.ts
+import { router } from './router' // 假设路由文件在 src/router/index.ts
 import './style.css' // 假设这是你的全局样式文件
 
 // 导入所有需要初始化的 stores

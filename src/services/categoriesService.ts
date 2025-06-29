@@ -1,4 +1,4 @@
-import { supabase, TABLES, handleSupabaseError } from "../lib/supabase";
+import { supabase, TABLES, handleSupabaseError } from "../lib/supabaseClient";
 import type { Category } from "../types";
 import type { Database } from "../types/database";
 
@@ -60,8 +60,8 @@ export class CategoriesService {
           description: categoryData.description,
           icon: categoryData.icon!,
           color: categoryData.color!,
-          parent_id: categoryData.parentId,
-          sort_order: categoryData.sortOrder || 0,
+          parent_id: categoryData.parent_id,
+          sort_order: categoryData.sort_order || 0,
           is_active: true,
         })
         .select()
@@ -91,12 +91,12 @@ export class CategoriesService {
         updateData.description = categoryData.description;
       if (categoryData.icon) updateData.icon = categoryData.icon;
       if (categoryData.color) updateData.color = categoryData.color;
-      if (categoryData.parentId !== undefined)
-        updateData.parent_id = categoryData.parentId;
-      if (categoryData.sortOrder !== undefined)
-        updateData.sort_order = categoryData.sortOrder;
-      if (categoryData.isActive !== undefined)
-        updateData.is_active = categoryData.isActive;
+      if (categoryData.parent_id !== undefined)
+        updateData.parent_id = categoryData.parent_id;
+      if (categoryData.sort_order !== undefined)
+        updateData.sort_order = categoryData.sort_order;
+      if (categoryData.is_active !== undefined)
+        updateData.is_active = categoryData.is_active;
 
       updateData.updated_at = new Date().toISOString();
 
@@ -241,8 +241,8 @@ export class CategoriesService {
     categories.forEach((category) => {
       const categoryNode = categoryMap.get(category.id)!;
 
-      if (category.parentId) {
-        const parent = categoryMap.get(category.parentId);
+      if (category.parent_id) {
+        const parent = categoryMap.get(category.parent_id);
         if (parent) {
           parent.children = parent.children || [];
           parent.children.push(categoryNode);

@@ -1,5 +1,4 @@
-import { supabase, TABLES } from '@/lib/supabase'
-import { databaseService } from './databaseService'
+import { supabase } from '@/lib/supabaseClient'
 
 export interface Notification {
   id: string

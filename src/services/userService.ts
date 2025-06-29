@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabase";
+import { supabase } from "../lib/supabaseClient";
 import type { User, ProfileForm } from "../types";
 import type { Database } from "../types/database";
 

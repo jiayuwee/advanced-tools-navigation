@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { supabase } from '@/lib/supabaseClient' // 假设这是 Supabase 客户端的路径
-import type { Tables } from '@/types/database' // 假设这是 Supabase 自动生成的类型路径
+import { supabase } from '@/lib/supabaseClient' // Supabase 客户端的路径
+import type { Database } from '@/types/database' // Supabase 自动生成的类型路径
 
 // 从生成的类型中定义 Category 类型
-type Category = Tables<'categories'>
+type Category = Database['public']['Tables']['categories']['Row']
 
 export const useCategoriesStore = defineStore('categories', () => {
   // --- State (状态) ---
@@ -30,8 +30,8 @@ export const useCategoriesStore = defineStore('categories', () => {
       const { data, error: queryError } = await supabase
         .from('categories')
         .select('*')
-        .eq('is_active', true) // 通常我们只获取激活的分类
-        .order('sort_order', { ascending: true }) // 假设有一个 'sort_order' 字段用于排序
+        .eq('is_active', true) // 通常只获取激活的分类
+        .order('sort_order', { ascending: true }) // 按 sort_order 字段排序
 
       if (queryError) {
         throw queryError
@@ -39,8 +39,8 @@ export const useCategoriesStore = defineStore('categories', () => {
 
       categories.value = data || []
       initialized.value = true // 成功获取后，标记为已初始化
-    } catch (e: any) {
-      console.error('获取分类失败:', e)
+   } catch (e: any) {
+     console.error('获取分类失败:', e)
       error.value = e
       // 在后续调用失败时，保留已有的数据，而不是清空
     } finally {
@@ -72,9 +72,9 @@ export const useCategoriesStore = defineStore('categories', () => {
   // 这是最容易出现 "is not a function" 错误的地方。
   return {
     // State
-    categories,
-    loading,
-    error,
+   categories,
+   loading,
+   error,
     initialized,
 
     // Actions
