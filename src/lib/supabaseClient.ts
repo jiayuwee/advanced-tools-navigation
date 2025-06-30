@@ -1,16 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../types/database";
 
-// 获取环境变量 (支持开发和生产环境)
-const supabaseUrl =
-  import.meta.env.MODE === 'production'
-    ? process.env.VITE_SUPABASE_URL
-    : import.meta.env.VITE_SUPABASE_URL;
-    
-const supabaseAnonKey =
-  import.meta.env.MODE === 'production'
-    ? process.env.VITE_SUPABASE_ANON_KEY
-    : import.meta.env.VITE_SUPABASE_ANON_KEY;
+// 获取环境变量 (Vite 环境变量在构建时注入)
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // 验证环境变量
 if (!supabaseUrl || !supabaseAnonKey) {
@@ -134,7 +127,7 @@ export const uploadFile = async (
   bucket: string,
   path: string,
   file: File,
-  options?: { upsert?: boolean },
+  options?: { upsert?: boolean }
 ) => {
   const { data, error } = await supabase.storage
     .from(bucket)
@@ -181,7 +174,7 @@ export const createRecord = async <T>(table: string, data: Partial<T>) => {
 export const updateRecord = async <T>(
   table: string,
   id: string,
-  data: Partial<T>,
+  data: Partial<T>
 ) => {
   const { data: result, error } = await supabase
     .from(table)
@@ -227,7 +220,7 @@ export const getRecords = async <T>(
     orderBy?: { column: string; ascending?: boolean };
     limit?: number;
     offset?: number;
-  },
+  }
 ) => {
   let query = supabase.from(table).select(options?.select || "*");
 
@@ -253,7 +246,7 @@ export const getRecords = async <T>(
   if (options?.offset) {
     query = query.range(
       options.offset,
-      options.offset + (options.limit || 10) - 1,
+      options.offset + (options.limit || 10) - 1
     );
   }
 
