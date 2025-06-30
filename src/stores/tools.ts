@@ -1,26 +1,30 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
-import { supabase } from '@/lib/supabaseClient'
-import type { Database } from '@/types/database'
-type Tables = Database['public']['Tables']
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
+import { supabase } from "@/lib/supabaseClient";
+import type { Database } from "@/types/database";
+type Tables = Database["public"]["Tables"];
 
-// 定义 Tool 类型，并扩展以包含关联的 category 数据
-// 这使得在组件中直接访问 tool.category.name 成为可能
-export type Tool = Tables['tools']['Row'] & {
-  categories: Tables['categories']['Row'] | null
-}
+// 定义 Tool 类型，并扩展以包含关联的 category 和 tags 数据
+// 这使得在组件中直接访问 tool.category.name 和 tool.tags 成为可能
+export type Tool = Tables["tools"]["Row"] & {
+  categories: Tables["categories"]["Row"] | null;
+  tool_tags: Array<{
+    tags: Tables["tags"]["Row"];
+  }> | null;
+  tags?: string[]; // 计算属性，从 tool_tags 中提取标签名称
+};
 
-export const useToolsStore = defineStore('tools', () => {
+export const useToolsStore = defineStore("tools", () => {
   // --- State (状态) ---
-  const tools = ref<Tool[]>([])
-  const loading = ref(false)
-  const error = ref<Error | null>(null)
-  const initialized = ref(false)
+  const tools = ref<Tool[]>([]);
+  const loading = ref(false);
+  const error = ref<Error | null>(null);
+  const initialized = ref(false);
 
   // 状态：搜索查询，由 AppHeader.vue 使用
-  const searchQuery = ref('')
+  const searchQuery = ref("");
   // 状态：侧边栏折叠状态，由 AppHeader.vue 使用
-  const sidebarCollapsed = ref(false)
+  const sidebarCollapsed = ref(false);
 
   // --- Getters (计算属性) ---
 
@@ -30,15 +34,17 @@ export const useToolsStore = defineStore('tools', () => {
    */
   const filteredTools = computed(() => {
     if (!searchQuery.value) {
-      return tools.value
+      return tools.value;
     }
-    const lowerCaseQuery = searchQuery.value.toLowerCase()
-    return tools.value.filter(tool =>
-      tool.name.toLowerCase().includes(lowerCaseQuery) ||
-      tool.description.toLowerCase().includes(lowerCaseQuery) ||
-      (tool.categories && tool.categories.name.toLowerCase().includes(lowerCaseQuery))
-    )
-  })
+    const lowerCaseQuery = searchQuery.value.toLowerCase();
+    return tools.value.filter(
+      (tool) =>
+        tool.name.toLowerCase().includes(lowerCaseQuery) ||
+        tool.description.toLowerCase().includes(lowerCaseQuery) ||
+        (tool.categories &&
+          tool.categories.name.toLowerCase().includes(lowerCaseQuery))
+    );
+  });
 
   // --- Actions (操作) ---
 
@@ -47,32 +53,42 @@ export const useToolsStore = defineStore('tools', () => {
    * 它会同时获取关联的分类信息。
    */
   async function fetchTools() {
-    if (loading.value) return
+    if (loading.value) return;
 
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
     try {
       const { data, error: queryError } = await supabase
-        .from('tools')
-        .select(`
+        .from("tools")
+        .select(
+          `
           *,
-          categories ( * )
-        `)
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true })
+          categories ( * ),
+          tool_tags ( tags ( * ) )
+        `
+        )
+        .eq("status", "active")
+        .order("sort_order", { ascending: true });
 
       if (queryError) {
-        throw queryError
+        throw queryError;
       }
 
       // Supabase 的类型生成器可能将单关系定义为对象而非数组
-      tools.value = (data as unknown as Tool[]) || []
-      initialized.value = true
+      // 处理标签数据，将 tool_tags 转换为简单的 tags 数组
+      const processedTools =
+        (data as unknown as Tool[])?.map((tool) => ({
+          ...tool,
+          tags: tool.tool_tags?.map((tt) => tt.tags.name) || [],
+        })) || [];
+
+      tools.value = processedTools;
+      initialized.value = true;
     } catch (e: any) {
-      console.error('获取工具列表失败:', e)
-      error.value = e
+      console.error("获取工具列表失败:", e);
+      error.value = e;
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
 
@@ -82,7 +98,7 @@ export const useToolsStore = defineStore('tools', () => {
    */
   async function initialize() {
     if (!initialized.value) {
-      await fetchTools()
+      await fetchTools();
     }
   }
 
@@ -91,14 +107,14 @@ export const useToolsStore = defineStore('tools', () => {
    * 由 AppHeader.vue 调用。
    */
   function toggleSidebar() {
-    sidebarCollapsed.value = !sidebarCollapsed.value
+    sidebarCollapsed.value = !sidebarCollapsed.value;
   }
 
   /**
    * 清除错误状态。
    */
   function clearError() {
-    error.value = null
+    error.value = null;
   }
 
   // --- Return (导出) ---
@@ -118,5 +134,5 @@ export const useToolsStore = defineStore('tools', () => {
     initialize,
     toggleSidebar,
     clearError,
-  }
-})
+  };
+});

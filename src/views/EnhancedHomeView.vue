@@ -97,14 +97,17 @@
                 <p class="tool-description">{{ tool.description }}</p>
                 <div class="tool-tags">
                   <span
-                    v-for="tag in tool.tags.slice(0, 3)"
-                    :key="tag.id"
+                    v-for="tag in (tool.tags || []).slice(0, 3)"
+                    :key="tag"
                     class="tool-tag"
                   >
-                    {{ tag.name }}
+                    {{ tag }}
                   </span>
-                  <span v-if="tool.tags.length > 3" class="tool-tag more">
-                    +{{ tool.tags.length - 3 }}
+                  <span
+                    v-if="(tool.tags || []).length > 3"
+                    class="tool-tag more"
+                  >
+                    +{{ (tool.tags || []).length - 3 }}
                   </span>
                 </div>
               </div>

@@ -115,14 +115,14 @@
 
             <div class="tool-tags">
               <span
-                v-for="tag in tool.tags.slice(0, 3)"
-                :key="tag.id"
+                v-for="tag in (tool.tags || []).slice(0, 3)"
+                :key="tag"
                 class="tag"
               >
-                {{ tag.name }}
+                {{ tag }}
               </span>
-              <span v-if="tool.tags.length > 3" class="tag more">
-                +{{ tool.tags.length - 3 }}
+              <span v-if="(tool.tags || []).length > 3" class="tag more">
+                +{{ (tool.tags || []).length - 3 }}
               </span>
             </div>
           </div>
@@ -170,11 +170,11 @@
           <div class="item-right">
             <div class="tool-tags">
               <span
-                v-for="tag in tool.tags.slice(0, 2)"
-                :key="tag.id"
+                v-for="tag in (tool.tags || []).slice(0, 2)"
+                :key="tag"
                 class="tag"
               >
-                {{ tag.name }}
+                {{ tag }}
               </span>
             </div>
             <div class="tool-actions">
