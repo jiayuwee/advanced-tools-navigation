@@ -26,11 +26,14 @@ jobs:
       - name: Build project
         run: |
           echo "🔨 开始构建项目..."
+          echo "检查环境变量..."
+          echo "VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:0:20}..."
+          echo "VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:+已设置}"
           npm run build
           echo "✅ 构建完成"
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://fytiwsutzgmygfxnqoft.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5dGl3c3V0emdteWdmeG5xb2Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MDM1ODcsImV4cCI6MjA2NjM3OTU4N30.LM9vazR9QCZ4vLC_Q1lJmtCj3pEVqM6vpW4TKzntAQA' }}
           NODE_ENV: production
 
       - name: Verify build output
