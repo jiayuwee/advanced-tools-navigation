@@ -222,14 +222,14 @@
 
                 <div class="tool-tags">
                   <span
-                    v-for="tag in tool.tags.slice(0, 3)"
+                    v-for="tag in (tool.tags || []).slice(0, 3)"
                     :key="tag"
                     class="tag"
                   >
                     {{ tag }}
                   </span>
-                  <span v-if="tool.tags.length > 3" class="tag more">
-                    +{{ tool.tags.length - 3 }}
+                  <span v-if="(tool.tags || []).length > 3" class="tag more">
+                    +{{ (tool.tags || []).length - 3 }}
                   </span>
                 </div>
               </div>

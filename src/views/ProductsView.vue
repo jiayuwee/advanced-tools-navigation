@@ -90,14 +90,14 @@
 
               <div class="product-tags">
                 <span
-                  v-for="tag in product.tags.slice(0, 3)"
+                  v-for="tag in (product.tags || []).slice(0, 3)"
                   :key="tag"
                   class="tag"
                 >
                   {{ tag }}
                 </span>
-                <span v-if="product.tags.length > 3" class="tag more">
-                  +{{ product.tags.length - 3 }}
+                <span v-if="(product.tags || []).length > 3" class="tag more">
+                  +{{ (product.tags || []).length - 3 }}
                 </span>
               </div>
             </div>
