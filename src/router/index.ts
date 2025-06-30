@@ -33,6 +33,15 @@ const routes: RouteRecordRaw[] = [
       description: "展示原HTML代码与Vue组件化改造后的效果对比",
     },
   },
+  {
+    path: "/config-test",
+    name: "ConfigTest",
+    component: () => import("../views/ConfigTestView.vue"),
+    meta: {
+      title: "配置测试",
+      description: "检查环境变量和配置是否正确",
+    },
+  },
 
   {
     path: "/tools",

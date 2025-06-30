@@ -1,17 +1,25 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../types/database";
 
-// 临时硬编码配置 - 用于快速修复部署问题
-const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL ||
-  "https://fytiwsutzgmygfxnqoft.supabase.co";
-const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5dGl3c3V0emdteWdmeG5xb2Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MDM1ODcsImV4cCI6MjA2NjM3OTU4N30.LM9vazR9QCZ4vLC_Q1lJmtCj3pEVqM6vpW4TKzntAQA";
+// 获取环境变量
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// 验证配置
+// 验证环境变量
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("Supabase 配置缺失");
+  throw new Error(`
+    Supabase 环境变量未配置!
+
+    开发环境: 请检查 .env.local 文件中是否设置了:
+      VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
+
+    生产环境: 请确保 Netlify 环境变量已设置:
+      VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
+
+    当前值:
+      VITE_SUPABASE_URL: ${supabaseUrl || "未设置"}
+      VITE_SUPABASE_ANON_KEY: ${supabaseAnonKey ? "已设置" : "未设置"}
+  `);
 }
 
 // 创建 Supabase 客户端
