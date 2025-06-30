@@ -13,7 +13,7 @@
           <span class="status-text">{{ onlineUsers }} 在线</span>
         </div>
         <div class="status-item">
-          <ToolIcon class="status-icon" />
+          <WrenchIcon class="status-icon" />
           <span class="status-text">{{ totalTools }} 工具</span>
         </div>
       </div>
@@ -49,7 +49,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import {
   DatabaseIcon,
   UsersIcon,
-  ToolIcon,
+  WrenchIcon,
   ClockIcon,
   WifiIcon,
   MaximizeIcon,
