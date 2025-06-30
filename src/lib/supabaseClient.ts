@@ -1,23 +1,17 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../types/database";
 
-// 获取环境变量 (Vite 环境变量在构建时注入)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// 临时硬编码配置 - 用于快速修复部署问题
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL ||
+  "https://fytiwsutzgmygfxnqoft.supabase.co";
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5dGl3c3V0emdteWdmeG5xb2Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MDM1ODcsImV4cCI6MjA2NjM3OTU4N30.LM9vazR9QCZ4vLC_Q1lJmtCj3pEVqM6vpW4TKzntAQA";
 
-// 验证环境变量
+// 验证配置
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(`
-    Supabase 环境变量未配置!
-    
-    开发环境: 请检查 .env 文件中是否设置了:
-      VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
-      
-    生产环境: 请确保 GitHub Secrets 已设置:
-      VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
-      
-    配置指南: docs/GITHUB_SECRETS_SETUP.md
-  `);
+  console.error("Supabase 配置缺失");
 }
 
 // 创建 Supabase 客户端
