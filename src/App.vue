@@ -23,6 +23,9 @@
 
     <!-- 反馈组件 -->
     <FeedbackWidget />
+
+    <!-- 底部状态栏 -->
+    <SimpleStatusBar />
   </div>
 </template>
 
@@ -31,6 +34,7 @@ import { ref, onMounted, onErrorCaptured } from "vue";
 import AppHeader from "./components/AppHeader.vue";
 import AppFooter from "./components/AppFooter.vue";
 import FeedbackWidget from "./components/feedback/FeedbackWidget.vue";
+import SimpleStatusBar from "./components/SimpleStatusBar.vue";
 
 // 全局错误处理
 const error = ref<string | null>(null);
