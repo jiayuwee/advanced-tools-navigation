@@ -45,7 +45,7 @@ export default defineConfig({
         console.warn('Vue 应用可能未正确加载');
       }
     }, 3000);
-  </script>`,
+  </script>`
           )
           .replace(
             "min-height: 100vh;\n    }",
@@ -63,7 +63,7 @@ export default defineConfig({
       min-height: 100vh;
       color: white;
       font-size: 18px;
-    }`,
+    }`
           );
       },
     },
@@ -92,7 +92,7 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: 3000,
+    port: 5173,
     open: true,
   },
 });
