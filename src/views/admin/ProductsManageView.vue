@@ -110,13 +110,119 @@
           </button>
         </div>
         <div class="modal-body">
-          <p>产品管理功能正在开发中...</p>
-          <p>将包含完整的产品添加、编辑、删除功能</p>
+          <form @submit.prevent="saveProduct" class="product-form">
+            <div class="form-group">
+              <label for="productName" class="form-label">产品名称</label>
+              <input
+                id="productName"
+                v-model="productForm.name"
+                type="text"
+                class="form-input"
+                placeholder="请输入产品名称"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="productDescription" class="form-label"
+                >产品描述</label
+              >
+              <textarea
+                id="productDescription"
+                v-model="productForm.description"
+                class="form-textarea"
+                placeholder="请输入产品描述"
+                rows="3"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="productPrice" class="form-label">价格</label>
+                <input
+                  id="productPrice"
+                  v-model.number="productForm.price"
+                  type="number"
+                  class="form-input"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="productOriginalPrice" class="form-label"
+                  >原价（可选）</label
+                >
+                <input
+                  id="productOriginalPrice"
+                  v-model.number="productForm.originalPrice"
+                  type="number"
+                  class="form-input"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="productCategory" class="form-label">分类</label>
+              <select
+                id="productCategory"
+                v-model="productForm.category"
+                class="form-select"
+                required
+              >
+                <option value="">请选择分类</option>
+                <option value="办公工具">办公工具</option>
+                <option value="设计工具">设计工具</option>
+                <option value="开发工具">开发工具</option>
+                <option value="AI工具">AI工具</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="productImage" class="form-label">产品图片URL</label>
+              <input
+                id="productImage"
+                v-model="productForm.image"
+                type="url"
+                class="form-input"
+                placeholder="https://example.com/image.jpg"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="productStatus" class="form-label">状态</label>
+              <select
+                id="productStatus"
+                v-model="productForm.status"
+                class="form-select"
+                required
+              >
+                <option value="active">已发布</option>
+                <option value="draft">草稿</option>
+                <option value="inactive">已下架</option>
+              </select>
+            </div>
+          </form>
         </div>
         <div class="modal-footer">
-          <button class="btn secondary" @click="closeModal">取消</button>
-          <button class="btn primary">
-            {{ showAddModal ? "添加" : "保存" }}
+          <button type="button" class="btn secondary" @click="closeModal">
+            取消
+          </button>
+          <button
+            type="button"
+            class="btn primary"
+            @click="saveProduct"
+            :disabled="saving"
+          >
+            {{ saving ? "保存中..." : showAddModal ? "添加" : "保存" }}
           </button>
         </div>
       </div>
@@ -137,11 +243,23 @@ import {
 
 // 响应式状态
 const loading = ref(true);
+const saving = ref(false);
 const searchQuery = ref("");
 const statusFilter = ref("");
 const showAddModal = ref(false);
 const showEditModal = ref(false);
 const editingProduct = ref(null);
+
+// 产品表单数据
+const productForm = ref({
+  name: "",
+  description: "",
+  price: 0,
+  originalPrice: null,
+  image: "",
+  category: "",
+  status: "active",
+});
 
 // 模拟产品数据
 const products = ref([
@@ -189,14 +307,14 @@ const filteredProducts = computed(() => {
     filtered = filtered.filter(
       (product) =>
         product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query),
+        product.description.toLowerCase().includes(query)
     );
   }
 
   // 按状态筛选
   if (statusFilter.value) {
     filtered = filtered.filter(
-      (product) => product.status === statusFilter.value,
+      (product) => product.status === statusFilter.value
     );
   }
 
@@ -215,6 +333,16 @@ const getStatusText = (status: string) => {
 
 const editProduct = (product: any) => {
   editingProduct.value = product;
+  // 填充表单数据
+  productForm.value = {
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    originalPrice: product.originalPrice,
+    image: product.image,
+    category: product.category,
+    status: product.status,
+  };
   showEditModal.value = true;
 };
 
@@ -225,10 +353,69 @@ const deleteProduct = (productId: number) => {
   }
 };
 
+const saveProduct = async () => {
+  try {
+    saving.value = true;
+
+    // 验证表单
+    if (
+      !productForm.value.name ||
+      !productForm.value.description ||
+      !productForm.value.price
+    ) {
+      alert("请填写所有必填字段");
+      return;
+    }
+
+    if (showAddModal.value) {
+      // 添加新产品
+      const newProduct = {
+        id: Date.now(), // 简单的ID生成
+        ...productForm.value,
+      };
+      products.value.push(newProduct);
+      console.log("添加产品:", newProduct);
+    } else if (showEditModal.value && editingProduct.value) {
+      // 编辑现有产品
+      const index = products.value.findIndex(
+        (p) => p.id === editingProduct.value.id
+      );
+      if (index !== -1) {
+        products.value[index] = {
+          ...editingProduct.value,
+          ...productForm.value,
+        };
+        console.log("更新产品:", products.value[index]);
+      }
+    }
+
+    closeModal();
+    resetForm();
+  } catch (error) {
+    console.error("保存产品失败:", error);
+    alert("保存产品失败，请重试");
+  } finally {
+    saving.value = false;
+  }
+};
+
+const resetForm = () => {
+  productForm.value = {
+    name: "",
+    description: "",
+    price: 0,
+    originalPrice: null,
+    image: "",
+    category: "",
+    status: "active",
+  };
+};
+
 const closeModal = () => {
   showAddModal.value = false;
   showEditModal.value = false;
   editingProduct.value = null;
+  resetForm();
 };
 
 // 生命周期
@@ -484,9 +671,11 @@ onMounted(() => {
   background: white;
   border-radius: 8px;
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
   max-height: 90vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
@@ -548,5 +737,72 @@ onMounted(() => {
 
 .btn.primary:hover {
   background: #106ebe;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 表单样式 */
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.875rem;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #0078d4;
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
 }
 </style>
