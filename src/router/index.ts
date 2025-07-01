@@ -217,6 +217,15 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: "/settings",
+    name: "SimpleSettings",
+    component: () => import("../views/SimpleSettingsView.vue"),
+    meta: {
+      title: "网站设置",
+      description: "更新网站内容和配置",
+    },
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: () => import("../views/NotFoundView.vue"),

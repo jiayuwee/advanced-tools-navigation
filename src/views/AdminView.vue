@@ -60,6 +60,14 @@
               <HardDriveIcon class="nav-icon" />
               本地管理
             </router-link>
+            <router-link
+              to="/admin/settings"
+              class="nav-item"
+              active-class="active"
+            >
+              <SettingsIcon class="nav-icon" />
+              系统设置
+            </router-link>
             <div class="nav-divider"></div>
             <router-link to="/" class="nav-item">
               <HomeIcon class="nav-icon" />
@@ -91,6 +99,7 @@ import {
   UsersIcon,
   FileTextIcon,
   HardDriveIcon,
+  SettingsIcon,
   HomeIcon,
   LogOutIcon,
 } from "lucide-vue-next";
