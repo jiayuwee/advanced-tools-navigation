@@ -15,23 +15,23 @@ jobs:
         run: |
           echo "🔄 手动检出代码..."
           echo "当前工作目录: $(pwd)"
-          
+
           # 使用 curl 下载源码
           echo "下载源码压缩包..."
           curl -L -o source.zip "https://github.com/jiayuwee/advanced-tools-navigation/archive/${{ github.sha }}.zip"
-          
+
           # 解压源码
           echo "解压源码..."
           unzip -q source.zip
-          
+
           # 移动文件到工作目录
           echo "移动文件到工作目录..."
           mv advanced-tools-navigation-*/* .
           mv advanced-tools-navigation-*/.[^.]* . 2>/dev/null || true
-          
+
           # 清理
           rm -rf advanced-tools-navigation-* source.zip
-          
+
           echo "当前目录内容:"
           ls -la
 
@@ -47,7 +47,10 @@ jobs:
           echo "检查 package.json..."
           if [ -f "package.json" ]; then
             echo "package.json 存在，开始安装依赖..."
-            npm install --prefer-offline --no-audit --legacy-peer-deps
+            echo "清理npm缓存..."
+            npm cache clean --force
+            echo "安装依赖（跳过可选依赖和平台特定依赖）..."
+            npm install --prefer-offline --no-audit --no-optional --ignore-platform
             echo "✅ 依赖安装完成"
           else
             echo "❌ package.json 不存在"
