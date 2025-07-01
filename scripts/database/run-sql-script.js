@@ -1,11 +1,23 @@
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv";
 
-// Supabase 配置
-const supabaseUrl = "https://fytiwsutzgmygfxnqoft.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5dGl3c3V0emdteWdmeG5xb2Z0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDgwMzU4NywiZXhwIjoyMDY2Mzc5NTg3fQ.GiE4491n7LO_hdNjzyUKbSi98Lj6wn2IXnW_TH7qLoA";
+// 加载环境变量
+dotenv.config();
+
+// Supabase 配置 - 从环境变量读取
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+// 验证必要的环境变量
+if (!supabaseUrl || !supabaseKey) {
+  console.error("❌ 缺少必要的环境变量:");
+  if (!supabaseUrl) console.error("  - VITE_SUPABASE_URL");
+  if (!supabaseKey) console.error("  - SUPABASE_SERVICE_ROLE_KEY");
+  console.error("\n请确保 .env 文件包含正确的 Supabase 配置");
+  process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 

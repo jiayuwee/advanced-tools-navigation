@@ -1,10 +1,22 @@
 // 测试Supabase数据库连接
 import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
+
+// 加载环境变量
+dotenv.config();
 
 // 从环境变量读取配置
-const supabaseUrl = "https://fytiwsutzgmygfxnqoft.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5dGl3c3V0emdteWdmeG5xb2Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MDM1ODcsImV4cCI6MjA2NjM3OTU4N30.LM9vazR9QCZ4vLC_Q1lJmtCj3pEVqM6vpW4TKzntAQA";
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+
+// 验证必要的环境变量
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("❌ 缺少必要的环境变量:");
+  if (!supabaseUrl) console.error("  - VITE_SUPABASE_URL");
+  if (!supabaseAnonKey) console.error("  - VITE_SUPABASE_ANON_KEY");
+  console.error("\n请确保 .env 文件包含正确的 Supabase 配置");
+  process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -37,7 +49,7 @@ async function testConnection() {
         `
         *,
         category:categories(*)
-      `,
+      `
       )
       .eq("status", "active")
       .eq("is_active", true)
@@ -60,7 +72,7 @@ async function testConnection() {
         `
         *,
         category:product_categories(*)
-      `,
+      `
       )
       .eq("status", "active")
       .order("sort_order", { ascending: true });

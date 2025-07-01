@@ -125,15 +125,56 @@ const loadPaymentInfo = () => {
   paymentTime.value = new Date().toLocaleString("zh-CN");
 };
 
-const downloadProducts = () => {
-  // TODO: 实现产品下载逻辑
-  console.log("开始下载产品...");
+const downloadProducts = async () => {
+  try {
+    console.log("开始下载产品...");
 
-  // 模拟下载
-  const link = document.createElement("a");
-  link.href = "/sample-product.zip";
-  link.download = "product.zip";
-  link.click();
+    // 获取订单信息
+    const orderParam = route.query.order;
+    if (!orderParam) {
+      alert("订单信息不存在");
+      return;
+    }
+
+    // 导入订单服务
+    const { OrderService } = await import("@/services/orderService");
+    const { useAuthStore } = await import("@/stores/auth");
+
+    const authStore = useAuthStore();
+    if (!authStore.user) {
+      alert("请先登录");
+      return;
+    }
+
+    // 获取订单详情
+    const order = await OrderService.getOrderById(
+      orderParam as string,
+      authStore.user.id
+    );
+    if (!order || order.status !== "paid") {
+      alert("订单不存在或未支付");
+      return;
+    }
+
+    // 下载所有产品
+    for (const item of order.items) {
+      if (item.product?.downloadUrl) {
+        const link = document.createElement("a");
+        link.href = item.product.downloadUrl;
+        link.download = `${item.product.name}.zip`;
+        link.target = "_blank";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 延迟一下避免浏览器阻止多个下载
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
+  } catch (error) {
+    console.error("下载失败:", error);
+    alert("下载失败，请稍后重试");
+  }
 };
 
 // 生命周期

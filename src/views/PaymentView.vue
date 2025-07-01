@@ -216,7 +216,7 @@ const paymentMethods = [
 const subtotal = computed(() => {
   return orderItems.value.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0,
+    0
   );
 });
 
@@ -255,19 +255,57 @@ const handlePayment = async () => {
     loading.value = true;
     error.value = null;
 
-    // TODO: 实现支付逻辑
-    // const paymentResult = await PaymentService.processPayment({
-    //   method: selectedMethod.value,
-    //   amount: finalAmount.value,
-    //   billingInfo: billingInfo.value,
-    //   items: orderItems.value
-    // })
+    // 导入必要的服务
+    const { OrderService } = await import("@/services/orderService");
+    const { useAuthStore } = await import("@/stores/auth");
+
+    const authStore = useAuthStore();
+    if (!authStore.user) {
+      throw new Error("请先登录");
+    }
+
+    // 创建订单（如果还没有）
+    let orderId = route.query.order as string;
+
+    if (!orderId) {
+      // 从产品创建新订单
+      const productId = route.query.product as string;
+      if (!productId) {
+        throw new Error("缺少产品信息");
+      }
+
+      const orderData = {
+        productId,
+        quantity: 1,
+        billingAddress: billingInfo.value,
+      };
+
+      const newOrder = await OrderService.createOrder(
+        orderData,
+        authStore.user.id
+      );
+      orderId = newOrder.id;
+    }
 
     // 模拟支付处理
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
+    // 处理支付成功
+    await OrderService.processPayment({
+      orderId,
+      paymentMethod: selectedMethod.value!,
+      paymentId: `PAY_${Date.now()}`, // 模拟支付ID
+      amount: finalAmount.value,
+    });
+
     // 支付成功，跳转到成功页面
-    router.push("/payment/success");
+    router.push({
+      path: "/payment/success",
+      query: {
+        order: orderId,
+        amount: finalAmount.value.toString(),
+      },
+    });
   } catch (err) {
     error.value = err instanceof Error ? err.message : "支付失败，请重试";
   } finally {

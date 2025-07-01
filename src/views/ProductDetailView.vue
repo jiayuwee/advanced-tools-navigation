@@ -159,11 +159,35 @@ const goBack = () => {
   }
 };
 
-const buyProduct = () => {
-  if (product.value) {
+const buyProduct = async () => {
+  if (!product.value) return;
+
+  try {
     console.log("购买产品:", product.value.name);
-    // TODO: 实现购买逻辑
-    router.push("/payment");
+
+    // 检查用户登录状态
+    const { useAuthStore } = await import("@/stores/auth");
+    const authStore = useAuthStore();
+
+    if (!authStore.isAuthenticated) {
+      // 未登录，跳转到登录页面
+      router.push({
+        name: "Login",
+        query: { redirect: `/product/${product.value.id}` },
+      });
+      return;
+    }
+
+    // 已登录，跳转到支付页面
+    router.push({
+      path: "/payment",
+      query: {
+        product: product.value.id,
+      },
+    });
+  } catch (error) {
+    console.error("购买流程错误:", error);
+    alert("购买失败，请稍后重试");
   }
 };
 
