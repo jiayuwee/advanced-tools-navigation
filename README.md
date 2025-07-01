@@ -1,5 +1,7 @@
 # 🚀 工具导航站
 
+> 最后更新：2025-01-01 - 修复路由问题和性能优化
+
 [![CI](https://github.com/jiayuwee/advanced-tools-navigation/actions/workflows/ci.yml/badge.svg)](https://github.com/jiayuwee/advanced-tools-navigation/actions/workflows/ci.yml)
 [![Vue](https://img.shields.io/badge/Vue-3.4+-green.svg)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.0+-blue.svg)](https://vitejs.dev/)
