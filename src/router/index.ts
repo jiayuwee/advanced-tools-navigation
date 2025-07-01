@@ -15,34 +15,16 @@ const routes: RouteRecordRaw[] = [
       description: "高效的工具导航和产品展示平台",
     },
   },
-  {
-    path: "/legacy",
-    name: "LegacyHome",
-    component: () => import("../views/HomeView.vue"),
-    meta: {
-      title: "传统版工具导航站",
-      description: "传统版本的工具导航和产品展示平台",
-    },
-  },
-  {
-    path: "/comparison",
-    name: "Comparison",
-    component: () => import("../views/ComparisonView.vue"),
-    meta: {
-      title: "代码优化对比",
-      description: "展示原HTML代码与Vue组件化改造后的效果对比",
-    },
-  },
-  {
-    path: "/config-test",
-    name: "ConfigTest",
-    component: () => import("../views/ConfigTestView.vue"),
-    meta: {
-      title: "配置测试",
-      description: "检查环境变量和配置是否正确",
-    },
-  },
 
+  {
+    path: "/search",
+    name: "SearchResults",
+    component: () => import("../views/SearchResultsView.vue"),
+    meta: {
+      title: "搜索结果",
+      description: "搜索工具和产品",
+    },
+  },
   {
     path: "/tools",
     name: "Tools",
@@ -195,21 +177,11 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: "local",
-        name: "AdminLocal",
-        component: () => import("../views/admin/LocalManagementView.vue"),
+        path: "settings",
+        name: "AdminSettings",
+        component: () => import("../views/admin/SettingsView.vue"),
         meta: {
-          title: "本地管理",
-          requiresAuth: true,
-          requiresAdmin: true,
-        },
-      },
-      {
-        path: "local-test",
-        name: "AdminLocalTest",
-        component: () => import("../views/admin/LocalManagementTestView.vue"),
-        meta: {
-          title: "本地管理测试",
+          title: "系统设置",
           requiresAuth: true,
           requiresAdmin: true,
         },

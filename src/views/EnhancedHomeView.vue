@@ -181,6 +181,7 @@ const displayTools = computed(() => {
 // 方法
 const handleSearchResult = (result: any) => {
   searchResults.value = result;
+  // 搜索组件会自动导航到搜索结果页面，这里不需要额外处理
 };
 
 const clearSearch = () => {
