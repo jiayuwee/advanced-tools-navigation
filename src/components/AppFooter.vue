@@ -79,11 +79,12 @@
         <div class="footer-section">
           <h4>帮助支持</h4>
           <ul class="footer-links">
-            <li><a href="#">使用指南</a></li>
-            <li><a href="#">常见问题</a></li>
-            <li><a href="#">意见反馈</a></li>
-            <li><a href="#">联系我们</a></li>
-            <li><a href="#">服务条款</a></li>
+            <li><router-link to="/help">帮助支持</router-link></li>
+            <li><router-link to="/user-guide">使用指南</router-link></li>
+            <li><router-link to="/faq">常见问题</router-link></li>
+            <li><router-link to="/feedback">意见反馈</router-link></li>
+            <li><router-link to="/contact">联系我们</router-link></li>
+            <li><router-link to="/terms">服务条款</router-link></li>
           </ul>
         </div>
 
@@ -115,8 +116,9 @@
           <div class="copyright">
             <p>{{ footerConfig.copyright }}</p>
             <p>
-              <a href="#">隐私政策</a> | <a href="#">服务条款</a> |
-              <a href="#">网站地图</a>
+              <router-link to="/privacy-policy">隐私政策</router-link> |
+              <router-link to="/terms">服务条款</router-link> |
+              <router-link to="/sitemap">网站地图</router-link>
             </p>
           </div>
           <div class="footer-stats">

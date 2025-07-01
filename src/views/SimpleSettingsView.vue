@@ -16,6 +16,7 @@
               v-model="siteConfig.name"
               type="text"
               placeholder="工具导航站"
+              @input="onInputChange"
             />
           </div>
           <div class="form-group">
@@ -24,6 +25,7 @@
               v-model="siteConfig.description"
               placeholder="专注于为用户提供优质的工具导航和产品展示服务"
               rows="3"
+              @input="onInputChange"
             ></textarea>
           </div>
           <div class="form-group">
@@ -32,6 +34,7 @@
               v-model="siteConfig.contact.email"
               type="email"
               placeholder="contact@example.com"
+              @input="onInputChange"
             />
           </div>
           <div class="form-group">
@@ -40,6 +43,7 @@
               v-model="siteConfig.contact.phone"
               type="tel"
               placeholder="+86 138-0000-0000"
+              @input="onInputChange"
             />
           </div>
         </div>
@@ -55,6 +59,7 @@
               v-model="footerConfig.companyDescription"
               placeholder="专注于为用户提供优质的工具导航和产品展示服务..."
               rows="4"
+              @input="onInputChange"
             ></textarea>
           </div>
           <div class="form-group">
@@ -63,6 +68,7 @@
               v-model="footerConfig.copyright"
               type="text"
               placeholder="© 2024 工具导航站. 保留所有权利."
+              @input="onInputChange"
             />
           </div>
         </div>
@@ -76,6 +82,7 @@
               v-model.number="footerConfig.stats.toolsCount"
               type="number"
               placeholder="1000"
+              @input="onInputChange"
             />
           </div>
           <div class="form-group">
@@ -84,6 +91,7 @@
               v-model.number="footerConfig.stats.categoriesCount"
               type="number"
               placeholder="50"
+              @input="onInputChange"
             />
           </div>
           <div class="form-group">
@@ -92,6 +100,7 @@
               v-model.number="footerConfig.stats.usersCount"
               type="number"
               placeholder="10000"
+              @input="onInputChange"
             />
           </div>
         </div>
@@ -105,6 +114,7 @@
               v-model="footerConfig.social.github"
               type="url"
               placeholder="https://github.com/username/repo"
+              @input="onInputChange"
             />
           </div>
           <div class="form-group">
@@ -113,6 +123,7 @@
               v-model="footerConfig.social.email"
               type="email"
               placeholder="contact@example.com"
+              @input="onInputChange"
             />
           </div>
           <div class="form-group">
@@ -121,6 +132,7 @@
               v-model="footerConfig.social.wechat"
               type="url"
               placeholder="微信二维码链接"
+              @input="onInputChange"
             />
           </div>
           <div class="form-group">
@@ -129,6 +141,7 @@
               v-model="footerConfig.social.weibo"
               type="url"
               placeholder="https://weibo.com/username"
+              @input="onInputChange"
             />
           </div>
         </div>
@@ -140,6 +153,7 @@
           {{ saving ? "保存中..." : "保存设置" }}
         </button>
         <button class="reset-button" @click="resetSettings">重置为默认</button>
+        <button class="test-button" @click="testData">测试数据</button>
       </div>
 
       <!-- 消息提示 -->
@@ -188,6 +202,23 @@ const footerConfig = ref({
 });
 
 // 方法
+const onInputChange = () => {
+  console.log("输入变化:", {
+    siteConfig: siteConfig.value,
+    footerConfig: footerConfig.value,
+  });
+};
+
+const testData = () => {
+  console.log("当前数据:", {
+    siteConfig: siteConfig.value,
+    footerConfig: footerConfig.value,
+  });
+  alert(
+    `当前数据:\n网站名称: ${siteConfig.value.name}\n联系邮箱: ${siteConfig.value.contact.email}\n版权信息: ${footerConfig.value.copyright}`
+  );
+};
+
 const saveSettings = async () => {
   try {
     saving.value = true;
@@ -379,7 +410,8 @@ onMounted(() => {
 }
 
 .save-button,
-.reset-button {
+.reset-button,
+.test-button {
   padding: 12px 30px;
   border: none;
   border-radius: 8px;
@@ -412,6 +444,16 @@ onMounted(() => {
 
 .reset-button:hover {
   background: #5a6268;
+  transform: translateY(-2px);
+}
+
+.test-button {
+  background: #17a2b8;
+  color: white;
+}
+
+.test-button:hover {
+  background: #138496;
   transform: translateY(-2px);
 }
 

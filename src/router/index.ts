@@ -25,6 +25,76 @@ const routes: RouteRecordRaw[] = [
       description: "搜索工具和产品",
     },
   },
+
+  // 帮助支持相关页面
+  {
+    path: "/help",
+    name: "HelpSupport",
+    component: () => import("../views/HelpSupportView.vue"),
+    meta: {
+      title: "帮助支持",
+      description: "获取使用帮助和技术支持",
+    },
+  },
+  {
+    path: "/faq",
+    name: "FAQ",
+    component: () => import("../views/FAQView.vue"),
+    meta: {
+      title: "常见问题",
+      description: "查看常见问题解答",
+    },
+  },
+  {
+    path: "/user-guide",
+    name: "UserGuide",
+    component: () => import("../views/UserGuideView.vue"),
+    meta: {
+      title: "使用指南",
+      description: "详细的使用说明和操作指南",
+    },
+  },
+  {
+    path: "/guide",
+    redirect: "/user-guide",
+  },
+  {
+    path: "/feedback",
+    name: "Feedback",
+    component: () => import("../views/FeedbackView.vue"),
+    meta: {
+      title: "意见反馈",
+      description: "提交您的意见和建议",
+    },
+  },
+  {
+    path: "/contact",
+    name: "Contact",
+    component: () => import("../views/ContactView.vue"),
+    meta: {
+      title: "联系我们",
+      description: "多种方式联系我们获取帮助",
+    },
+  },
+  {
+    path: "/terms",
+    name: "TermsOfService",
+    component: () => import("../views/TermsOfServiceView.vue"),
+    meta: {
+      title: "服务条款",
+      description: "网站服务条款和使用协议",
+    },
+  },
+  {
+    path: "/upload-product",
+    name: "ProductUpload",
+    component: () => import("../views/ProductUploadView.vue"),
+    meta: {
+      title: "产品上传",
+      description: "上传您的产品到平台",
+      requiresAuth: true,
+    },
+  },
   {
     path: "/tools",
     name: "Tools",
@@ -147,6 +217,10 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
+        path: "",
+        redirect: "/admin/dashboard",
+      },
+      {
         path: "dashboard",
         name: "AdminDashboard",
         component: () => import("../views/admin/DashboardView.vue"),
@@ -169,7 +243,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: "products",
         name: "AdminProducts",
-        component: () => import("../views/admin/ProductsManageView.vue"),
+        component: () => import("../views/admin/ProductManagementView.vue"),
         meta: {
           title: "产品管理",
           requiresAuth: true,
@@ -223,6 +297,15 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: "网站设置",
       description: "更新网站内容和配置",
+    },
+  },
+  {
+    path: "/test-settings",
+    name: "TestSettings",
+    component: () => import("../views/TestSettingsView.vue"),
+    meta: {
+      title: "测试设置",
+      description: "测试设置页面",
     },
   },
   {
