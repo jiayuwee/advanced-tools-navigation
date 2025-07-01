@@ -76,84 +76,98 @@ USING (auth.uid() = user_id);
 -- 4. 检查并修复其他可能的 RLS 问题
 -- =============================================
 
--- 确保所有主要表都启用了 RLS
+-- 确保所有主要表都启用了 RLS（只处理存在的表）
 DO $$
 BEGIN
   -- 检查并启用 categories 表的 RLS
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_class c 
-    JOIN pg_namespace n ON n.oid = c.relnamespace 
-    WHERE c.relname = 'categories' 
-    AND n.nspname = 'public' 
-    AND c.relrowsecurity = true
-  ) THEN
-    ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'categories') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE c.relname = 'categories'
+      AND n.nspname = 'public'
+      AND c.relrowsecurity = true
+    ) THEN
+      ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+    END IF;
   END IF;
 
   -- 检查并启用 tools 表的 RLS
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_class c 
-    JOIN pg_namespace n ON n.oid = c.relnamespace 
-    WHERE c.relname = 'tools' 
-    AND n.nspname = 'public' 
-    AND c.relrowsecurity = true
-  ) THEN
-    ALTER TABLE public.tools ENABLE ROW LEVEL SECURITY;
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'tools') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE c.relname = 'tools'
+      AND n.nspname = 'public'
+      AND c.relrowsecurity = true
+    ) THEN
+      ALTER TABLE public.tools ENABLE ROW LEVEL SECURITY;
+    END IF;
   END IF;
 
   -- 检查并启用 products 表的 RLS
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_class c 
-    JOIN pg_namespace n ON n.oid = c.relnamespace 
-    WHERE c.relname = 'products' 
-    AND n.nspname = 'public' 
-    AND c.relrowsecurity = true
-  ) THEN
-    ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'products') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE c.relname = 'products'
+      AND n.nspname = 'public'
+      AND c.relrowsecurity = true
+    ) THEN
+      ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+    END IF;
   END IF;
 
   -- 检查并启用 user_profiles 表的 RLS
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_class c 
-    JOIN pg_namespace n ON n.oid = c.relnamespace 
-    WHERE c.relname = 'user_profiles' 
-    AND n.nspname = 'public' 
-    AND c.relrowsecurity = true
-  ) THEN
-    ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'user_profiles') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE c.relname = 'user_profiles'
+      AND n.nspname = 'public'
+      AND c.relrowsecurity = true
+    ) THEN
+      ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+    END IF;
   END IF;
 
   -- 检查并启用 favorites 表的 RLS
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_class c 
-    JOIN pg_namespace n ON n.oid = c.relnamespace 
-    WHERE c.relname = 'favorites' 
-    AND n.nspname = 'public' 
-    AND c.relrowsecurity = true
-  ) THEN
-    ALTER TABLE public.favorites ENABLE ROW LEVEL SECURITY;
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'favorites') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE c.relname = 'favorites'
+      AND n.nspname = 'public'
+      AND c.relrowsecurity = true
+    ) THEN
+      ALTER TABLE public.favorites ENABLE ROW LEVEL SECURITY;
+    END IF;
   END IF;
 
   -- 检查并启用 orders 表的 RLS
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_class c 
-    JOIN pg_namespace n ON n.oid = c.relnamespace 
-    WHERE c.relname = 'orders' 
-    AND n.nspname = 'public' 
-    AND c.relrowsecurity = true
-  ) THEN
-    ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'orders') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE c.relname = 'orders'
+      AND n.nspname = 'public'
+      AND c.relrowsecurity = true
+    ) THEN
+      ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+    END IF;
   END IF;
 
-  -- 检查并启用 reviews 表的 RLS
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_class c 
-    JOIN pg_namespace n ON n.oid = c.relnamespace 
-    WHERE c.relname = 'reviews' 
-    AND n.nspname = 'public' 
-    AND c.relrowsecurity = true
-  ) THEN
-    ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
+  -- 检查并启用 analytics 表的 RLS
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'analytics') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE c.relname = 'analytics'
+      AND n.nspname = 'public'
+      AND c.relrowsecurity = true
+    ) THEN
+      ALTER TABLE public.analytics ENABLE ROW LEVEL SECURITY;
+    END IF;
   END IF;
 END $$;
 
