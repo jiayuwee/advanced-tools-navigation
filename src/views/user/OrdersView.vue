@@ -158,10 +158,26 @@ const loadOrders = async () => {
   try {
     loading.value = true;
 
-    // TODO: 实现加载订单逻辑
-    // const userOrders = await OrdersService.getUserOrders()
+    // 导入必要的服务
+    const { OrderService } = await import("@/services/orderService");
+    const { useAuthStore } = await import("@/stores/auth");
 
-    // 模拟数据
+    const authStore = useAuthStore();
+    if (!authStore.user) {
+      console.error("用户未登录");
+      return;
+    }
+
+    try {
+      // 从API加载真实订单数据
+      const userOrders = await OrderService.getUserOrders(authStore.user.id);
+      orders.value = userOrders;
+      return; // 成功加载真实数据，直接返回
+    } catch (apiError) {
+      console.warn("加载真实订单数据失败，使用模拟数据:", apiError);
+    }
+
+    // 如果API失败，使用模拟数据作为后备
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     orders.value = [
@@ -283,9 +299,63 @@ const cancelOrder = async (order: Order) => {
   }
 };
 
-const downloadOrder = (order: Order) => {
-  // TODO: 实现下载逻辑
-  console.log("下载订单产品:", order.id);
+const downloadOrder = async (order: Order) => {
+  try {
+    console.log("下载订单产品:", order.id);
+
+    // 检查订单状态
+    if (order.status !== "paid") {
+      alert("订单未支付，无法下载");
+      return;
+    }
+
+    // 导入订单服务
+    const { OrderService } = await import("@/services/orderService");
+    const { useAuthStore } = await import("@/stores/auth");
+
+    const authStore = useAuthStore();
+    if (!authStore.user) {
+      alert("请先登录");
+      return;
+    }
+
+    // 验证下载权限并获取最新订单信息
+    const latestOrder = await OrderService.getOrderById(
+      order.id,
+      authStore.user.id
+    );
+    if (!latestOrder || latestOrder.status !== "paid") {
+      alert("订单状态异常，无法下载");
+      return;
+    }
+
+    // 下载所有产品
+    let downloadCount = 0;
+    for (const item of latestOrder.items) {
+      if (item.product?.downloadUrl) {
+        const link = document.createElement("a");
+        link.href = item.product.downloadUrl;
+        link.download = `${item.product.name}.zip`;
+        link.target = "_blank";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        downloadCount++;
+
+        // 延迟一下避免浏览器阻止多个下载
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
+
+    if (downloadCount === 0) {
+      alert("该订单中没有可下载的产品");
+    } else {
+      console.log(`成功启动 ${downloadCount} 个产品的下载`);
+    }
+  } catch (error) {
+    console.error("下载失败:", error);
+    alert("下载失败，请稍后重试");
+  }
 };
 
 const viewOrderDetail = (order: Order) => {
