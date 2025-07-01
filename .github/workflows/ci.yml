@@ -12,16 +12,21 @@ jobs:
     name: Build and Deploy
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        run: |
+          echo "🔄 检出代码..."
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
+        run: |
+          echo "🔧 设置 Node.js 环境..."
+          node --version
+          npm --version
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          echo "📦 安装依赖..."
+          npm ci --prefer-offline --no-audit
 
       - name: Build project
         run: |
