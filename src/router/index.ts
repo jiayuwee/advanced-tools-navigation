@@ -53,6 +53,15 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: "/tools/:id",
+    name: "ToolDetail",
+    component: () => import("../views/ToolDetailView.vue"),
+    meta: {
+      title: "工具详情",
+      description: "查看工具详细信息和使用教程",
+    },
+  },
+  {
     path: "/products",
     name: "Products",
     component: () => import("../views/ProductsView.vue"),

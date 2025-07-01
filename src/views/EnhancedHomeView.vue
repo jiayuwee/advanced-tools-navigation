@@ -193,10 +193,29 @@ const selectCategory = (categoryId: string) => {
 };
 
 const openTool = async (tool: any) => {
-  // 记录点击统计
-  await toolsStore.incrementClickCount(tool.id);
-  // 打开工具链接
-  window.open(tool.url, "_blank", "noopener,noreferrer");
+  console.log("点击工具:", tool.name, "URL:", tool.url);
+
+  if (!tool.url || tool.url.trim() === "") {
+    console.warn("工具URL为空:", tool);
+    alert("该工具暂无可用链接");
+    return;
+  }
+
+  try {
+    // 确保URL格式正确
+    let url = tool.url.trim();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+
+    // 记录点击统计
+    await toolsStore.incrementClickCount(tool.id);
+    // 打开工具链接
+    window.open(url, "_blank", "noopener,noreferrer");
+  } catch (error) {
+    console.error("打开链接失败:", error);
+    alert("无法打开该链接，请检查URL是否正确");
+  }
 };
 
 const toggleFavorite = async (tool: any) => {

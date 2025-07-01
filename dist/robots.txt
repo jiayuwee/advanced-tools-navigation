@@ -1,0 +1,39 @@
+User-agent: *
+Allow: /
+
+# 允许搜索引擎访问主要页面
+Allow: /tools
+Allow: /products
+Allow: /favorites
+Allow: /comparison
+
+# 禁止访问管理和私人页面
+Disallow: /admin
+Disallow: /user
+Disallow: /auth
+Disallow: /payment
+Disallow: /orders
+
+# 禁止访问API和配置文件
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /*.config.js$
+
+# 网站地图位置
+Sitemap: https://ramusi.cn/sitemap.xml
+
+# 爬取延迟（毫秒）
+Crawl-delay: 1
+
+# 特定搜索引擎优化
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 1
+
+User-agent: Sogou web spider
+Allow: /
+Crawl-delay: 1
