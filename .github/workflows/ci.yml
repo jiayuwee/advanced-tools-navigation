@@ -14,8 +14,16 @@ jobs:
       - name: Checkout code
         run: |
           echo "🔄 检出代码..."
-          git clone https://github.com/jiayuwee/advanced-tools-navigation.git .
+          echo "当前工作目录: $(pwd)"
+          git clone https://github.com/jiayuwee/advanced-tools-navigation.git repo
+          cd repo
           git checkout ${{ github.sha }}
+          echo "检出完成，复制文件到工作目录..."
+          cp -r * ../
+          cp -r .github ../
+          cp -r .* ../ 2>/dev/null || true
+          cd ..
+          rm -rf repo
           echo "当前目录内容:"
           ls -la
 
