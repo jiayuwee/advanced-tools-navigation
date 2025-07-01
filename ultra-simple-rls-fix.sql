@@ -1,5 +1,5 @@
--- 超简单 RLS 修复脚本
--- 只修复 tool_ratings 和 user_feedback 表的 RLS 问题
+-- 超级简单 RLS 修复脚本
+-- 只启用 RLS，不创建复杂策略
 
 -- 1. 启用 tool_ratings 表的 RLS（如果表存在）
 ALTER TABLE IF EXISTS public.tool_ratings ENABLE ROW LEVEL SECURITY;
@@ -7,37 +7,7 @@ ALTER TABLE IF EXISTS public.tool_ratings ENABLE ROW LEVEL SECURITY;
 -- 2. 启用 user_feedback 表的 RLS（如果表存在）
 ALTER TABLE IF EXISTS public.user_feedback ENABLE ROW LEVEL SECURITY;
 
--- 3. 为 tool_ratings 创建基本安全策略
--- 先删除可能存在的旧策略，然后创建新策略
-DROP POLICY IF EXISTS "allow_read_tool_ratings" ON public.tool_ratings;
-DROP POLICY IF EXISTS "allow_insert_tool_ratings" ON public.tool_ratings;
-
--- 允许所有人查看评分
-CREATE POLICY "allow_read_tool_ratings"
-ON public.tool_ratings FOR SELECT
-USING (true);
-
--- 允许认证用户创建评分
-CREATE POLICY "allow_insert_tool_ratings"
-ON public.tool_ratings FOR INSERT
-WITH CHECK (auth.role() = 'authenticated');
-
--- 4. 为 user_feedback 创建基本安全策略
--- 先删除可能存在的旧策略，然后创建新策略
-DROP POLICY IF EXISTS "allow_read_own_feedback" ON public.user_feedback;
-DROP POLICY IF EXISTS "allow_insert_feedback" ON public.user_feedback;
-
--- 允许用户查看自己的反馈
-CREATE POLICY "allow_read_own_feedback"
-ON public.user_feedback FOR SELECT
-USING (auth.uid() = user_id);
-
--- 允许认证用户创建反馈
-CREATE POLICY "allow_insert_feedback"
-ON public.user_feedback FOR INSERT
-WITH CHECK (auth.role() = 'authenticated' AND auth.uid() = user_id);
-
--- 5. 验证结果
+-- 3. 验证结果
 SELECT 
   'tool_ratings' as table_name,
   CASE 
