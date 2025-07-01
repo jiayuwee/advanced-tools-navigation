@@ -247,6 +247,8 @@ ALTER TABLE tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tool_tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tool_ratings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_feedback ENABLE ROW LEVEL SECURITY;
 
 -- 分类和工具的公开读取策略
 CREATE POLICY "Categories are viewable by everyone" ON categories FOR SELECT USING (is_active = true);
@@ -289,3 +291,69 @@ CREATE POLICY "Admins can view all orders" ON orders FOR SELECT USING (
 CREATE POLICY "Admins can view analytics" ON analytics FOR SELECT USING (
   EXISTS (SELECT 1 FROM user_profiles WHERE id = auth.uid() AND role IN ('admin', 'super_admin'))
 );
+
+-- =============================================
+-- 工具评分表定义和安全策略
+-- =============================================
+
+-- 工具评分表
+CREATE TABLE IF NOT EXISTS tool_ratings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tool_id UUID NOT NULL REFERENCES tools(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(tool_id, user_id)
+);
+
+-- 工具评分表索引
+CREATE INDEX IF NOT EXISTS idx_tool_ratings_tool_id ON tool_ratings(tool_id);
+CREATE INDEX IF NOT EXISTS idx_tool_ratings_user_id ON tool_ratings(user_id);
+CREATE INDEX IF NOT EXISTS idx_tool_ratings_rating ON tool_ratings(rating);
+CREATE INDEX IF NOT EXISTS idx_tool_ratings_created_at ON tool_ratings(created_at DESC);
+
+-- 工具评分表触发器
+CREATE TRIGGER update_tool_ratings_updated_at BEFORE UPDATE ON tool_ratings FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- 工具评分安全策略
+CREATE POLICY "Tool ratings are viewable by everyone" ON tool_ratings FOR SELECT USING (true);
+CREATE POLICY "Authenticated users can create tool ratings" ON tool_ratings FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Users can update their own tool ratings" ON tool_ratings FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own tool ratings" ON tool_ratings FOR DELETE USING (auth.uid() = user_id);
+
+-- =============================================
+-- 用户反馈表定义和安全策略
+-- =============================================
+
+-- 用户反馈表
+CREATE TABLE IF NOT EXISTS user_feedback (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  feedback_type VARCHAR(50) NOT NULL DEFAULT 'general',
+  subject VARCHAR(200),
+  message TEXT NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'resolved', 'closed')),
+  admin_response TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 用户反馈表索引
+CREATE INDEX IF NOT EXISTS idx_user_feedback_user_id ON user_feedback(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_feedback_status ON user_feedback(status);
+CREATE INDEX IF NOT EXISTS idx_user_feedback_type ON user_feedback(feedback_type);
+CREATE INDEX IF NOT EXISTS idx_user_feedback_created_at ON user_feedback(created_at DESC);
+
+-- 用户反馈表触发器
+CREATE TRIGGER update_user_feedback_updated_at BEFORE UPDATE ON user_feedback FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- 用户反馈安全策略
+CREATE POLICY "Admins can view all user feedback" ON user_feedback FOR SELECT USING (
+  EXISTS (SELECT 1 FROM user_profiles WHERE user_id = auth.uid() AND role IN ('admin', 'super_admin'))
+);
+CREATE POLICY "Users can view their own feedback" ON user_feedback FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Authenticated users can create feedback" ON user_feedback FOR INSERT WITH CHECK (auth.role() = 'authenticated' AND auth.uid() = user_id);
+CREATE POLICY "Users can update their own feedback" ON user_feedback FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own feedback" ON user_feedback FOR DELETE USING (auth.uid() = user_id);
