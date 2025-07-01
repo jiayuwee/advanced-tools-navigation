@@ -13,6 +13,7 @@
               placeholder="搜索工具..."
               class="search-input"
               @input="handleSearch"
+              @focus="showAdvancedSearch = false"
             />
             <button
               v-if="searchQuery"
@@ -21,6 +22,25 @@
             >
               <XIcon class="icon" />
             </button>
+            <button
+              @click="showAdvancedSearch = !showAdvancedSearch"
+              class="advanced-search-button"
+              :class="{ active: showAdvancedSearch }"
+              title="高级搜索"
+            >
+              <FilterIcon class="icon" />
+            </button>
+
+            <!-- 高级搜索面板 -->
+            <AdvancedSearchPanel
+              :is-open="showAdvancedSearch"
+              :filters="filters"
+              :search-history="searchHistory"
+              :popular-searches="popularSearches"
+              @close="showAdvancedSearch = false"
+              @update:filters="updateFilters"
+              @search="handleAdvancedSearch"
+            />
           </div>
         </div>
 
@@ -92,12 +112,7 @@
         v-else-if="filteredTools.length > 0 && viewMode === 'grid'"
         class="tools-grid"
       >
-        <div
-          v-for="tool in filteredTools"
-          :key="tool.id"
-          class="tool-card"
-          @click="handleToolClick(tool)"
-        >
+        <div v-for="tool in filteredTools" :key="tool.id" class="tool-card">
           <div class="card-header">
             <div class="tool-icon">{{ tool.icon || "🔧" }}</div>
             <button
@@ -131,14 +146,29 @@
             <div class="tool-stats">
               <span class="stat">
                 <EyeIcon class="stat-icon" />
-                {{ tool.clickCount }}
+                {{ tool.click_count || 0 }}
               </span>
               <span class="stat">
                 <FolderIcon class="stat-icon" />
-                {{ tool.category.name }}
+                {{ tool.categories?.name || "未分类" }}
               </span>
             </div>
-            <ExternalLinkIcon class="external-icon" />
+            <div class="tool-actions">
+              <button
+                @click.stop="goToToolDetail(tool.id)"
+                class="detail-button"
+                title="查看详情"
+              >
+                <InfoIcon class="icon" />
+              </button>
+              <button
+                @click.stop="handleToolClick(tool)"
+                class="visit-button"
+                title="访问工具"
+              >
+                <ExternalLinkIcon class="icon" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -227,6 +257,8 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToolsStore } from "../stores/tools";
+import { useAdvancedSearch } from "@/composables/useAdvancedSearch";
+import AdvancedSearchPanel from "@/components/search/AdvancedSearchPanel.vue";
 import {
   SearchIcon,
   XIcon,
@@ -236,22 +268,43 @@ import {
   EyeIcon,
   FolderIcon,
   ExternalLinkIcon,
+  InfoIcon,
+  FilterIcon,
 } from "lucide-vue-next";
 
 const route = useRoute();
 const router = useRouter();
 const toolsStore = useToolsStore();
 
+// 高级搜索功能
+const {
+  searchQuery,
+  filters,
+  searchResults,
+  searchSuggestions,
+  popularSearches,
+  searchHistory,
+  isSearching,
+  search,
+  clearSearch,
+  resetFilters,
+} = useAdvancedSearch();
+
 // 响应式状态
 const searchInput = ref<HTMLInputElement>();
-const searchQuery = ref("");
 const selectedCategory = ref("all");
 const sortBy = ref("name");
+const showAdvancedSearch = ref(false);
 const showFavoritesOnly = ref(false);
 const viewMode = ref<"grid" | "list">("grid");
 
 // 计算属性
 const filteredTools = computed(() => {
+  // 如果有搜索查询，使用高级搜索结果
+  if (searchQuery.value.trim()) {
+    return searchResults.value.map((result) => result.item);
+  }
+
   let tools = toolsStore.filteredTools;
 
   // 收藏过滤
@@ -282,14 +335,41 @@ const handleSearch = () => {
   toolsStore.setSearchQuery(searchQuery.value);
 };
 
-const clearSearch = () => {
-  searchQuery.value = "";
-  toolsStore.setSearchQuery("");
+const updateFilters = (newFilters: typeof filters) => {
+  Object.assign(filters, newFilters);
+};
+
+const handleAdvancedSearch = (query: string) => {
+  search(query);
+  showAdvancedSearch.value = false;
+};
+
+const goToToolDetail = (toolId: string) => {
+  router.push(`/tools/${toolId}`);
 };
 
 const handleToolClick = async (tool: any) => {
-  await toolsStore.incrementClickCount(tool.id);
-  window.open(tool.url, "_blank", "noopener,noreferrer");
+  console.log("点击工具:", tool.name, "URL:", tool.url);
+
+  if (!tool.url || tool.url.trim() === "") {
+    console.warn("工具URL为空:", tool);
+    alert("该工具暂无可用链接");
+    return;
+  }
+
+  try {
+    // 确保URL格式正确
+    let url = tool.url.trim();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+
+    await toolsStore.incrementClickCount(tool.id);
+    window.open(url, "_blank", "noopener,noreferrer");
+  } catch (error) {
+    console.error("打开链接失败:", error);
+    alert("无法打开该链接，请检查URL是否正确");
+  }
 };
 
 const retryLoad = async () => {
@@ -408,7 +488,7 @@ onMounted(async () => {
 
 .clear-search {
   position: absolute;
-  right: 8px;
+  right: 40px;
   background: none;
   border: none;
   cursor: pointer;
@@ -419,6 +499,28 @@ onMounted(async () => {
 
 .clear-search:hover {
   background: #f3f2f1;
+}
+
+.advanced-search-button {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  color: #666;
+}
+
+.advanced-search-button:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.advanced-search-button.active {
+  background: #667eea;
+  color: white;
 }
 
 .filter-label {
@@ -593,6 +695,50 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.tool-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.detail-button,
+.visit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.detail-button {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.detail-button:hover {
+  background: rgba(102, 126, 234, 0.2);
+  transform: translateY(-1px);
+}
+
+.visit-button {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.visit-button:hover {
+  background: rgba(76, 175, 80, 0.2);
+  transform: translateY(-1px);
+}
+
+.detail-button .icon,
+.visit-button .icon {
+  width: 16px;
+  height: 16px;
 }
 
 .tool-stats {

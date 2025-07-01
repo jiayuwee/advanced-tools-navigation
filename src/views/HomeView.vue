@@ -9,7 +9,8 @@
             <button
               class="sidebar-toggle"
               :class="{ active: !toolsStore.sidebarCollapsed }"
-              @click="toolsStore.toggleSidebar()"
+              @click="handleSidebarToggle"
+              :title="toolsStore.sidebarCollapsed ? '展开侧边栏' : '折叠侧边栏'"
             >
               <MenuIcon class="icon" />
             </button>
@@ -292,10 +293,34 @@ const getCurrentCategoryName = () => {
   return category ? category.name : "未知分类";
 };
 
+// 处理侧边栏折叠
+const handleSidebarToggle = () => {
+  console.log("侧边栏折叠状态切换:", !toolsStore.sidebarCollapsed);
+  toolsStore.toggleSidebar();
+};
+
 // 处理工具点击
 const handleToolClick = (tool) => {
-  toolsStore.incrementClickCount(tool.id);
-  window.open(tool.url, "_blank", "noopener,noreferrer");
+  console.log("点击工具:", tool.name, "URL:", tool.url);
+  if (!tool.url || tool.url.trim() === "") {
+    console.warn("工具URL为空:", tool);
+    alert("该工具暂无可用链接");
+    return;
+  }
+
+  try {
+    // 确保URL格式正确
+    let url = tool.url.trim();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+
+    toolsStore.incrementClickCount(tool.id);
+    window.open(url, "_blank", "noopener,noreferrer");
+  } catch (error) {
+    console.error("打开链接失败:", error);
+    alert("无法打开该链接，请检查URL是否正确");
+  }
 };
 
 // 处理搜索回车
@@ -363,8 +388,37 @@ onUnmounted(() => {
 .fluent-app {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
   min-height: calc(100vh - 200px); /* 为Footer留出空间 */
   color: #323130;
+  position: relative;
+}
+
+.fluent-app::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(120, 119, 198, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 119, 198, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(120, 219, 255, 0.2) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
 }
 
 .app-container {
@@ -372,6 +426,8 @@ onUnmounted(() => {
   flex-direction: column;
   min-height: calc(100vh - 200px); /* 改为min-height，为Footer留出空间 */
   outline: none;
+  position: relative;
+  z-index: 1;
 }
 
 /* 顶部导航栏 */
@@ -586,11 +642,12 @@ onUnmounted(() => {
 /* 侧边栏 */
 .sidebar {
   width: 280px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar.collapsed {
@@ -634,25 +691,48 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border: none;
   background: transparent;
-  border-radius: 6px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
   text-align: left;
-  transition: all 0.2s ease;
-  margin-bottom: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
 
 .nav-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(102, 126, 234, 0.08);
+  transform: translateX(2px);
 }
 
 .nav-item.active {
-  background: rgba(0, 120, 212, 0.1);
-  color: #0078d4;
-  font-weight: 500;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.15) 0%,
+    rgba(118, 75, 162, 0.15) 100%
+  );
+  color: #667eea;
+  font-weight: 600;
+}
+
+.nav-item.active::before {
+  transform: scaleY(1);
 }
 
 .nav-icon {
@@ -821,18 +901,35 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 24px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.tool-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .tool-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.tool-card:hover::before {
+  opacity: 1;
 }
 
 .card-header {
@@ -1020,6 +1117,10 @@ onUnmounted(() => {
     top: 50px;
     height: calc(100vh - 250px); /* 为Footer留出空间 */
     z-index: 90;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.collapsed {
     transform: translateX(-100%);
   }
 

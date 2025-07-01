@@ -119,10 +119,8 @@ class ReviewService {
         sort_by = "newest",
       } = options;
 
-      let query = supabase
-        .from("product_reviews")
-        .select(
-          `
+      let query = supabase.from("product_reviews").select(
+        `
           *,
           user_profiles!inner(id, username, full_name, avatar_url),
           products!inner(id, name, images),
@@ -131,10 +129,12 @@ class ReviewService {
             user_profiles(id, username, full_name, avatar_url)
           )
         `,
-          { count: "exact" }
-        )
-        .eq("product_id", productId)
-        .eq("status", "approved");
+        { count: "exact" }
+      );
+
+      // 应用基本筛选器
+      query = query.eq("product_id", productId);
+      query = query.eq("status", "approved");
 
       // 应用筛选器
       if (rating) {
@@ -196,11 +196,14 @@ class ReviewService {
   async getProductReviewStats(productId: string): Promise<ReviewStats> {
     try {
       // 获取基本统计
-      const { data: basicStats } = await supabase
+      let statsQuery = supabase
         .from("product_reviews")
-        .select("rating, is_verified_purchase, created_at")
-        .eq("product_id", productId)
-        .eq("status", "approved");
+        .select("rating, is_verified_purchase, created_at");
+
+      statsQuery = statsQuery.eq("product_id", productId);
+      statsQuery = statsQuery.eq("status", "approved");
+
+      const { data: basicStats } = await statsQuery;
 
       if (!basicStats || basicStats.length === 0) {
         return {
@@ -256,12 +259,12 @@ class ReviewService {
   ): Promise<Review> {
     try {
       // 检查用户是否已经评价过该产品
-      const { data: existingReview } = await supabase
-        .from("product_reviews")
-        .select("id")
-        .eq("product_id", reviewData.product_id)
-        .eq("user_id", userId)
-        .single();
+      let existingQuery = supabase.from("product_reviews").select("id");
+
+      existingQuery = existingQuery.eq("product_id", reviewData.product_id);
+      existingQuery = existingQuery.eq("user_id", userId);
+
+      const { data: existingReview } = await existingQuery.maybeSingle();
 
       if (existingReview) {
         throw new Error("您已经评价过该产品");
