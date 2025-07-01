@@ -23,6 +23,8 @@ export const useToolsStore = defineStore("tools", () => {
 
   // 状态：搜索查询，由 AppHeader.vue 使用
   const searchQuery = ref("");
+  // 状态：选中的分类
+  const selectedCategory = ref("all");
   // 状态：侧边栏折叠状态，由 AppHeader.vue 使用
   const sidebarCollapsed = ref(false);
 
@@ -117,6 +119,56 @@ export const useToolsStore = defineStore("tools", () => {
     error.value = null;
   }
 
+  /**
+   * 设置搜索查询
+   */
+  function setSearchQuery(query: string) {
+    searchQuery.value = query;
+  }
+
+  /**
+   * 设置选中的分类
+   */
+  function setSelectedCategory(categoryId: string) {
+    selectedCategory.value = categoryId;
+  }
+
+  /**
+   * 增加工具点击次数
+   */
+  async function incrementClickCount(toolId: string) {
+    try {
+      const { error } = await supabase.rpc("increment_click_count", {
+        tool_id: toolId,
+      });
+
+      if (error) {
+        console.error("增加点击次数失败:", error);
+        return;
+      }
+
+      // 更新本地状态
+      const tool = tools.value.find((t) => t.id === toolId);
+      if (tool) {
+        tool.click_count = (tool.click_count || 0) + 1;
+      }
+    } catch (error) {
+      console.error("增加点击次数失败:", error);
+    }
+  }
+
+  /**
+   * 切换收藏状态
+   */
+  async function toggleFavorite(toolId: string) {
+    try {
+      // TODO: 实现收藏功能
+      console.log("切换收藏:", toolId);
+    } catch (error) {
+      console.error("切换收藏失败:", error);
+    }
+  }
+
   // --- Return (导出) ---
   // 确保所有外部需要访问的状态、计算属性和方法都在此导出。
   return {
@@ -126,6 +178,7 @@ export const useToolsStore = defineStore("tools", () => {
     error,
     initialized,
     searchQuery,
+    selectedCategory,
     sidebarCollapsed,
     // Getters
     filteredTools,
@@ -134,5 +187,9 @@ export const useToolsStore = defineStore("tools", () => {
     initialize,
     toggleSidebar,
     clearError,
+    setSearchQuery,
+    setSelectedCategory,
+    incrementClickCount,
+    toggleFavorite,
   };
 });
