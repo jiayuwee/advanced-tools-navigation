@@ -113,6 +113,7 @@ const checkAdminAccess = async () => {
   try {
     const user = await UserService.getCurrentUser();
     if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
+      console.warn("管理员权限检查失败，重定向到首页");
       router.push("/");
       return;
     }

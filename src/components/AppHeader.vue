@@ -94,6 +94,14 @@
               <PackageIcon class="icon" />
               我的订单
             </router-link>
+            <router-link
+              to="/upload-product"
+              class="menu-item"
+              @click="closeUserMenu"
+            >
+              <UploadIcon class="icon" />
+              上传产品
+            </router-link>
             <div class="menu-divider"></div>
             <router-link
               v-if="authStore.isAdmin"
@@ -137,6 +145,7 @@ import {
   UserIcon,
   StarIcon,
   PackageIcon,
+  UploadIcon,
   SettingsIcon,
   LogOutIcon,
 } from "lucide-vue-next";

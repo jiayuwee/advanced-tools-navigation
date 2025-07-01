@@ -12,7 +12,7 @@ export function setupRouterGuard() {
     async (
       to: RouteLocationNormalized,
       _from: RouteLocationNormalized,
-      next: NavigationGuardNext,
+      next: NavigationGuardNext
     ) => {
       const authStore = useAuthStore();
       const toolsStore = useToolsStore();
@@ -54,6 +54,7 @@ export function setupRouterGuard() {
 
           // 检查管理员权限
           if (to.meta.requiresAdmin && !authStore.isAdmin) {
+            console.warn("管理员权限检查失败，重定向到首页");
             return next({ name: "Home", replace: true });
           }
         }
@@ -79,7 +80,7 @@ export function setupRouterGuard() {
         // 错误时跳转到首页而不是阻塞
         next({ name: "Home", replace: true });
       }
-    },
+    }
   );
 
   // 全局后置钩子
