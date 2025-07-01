@@ -8,24 +8,44 @@
           <div class="company-logo">
             <div class="logo-icon">🚀</div>
             <div class="logo-text">
-              <h3>工具导航站</h3>
+              <h3>{{ siteConfig.name }}</h3>
               <p>让工作更高效</p>
             </div>
           </div>
           <p class="company-description">
-            专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。
+            {{ footerConfig.companyDescription }}
           </p>
           <div class="social-links">
-            <a href="#" class="social-link" title="微信">
+            <a
+              v-if="footerConfig.social.wechat"
+              :href="footerConfig.social.wechat"
+              class="social-link"
+              title="微信"
+            >
               <MessageCircleIcon class="icon" />
             </a>
-            <a href="#" class="social-link" title="微博">
+            <a
+              v-if="footerConfig.social.weibo"
+              :href="footerConfig.social.weibo"
+              class="social-link"
+              title="微博"
+            >
               <TwitterIcon class="icon" />
             </a>
-            <a href="#" class="social-link" title="GitHub">
+            <a
+              v-if="footerConfig.social.github"
+              :href="footerConfig.social.github"
+              class="social-link"
+              title="GitHub"
+            >
               <GithubIcon class="icon" />
             </a>
-            <a href="#" class="social-link" title="邮箱">
+            <a
+              v-if="footerConfig.social.email"
+              :href="`mailto:${footerConfig.social.email}`"
+              class="social-link"
+              title="邮箱"
+            >
               <MailIcon class="icon" />
             </a>
           </div>
@@ -70,13 +90,13 @@
         <!-- 联系信息 -->
         <div class="footer-section contact-info">
           <h4>联系我们</h4>
-          <div class="contact-item">
+          <div v-if="siteConfig.contact.phone" class="contact-item">
             <PhoneIcon class="contact-icon" />
-            <span>400-123-4567</span>
+            <span>{{ siteConfig.contact.phone }}</span>
           </div>
-          <div class="contact-item">
+          <div v-if="siteConfig.contact.email" class="contact-item">
             <MailIcon class="contact-icon" />
-            <span>contact@ramusi.cn</span>
+            <span>{{ siteConfig.contact.email }}</span>
           </div>
           <div class="contact-item">
             <MapPinIcon class="contact-icon" />
@@ -93,7 +113,7 @@
       <div class="footer-bottom">
         <div class="footer-bottom-content">
           <div class="copyright">
-            <p>&copy; 2024 工具导航站. 保留所有权利.</p>
+            <p>{{ footerConfig.copyright }}</p>
             <p>
               <a href="#">隐私政策</a> | <a href="#">服务条款</a> |
               <a href="#">网站地图</a>
@@ -101,15 +121,21 @@
           </div>
           <div class="footer-stats">
             <div class="stat-item">
-              <span class="stat-number">1000+</span>
+              <span class="stat-number"
+                >{{ footerConfig.stats.toolsCount }}+</span
+              >
               <span class="stat-label">精选工具</span>
             </div>
             <div class="stat-item">
-              <span class="stat-number">50+</span>
+              <span class="stat-number"
+                >{{ footerConfig.stats.categoriesCount }}+</span
+              >
               <span class="stat-label">工具分类</span>
             </div>
             <div class="stat-item">
-              <span class="stat-number">10000+</span>
+              <span class="stat-number"
+                >{{ footerConfig.stats.usersCount }}+</span
+              >
               <span class="stat-label">用户使用</span>
             </div>
           </div>
@@ -120,6 +146,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import {
   MessageCircleIcon,
   TwitterIcon,
@@ -129,6 +156,60 @@ import {
   MapPinIcon,
   ClockIcon,
 } from "lucide-vue-next";
+
+// 响应式数据
+const siteConfig = ref({
+  name: "工具导航站",
+  contact: {
+    email: "contact@ramusi.cn",
+    phone: "+86 138-0000-0000",
+  },
+});
+
+const footerConfig = ref({
+  companyDescription:
+    "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
+  copyright: "© 2024 工具导航站. 保留所有权利.",
+  stats: {
+    toolsCount: 1000,
+    categoriesCount: 50,
+    usersCount: 10000,
+  },
+  social: {
+    wechat: "",
+    weibo: "",
+    github: "https://github.com/jiayuwee/advanced-tools-navigation",
+    email: "contact@ramusi.cn",
+  },
+});
+
+// 加载配置
+const loadConfig = () => {
+  try {
+    const savedSiteConfig = localStorage.getItem("siteConfig");
+    const savedFooterConfig = localStorage.getItem("footerConfig");
+
+    if (savedSiteConfig) {
+      siteConfig.value = {
+        ...siteConfig.value,
+        ...JSON.parse(savedSiteConfig),
+      };
+    }
+    if (savedFooterConfig) {
+      footerConfig.value = {
+        ...footerConfig.value,
+        ...JSON.parse(savedFooterConfig),
+      };
+    }
+  } catch (error) {
+    console.error("加载配置失败:", error);
+  }
+};
+
+// 生命周期
+onMounted(() => {
+  loadConfig();
+});
 </script>
 
 <style scoped>
