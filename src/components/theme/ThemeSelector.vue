@@ -6,8 +6,8 @@
       class="theme-toggle-button"
       :title="getThemeTitle()"
     >
-      <SunIcon v-if="currentMode === 'light'" class="icon" />
-      <MoonIcon v-else-if="currentMode === 'dark'" class="icon" />
+      <SunIcon v-if="themeConfig.mode === 'light'" class="icon" />
+      <MoonIcon v-else-if="themeConfig.mode === 'dark'" class="icon" />
       <MonitorIcon v-else class="icon" />
     </button>
 
@@ -24,18 +24,20 @@
         <!-- 简化的主题模式选择 -->
         <div class="theme-options">
           <button
-            v-for="mode in simpleModes"
+            v-for="mode in themeModes"
             :key="mode.value"
             @click="selectMode(mode.value)"
             class="theme-option"
-            :class="{ active: currentMode === mode.value }"
+            :class="{ active: themeConfig.mode === mode.value }"
           >
             <component :is="mode.icon" class="option-icon" />
             <div class="option-content">
               <span class="option-label">{{ mode.label }}</span>
               <span class="option-desc">{{ mode.description }}</span>
             </div>
-            <div v-if="currentMode === mode.value" class="check-icon">✓</div>
+            <div v-if="themeConfig.mode === mode.value" class="check-icon">
+              ✓
+            </div>
           </button>
         </div>
       </div>
@@ -52,7 +54,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useTheme } from "@/composables/useTheme";
+import { useSimpleTheme } from "@/composables/useSimpleTheme";
 import {
   SunIcon,
   MoonIcon,
@@ -60,79 +62,44 @@ import {
   MonitorIcon,
   PaletteIcon,
 } from "lucide-vue-next";
-import type { ThemeMode } from "@/composables/useTheme";
+import type { SimpleThemeMode } from "@/composables/useSimpleTheme";
 
-const {
-  themeConfig,
-  isDark,
-  themePresets,
-  setThemeMode,
-  setPrimaryColor,
-  setAccentColor,
-  applyPreset,
-  resetTheme,
-  exportTheme,
-  importTheme,
-} = useTheme();
+const { themeConfig, isDark, setThemeMode, getThemeTitle } = useSimpleTheme();
 
 // 状态
 const showPanel = ref(false);
-const showExportImport = ref(false);
-const importConfig = ref("");
-const importError = ref("");
-const copied = ref(false);
 
-// 主题模式选项
+// 简化的主题模式选项
 const themeModes = [
-  { value: "light" as ThemeMode, label: "浅色", icon: SunIcon },
-  { value: "dark" as ThemeMode, label: "深色", icon: MoonIcon },
-  { value: "auto" as ThemeMode, label: "自动", icon: MonitorIcon },
+  {
+    value: "light" as SimpleThemeMode,
+    label: "浅色",
+    icon: SunIcon,
+    description: "始终使用浅色主题",
+  },
+  {
+    value: "dark" as SimpleThemeMode,
+    label: "深色",
+    icon: MoonIcon,
+    description: "始终使用深色主题",
+  },
+  {
+    value: "auto" as SimpleThemeMode,
+    label: "跟随系统",
+    icon: MonitorIcon,
+    description: "根据系统设置自动切换",
+  },
 ];
 
-// 判断预设是否激活
-const isPresetActive = (preset: any) => {
-  return (
-    preset.config.primaryColor === themeConfig.value.primaryColor &&
-    preset.config.accentColor === themeConfig.value.accentColor
-  );
-};
-
-// 复制主题配置
-const copyThemeConfig = async () => {
-  try {
-    await navigator.clipboard.writeText(exportTheme());
-    copied.value = true;
-    setTimeout(() => {
-      copied.value = false;
-    }, 2000);
-  } catch (error) {
-    console.error("复制失败:", error);
-  }
-};
-
-// 处理主题导入
-const handleImportTheme = () => {
-  importError.value = "";
-
-  if (!importConfig.value.trim()) {
-    importError.value = "请输入主题配置";
-    return;
-  }
-
-  const success = importTheme(importConfig.value);
-
-  if (success) {
-    importConfig.value = "";
-    showExportImport.value = false;
-    showPanel.value = false;
-  } else {
-    importError.value = "主题配置格式错误";
-  }
+// 选择主题模式
+const selectMode = (mode: SimpleThemeMode) => {
+  setThemeMode(mode);
+  showPanel.value = false;
 };
 </script>
 
 <style scoped>
-.theme-selector {
+.simple-theme-selector {
   position: relative;
 }
 
