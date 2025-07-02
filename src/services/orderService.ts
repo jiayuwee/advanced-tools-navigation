@@ -2,15 +2,15 @@ import { supabase } from "@/lib/supabase";
 import type { Order, OrderItem, BillingAddress } from "@/types";
 
 export interface CreateOrderData {
-  productId: string;
+  product_id: string;
   quantity: number;
-  billingAddress: BillingAddress;
+  billing_address: BillingAddress;
 }
 
 export interface PaymentData {
-  orderId: string;
-  paymentMethod: string;
-  paymentId: string;
+  order_id: string;
+  payment_method: string;
+  payment_id: string;
   amount: number;
 }
 
@@ -25,7 +25,7 @@ export class OrderService {
       const { data: product, error: productError } = await supabase
         .from("products")
         .select("id, name, price, is_digital")
-        .eq("id", orderData.productId)
+        .eq("id", orderData.product_id)
         .eq("status", "active")
         .single();
 
@@ -43,7 +43,7 @@ export class OrderService {
           total_amount: totalAmount,
           currency: "CNY",
           status: "pending",
-          billing_address: orderData.billingAddress,
+          billing_address: orderData.billing_address,
         })
         .select()
         .single();
@@ -55,7 +55,7 @@ export class OrderService {
         .from("order_items")
         .insert({
           order_id: order.id,
-          product_id: orderData.productId,
+          product_id: orderData.product_id,
           quantity: orderData.quantity,
           unit_price: product.price,
           total_price: totalAmount,
@@ -71,26 +71,26 @@ export class OrderService {
         items: [
           {
             id: orderItem.id,
-            orderId: order.id,
-            productId: orderData.productId,
+            order_id: order.id,
+            product_id: orderData.product_id,
             quantity: orderData.quantity,
-            unitPrice: product.price,
-            totalPrice: totalAmount,
-            createdAt: orderItem.created_at,
+            unit_price: product.price,
+            total_price: totalAmount,
+            created_at: orderItem.created_at,
             product: {
               id: product.id,
               name: product.name,
-              shortDescription: "",
+              short_description: "",
               images: [],
             },
           },
         ],
-        totalAmount,
+        total_amount: totalAmount,
         currency: order.currency,
         status: order.status as "pending" | "paid" | "cancelled" | "refunded",
-        billingAddress: orderData.billingAddress,
-        createdAt: order.created_at,
-        updatedAt: order.updated_at,
+        billing_address: orderData.billing_address,
+        created_at: order.created_at,
+        updated_at: order.updated_at,
       };
     } catch (error) {
       console.error("创建订单失败:", error);
@@ -105,12 +105,12 @@ export class OrderService {
         .from("orders")
         .update({
           status: "paid",
-          payment_method: paymentData.paymentMethod,
-          payment_id: paymentData.paymentId,
+          payment_method: paymentData.payment_method,
+          payment_id: paymentData.payment_id,
           completed_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
-        .eq("id", paymentData.orderId)
+        .eq("id", paymentData.order_id)
         .eq("status", "pending"); // 只能更新待支付的订单
 
       if (error) throw error;

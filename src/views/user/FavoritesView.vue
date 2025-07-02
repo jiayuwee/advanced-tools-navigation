@@ -43,7 +43,7 @@
               <p class="item-description">{{ tool.description }}</p>
               <div class="item-meta">
                 <span class="category">{{ tool.category.name }}</span>
-                <span class="clicks">{{ tool.clickCount }} 次访问</span>
+                <span class="clicks">{{ tool.click_count }} 次访问</span>
               </div>
             </div>
 
@@ -90,18 +90,18 @@
             <div class="item-content">
               <h3 class="item-name">{{ product.name }}</h3>
               <p class="item-description">
-                {{ product.shortDescription || product.description }}
+                {{ product.short_description || product.description }}
               </p>
               <div class="item-price">
                 <span class="current-price">¥{{ product.price }}</span>
                 <span
                   v-if="
-                    product.originalPrice &&
-                    product.originalPrice > product.price
+                    product.original_price &&
+                    product.original_price > product.price
                   "
                   class="original-price"
                 >
-                  ¥{{ product.originalPrice }}
+                  ¥{{ product.original_price }}
                 </span>
               </div>
             </div>
@@ -201,7 +201,7 @@ const loadFavorites = async () => {
           icon: "💻",
           color: "#0078d4",
           count: 0,
-          sortOrder: 0,
+          sort_order: 0,
           isActive: true,
           createdAt: "",
           updatedAt: "",
@@ -232,7 +232,7 @@ const loadFavorites = async () => {
           icon: "📊",
           color: "#0078d4",
           count: 0,
-          sortOrder: 0,
+          sort_order: 0,
           isActive: true,
           createdAt: "",
           updatedAt: "",
@@ -262,11 +262,11 @@ const removeFavorite = async (type: "tool" | "product", id: string) => {
 
     if (type === "tool") {
       favoriteTools.value = favoriteTools.value.filter(
-        (item) => item.id !== id,
+        (item) => item.id !== id
       );
     } else {
       favoriteProducts.value = favoriteProducts.value.filter(
-        (item) => item.id !== id,
+        (item) => item.id !== id
       );
     }
   } catch (error) {

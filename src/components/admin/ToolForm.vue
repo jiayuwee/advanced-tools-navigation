@@ -59,7 +59,7 @@
             <label for="category" class="required">分类</label>
             <select
               id="category"
-              v-model="form.categoryId"
+              v-model="form.category_id"
               :class="{ error: errors.categoryId }"
               required
             >
@@ -72,8 +72,8 @@
                 {{ category.icon }} {{ category.name }}
               </option>
             </select>
-            <span v-if="errors.categoryId" class="error-message">{{
-              errors.categoryId
+            <span v-if="errors.category_id" class="error-message">{{
+              errors.category_id
             }}</span>
           </div>
         </div>
@@ -94,7 +94,7 @@
 
           <div class="form-group">
             <label class="checkbox-label">
-              <input v-model="form.isFeatured" type="checkbox" />
+              <input v-model="form.is_featured" type="checkbox" />
               <span class="checkmark"></span>
               推荐工具
             </label>
@@ -109,7 +109,7 @@
             <label for="metaTitle">SEO 标题</label>
             <input
               id="metaTitle"
-              v-model="form.metaTitle"
+              v-model="form.meta_title"
               type="text"
               placeholder="SEO 标题（可选）"
             />
@@ -119,7 +119,7 @@
             <label for="metaDescription">SEO 描述</label>
             <textarea
               id="metaDescription"
-              v-model="form.metaDescription"
+              v-model="form.meta_description"
               placeholder="SEO 描述（可选）"
               rows="2"
             ></textarea>
@@ -180,12 +180,12 @@ const form = reactive<ToolForm>({
   name: "",
   description: "",
   url: "",
-  categoryId: "",
+  category_id: "",
   tags: [],
   icon: "",
-  isFeatured: false,
-  metaTitle: "",
-  metaDescription: "",
+  is_featured: false,
+  meta_title: "",
+  meta_description: "",
 });
 
 const errors = reactive<Record<string, string>>({});
@@ -228,7 +228,7 @@ const validateForm = (): boolean => {
       errors.url = "工具链接不能为空";
     }
     if (message.includes("Category")) {
-      errors.categoryId = "请选择分类";
+      errors.category_id = "请选择分类";
     }
 
     return false;
@@ -266,12 +266,12 @@ const resetForm = () => {
     name: "",
     description: "",
     url: "",
-    categoryId: "",
+    category_id: "",
     tags: [],
     icon: "",
-    isFeatured: false,
-    metaTitle: "",
-    metaDescription: "",
+    is_featured: false,
+    meta_title: "",
+    meta_description: "",
   });
 
   Object.keys(errors).forEach((key) => {
@@ -285,12 +285,12 @@ const loadFormData = () => {
       name: props.tool.name,
       description: props.tool.description,
       url: props.tool.url,
-      categoryId: props.tool.category.id,
+      category_id: props.tool.category_id,
       tags: props.tool.tags.map((tag) => tag.name),
       icon: props.tool.icon || "",
-      isFeatured: props.tool.isFeatured,
-      metaTitle: props.tool.metaTitle || "",
-      metaDescription: props.tool.metaDescription || "",
+      is_featured: props.tool.is_featured,
+      meta_title: props.tool.meta_title || "",
+      meta_description: props.tool.meta_description || "",
     });
   }
 };

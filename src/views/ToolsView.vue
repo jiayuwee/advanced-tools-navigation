@@ -309,17 +309,17 @@ const filteredTools = computed(() => {
 
   // 收藏过滤
   if (showFavoritesOnly.value) {
-    tools = tools.filter((tool) => tool.isFavorite);
+    tools = tools.filter((tool) => tool.is_favorite);
   }
 
   // 排序
   tools = [...tools].sort((a, b) => {
     switch (sortBy.value) {
       case "click_count":
-        return b.clickCount - a.clickCount;
+        return b.click_count - a.click_count;
       case "created_at":
         return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
       case "name":
       default:

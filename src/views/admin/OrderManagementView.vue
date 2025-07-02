@@ -164,9 +164,7 @@
                 <PlayIcon />
               </button>
               <button
-                v-if="
-                  order.status !== 'cancelled' && order.status !== 'completed'
-                "
+                v-if="order.status !== 'cancelled' && order.status !== 'paid'"
                 @click="cancelOrder(order)"
                 class="action-btn cancel"
               >
@@ -240,10 +238,10 @@ const filters = reactive({
 // 统计数据
 const stats = computed(() => {
   const total = orders.value.length;
-  const completed = orders.value.filter((o) => o.status === "completed").length;
+  const completed = orders.value.filter((o) => o.status === "paid").length;
   const pending = orders.value.filter((o) => o.status === "pending").length;
   const revenue = orders.value
-    .filter((o) => o.status === "completed")
+    .filter((o) => o.status === "paid")
     .reduce((sum, o) => sum + o.total_amount, 0);
 
   return {

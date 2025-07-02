@@ -95,7 +95,7 @@
           </div>
           <div class="col-category">
             <span class="category-badge">{{
-              tool.category?.name || "未分类"
+              getCategoryName(tool.category_id) || "未分类"
             }}</span>
           </div>
           <div class="col-status">
@@ -106,14 +106,14 @@
               {{ tool.status === "active" ? "活跃" : "停用" }}
             </span>
           </div>
-          <div class="col-clicks">{{ tool.clickCount || 0 }}</div>
+          <div class="col-clicks">{{ tool.click_count || 0 }}</div>
           <div class="col-actions">
             <button
               class="action-btn edit"
               @click="editTool(tool)"
               title="编辑"
             >
-              <EditIcon class="icon" />
+              <Edit class="icon" />
             </button>
             <button
               class="action-btn delete"
@@ -209,7 +209,7 @@
 
             <div class="form-group">
               <label>分类 *</label>
-              <select v-model="toolForm.categoryId" required>
+              <select v-model="toolForm.category_id" required>
                 <option value="">选择分类</option>
                 <option
                   v-for="category in categoriesStore.categories"
@@ -231,7 +231,7 @@
 
             <div class="form-group">
               <label>
-                <input v-model="toolForm.isFeatured" type="checkbox" />
+                <input v-model="toolForm.is_featured" type="checkbox" />
                 推荐工具
               </label>
             </div>
@@ -259,7 +259,7 @@ import { ToolsService } from "../services/toolsService";
 import {
   PlusIcon,
   RefreshCwIcon,
-  EditIcon,
+  Edit,
   TrashIcon,
   EyeIcon,
   EyeOffIcon,
@@ -292,9 +292,9 @@ const toolForm = ref({
   description: "",
   url: "",
   icon: "🔧",
-  categoryId: "",
-  status: "active" as "active" | "inactive",
-  isFeatured: false,
+  category_id: "",
+  status: "active" as "active" | "inactive" | "pending",
+  is_featured: false,
 });
 
 // 计算属性
@@ -313,7 +313,7 @@ const filteredTools = computed(() => {
 
   // 分类过滤
   if (selectedCategory.value) {
-    tools = tools.filter((tool) => tool.categoryId === selectedCategory.value);
+    tools = tools.filter((tool) => tool.category_id === selectedCategory.value);
   }
 
   // 状态过滤
@@ -325,7 +325,7 @@ const filteredTools = computed(() => {
 });
 
 const featuredCount = computed(
-  () => toolsStore.tools.filter((tool) => tool.isFeatured).length
+  () => toolsStore.tools.filter((tool) => tool.is_featured).length
 );
 
 const activeToolsCount = computed(
@@ -364,7 +364,7 @@ const resetForm = () => {
     description: "",
     url: "",
     icon: "🔧",
-    categoryId: "",
+    category_id: "",
     status: "active",
     isFeatured: false,
   };
@@ -384,9 +384,9 @@ const editTool = (tool: Tool) => {
     description: tool.description,
     url: tool.url,
     icon: tool.icon,
-    categoryId: tool.categoryId,
+    category_id: tool.category_id,
     status: tool.status,
-    isFeatured: tool.isFeatured,
+    is_featured: tool.is_featured,
   };
   showEditModal.value = true;
 };
@@ -403,9 +403,9 @@ const saveTool = async () => {
         description: toolForm.value.description,
         url: toolForm.value.url,
         icon: toolForm.value.icon,
-        category_id: toolForm.value.categoryId,
+        category_id: toolForm.value.category_id,
         status: toolForm.value.status,
-        is_featured: toolForm.value.isFeatured,
+        is_featured: toolForm.value.is_featured,
       });
       message.value = "工具更新成功！";
     } else {
@@ -415,10 +415,10 @@ const saveTool = async () => {
         description: toolForm.value.description,
         url: toolForm.value.url,
         icon: toolForm.value.icon,
-        category_id: toolForm.value.categoryId,
+        category_id: toolForm.value.category_id,
         status: toolForm.value.status,
-        is_featured: toolForm.value.isFeatured,
-        click_count: 0,
+        is_featured: toolForm.value.is_featured,
+
         sort_order: 0,
       });
       message.value = "工具创建成功！";
