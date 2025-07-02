@@ -50,7 +50,12 @@ export const useAuthStore = defineStore('auth', () => {
       .single()
 
     if (profileError) {
-      console.error('获取用户资料失败:', profileError)
+      console.error(`获取用户资料失败 (用户ID: ${userId}):`, profileError.message)
+      // 将错误信息暴露出来，以便其他地方可以捕获
+      error.value = {
+        name: 'ProfileFetchError',
+        message: `无法加载用户资料: ${profileError.message}`,
+      } as AuthError
       return null
     }
     return data

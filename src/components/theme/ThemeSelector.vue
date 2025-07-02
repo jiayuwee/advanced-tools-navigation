@@ -1,239 +1,66 @@
 <template>
-  <div class="theme-selector">
+  <div class="simple-theme-selector">
     <!-- 主题切换按钮 -->
-    <button 
+    <button
       @click="showPanel = !showPanel"
       class="theme-toggle-button"
-      :title="isDark ? '切换到浅色主题' : '切换到深色主题'"
+      :title="getThemeTitle()"
     >
-      <SunIcon v-if="isDark" class="icon" />
-      <MoonIcon v-else class="icon" />
+      <SunIcon v-if="currentMode === 'light'" class="icon" />
+      <MoonIcon v-else-if="currentMode === 'dark'" class="icon" />
+      <MonitorIcon v-else class="icon" />
     </button>
 
-    <!-- 主题面板 -->
+    <!-- 简化的主题面板 -->
     <div v-if="showPanel" class="theme-panel" @click.stop>
       <div class="panel-header">
-        <h3 class="panel-title">主题设置</h3>
+        <h3 class="panel-title">选择主题</h3>
         <button @click="showPanel = false" class="close-button">
           <XIcon class="icon" />
         </button>
       </div>
 
       <div class="panel-content">
-        <!-- 主题模式 -->
-        <div class="setting-group">
-          <label class="setting-label">主题模式</label>
-          <div class="theme-mode-options">
-            <button
-              v-for="mode in themeModes"
-              :key="mode.value"
-              @click="setThemeMode(mode.value)"
-              class="mode-button"
-              :class="{ active: themeConfig.mode === mode.value }"
-            >
-              <component :is="mode.icon" class="mode-icon" />
-              <span>{{ mode.label }}</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- 预设主题 -->
-        <div class="setting-group">
-          <label class="setting-label">预设主题</label>
-          <div class="theme-presets">
-            <div
-              v-for="preset in themePresets"
-              :key="preset.id"
-              @click="applyPreset(preset.id)"
-              class="preset-card"
-              :class="{ active: isPresetActive(preset) }"
-            >
-              <div class="preset-preview">
-                <div 
-                  class="preview-color primary"
-                  :style="{ backgroundColor: preset.preview.primary }"
-                ></div>
-                <div 
-                  class="preview-color secondary"
-                  :style="{ backgroundColor: preset.preview.secondary }"
-                ></div>
-                <div 
-                  class="preview-color background"
-                  :style="{ backgroundColor: preset.preview.background }"
-                ></div>
-                <div 
-                  class="preview-color surface"
-                  :style="{ backgroundColor: preset.preview.surface }"
-                ></div>
-              </div>
-              <div class="preset-info">
-                <h4 class="preset-name">{{ preset.name }}</h4>
-                <p class="preset-description">{{ preset.description }}</p>
-              </div>
+        <!-- 简化的主题模式选择 -->
+        <div class="theme-options">
+          <button
+            v-for="mode in simpleModes"
+            :key="mode.value"
+            @click="selectMode(mode.value)"
+            class="theme-option"
+            :class="{ active: currentMode === mode.value }"
+          >
+            <component :is="mode.icon" class="option-icon" />
+            <div class="option-content">
+              <span class="option-label">{{ mode.label }}</span>
+              <span class="option-desc">{{ mode.description }}</span>
             </div>
-          </div>
-        </div>
-
-        <!-- 自定义颜色 -->
-        <div class="setting-group">
-          <label class="setting-label">自定义颜色</label>
-          <div class="color-settings">
-            <div class="color-setting">
-              <label class="color-label">主色调</label>
-              <div class="color-input-wrapper">
-                <input
-                  v-model="themeConfig.primaryColor"
-                  type="color"
-                  class="color-input"
-                  @change="setPrimaryColor(themeConfig.primaryColor)"
-                />
-                <span class="color-value">{{ themeConfig.primaryColor }}</span>
-              </div>
-            </div>
-            <div class="color-setting">
-              <label class="color-label">强调色</label>
-              <div class="color-input-wrapper">
-                <input
-                  v-model="themeConfig.accentColor"
-                  type="color"
-                  class="color-input"
-                  @change="setAccentColor(themeConfig.accentColor)"
-                />
-                <span class="color-value">{{ themeConfig.accentColor }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 高级设置 -->
-        <div class="setting-group">
-          <label class="setting-label">高级设置</label>
-          <div class="advanced-settings">
-            <div class="setting-row">
-              <label class="setting-item-label">边框圆角</label>
-              <select 
-                v-model="themeConfig.borderRadius"
-                class="setting-select"
-              >
-                <option value="none">无圆角</option>
-                <option value="small">小圆角</option>
-                <option value="medium">中等圆角</option>
-                <option value="large">大圆角</option>
-              </select>
-            </div>
-
-            <div class="setting-row">
-              <label class="setting-item-label">字体大小</label>
-              <select 
-                v-model="themeConfig.fontSize"
-                class="setting-select"
-              >
-                <option value="small">小</option>
-                <option value="medium">中</option>
-                <option value="large">大</option>
-              </select>
-            </div>
-
-            <div class="setting-row">
-              <label class="setting-item-label">字体</label>
-              <select 
-                v-model="themeConfig.fontFamily"
-                class="setting-select"
-              >
-                <option value="system">系统字体</option>
-                <option value="inter">Inter</option>
-                <option value="roboto">Roboto</option>
-                <option value="poppins">Poppins</option>
-              </select>
-            </div>
-
-            <div class="setting-row">
-              <label class="setting-checkbox">
-                <input 
-                  v-model="themeConfig.compactMode"
-                  type="checkbox"
-                />
-                <span class="checkbox-label">紧凑模式</span>
-              </label>
-            </div>
-
-            <div class="setting-row">
-              <label class="setting-checkbox">
-                <input 
-                  v-model="themeConfig.highContrast"
-                  type="checkbox"
-                />
-                <span class="checkbox-label">高对比度</span>
-              </label>
-            </div>
-
-            <div class="setting-row">
-              <label class="setting-checkbox">
-                <input 
-                  v-model="themeConfig.reducedMotion"
-                  type="checkbox"
-                />
-                <span class="checkbox-label">减少动画</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- 操作按钮 -->
-        <div class="panel-actions">
-          <button @click="resetTheme" class="action-button secondary">
-            重置主题
+            <div v-if="currentMode === mode.value" class="check-icon">✓</div>
           </button>
-          <button @click="showExportImport = !showExportImport" class="action-button secondary">
-            导入/导出
-          </button>
-        </div>
-
-        <!-- 导入导出 -->
-        <div v-if="showExportImport" class="export-import-section">
-          <div class="export-section">
-            <label class="setting-label">导出主题</label>
-            <textarea
-              :value="exportTheme()"
-              readonly
-              class="export-textarea"
-              @click="$event.target.select()"
-            ></textarea>
-            <button @click="copyThemeConfig" class="copy-button">
-              {{ copied ? '已复制' : '复制配置' }}
-            </button>
-          </div>
-
-          <div class="import-section">
-            <label class="setting-label">导入主题</label>
-            <textarea
-              v-model="importConfig"
-              placeholder="粘贴主题配置..."
-              class="import-textarea"
-            ></textarea>
-            <button 
-              @click="handleImportTheme"
-              :disabled="!importConfig.trim()"
-              class="import-button"
-            >
-              导入主题
-            </button>
-            <p v-if="importError" class="import-error">{{ importError }}</p>
-          </div>
         </div>
       </div>
     </div>
 
     <!-- 点击外部关闭面板 -->
-    <div v-if="showPanel" class="panel-overlay" @click="showPanel = false"></div>
+    <div
+      v-if="showPanel"
+      class="panel-overlay"
+      @click="showPanel = false"
+    ></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useTheme } from '@/composables/useTheme'
-import { SunIcon, MoonIcon, XIcon, MonitorIcon, PaletteIcon } from 'lucide-vue-next'
-import type { ThemeMode } from '@/composables/useTheme'
+import { ref, computed } from "vue";
+import { useTheme } from "@/composables/useTheme";
+import {
+  SunIcon,
+  MoonIcon,
+  XIcon,
+  MonitorIcon,
+  PaletteIcon,
+} from "lucide-vue-next";
+import type { ThemeMode } from "@/composables/useTheme";
 
 const {
   themeConfig,
@@ -245,61 +72,63 @@ const {
   applyPreset,
   resetTheme,
   exportTheme,
-  importTheme
-} = useTheme()
+  importTheme,
+} = useTheme();
 
 // 状态
-const showPanel = ref(false)
-const showExportImport = ref(false)
-const importConfig = ref('')
-const importError = ref('')
-const copied = ref(false)
+const showPanel = ref(false);
+const showExportImport = ref(false);
+const importConfig = ref("");
+const importError = ref("");
+const copied = ref(false);
 
 // 主题模式选项
 const themeModes = [
-  { value: 'light' as ThemeMode, label: '浅色', icon: SunIcon },
-  { value: 'dark' as ThemeMode, label: '深色', icon: MoonIcon },
-  { value: 'auto' as ThemeMode, label: '自动', icon: MonitorIcon }
-]
+  { value: "light" as ThemeMode, label: "浅色", icon: SunIcon },
+  { value: "dark" as ThemeMode, label: "深色", icon: MoonIcon },
+  { value: "auto" as ThemeMode, label: "自动", icon: MonitorIcon },
+];
 
 // 判断预设是否激活
 const isPresetActive = (preset: any) => {
-  return preset.config.primaryColor === themeConfig.value.primaryColor &&
-         preset.config.accentColor === themeConfig.value.accentColor
-}
+  return (
+    preset.config.primaryColor === themeConfig.value.primaryColor &&
+    preset.config.accentColor === themeConfig.value.accentColor
+  );
+};
 
 // 复制主题配置
 const copyThemeConfig = async () => {
   try {
-    await navigator.clipboard.writeText(exportTheme())
-    copied.value = true
+    await navigator.clipboard.writeText(exportTheme());
+    copied.value = true;
     setTimeout(() => {
-      copied.value = false
-    }, 2000)
+      copied.value = false;
+    }, 2000);
   } catch (error) {
-    console.error('复制失败:', error)
+    console.error("复制失败:", error);
   }
-}
+};
 
 // 处理主题导入
 const handleImportTheme = () => {
-  importError.value = ''
-  
+  importError.value = "";
+
   if (!importConfig.value.trim()) {
-    importError.value = '请输入主题配置'
-    return
+    importError.value = "请输入主题配置";
+    return;
   }
 
-  const success = importTheme(importConfig.value)
-  
+  const success = importTheme(importConfig.value);
+
   if (success) {
-    importConfig.value = ''
-    showExportImport.value = false
-    showPanel.value = false
+    importConfig.value = "";
+    showExportImport.value = false;
+    showPanel.value = false;
   } else {
-    importError.value = '主题配置格式错误'
+    importError.value = "主题配置格式错误";
   }
-}
+};
 </script>
 
 <style scoped>
@@ -673,15 +502,15 @@ const handleImportTheme = () => {
     width: 320px;
     max-width: calc(100vw - 2rem);
   }
-  
+
   .theme-presets {
     grid-template-columns: 1fr;
   }
-  
+
   .color-settings {
     grid-template-columns: 1fr;
   }
-  
+
   .panel-actions {
     flex-direction: column;
   }
