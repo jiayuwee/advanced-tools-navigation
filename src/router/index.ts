@@ -251,6 +251,36 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: "users",
+        name: "AdminUsers",
+        component: () => import("../views/admin/UserManagementView.vue"),
+        meta: {
+          title: "用户管理",
+          requiresAuth: true,
+          requiresAdmin: true,
+        },
+      },
+      {
+        path: "orders",
+        name: "AdminOrders",
+        component: () => import("../views/admin/OrderManagementView.vue"),
+        meta: {
+          title: "订单管理",
+          requiresAuth: true,
+          requiresAdmin: true,
+        },
+      },
+      {
+        path: "local",
+        name: "AdminLocal",
+        component: () => import("../views/admin/LocalManagementView.vue"),
+        meta: {
+          title: "本地管理",
+          requiresAuth: true,
+          requiresAdmin: true,
+        },
+      },
+      {
         path: "settings",
         name: "AdminSettings",
         component: () => import("../views/admin/SettingsView.vue"),

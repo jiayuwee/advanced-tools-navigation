@@ -10,8 +10,8 @@ import { useAuthStore } from "@/stores/auth";
 import { useCategoriesStore } from "@/stores/categories";
 import { useToolsStore } from "@/stores/tools";
 
-// 导入主题系统
-import { useTheme } from "@/composables/useTheme";
+// 导入简化的主题系统
+import { useSimpleTheme } from "@/composables/useSimpleTheme";
 
 /**
  * 异步初始化所有 Pinia stores 和主题系统。
