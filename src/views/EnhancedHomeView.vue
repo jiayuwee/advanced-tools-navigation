@@ -262,7 +262,7 @@ onMounted(async () => {
 
 /* 全局样式 */
 .enhanced-home-view {
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
   min-height: 100vh;
 }
 
@@ -327,10 +327,12 @@ onMounted(async () => {
 
 /* 侧边栏 */
 .sidebar {
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: 20px;
   padding: 25px;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   height: fit-content;
   position: sticky;
   top: 20px;
@@ -420,10 +422,12 @@ onMounted(async () => {
 
 /* 工具卡片 */
 .tool-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.6);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   transition: var(--transition);
   display: flex;
   flex-direction: column;
@@ -437,7 +441,8 @@ onMounted(async () => {
 
 .tool-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  border-color: rgba(67, 97, 238, 0.3);
 }
 
 /* 收藏按钮 */

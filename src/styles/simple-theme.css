@@ -3,9 +3,9 @@
 /* 基础主题变量 */
 :root {
   /* 浅色主题 */
-  --theme-bg: #ffffff;
-  --theme-bg-secondary: #f8fafc;
-  --theme-bg-tertiary: #f1f5f9;
+  --theme-bg: #f1f5f9;
+  --theme-bg-secondary: #e2e8f0;
+  --theme-bg-tertiary: #cbd5e1;
   --theme-text: #1e293b;
   --theme-text-secondary: #475569;
   --theme-text-muted: #64748b;
@@ -13,7 +13,7 @@
   --theme-border-light: #f1f5f9;
   --theme-shadow: rgba(0, 0, 0, 0.1);
   --theme-shadow-lg: rgba(0, 0, 0, 0.15);
-  
+
   /* 品牌色彩 */
   --theme-primary: #3b82f6;
   --theme-primary-hover: #2563eb;
@@ -21,7 +21,7 @@
   --theme-accent: #8b5cf6;
   --theme-accent-hover: #7c3aed;
   --theme-accent-light: #ede9fe;
-  
+
   /* 状态色彩 */
   --theme-success: #10b981;
   --theme-warning: #f59e0b;
@@ -41,7 +41,7 @@
   --theme-border-light: #334155;
   --theme-shadow: rgba(0, 0, 0, 0.3);
   --theme-shadow-lg: rgba(0, 0, 0, 0.5);
-  
+
   /* 品牌色彩在深色主题下的调整 */
   --theme-primary: #60a5fa;
   --theme-primary-hover: #3b82f6;
@@ -49,7 +49,7 @@
   --theme-accent: #a78bfa;
   --theme-accent-hover: #8b5cf6;
   --theme-accent-light: #4c1d95;
-  
+
   /* 状态色彩在深色主题下的调整 */
   --theme-success: #34d399;
   --theme-warning: #fbbf24;
@@ -61,7 +61,9 @@
 body {
   background-color: var(--theme-bg);
   color: var(--theme-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* 通用组件样式 */
@@ -197,7 +199,7 @@ body {
   .theme-card {
     border-radius: 6px;
   }
-  
+
   .content-wrapper {
     border-radius: 8px;
   }

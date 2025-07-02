@@ -120,9 +120,11 @@
                 <UserIcon v-else />
               </div>
               <div class="user-details">
-                <h4>{{ user.full_name || '未设置姓名' }}</h4>
+                <h4>{{ user.full_name || "未设置姓名" }}</h4>
                 <p>{{ user.email }}</p>
-                <span v-if="user.username" class="username">@{{ user.username }}</span>
+                <span v-if="user.username" class="username"
+                  >@{{ user.username }}</span
+                >
               </div>
             </td>
             <td>
@@ -131,22 +133,29 @@
               </span>
             </td>
             <td>
-              <span class="status-badge" :class="user.is_active ? 'active' : 'inactive'">
-                {{ user.is_active ? '活跃' : '非活跃' }}
+              <span
+                class="status-badge"
+                :class="user.is_active ? 'active' : 'inactive'"
+              >
+                {{ user.is_active ? "活跃" : "非活跃" }}
               </span>
             </td>
             <td>{{ formatDate(user.created_at) }}</td>
-            <td>{{ user.last_login_at ? formatDate(user.last_login_at) : '从未登录' }}</td>
+            <td>
+              {{
+                user.last_login_at ? formatDate(user.last_login_at) : "从未登录"
+              }}
+            </td>
             <td class="actions">
               <button @click="viewUser(user)" class="action-btn view">
                 <EyeIcon />
               </button>
               <button @click="editUser(user)" class="action-btn edit">
-                <EditIcon />
+                <Edit />
               </button>
-              <button 
+              <button
                 v-if="user.role !== 'super_admin'"
-                @click="toggleUserStatus(user)" 
+                @click="toggleUserStatus(user)"
                 class="action-btn"
                 :class="user.is_active ? 'disable' : 'enable'"
               >
@@ -161,8 +170,8 @@
 
     <!-- 分页 -->
     <div class="pagination">
-      <button 
-        @click="currentPage--" 
+      <button
+        @click="currentPage--"
         :disabled="currentPage === 1"
         class="pagination-btn"
       >
@@ -171,8 +180,8 @@
       <span class="pagination-info">
         第 {{ currentPage }} 页，共 {{ totalPages }} 页
       </span>
-      <button 
-        @click="currentPage++" 
+      <button
+        @click="currentPage++"
         :disabled="currentPage === totalPages"
         class="pagination-btn"
       >
@@ -191,7 +200,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from "vue";
 import {
   UsersIcon,
   UserCheckIcon,
@@ -203,197 +212,216 @@ import {
   Loader2Icon,
   UserIcon,
   EyeIcon,
-  EditIcon,
+  Edit,
   BanIcon,
-  CheckIcon
-} from 'lucide-vue-next'
-import UserDetailModal from '@/components/admin/UserDetailModal.vue'
-import { UserService } from '@/services/userService'
-import type { User } from '@/types'
+  CheckIcon,
+} from "lucide-vue-next";
+import UserDetailModal from "@/components/admin/UserDetailModal.vue";
+import { UserService } from "@/services/userService";
+import type { User } from "@/types";
 
 // 响应式数据
-const loading = ref(false)
-const users = ref<User[]>([])
-const selectedUser = ref<User | null>(null)
-const currentPage = ref(1)
-const pageSize = ref(10)
+const loading = ref(false);
+const users = ref<User[]>([]);
+const selectedUser = ref<User | null>(null);
+const currentPage = ref(1);
+const pageSize = ref(10);
 
 // 筛选条件
 const filters = reactive({
-  search: '',
-  role: '',
-  status: '',
-  sort: 'created_at_desc'
-})
+  search: "",
+  role: "",
+  status: "",
+  sort: "created_at_desc",
+});
 
 // 统计数据
 const stats = computed(() => {
-  const total = users.value.length
-  const active = users.value.filter(u => u.is_active).length
-  const admin = users.value.filter(u => u.role === 'admin' || u.role === 'super_admin').length
-  const thisMonth = users.value.filter(u => {
-    const created = new Date(u.created_at)
-    const now = new Date()
-    return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear()
-  }).length
+  const total = users.value.length;
+  const active = users.value.filter((u) => u.is_active).length;
+  const admin = users.value.filter(
+    (u) => u.role === "admin" || u.role === "super_admin"
+  ).length;
+  const thisMonth = users.value.filter((u) => {
+    const created = new Date(u.created_at);
+    const now = new Date();
+    return (
+      created.getMonth() === now.getMonth() &&
+      created.getFullYear() === now.getFullYear()
+    );
+  }).length;
 
   return {
     totalUsers: total,
     activeUsers: active,
     adminUsers: admin,
-    newUsersThisMonth: thisMonth
-  }
-})
+    newUsersThisMonth: thisMonth,
+  };
+});
 
 // 过滤后的用户
 const filteredUsers = computed(() => {
-  let result = [...users.value]
+  let result = [...users.value];
 
   // 搜索过滤
   if (filters.search) {
-    const search = filters.search.toLowerCase()
-    result = result.filter(user => 
-      user.email.toLowerCase().includes(search) ||
-      user.full_name?.toLowerCase().includes(search) ||
-      user.username?.toLowerCase().includes(search)
-    )
+    const search = filters.search.toLowerCase();
+    result = result.filter(
+      (user) =>
+        user.email.toLowerCase().includes(search) ||
+        user.full_name?.toLowerCase().includes(search) ||
+        user.username?.toLowerCase().includes(search)
+    );
   }
 
   // 角色过滤
   if (filters.role) {
-    result = result.filter(user => user.role === filters.role)
+    result = result.filter((user) => user.role === filters.role);
   }
 
   // 状态过滤
   if (filters.status) {
-    const isActive = filters.status === 'active'
-    result = result.filter(user => user.is_active === isActive)
+    const isActive = filters.status === "active";
+    result = result.filter((user) => user.is_active === isActive);
   }
 
   // 排序
   result.sort((a, b) => {
     switch (filters.sort) {
-      case 'created_at_desc':
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      case 'created_at_asc':
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      case 'last_login_desc':
-        if (!a.last_login_at) return 1
-        if (!b.last_login_at) return -1
-        return new Date(b.last_login_at).getTime() - new Date(a.last_login_at).getTime()
-      case 'name_asc':
-        return (a.full_name || a.email).localeCompare(b.full_name || b.email)
+      case "created_at_desc":
+        return (
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      case "created_at_asc":
+        return (
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+      case "last_login_desc":
+        if (!a.last_login_at) return 1;
+        if (!b.last_login_at) return -1;
+        return (
+          new Date(b.last_login_at).getTime() -
+          new Date(a.last_login_at).getTime()
+        );
+      case "name_asc":
+        return (a.full_name || a.email).localeCompare(b.full_name || b.email);
       default:
-        return 0
+        return 0;
     }
-  })
+  });
 
-  return result
-})
+  return result;
+});
 
 // 分页数据
-const totalPages = computed(() => Math.ceil(filteredUsers.value.length / pageSize.value))
+const totalPages = computed(() =>
+  Math.ceil(filteredUsers.value.length / pageSize.value)
+);
 const paginatedUsers = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return filteredUsers.value.slice(start, end)
-})
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return filteredUsers.value.slice(start, end);
+});
 
 // 方法
 const loadUsers = async () => {
   try {
-    loading.value = true
+    loading.value = true;
     // TODO: 实现真实的用户数据加载
     // const result = await UserService.getAllUsers()
     // users.value = result
-    
+
     // 模拟数据
     users.value = [
       {
-        id: '1',
-        email: 'admin@example.com',
-        full_name: '系统管理员',
-        username: 'admin',
-        role: 'super_admin',
+        id: "1",
+        email: "admin@example.com",
+        full_name: "系统管理员",
+        username: "admin",
+        role: "super_admin",
         is_active: true,
-        created_at: '2024-01-01T00:00:00Z',
-        last_login_at: '2024-06-30T12:00:00Z'
+        created_at: "2024-01-01T00:00:00Z",
+        last_login_at: "2024-06-30T12:00:00Z",
       },
       {
-        id: '2', 
-        email: 'user@example.com',
-        full_name: '普通用户',
-        username: 'user1',
-        role: 'user',
+        id: "2",
+        email: "user@example.com",
+        full_name: "普通用户",
+        username: "user1",
+        role: "user",
         is_active: true,
-        created_at: '2024-06-01T00:00:00Z',
-        last_login_at: '2024-06-29T10:00:00Z'
-      }
-    ]
+        created_at: "2024-06-01T00:00:00Z",
+        last_login_at: "2024-06-29T10:00:00Z",
+      },
+    ];
   } catch (error) {
-    console.error('加载用户数据失败:', error)
+    console.error("加载用户数据失败:", error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const refreshUsers = () => {
-  loadUsers()
-}
+  loadUsers();
+};
 
 const exportUsers = () => {
   // TODO: 实现用户数据导出
-  console.log('导出用户数据')
-}
+  console.log("导出用户数据");
+};
 
 const viewUser = (user: User) => {
-  selectedUser.value = user
-}
+  selectedUser.value = user;
+};
 
 const editUser = (user: User) => {
-  selectedUser.value = user
-}
+  selectedUser.value = user;
+};
 
 const toggleUserStatus = async (user: User) => {
   try {
     // TODO: 实现用户状态切换
-    user.is_active = !user.is_active
-    console.log(`用户 ${user.email} 状态已${user.is_active ? '激活' : '禁用'}`)
+    user.is_active = !user.is_active;
+    console.log(`用户 ${user.email} 状态已${user.is_active ? "激活" : "禁用"}`);
   } catch (error) {
-    console.error('切换用户状态失败:', error)
+    console.error("切换用户状态失败:", error);
   }
-}
+};
 
 const handleUserUpdated = (updatedUser: User) => {
-  const index = users.value.findIndex(u => u.id === updatedUser.id)
+  const index = users.value.findIndex((u) => u.id === updatedUser.id);
   if (index !== -1) {
-    users.value[index] = updatedUser
+    users.value[index] = updatedUser;
   }
-}
+};
 
 const getRoleText = (role: string) => {
   switch (role) {
-    case 'super_admin': return '超级管理员'
-    case 'admin': return '管理员'
-    case 'user': return '普通用户'
-    default: return '未知'
+    case "super_admin":
+      return "超级管理员";
+    case "admin":
+      return "管理员";
+    case "user":
+      return "普通用户";
+    default:
+      return "未知";
   }
-}
+};
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
+  return new Date(dateString).toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 // 生命周期
 onMounted(() => {
-  loadUsers()
-})
+  loadUsers();
+});
 </script>
 
 <style scoped>
@@ -596,8 +624,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .users-table {
@@ -668,7 +700,8 @@ onMounted(() => {
   color: #9ca3af;
 }
 
-.role-badge, .status-badge {
+.role-badge,
+.status-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;

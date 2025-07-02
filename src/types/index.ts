@@ -52,28 +52,29 @@ export interface Product {
   id: string;
   name: string;
   description: string;
-  shortDescription?: string;
+  short_description?: string; // 修改为 short_description
   price: number;
-  originalPrice?: number;
+  original_price?: number; // 修改为 original_price
   currency: string;
-  category: Category; // 使用统一的 Category 类型
+  category_id: string; // 修改为 category_id
+  category?: Category; // 关联的分类信息（查询时包含）
   images: string[];
   features: string[];
-  demoUrl?: string;
-  downloadUrl?: string;
-  isFeatured: boolean;
-  isDigital: boolean;
-  stockQuantity?: number;
+  demo_url?: string; // 修改为 demo_url
+  download_url?: string; // 修改为 download_url
+  is_featured: boolean; // 修改为 is_featured
+  is_digital: boolean; // 修改为 is_digital
+  stock_quantity?: number; // 修改为 stock_quantity
   status: "active" | "inactive" | "draft";
-  createdAt: string;
-  updatedAt: string;
-  createdBy: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  sortOrder: number;
+  created_at: string; // 修改为 created_at
+  updated_at: string; // 修改为 updated_at
+  created_by: string; // 修改为 created_by
+  meta_title?: string; // 修改为 meta_title
+  meta_description?: string; // 修改为 meta_description
+  sort_order: number; // 修改为 sort_order
   reviews?: Review[];
-  averageRating?: number;
-  totalReviews?: number;
+  average_rating?: number; // 修改为 average_rating
+  total_reviews?: number; // 修改为 total_reviews
 }
 
 // 用户相关类型
@@ -81,82 +82,82 @@ export interface User {
   id: string;
   email: string;
   username?: string;
-  fullName?: string;
-  avatarUrl?: string;
+  full_name?: string; // 修改为 full_name
+  avatar_url?: string; // 修改为 avatar_url
   bio?: string;
   website?: string;
   location?: string;
   role: "user" | "admin" | "super_admin";
-  isActive: boolean;
-  emailVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
-  lastLoginAt?: string;
+  is_active: boolean; // 修改为 is_active
+  email_verified: boolean; // 修改为 email_verified
+  created_at: string; // 修改为 created_at
+  updated_at: string; // 修改为 updated_at
+  last_login_at?: string; // 修改为 last_login_at
 }
 
 // 收藏类型
 export interface Favorite {
   id: string;
-  userId: string;
-  toolId?: string;
-  productId?: string;
+  user_id: string; // 修改为 user_id
+  tool_id?: string; // 修改为 tool_id
+  product_id?: string; // 修改为 product_id
   tool?: Tool;
   product?: Product;
-  createdAt: string;
+  created_at: string; // 修改为 created_at
 }
 
 // 订单相关类型
 export interface Order {
   id: string;
-  userId: string;
+  user_id: string; // 修改为 user_id
   user?: User;
   items: OrderItem[];
-  totalAmount: number;
+  total_amount: number; // 修改为 total_amount
   currency: string;
   status: "pending" | "paid" | "cancelled" | "refunded";
-  paymentMethod?: string;
-  paymentId?: string;
-  billingAddress?: BillingAddress;
-  createdAt: string;
-  updatedAt: string;
-  completedAt?: string;
+  payment_method?: string; // 修改为 payment_method
+  payment_id?: string; // 修改为 payment_id
+  billing_address?: BillingAddress; // 修改为 billing_address
+  created_at: string; // 修改为 created_at
+  updated_at: string; // 修改为 updated_at
+  completed_at?: string; // 修改为 completed_at
 }
 
 export interface OrderItem {
   id: string;
-  orderId: string;
-  productId: string;
+  order_id: string; // 修改为 order_id
+  product_id: string; // 修改为 product_id
   product?: Product;
   quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  createdAt: string;
+  unit_price: number; // 修改为 unit_price
+  total_price: number; // 修改为 total_price
+  created_at: string; // 修改为 created_at
 }
 
 export interface BillingAddress {
-  fullName: string;
+  full_name: string; // 修改为 full_name
   email: string;
   phone?: string;
   country: string;
   state?: string;
   city: string;
   address: string;
-  postalCode: string;
+  postal_code: string; // 修改为 postal_code
 }
 
 // 评价类型
 export interface Review {
   id: string;
-  userId: string;
+  user_id: string; // 修改为 user_id
   user?: User;
-  productId: string;
+  product_id: string; // 修改为 product_id
   product?: Product;
   rating: number;
   title: string;
   content: string;
-  isVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
+  is_verified_purchase: boolean; // 修改为 is_verified_purchase
+  created_at: string; // 修改为 created_at
+  updated_at: string; // 修改为 updated_at
 }
 
 // 支付相关类型
@@ -165,19 +166,19 @@ export interface PaymentMethod {
   name: string;
   type: "alipay" | "wechat" | "stripe" | "paypal";
   icon: string;
-  isEnabled: boolean;
-  config: Record<string, any>;
+  is_enabled: boolean; // 修改为 is_enabled
+  config: Record<string, unknown>;
 }
 
 export interface PaymentResult {
   success: boolean;
-  paymentId?: string;
-  orderId: string;
+  payment_id?: string; // 修改为 payment_id
+  order_id: string; // 修改为 order_id
   amount: number;
   currency: string;
   method: string;
   message?: string;
-  redirectUrl?: string;
+  redirect_url?: string; // 修改为 redirect_url
 }
 
 // 搜索相关类型
@@ -204,11 +205,15 @@ export interface SearchResult<T> {
 // 统计相关类型
 export interface Analytics {
   id: string;
-  type: "tool_click" | "product_view" | "product_purchase" | "user_register";
-  entityId?: string;
-  userId?: string;
-  metadata?: Record<string, any>;
-  createdAt: string;
+  event_type:
+    | "tool_click"
+    | "product_view"
+    | "product_purchase"
+    | "user_register"; // 修改为 event_type
+  entity_id?: string; // 修改为 entity_id
+  user_id?: string; // 修改为 user_id
+  event_data?: Record<string, unknown>; // 修改为 event_data 和 unknown
+  created_at: string; // 修改为 created_at
 }
 
 export interface DashboardStats {
@@ -226,7 +231,7 @@ export interface DashboardStats {
 }
 
 // API 响应类型
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -251,14 +256,14 @@ export interface LoginForm {
 export interface RegisterForm {
   email: string;
   password: string;
-  confirmPassword: string;
-  fullName?: string;
+  confirm_password: string; // 修改为 confirm_password
+  full_name?: string; // 修改为 full_name
   username?: string;
-  agreeToTerms: boolean;
+  agree_to_terms: boolean; // 修改为 agree_to_terms
 }
 
 export interface ProfileForm {
-  fullName?: string;
+  full_name?: string; // 修改为 full_name
   username?: string;
   bio?: string;
   website?: string;
@@ -270,30 +275,30 @@ export interface ToolForm {
   name: string;
   description: string;
   url: string;
-  categoryId: string;
+  category_id: string; // 修改为 category_id
   tags: string[];
   icon?: File;
-  isFeatured?: boolean;
-  metaTitle?: string;
-  metaDescription?: string;
+  is_featured?: boolean; // 修改为 is_featured
+  meta_title?: string; // 修改为 meta_title
+  meta_description?: string; // 修改为 meta_description
 }
 
 export interface ProductForm {
   name: string;
   description: string;
-  shortDescription?: string;
+  short_description?: string; // 修改为 short_description
   price: number;
-  originalPrice?: number;
-  categoryId: string;
+  original_price?: number; // 修改为 original_price
+  category_id: string; // 修改为 category_id
   features: string[];
   images?: File[];
-  demoUrl?: string;
-  downloadUrl?: string;
-  isFeatured?: boolean;
-  isDigital?: boolean;
-  stockQuantity?: number;
-  metaTitle?: string;
-  metaDescription?: string;
+  demo_url?: string; // 修改为 demo_url
+  download_url?: string; // 修改为 download_url
+  is_featured?: boolean; // 修改为 is_featured
+  is_digital?: boolean; // 修改为 is_digital
+  stock_quantity?: number; // 修改为 stock_quantity
+  meta_title?: string; // 修改为 meta_title
+  meta_description?: string; // 修改为 meta_description
 }
 
 // 简单通知类型（用于UI提示）

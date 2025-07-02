@@ -32,7 +32,7 @@
                 订单号: {{ order.id.slice(-8).toUpperCase() }}
               </h3>
               <p class="order-date">
-                下单时间: {{ formatDate(order.createdAt) }}
+                下单时间: {{ formatDate(order.created_at) }}
               </p>
             </div>
             <div class="order-status">

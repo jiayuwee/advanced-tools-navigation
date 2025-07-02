@@ -61,11 +61,11 @@ export class UserService {
   // 更新用户资料
   static async updateProfile(
     userId: string,
-    profileData: ProfileForm,
+    profileData: ProfileForm
   ): Promise<User> {
     try {
       const updateData: UserProfileUpdate = {
-        full_name: profileData.fullName,
+        full_name: profileData.full_name,
         username: profileData.username,
         bio: profileData.bio,
         website: profileData.website,
@@ -175,7 +175,7 @@ export class UserService {
   // 检查用户名是否可用
   static async checkUsernameAvailability(
     username: string,
-    excludeUserId?: string,
+    excludeUserId?: string
   ): Promise<boolean> {
     try {
       let query = supabase
@@ -222,7 +222,7 @@ export class UserService {
 
       const favoriteToolsCount = favorites.filter((f) => f.tool_id).length;
       const favoriteProductsCount = favorites.filter(
-        (f) => f.product_id,
+        (f) => f.product_id
       ).length;
       const ordersCount = orders.length;
       const totalSpent = orders
@@ -271,17 +271,17 @@ export class UserService {
       id: row.id,
       email: row.email,
       username: row.username,
-      fullName: row.full_name,
-      avatarUrl: row.avatar_url,
+      full_name: row.full_name,
+      avatar_url: row.avatar_url,
       bio: row.bio,
       website: row.website,
       location: row.location,
       role: row.role,
-      isActive: row.is_active,
-      emailVerified: row.email_verified,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at,
-      lastLoginAt: row.last_login_at,
+      is_active: row.is_active,
+      email_verified: row.email_verified,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      last_login_at: row.last_login_at,
     };
   }
 }

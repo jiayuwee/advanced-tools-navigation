@@ -164,7 +164,7 @@ const siteConfig = ref({
   name: "工具导航站",
   contact: {
     email: "contact@ramusi.cn",
-    phone: "+86 138-0000-0000",
+    phone: "+86 400-888-0000",
   },
 });
 
