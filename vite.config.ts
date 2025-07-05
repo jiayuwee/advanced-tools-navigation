@@ -83,7 +83,6 @@ export default defineConfig({
     sourcemap: false,
     minify: "terser",
     rollupOptions: {
-      external: ["lucide-vue-next"],
       output: {
         manualChunks: {
           vendor: ["vue", "pinia", "lucide-vue-next"],
