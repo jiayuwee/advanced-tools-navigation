@@ -108,8 +108,8 @@ export function useAdvancedSearch() {
         const itemTags = item.tags || [];
         const hasMatchingTag = filters.value.tags.some((tag) =>
           itemTags.some((itemTag: string) =>
-            itemTag.toLowerCase().includes(tag.toLowerCase())
-          )
+            itemTag.toLowerCase().includes(tag.toLowerCase()),
+          ),
         );
         if (!hasMatchingTag) return false;
       }
@@ -214,7 +214,7 @@ export function useAdvancedSearch() {
         acc[search] = (acc[search] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return Object.entries(searches)
@@ -260,7 +260,7 @@ export function useAdvancedSearch() {
   const searchInField = (value: any, term: string): boolean => {
     if (Array.isArray(value)) {
       return value.some(
-        (item) => typeof item === "string" && item.toLowerCase().includes(term)
+        (item) => typeof item === "string" && item.toLowerCase().includes(term),
       );
     }
     return typeof value === "string" && value.toLowerCase().includes(term);

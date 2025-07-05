@@ -1,7 +1,9 @@
 // 完整部署流程测试脚本
+"use strict";
 import { execSync } from "child_process";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
+import fs from "fs";
 
 // 加载环境变量
 dotenv.config({ path: ".env.local" });
@@ -148,7 +150,6 @@ function testBuild() {
     console.log("   构建: 成功");
 
     // 检查构建输出
-    const fs = require("fs");
     if (!fs.existsSync("dist/index.html")) {
       throw new Error("构建输出不完整");
     }

@@ -20,7 +20,9 @@
           to="/faq"
           class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 group"
         >
-          <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mb-4 group-hover:bg-blue-200 transition-colors">
+          <div
+            class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mb-4 group-hover:bg-blue-200 transition-colors"
+          >
             <HelpCircle class="w-6 h-6 text-blue-600" />
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">常见问题</h3>
@@ -31,7 +33,9 @@
           to="/user-guide"
           class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 group"
         >
-          <div class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-4 group-hover:bg-green-200 transition-colors">
+          <div
+            class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-4 group-hover:bg-green-200 transition-colors"
+          >
             <BookOpen class="w-6 h-6 text-green-600" />
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">使用指南</h3>
@@ -42,7 +46,9 @@
           to="/contact"
           class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 group"
         >
-          <div class="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg mb-4 group-hover:bg-purple-200 transition-colors">
+          <div
+            class="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg mb-4 group-hover:bg-purple-200 transition-colors"
+          >
             <MessageCircle class="w-6 h-6 text-purple-600" />
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">联系我们</h3>
@@ -53,7 +59,9 @@
           to="/feedback"
           class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 group"
         >
-          <div class="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-lg mb-4 group-hover:bg-orange-200 transition-colors">
+          <div
+            class="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-lg mb-4 group-hover:bg-orange-200 transition-colors"
+          >
             <Send class="w-6 h-6 text-orange-600" />
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">意见反馈</h3>
@@ -69,25 +77,37 @@
             <h3 class="text-lg font-semibold text-gray-900 mb-4">账户相关</h3>
             <ul class="space-y-3">
               <li>
-                <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <a
+                  href="#"
+                  class="text-blue-600 hover:text-blue-800 flex items-center"
+                >
                   <ChevronRight class="w-4 h-4 mr-2" />
                   如何注册账户？
                 </a>
               </li>
               <li>
-                <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <a
+                  href="#"
+                  class="text-blue-600 hover:text-blue-800 flex items-center"
+                >
                   <ChevronRight class="w-4 h-4 mr-2" />
                   忘记密码怎么办？
                 </a>
               </li>
               <li>
-                <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <a
+                  href="#"
+                  class="text-blue-600 hover:text-blue-800 flex items-center"
+                >
                   <ChevronRight class="w-4 h-4 mr-2" />
                   如何修改个人信息？
                 </a>
               </li>
               <li>
-                <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <a
+                  href="#"
+                  class="text-blue-600 hover:text-blue-800 flex items-center"
+                >
                   <ChevronRight class="w-4 h-4 mr-2" />
                   如何删除账户？
                 </a>
@@ -98,25 +118,37 @@
             <h3 class="text-lg font-semibold text-gray-900 mb-4">使用功能</h3>
             <ul class="space-y-3">
               <li>
-                <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <a
+                  href="#"
+                  class="text-blue-600 hover:text-blue-800 flex items-center"
+                >
                   <ChevronRight class="w-4 h-4 mr-2" />
                   如何搜索工具？
                 </a>
               </li>
               <li>
-                <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <a
+                  href="#"
+                  class="text-blue-600 hover:text-blue-800 flex items-center"
+                >
                   <ChevronRight class="w-4 h-4 mr-2" />
                   如何收藏工具？
                 </a>
               </li>
               <li>
-                <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <a
+                  href="#"
+                  class="text-blue-600 hover:text-blue-800 flex items-center"
+                >
                   <ChevronRight class="w-4 h-4 mr-2" />
                   如何购买产品？
                 </a>
               </li>
               <li>
-                <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <a
+                  href="#"
+                  class="text-blue-600 hover:text-blue-800 flex items-center"
+                >
                   <ChevronRight class="w-4 h-4 mr-2" />
                   如何上传自己的产品？
                 </a>
@@ -131,21 +163,27 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-6">技术支持</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="text-center">
-            <div class="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4">
+            <div
+              class="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4"
+            >
               <Clock class="w-8 h-8 text-blue-600" />
             </div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">响应时间</h3>
             <p class="text-gray-600">工作日内24小时响应</p>
           </div>
           <div class="text-center">
-            <div class="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+            <div
+              class="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4"
+            >
               <Shield class="w-8 h-8 text-green-600" />
             </div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">安全保障</h3>
             <p class="text-gray-600">数据安全与隐私保护</p>
           </div>
           <div class="text-center">
-            <div class="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4">
+            <div
+              class="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4"
+            >
               <Users class="w-8 h-8 text-purple-600" />
             </div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">专业团队</h3>
@@ -155,7 +193,9 @@
       </div>
 
       <!-- 联系方式 -->
-      <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-md p-8 text-white">
+      <div
+        class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-md p-8 text-white"
+      >
         <div class="text-center">
           <h2 class="text-2xl font-bold mb-4">还有其他问题？</h2>
           <p class="text-lg mb-6">我们的支持团队随时为您提供帮助</p>
@@ -180,19 +220,19 @@
 </template>
 
 <script setup lang="ts">
-import { 
-  HelpCircle, 
-  BookOpen, 
-  MessageCircle, 
-  Send, 
-  ChevronRight, 
-  Clock, 
-  Shield, 
-  Users 
-} from 'lucide-vue-next'
+import {
+  HelpCircle,
+  BookOpen,
+  MessageCircle,
+  Send,
+  ChevronRight,
+  Clock,
+  Shield,
+  Users,
+} from "lucide-vue-next";
 
 // 设置页面标题
-document.title = '帮助支持 - 工具导航站'
+document.title = "帮助支持 - 工具导航站";
 </script>
 
 <style scoped>

@@ -7,11 +7,11 @@
         <p>管理系统用户，查看用户信息和活动状态</p>
       </div>
       <div class="header-actions">
-        <button @click="refreshUsers" class="btn btn-secondary">
+        <button class="btn btn-secondary" @click="refreshUsers">
           <RefreshCwIcon class="icon" />
           刷新
         </button>
-        <button @click="exportUsers" class="btn btn-primary">
+        <button class="btn btn-primary" @click="exportUsers">
           <DownloadIcon class="icon" />
           导出用户
         </button>
@@ -147,17 +147,17 @@
               }}
             </td>
             <td class="actions">
-              <button @click="viewUser(user)" class="action-btn view">
+              <button class="action-btn view" @click="viewUser(user)">
                 <EyeIcon />
               </button>
-              <button @click="editUser(user)" class="action-btn edit">
+              <button class="action-btn edit" @click="editUser(user)">
                 <Edit />
               </button>
               <button
                 v-if="user.role !== 'super_admin'"
-                @click="toggleUserStatus(user)"
                 class="action-btn"
                 :class="user.is_active ? 'disable' : 'enable'"
+                @click="toggleUserStatus(user)"
               >
                 <BanIcon v-if="user.is_active" />
                 <CheckIcon v-else />
@@ -171,9 +171,9 @@
     <!-- 分页 -->
     <div class="pagination">
       <button
-        @click="currentPage--"
         :disabled="currentPage === 1"
         class="pagination-btn"
+        @click="currentPage--"
       >
         上一页
       </button>
@@ -181,9 +181,9 @@
         第 {{ currentPage }} 页，共 {{ totalPages }} 页
       </span>
       <button
-        @click="currentPage++"
         :disabled="currentPage === totalPages"
         class="pagination-btn"
+        @click="currentPage++"
       >
         下一页
       </button>
@@ -240,7 +240,7 @@ const stats = computed(() => {
   const total = users.value.length;
   const active = users.value.filter((u) => u.is_active).length;
   const admin = users.value.filter(
-    (u) => u.role === "admin" || u.role === "super_admin"
+    (u) => u.role === "admin" || u.role === "super_admin",
   ).length;
   const thisMonth = users.value.filter((u) => {
     const created = new Date(u.created_at);
@@ -270,7 +270,7 @@ const filteredUsers = computed(() => {
       (user) =>
         user.email.toLowerCase().includes(search) ||
         user.full_name?.toLowerCase().includes(search) ||
-        user.username?.toLowerCase().includes(search)
+        user.username?.toLowerCase().includes(search),
     );
   }
 
@@ -315,7 +315,7 @@ const filteredUsers = computed(() => {
 
 // 分页数据
 const totalPages = computed(() =>
-  Math.ceil(filteredUsers.value.length / pageSize.value)
+  Math.ceil(filteredUsers.value.length / pageSize.value),
 );
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;

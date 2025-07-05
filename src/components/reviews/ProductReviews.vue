@@ -10,7 +10,7 @@
           </div>
           <div class="rating-count">基于 {{ stats.total_reviews }} 条评价</div>
         </div>
-        
+
         <div class="rating-breakdown">
           <div
             v-for="(count, rating) in stats.rating_distribution"
@@ -20,8 +20,8 @@
           >
             <span class="rating-label">{{ rating }} 星</span>
             <div class="bar-container">
-              <div 
-                class="bar-fill" 
+              <div
+                class="bar-fill"
                 :style="{ width: `${(count / stats.total_reviews) * 100}%` }"
               ></div>
             </div>
@@ -31,37 +31,41 @@
       </div>
 
       <div class="review-actions">
-        <button 
+        <button
           v-if="canWriteReview"
-          @click="showWriteReview = true"
           class="write-review-button"
+          @click="showWriteReview = true"
         >
           写评价
         </button>
-        
+
         <div class="review-filters">
-          <select v-model="filters.sort_by" @change="loadReviews" class="sort-select">
+          <select
+            v-model="filters.sort_by"
+            class="sort-select"
+            @change="loadReviews"
+          >
             <option value="newest">最新</option>
             <option value="oldest">最早</option>
             <option value="highest_rating">评分最高</option>
             <option value="lowest_rating">评分最低</option>
             <option value="most_helpful">最有用</option>
           </select>
-          
+
           <label class="filter-checkbox">
-            <input 
-              v-model="filters.verified_only" 
-              @change="loadReviews"
+            <input
+              v-model="filters.verified_only"
               type="checkbox"
+              @change="loadReviews"
             />
             只看验证购买
           </label>
-          
+
           <label class="filter-checkbox">
-            <input 
-              v-model="filters.with_content" 
-              @change="loadReviews"
+            <input
+              v-model="filters.with_content"
               type="checkbox"
+              @change="loadReviews"
             />
             只看有内容的评价
           </label>
@@ -80,10 +84,10 @@
         <div class="empty-icon">💬</div>
         <h3>暂无评价</h3>
         <p>成为第一个评价此产品的用户</p>
-        <button 
+        <button
           v-if="canWriteReview"
-          @click="showWriteReview = true"
           class="write-first-review-button"
+          @click="showWriteReview = true"
         >
           写第一条评价
         </button>
@@ -103,12 +107,12 @@
 
         <!-- 加载更多 -->
         <div v-if="hasMore" class="load-more">
-          <button 
-            @click="loadMore"
+          <button
             :disabled="loadingMore"
             class="load-more-button"
+            @click="loadMore"
           >
-            {{ loadingMore ? '加载中...' : '加载更多' }}
+            {{ loadingMore ? "加载中..." : "加载更多" }}
           </button>
         </div>
       </div>
@@ -141,209 +145,218 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { reviewService } from '@/services/reviewService'
-import StarRating from '@/components/ui/StarRating.vue'
-import ReviewItem from './ReviewItem.vue'
-import WriteReviewModal from './WriteReviewModal.vue'
-import EditReviewModal from './EditReviewModal.vue'
-import ReplyModal from './ReplyModal.vue'
-import type { Review, ReviewStats, ReviewFilters } from '@/services/reviewService'
+import { ref, computed, onMounted, watch } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { reviewService } from "@/services/reviewService";
+import StarRating from "@/components/ui/StarRating.vue";
+import ReviewItem from "./ReviewItem.vue";
+import WriteReviewModal from "./WriteReviewModal.vue";
+import EditReviewModal from "./EditReviewModal.vue";
+import ReplyModal from "./ReplyModal.vue";
+import type {
+  Review,
+  ReviewStats,
+  ReviewFilters,
+} from "@/services/reviewService";
 
 interface Props {
-  productId: string
-  canWriteReview?: boolean
+  productId: string;
+  canWriteReview?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  canWriteReview: true
-})
+  canWriteReview: true,
+});
 
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 // 状态
-const loading = ref(true)
-const loadingMore = ref(false)
-const reviews = ref<Review[]>([])
+const loading = ref(true);
+const loadingMore = ref(false);
+const reviews = ref<Review[]>([]);
 const stats = ref<ReviewStats>({
   total_reviews: 0,
   average_rating: 0,
   rating_distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
   verified_purchase_percentage: 0,
-  recent_reviews_count: 0
-})
+  recent_reviews_count: 0,
+});
 
-const currentPage = ref(1)
-const hasMore = ref(false)
+const currentPage = ref(1);
+const hasMore = ref(false);
 
 // 筛选器
 const filters = ref<ReviewFilters>({
-  sort_by: 'newest'
-})
+  sort_by: "newest",
+});
 
 // 模态框状态
-const showWriteReview = ref(false)
-const editingReview = ref<Review | null>(null)
-const replyingToReview = ref<Review | null>(null)
+const showWriteReview = ref(false);
+const editingReview = ref<Review | null>(null);
+const replyingToReview = ref<Review | null>(null);
 
 // 计算属性
-const currentUserId = computed(() => authStore.user?.id)
+const currentUserId = computed(() => authStore.user?.id);
 
 // 方法
 const loadReviews = async (reset = true) => {
   try {
     if (reset) {
-      loading.value = true
-      currentPage.value = 1
-      reviews.value = []
+      loading.value = true;
+      currentPage.value = 1;
+      reviews.value = [];
     } else {
-      loadingMore.value = true
+      loadingMore.value = true;
     }
 
     const result = await reviewService.getProductReviews(props.productId, {
       page: currentPage.value,
       limit: 10,
-      ...filters.value
-    })
+      ...filters.value,
+    });
 
     if (reset) {
-      reviews.value = result.reviews
+      reviews.value = result.reviews;
     } else {
-      reviews.value.push(...result.reviews)
+      reviews.value.push(...result.reviews);
     }
 
-    stats.value = result.stats
-    hasMore.value = reviews.value.length < result.total
-
+    stats.value = result.stats;
+    hasMore.value = reviews.value.length < result.total;
   } catch (error) {
-    console.error('加载评价失败:', error)
+    console.error("加载评价失败:", error);
   } finally {
-    loading.value = false
-    loadingMore.value = false
+    loading.value = false;
+    loadingMore.value = false;
   }
-}
+};
 
 const loadMore = async () => {
   if (hasMore.value && !loadingMore.value) {
-    currentPage.value++
-    await loadReviews(false)
+    currentPage.value++;
+    await loadReviews(false);
   }
-}
+};
 
 const filterByRating = (rating: number) => {
   if (filters.value.rating === rating) {
     // 取消筛选
-    delete filters.value.rating
+    delete filters.value.rating;
   } else {
-    filters.value.rating = rating
+    filters.value.rating = rating;
   }
-  loadReviews()
-}
+  loadReviews();
+};
 
-const handleVote = async (reviewId: string, voteType: 'helpful' | 'unhelpful') => {
+const handleVote = async (
+  reviewId: string,
+  voteType: "helpful" | "unhelpful",
+) => {
   if (!currentUserId.value) {
     // 提示用户登录
-    return
+    return;
   }
 
   try {
-    await reviewService.voteReview(reviewId, voteType, currentUserId.value)
-    
+    await reviewService.voteReview(reviewId, voteType, currentUserId.value);
+
     // 更新本地状态
-    const review = reviews.value.find(r => r.id === reviewId)
+    const review = reviews.value.find((r) => r.id === reviewId);
     if (review) {
       if (review.user_vote === voteType) {
         // 取消投票
-        review.user_vote = null
-        if (voteType === 'helpful') {
-          review.helpful_count--
+        review.user_vote = null;
+        if (voteType === "helpful") {
+          review.helpful_count--;
         } else {
-          review.unhelpful_count--
+          review.unhelpful_count--;
         }
       } else {
         // 新投票或更改投票
         if (review.user_vote) {
           // 更改投票
-          if (review.user_vote === 'helpful') {
-            review.helpful_count--
+          if (review.user_vote === "helpful") {
+            review.helpful_count--;
           } else {
-            review.unhelpful_count--
+            review.unhelpful_count--;
           }
         }
-        
-        review.user_vote = voteType
-        if (voteType === 'helpful') {
-          review.helpful_count++
+
+        review.user_vote = voteType;
+        if (voteType === "helpful") {
+          review.helpful_count++;
         } else {
-          review.unhelpful_count++
+          review.unhelpful_count++;
         }
       }
     }
   } catch (error) {
-    console.error('投票失败:', error)
+    console.error("投票失败:", error);
   }
-}
+};
 
 const handleReply = (review: Review) => {
   if (!currentUserId.value) {
     // 提示用户登录
-    return
+    return;
   }
-  replyingToReview.value = review
-}
+  replyingToReview.value = review;
+};
 
 const handleEdit = (review: Review) => {
-  editingReview.value = review
-}
+  editingReview.value = review;
+};
 
 const handleDelete = async (reviewId: string) => {
-  if (!currentUserId.value) return
+  if (!currentUserId.value) return;
 
-  if (confirm('确定要删除这条评价吗？')) {
+  if (confirm("确定要删除这条评价吗？")) {
     try {
-      await reviewService.deleteReview(reviewId, currentUserId.value)
-      reviews.value = reviews.value.filter(r => r.id !== reviewId)
-      stats.value.total_reviews--
+      await reviewService.deleteReview(reviewId, currentUserId.value);
+      reviews.value = reviews.value.filter((r) => r.id !== reviewId);
+      stats.value.total_reviews--;
     } catch (error) {
-      console.error('删除评价失败:', error)
+      console.error("删除评价失败:", error);
     }
   }
-}
+};
 
 const handleReviewCreated = (newReview: Review) => {
-  reviews.value.unshift(newReview)
-  stats.value.total_reviews++
-  showWriteReview.value = false
-}
+  reviews.value.unshift(newReview);
+  stats.value.total_reviews++;
+  showWriteReview.value = false;
+};
 
 const handleReviewUpdated = (updatedReview: Review) => {
-  const index = reviews.value.findIndex(r => r.id === updatedReview.id)
+  const index = reviews.value.findIndex((r) => r.id === updatedReview.id);
   if (index !== -1) {
-    reviews.value[index] = updatedReview
+    reviews.value[index] = updatedReview;
   }
-  editingReview.value = null
-}
+  editingReview.value = null;
+};
 
 const handleReplyAdded = (reviewId: string) => {
-  const review = reviews.value.find(r => r.id === reviewId)
+  const review = reviews.value.find((r) => r.id === reviewId);
   if (review) {
-    review.reply_count++
+    review.reply_count++;
   }
-  replyingToReview.value = null
+  replyingToReview.value = null;
   // 重新加载该评价的回复
-  loadReviews()
-}
+  loadReviews();
+};
 
 // 生命周期
 onMounted(() => {
-  loadReviews()
-})
+  loadReviews();
+});
 
 // 监听器
-watch(() => props.productId, () => {
-  loadReviews()
-})
+watch(
+  () => props.productId,
+  () => {
+    loadReviews();
+  },
+);
 </script>
 
 <style scoped>
@@ -507,7 +520,9 @@ watch(() => props.productId, () => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .empty-icon {
@@ -573,21 +588,21 @@ watch(() => props.productId, () => {
   .product-reviews {
     padding: 1rem;
   }
-  
+
   .rating-summary {
     grid-template-columns: 1fr;
     text-align: center;
   }
-  
+
   .review-actions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .review-filters {
     justify-content: center;
   }
-  
+
   .rating-bar {
     grid-template-columns: 4rem 1fr 3rem;
   }

@@ -103,7 +103,7 @@ class ReviewService {
   // 获取产品评价列表
   async getProductReviews(
     productId: string,
-    options: QueryOptions & ReviewFilters = {}
+    options: QueryOptions & ReviewFilters = {},
   ): Promise<{
     reviews: Review[];
     total: number;
@@ -129,7 +129,7 @@ class ReviewService {
             user_profiles(id, username, full_name, avatar_url)
           )
         `,
-        { count: "exact" }
+        { count: "exact" },
       );
 
       // 应用基本筛选器
@@ -228,7 +228,7 @@ class ReviewService {
 
       // 验证购买百分比
       const verifiedCount = basicStats.filter(
-        (review) => review.is_verified_purchase
+        (review) => review.is_verified_purchase,
       ).length;
       const verifiedPercentage = (verifiedCount / totalReviews) * 100;
 
@@ -236,7 +236,7 @@ class ReviewService {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const recentCount = basicStats.filter(
-        (review) => new Date(review.created_at) > thirtyDaysAgo
+        (review) => new Date(review.created_at) > thirtyDaysAgo,
       ).length;
 
       return {
@@ -255,7 +255,7 @@ class ReviewService {
   // 创建评价
   async createReview(
     reviewData: CreateReviewData,
-    userId: string
+    userId: string,
   ): Promise<Review> {
     try {
       // 检查用户是否已经评价过该产品
@@ -277,7 +277,7 @@ class ReviewService {
           `
           id,
           orders!inner(user_id, status)
-        `
+        `,
         )
         .eq("product_id", reviewData.product_id)
         .eq("orders.user_id", userId)
@@ -302,7 +302,7 @@ class ReviewService {
           *,
           user_profiles!inner(id, username, full_name, avatar_url),
           products!inner(id, name, images)
-        `
+        `,
         )
         .single();
 
@@ -319,7 +319,7 @@ class ReviewService {
   async updateReview(
     reviewId: string,
     updateData: UpdateReviewData,
-    userId: string
+    userId: string,
   ): Promise<Review> {
     try {
       // 验证用户权限
@@ -345,7 +345,7 @@ class ReviewService {
           *,
           user_profiles!inner(id, username, full_name, avatar_url),
           products!inner(id, name, images)
-        `
+        `,
         )
         .single();
 
@@ -388,7 +388,7 @@ class ReviewService {
   async voteReview(
     reviewId: string,
     voteType: "helpful" | "unhelpful",
-    userId: string
+    userId: string,
   ): Promise<void> {
     try {
       // 检查是否已经投票
@@ -464,7 +464,7 @@ class ReviewService {
     reviewId: string,
     content: string,
     userId: string,
-    isOfficial: boolean = false
+    isOfficial: boolean = false,
   ): Promise<ReviewReply> {
     try {
       const { data, error } = await supabase
@@ -479,7 +479,7 @@ class ReviewService {
           `
           *,
           user_profiles!inner(id, username, full_name, avatar_url)
-        `
+        `,
         )
         .single();
 
@@ -500,7 +500,7 @@ class ReviewService {
   // 获取用户的评价
   async getUserReviews(
     userId: string,
-    options: QueryOptions = {}
+    options: QueryOptions = {},
   ): Promise<{
     reviews: Review[];
     total: number;
@@ -527,7 +527,7 @@ class ReviewService {
   async moderateReview(
     reviewId: string,
     status: "approved" | "rejected",
-    moderatorId: string
+    moderatorId: string,
   ): Promise<void> {
     try {
       const { error } = await supabase
@@ -583,7 +583,7 @@ class ReviewService {
             id, content, is_official, created_at,
             user_profiles(id, username, full_name, avatar_url)
           )
-        `
+        `,
         )
         .eq("id", reviewId)
         .single();

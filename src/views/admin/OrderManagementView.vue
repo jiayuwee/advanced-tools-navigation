@@ -7,11 +7,11 @@
         <p>管理系统订单，查看订单状态和支付信息</p>
       </div>
       <div class="header-actions">
-        <button @click="refreshOrders" class="btn btn-secondary">
+        <button class="btn btn-secondary" @click="refreshOrders">
           <RefreshCwIcon class="icon" />
           刷新
         </button>
-        <button @click="exportOrders" class="btn btn-primary">
+        <button class="btn btn-primary" @click="exportOrders">
           <DownloadIcon class="icon" />
           导出订单
         </button>
@@ -153,20 +153,20 @@
             </td>
             <td>{{ formatDate(order.created_at) }}</td>
             <td class="actions">
-              <button @click="viewOrder(order)" class="action-btn view">
+              <button class="action-btn view" @click="viewOrder(order)">
                 <EyeIcon />
               </button>
               <button
                 v-if="order.status === 'pending'"
-                @click="processOrder(order)"
                 class="action-btn process"
+                @click="processOrder(order)"
               >
                 <PlayIcon />
               </button>
               <button
                 v-if="order.status !== 'cancelled' && order.status !== 'paid'"
-                @click="cancelOrder(order)"
                 class="action-btn cancel"
+                @click="cancelOrder(order)"
               >
                 <XIcon />
               </button>
@@ -179,9 +179,9 @@
     <!-- 分页 -->
     <div class="pagination">
       <button
-        @click="currentPage--"
         :disabled="currentPage === 1"
         class="pagination-btn"
+        @click="currentPage--"
       >
         上一页
       </button>
@@ -189,9 +189,9 @@
         第 {{ currentPage }} 页，共 {{ totalPages }} 页
       </span>
       <button
-        @click="currentPage++"
         :disabled="currentPage === totalPages"
         class="pagination-btn"
+        @click="currentPage++"
       >
         下一页
       </button>
@@ -254,7 +254,7 @@ const stats = computed(() => {
 
 // 分页数据 - 使用服务端分页
 const totalPages = computed(() =>
-  Math.ceil(totalOrders.value / pageSize.value)
+  Math.ceil(totalOrders.value / pageSize.value),
 );
 const paginatedOrders = computed(() => orders.value);
 
@@ -312,7 +312,7 @@ const exportOrders = async () => {
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `orders_${new Date().toISOString().split("T")[0]}.csv`
+      `orders_${new Date().toISOString().split("T")[0]}.csv`,
     );
     link.style.visibility = "hidden";
     document.body.appendChild(link);
@@ -428,7 +428,7 @@ watch(
     currentPage.value = 1; // 重置到第一页
     loadOrders();
   },
-  { deep: true }
+  { deep: true },
 );
 
 // 监听分页变化

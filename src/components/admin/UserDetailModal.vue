@@ -4,7 +4,7 @@
       <!-- 模态框头部 -->
       <div class="modal-header">
         <h2 class="modal-title">用户详情</h2>
-        <button @click="closeModal" class="close-button">
+        <button class="close-button" @click="closeModal">
           <XIcon />
         </button>
       </div>
@@ -67,7 +67,7 @@
           </div>
 
           <!-- 用户资料信息 -->
-          <div class="info-section" v-if="user.user_profiles">
+          <div v-if="user.user_profiles" class="info-section">
             <h3 class="section-title">个人资料</h3>
             <div class="info-grid">
               <div class="info-item">
@@ -170,8 +170,8 @@
                 暂无活动记录
               </div>
               <div
-                v-else
                 v-for="activity in userActivities"
+                v-else
                 :key="activity.id"
                 class="activity-item"
               >
@@ -199,8 +199,8 @@
 
       <!-- 模态框底部 -->
       <div class="modal-footer">
-        <button @click="closeModal" class="btn btn-secondary">关闭</button>
-        <button @click="editUser" class="btn btn-primary">
+        <button class="btn btn-secondary" @click="closeModal">关闭</button>
+        <button class="btn btn-primary" @click="editUser">
           <EditIcon />
           编辑用户
         </button>
@@ -269,7 +269,7 @@ watch(
       loadUserActivities(newUser.id);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // 方法

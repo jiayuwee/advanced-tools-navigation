@@ -20,7 +20,7 @@ if (!supabaseUrl || !supabaseServiceKey) {
   console.error("   VITE_SUPABASE_URL:", supabaseUrl ? "✅" : "❌");
   console.error(
     "   SUPABASE_SERVICE_ROLE_KEY:",
-    supabaseServiceKey ? "✅" : "❌"
+    supabaseServiceKey ? "✅" : "❌",
   );
   process.exit(1);
 }
@@ -101,16 +101,16 @@ async function createStorageBuckets() {
         console.log(`   ✅ 创建成功`);
         console.log(`      - 公开访问: ${bucket.public ? "是" : "否"}`);
         console.log(
-          `      - 文件大小限制: ${(bucket.fileSizeLimit / 1024 / 1024).toFixed(1)}MB`
+          `      - 文件大小限制: ${(bucket.fileSizeLimit / 1024 / 1024).toFixed(1)}MB`,
         );
         console.log(
-          `      - 允许的文件类型: ${bucket.allowedMimeTypes.join(", ")}`
+          `      - 允许的文件类型: ${bucket.allowedMimeTypes.join(", ")}`,
         );
       }
     } catch (error) {
       console.error(
         `   ❌ 创建存储桶 ${bucket.name} 时发生错误:`,
-        error.message
+        error.message,
       );
     }
 
@@ -267,10 +267,10 @@ async function verifySetup() {
     console.log("");
     console.log("🔗 有用的链接:");
     console.log(
-      `📁 存储管理: ${supabaseUrl.replace("/rest/v1", "")}/dashboard/storage/buckets`
+      `📁 存储管理: ${supabaseUrl.replace("/rest/v1", "")}/dashboard/storage/buckets`,
     );
     console.log(
-      `🔐 策略管理: ${supabaseUrl.replace("/rest/v1", "")}/dashboard/auth/policies`
+      `🔐 策略管理: ${supabaseUrl.replace("/rest/v1", "")}/dashboard/auth/policies`,
     );
   } catch (error) {
     console.error("❌ 验证过程中发生错误:", error.message);

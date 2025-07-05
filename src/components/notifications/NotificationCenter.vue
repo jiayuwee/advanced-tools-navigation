@@ -2,10 +2,13 @@
   <div class="notification-center">
     <!-- 通知按钮 -->
     <div class="notification-trigger" @click="togglePanel">
-      <button class="notification-button" :class="{ 'has-unread': stats.unread > 0 }">
+      <button
+        class="notification-button"
+        :class="{ 'has-unread': stats.unread > 0 }"
+      >
         <BellIcon class="icon" />
         <span v-if="stats.unread > 0" class="notification-badge">
-          {{ stats.unread > 99 ? '99+' : stats.unread }}
+          {{ stats.unread > 99 ? "99+" : stats.unread }}
         </span>
       </button>
     </div>
@@ -15,18 +18,18 @@
       <div class="panel-header">
         <h3 class="panel-title">通知中心</h3>
         <div class="panel-actions">
-          <button 
+          <button
             v-if="stats.unread > 0"
-            @click="markAllAsRead"
             class="mark-all-read-button"
             :disabled="markingAllRead"
+            @click="markAllAsRead"
           >
-            {{ markingAllRead ? '标记中...' : '全部已读' }}
+            {{ markingAllRead ? "标记中..." : "全部已读" }}
           </button>
-          <button @click="showSettings = true" class="settings-button">
+          <button class="settings-button" @click="showSettings = true">
             <SettingsIcon class="icon" />
           </button>
-          <button @click="closePanel" class="close-button">
+          <button class="close-button" @click="closePanel">
             <XIcon class="icon" />
           </button>
         </div>
@@ -37,12 +40,14 @@
         <button
           v-for="filter in filters"
           :key="filter.key"
-          @click="activeFilter = filter.key"
           class="filter-button"
           :class="{ active: activeFilter === filter.key }"
+          @click="activeFilter = filter.key"
         >
           {{ filter.label }}
-          <span v-if="filter.count > 0" class="filter-count">{{ filter.count }}</span>
+          <span v-if="filter.count > 0" class="filter-count">{{
+            filter.count
+          }}</span>
         </button>
       </div>
 
@@ -71,12 +76,12 @@
 
           <!-- 加载更多 -->
           <div v-if="hasMore" class="load-more">
-            <button 
-              @click="loadMore"
+            <button
               :disabled="loadingMore"
               class="load-more-button"
+              @click="loadMore"
             >
-              {{ loadingMore ? '加载中...' : '加载更多' }}
+              {{ loadingMore ? "加载中..." : "加载更多" }}
             </button>
           </div>
         </div>
@@ -96,318 +101,326 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { notificationService } from '@/services/notificationService'
-import { BellIcon, SettingsIcon, XIcon } from 'lucide-vue-next'
-import NotificationItem from './NotificationItem.vue'
-import NotificationSettings from './NotificationSettings.vue'
-import type { Notification, NotificationStats } from '@/services/notificationService'
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { notificationService } from "@/services/notificationService";
+import { BellIcon, SettingsIcon, XIcon } from "lucide-vue-next";
+import NotificationItem from "./NotificationItem.vue";
+import NotificationSettings from "./NotificationSettings.vue";
+import type {
+  Notification,
+  NotificationStats,
+} from "@/services/notificationService";
 
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 // 状态
-const showPanel = ref(false)
-const showSettings = ref(false)
-const loading = ref(false)
-const loadingMore = ref(false)
-const markingAllRead = ref(false)
+const showPanel = ref(false);
+const showSettings = ref(false);
+const loading = ref(false);
+const loadingMore = ref(false);
+const markingAllRead = ref(false);
 
-const notifications = ref<Notification[]>([])
+const notifications = ref<Notification[]>([]);
 const stats = ref<NotificationStats>({
   total: 0,
   unread: 0,
   important: 0,
-  by_type: {}
-})
+  by_type: {},
+});
 
-const currentPage = ref(1)
-const hasMore = ref(false)
-const activeFilter = ref('all')
+const currentPage = ref(1);
+const hasMore = ref(false);
+const activeFilter = ref("all");
 
 // 实时订阅
-let unsubscribe: (() => void) | null = null
+let unsubscribe: (() => void) | null = null;
 
 // 筛选器配置
 const filters = computed(() => [
-  { key: 'all', label: '全部', count: stats.value.total },
-  { key: 'unread', label: '未读', count: stats.value.unread },
-  { key: 'important', label: '重要', count: stats.value.important },
-  { key: 'system', label: '系统', count: stats.value.by_type.system || 0 },
-  { key: 'product', label: '产品', count: stats.value.by_type.product || 0 },
-  { key: 'order', label: '订单', count: stats.value.by_type.order || 0 }
-])
+  { key: "all", label: "全部", count: stats.value.total },
+  { key: "unread", label: "未读", count: stats.value.unread },
+  { key: "important", label: "重要", count: stats.value.important },
+  { key: "system", label: "系统", count: stats.value.by_type.system || 0 },
+  { key: "product", label: "产品", count: stats.value.by_type.product || 0 },
+  { key: "order", label: "订单", count: stats.value.by_type.order || 0 },
+]);
 
 // 过滤后的通知
 const filteredNotifications = computed(() => {
   switch (activeFilter.value) {
-    case 'unread':
-      return notifications.value.filter(n => !n.is_read)
-    case 'important':
-      return notifications.value.filter(n => n.is_important)
-    case 'system':
-    case 'product':
-    case 'order':
-      return notifications.value.filter(n => n.type === activeFilter.value)
+    case "unread":
+      return notifications.value.filter((n) => !n.is_read);
+    case "important":
+      return notifications.value.filter((n) => n.is_important);
+    case "system":
+    case "product":
+    case "order":
+      return notifications.value.filter((n) => n.type === activeFilter.value);
     default:
-      return notifications.value
+      return notifications.value;
   }
-})
+});
 
 // 方法
 const togglePanel = () => {
-  showPanel.value = !showPanel.value
+  showPanel.value = !showPanel.value;
   if (showPanel.value && notifications.value.length === 0) {
-    loadNotifications()
+    loadNotifications();
   }
-}
+};
 
 const closePanel = () => {
-  showPanel.value = false
-}
+  showPanel.value = false;
+};
 
 const loadNotifications = async (reset = true) => {
-  if (!authStore.user) return
+  if (!authStore.user) return;
 
   try {
     if (reset) {
-      loading.value = true
-      currentPage.value = 1
-      notifications.value = []
+      loading.value = true;
+      currentPage.value = 1;
+      notifications.value = [];
     } else {
-      loadingMore.value = true
+      loadingMore.value = true;
     }
 
     const options: any = {
       page: currentPage.value,
-      limit: 20
-    }
+      limit: 20,
+    };
 
     // 应用筛选器
-    if (activeFilter.value === 'unread') {
-      options.unread_only = true
-    } else if (activeFilter.value === 'important') {
-      options.important_only = true
-    } else if (['system', 'product', 'order'].includes(activeFilter.value)) {
-      options.type = activeFilter.value
+    if (activeFilter.value === "unread") {
+      options.unread_only = true;
+    } else if (activeFilter.value === "important") {
+      options.important_only = true;
+    } else if (["system", "product", "order"].includes(activeFilter.value)) {
+      options.type = activeFilter.value;
     }
 
     const result = await notificationService.getUserNotifications(
       authStore.user.id,
-      options
-    )
+      options,
+    );
 
     if (reset) {
-      notifications.value = result.notifications
+      notifications.value = result.notifications;
     } else {
-      notifications.value.push(...result.notifications)
+      notifications.value.push(...result.notifications);
     }
 
-    stats.value = result.stats
-    hasMore.value = notifications.value.length < result.total
-
+    stats.value = result.stats;
+    hasMore.value = notifications.value.length < result.total;
   } catch (error) {
-    console.error('加载通知失败:', error)
+    console.error("加载通知失败:", error);
   } finally {
-    loading.value = false
-    loadingMore.value = false
+    loading.value = false;
+    loadingMore.value = false;
   }
-}
+};
 
 const loadMore = async () => {
   if (hasMore.value && !loadingMore.value) {
-    currentPage.value++
-    await loadNotifications(false)
+    currentPage.value++;
+    await loadNotifications(false);
   }
-}
+};
 
 const markAllAsRead = async () => {
-  if (!authStore.user || markingAllRead.value) return
+  if (!authStore.user || markingAllRead.value) return;
 
   try {
-    markingAllRead.value = true
-    
-    const type = ['system', 'product', 'order'].includes(activeFilter.value) 
-      ? activeFilter.value 
-      : undefined
+    markingAllRead.value = true;
 
-    await notificationService.markAllAsRead(authStore.user.id, type)
-    
+    const type = ["system", "product", "order"].includes(activeFilter.value)
+      ? activeFilter.value
+      : undefined;
+
+    await notificationService.markAllAsRead(authStore.user.id, type);
+
     // 更新本地状态
-    notifications.value.forEach(notification => {
+    notifications.value.forEach((notification) => {
       if (!type || notification.type === type) {
-        notification.is_read = true
+        notification.is_read = true;
       }
-    })
+    });
 
     // 重新加载统计
-    await loadNotifications()
+    await loadNotifications();
   } catch (error) {
-    console.error('标记全部已读失败:', error)
+    console.error("标记全部已读失败:", error);
   } finally {
-    markingAllRead.value = false
+    markingAllRead.value = false;
   }
-}
+};
 
 const handleNotificationRead = async (notificationId: string) => {
-  if (!authStore.user) return
+  if (!authStore.user) return;
 
   try {
-    await notificationService.markAsRead(notificationId, authStore.user.id)
-    
+    await notificationService.markAsRead(notificationId, authStore.user.id);
+
     // 更新本地状态
-    const notification = notifications.value.find(n => n.id === notificationId)
+    const notification = notifications.value.find(
+      (n) => n.id === notificationId,
+    );
     if (notification) {
-      notification.is_read = true
-      stats.value.unread = Math.max(0, stats.value.unread - 1)
+      notification.is_read = true;
+      stats.value.unread = Math.max(0, stats.value.unread - 1);
     }
   } catch (error) {
-    console.error('标记已读失败:', error)
+    console.error("标记已读失败:", error);
   }
-}
+};
 
 const handleNotificationDelete = async (notificationId: string) => {
-  if (!authStore.user) return
+  if (!authStore.user) return;
 
   try {
-    await notificationService.deleteNotification(notificationId, authStore.user.id)
-    
+    await notificationService.deleteNotification(
+      notificationId,
+      authStore.user.id,
+    );
+
     // 更新本地状态
-    const index = notifications.value.findIndex(n => n.id === notificationId)
+    const index = notifications.value.findIndex((n) => n.id === notificationId);
     if (index !== -1) {
-      const notification = notifications.value[index]
-      notifications.value.splice(index, 1)
-      
-      stats.value.total--
+      const notification = notifications.value[index];
+      notifications.value.splice(index, 1);
+
+      stats.value.total--;
       if (!notification.is_read) {
-        stats.value.unread--
+        stats.value.unread--;
       }
       if (notification.is_important) {
-        stats.value.important--
+        stats.value.important--;
       }
-      
-      const typeCount = stats.value.by_type[notification.type] || 0
-      stats.value.by_type[notification.type] = Math.max(0, typeCount - 1)
+
+      const typeCount = stats.value.by_type[notification.type] || 0;
+      stats.value.by_type[notification.type] = Math.max(0, typeCount - 1);
     }
   } catch (error) {
-    console.error('删除通知失败:', error)
+    console.error("删除通知失败:", error);
   }
-}
+};
 
 const handleNotificationAction = (notification: Notification) => {
   if (notification.action_url) {
     // 导航到指定页面
-    window.open(notification.action_url, '_blank')
+    window.open(notification.action_url, "_blank");
   }
-  
+
   // 标记为已读
   if (!notification.is_read) {
-    handleNotificationRead(notification.id)
+    handleNotificationRead(notification.id);
   }
-}
+};
 
 const handleSettingsUpdated = () => {
-  showSettings.value = false
+  showSettings.value = false;
   // 可以在这里重新加载通知或更新相关状态
-}
+};
 
 const getEmptyMessage = (): string => {
   switch (activeFilter.value) {
-    case 'unread':
-      return '所有通知都已阅读'
-    case 'important':
-      return '暂无重要通知'
-    case 'system':
-      return '暂无系统通知'
-    case 'product':
-      return '暂无产品通知'
-    case 'order':
-      return '暂无订单通知'
+    case "unread":
+      return "所有通知都已阅读";
+    case "important":
+      return "暂无重要通知";
+    case "system":
+      return "暂无系统通知";
+    case "product":
+      return "暂无产品通知";
+    case "order":
+      return "暂无订单通知";
     default:
-      return '您还没有收到任何通知'
+      return "您还没有收到任何通知";
   }
-}
+};
 
 const setupRealtimeSubscription = () => {
-  if (!authStore.user) return
+  if (!authStore.user) return;
 
   unsubscribe = notificationService.subscribeToNotifications(
     authStore.user.id,
     (notification) => {
       // 添加新通知到列表顶部
-      notifications.value.unshift(notification)
-      
+      notifications.value.unshift(notification);
+
       // 更新统计
-      stats.value.total++
-      stats.value.unread++
+      stats.value.total++;
+      stats.value.unread++;
       if (notification.is_important) {
-        stats.value.important++
+        stats.value.important++;
       }
-      
-      const typeCount = stats.value.by_type[notification.type] || 0
-      stats.value.by_type[notification.type] = typeCount + 1
+
+      const typeCount = stats.value.by_type[notification.type] || 0;
+      stats.value.by_type[notification.type] = typeCount + 1;
 
       // 显示浏览器通知
-      notificationService.showBrowserNotification(
-        notification.title,
-        {
-          body: notification.message,
-          tag: notification.id,
-          requireInteraction: notification.is_important
-        }
-      )
-    }
-  )
-}
+      notificationService.showBrowserNotification(notification.title, {
+        body: notification.message,
+        tag: notification.id,
+        requireInteraction: notification.is_important,
+      });
+    },
+  );
+};
 
 // 生命周期
 onMounted(() => {
-  setupRealtimeSubscription()
-  
+  setupRealtimeSubscription();
+
   // 初始加载统计信息
   if (authStore.user) {
-    notificationService.getNotificationStats(authStore.user.id)
-      .then(initialStats => {
-        stats.value = initialStats
+    notificationService
+      .getNotificationStats(authStore.user.id)
+      .then((initialStats) => {
+        stats.value = initialStats;
       })
-      .catch(error => {
-        console.error('加载通知统计失败:', error)
-      })
+      .catch((error) => {
+        console.error("加载通知统计失败:", error);
+      });
   }
-})
+});
 
 onUnmounted(() => {
   if (unsubscribe) {
-    unsubscribe()
+    unsubscribe();
   }
-})
+});
 
 // 监听筛选器变化
 watch(activeFilter, () => {
-  loadNotifications()
-})
+  loadNotifications();
+});
 
 // 监听用户变化
-watch(() => authStore.user, (newUser) => {
-  if (newUser) {
-    setupRealtimeSubscription()
-    if (showPanel.value) {
-      loadNotifications()
+watch(
+  () => authStore.user,
+  (newUser) => {
+    if (newUser) {
+      setupRealtimeSubscription();
+      if (showPanel.value) {
+        loadNotifications();
+      }
+    } else {
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
+      }
+      notifications.value = [];
+      stats.value = {
+        total: 0,
+        unread: 0,
+        important: 0,
+        by_type: {},
+      };
     }
-  } else {
-    if (unsubscribe) {
-      unsubscribe()
-      unsubscribe = null
-    }
-    notifications.value = []
-    stats.value = {
-      total: 0,
-      unread: 0,
-      important: 0,
-      by_type: {}
-    }
-  }
-})
+  },
+);
 </script>
 
 <style scoped>
@@ -630,7 +643,9 @@ watch(() => authStore.user, (newUser) => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .empty-icon {
@@ -688,11 +703,11 @@ watch(() => authStore.user, (newUser) => {
     width: 320px;
     max-width: calc(100vw - 2rem);
   }
-  
+
   .panel-header {
     padding: 0.75rem 1rem;
   }
-  
+
   .notification-filters {
     padding: 0.5rem 1rem;
   }

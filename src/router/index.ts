@@ -9,10 +9,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",
-    component: () => import("../views/EnhancedHomeView.vue"),
+    component: () => import("../views/HomeView.vue"),
     meta: {
-      title: "工具导航站",
-      description: "高效的工具导航和产品展示平台",
+      title: "高效工具导航站",
+      description: "现代化设计的工具导航平台",
     },
   },
 
@@ -116,7 +116,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/products",
     name: "Products",
-    component: () => import("../views/ProductsView.vue"),
+    component: () => import("@/views/ProductsView.vue"),
     meta: {
       title: "产品展示",
       description: "浏览和购买优质产品",
@@ -338,6 +338,7 @@ const routes: RouteRecordRaw[] = [
       description: "测试设置页面",
     },
   },
+
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",

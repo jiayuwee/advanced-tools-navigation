@@ -44,7 +44,7 @@ export const useToolsStore = defineStore("tools", () => {
         tool.name.toLowerCase().includes(lowerCaseQuery) ||
         tool.description.toLowerCase().includes(lowerCaseQuery) ||
         (tool.categories &&
-          tool.categories.name.toLowerCase().includes(lowerCaseQuery))
+          tool.categories.name.toLowerCase().includes(lowerCaseQuery)),
     );
   });
 
@@ -67,7 +67,7 @@ export const useToolsStore = defineStore("tools", () => {
           *,
           categories ( * ),
           tool_tags ( tags ( * ) )
-        `
+        `,
         )
         .eq("status", "active")
         .order("sort_order", { ascending: true });

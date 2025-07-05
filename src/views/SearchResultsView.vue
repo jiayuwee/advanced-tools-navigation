@@ -169,7 +169,7 @@ const toolResults = computed(() => {
       item.type === "tool" ||
       !item.type ||
       item.hasOwnProperty("clickCount") ||
-      item.hasOwnProperty("category_id")
+      item.hasOwnProperty("category_id"),
   );
 });
 
@@ -180,7 +180,7 @@ const productResults = computed(() => {
     (item) =>
       item.type === "product" ||
       item.hasOwnProperty("price") ||
-      item.hasOwnProperty("rating")
+      item.hasOwnProperty("rating"),
   );
 });
 
@@ -260,7 +260,7 @@ watch(
     if (searchQuery.value) {
       performSearch();
     }
-  }
+  },
 );
 </script>
 

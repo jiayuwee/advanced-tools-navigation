@@ -31,14 +31,17 @@
 
       <!-- 上传表单 -->
       <div class="bg-white rounded-lg shadow-md p-8">
-        <form @submit.prevent="submitProduct" class="space-y-8">
+        <form class="space-y-8" @submit.prevent="submitProduct">
           <!-- 基本信息 -->
           <div>
             <h3 class="text-xl font-semibold text-gray-900 mb-6">基本信息</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- 产品名称 -->
               <div class="md:col-span-2">
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  for="name"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   产品名称 <span class="text-red-500">*</span>
                 </label>
                 <input
@@ -53,7 +56,10 @@
 
               <!-- 产品分类 -->
               <div>
-                <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  for="category"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   产品分类 <span class="text-red-500">*</span>
                 </label>
                 <select
@@ -75,7 +81,10 @@
 
               <!-- 产品类型 -->
               <div>
-                <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  for="type"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   产品类型 <span class="text-red-500">*</span>
                 </label>
                 <select
@@ -95,7 +104,10 @@
 
               <!-- 价格设置 -->
               <div>
-                <label for="price" class="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  for="price"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   价格（元） <span class="text-red-500">*</span>
                 </label>
                 <input
@@ -112,7 +124,10 @@
 
               <!-- 产品链接 -->
               <div>
-                <label for="url" class="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  for="url"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   产品链接
                 </label>
                 <input
@@ -129,10 +144,13 @@
           <!-- 产品描述 -->
           <div>
             <h3 class="text-xl font-semibold text-gray-900 mb-6">产品描述</h3>
-            
+
             <!-- 简短描述 -->
             <div class="mb-6">
-              <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                for="description"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
                 简短描述 <span class="text-red-500">*</span>
               </label>
               <textarea
@@ -150,7 +168,10 @@
 
             <!-- 详细介绍 -->
             <div>
-              <label for="content" class="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                for="content"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
                 详细介绍
               </label>
               <textarea
@@ -169,41 +190,42 @@
           <!-- 产品图片 -->
           <div>
             <h3 class="text-xl font-semibold text-gray-900 mb-6">产品图片</h3>
-            
+
             <!-- 主图上传 -->
             <div class="mb-6">
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 产品主图 <span class="text-red-500">*</span>
               </label>
-              <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <div
+                class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
+              >
                 <div v-if="!form.main_image" class="space-y-2">
                   <Upload class="w-12 h-12 text-gray-400 mx-auto" />
                   <p class="text-sm text-gray-600">点击上传产品主图</p>
-                  <p class="text-xs text-gray-500">支持 JPG、PNG 格式，建议尺寸 800x600</p>
+                  <p class="text-xs text-gray-500">
+                    支持 JPG、PNG 格式，建议尺寸 800x600
+                  </p>
                 </div>
                 <div v-else class="space-y-2">
-                  <img :src="form.main_image" alt="产品主图" class="w-32 h-24 object-cover mx-auto rounded" />
-                  <button
-                    type="button"
-                    @click="form.main_image = ''"
-                    class="text-red-600 hover:text-red-800 text-sm"
-                  >
-                    删除图片
-                  </button>
+                  <img
+                    :src="form.main_image"
+                    alt="产品主图"
+                    class="w-32 h-24 object-cover mx-auto rounded"
+                  />
                 </div>
                 <input
+                  ref="mainImageInput"
                   type="file"
                   accept="image/*"
                   class="hidden"
-                  ref="mainImageInput"
                   @change="handleMainImageUpload"
                 />
                 <button
-                  type="button"
-                  @click="$refs.mainImageInput.click()"
                   class="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  type="button"
+                  @click="handleMainImageClick"
                 >
-                  {{ form.main_image ? '更换图片' : '选择图片' }}
+                  {{ form.main_image ? "更换图片" : "选择图片" }}
                 </button>
               </div>
             </div>
@@ -214,35 +236,40 @@
                 附加图片（可选）
               </label>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div
+                <template
                   v-for="(image, index) in form.additional_images"
                   :key="index"
-                  class="relative border border-gray-300 rounded-lg p-2"
                 >
-                  <img :src="image" alt="附加图片" class="w-full h-20 object-cover rounded" />
-                  <button
-                    type="button"
-                    @click="removeAdditionalImage(index)"
-                    class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
-                  >
-                    <X class="w-3 h-3" />
-                  </button>
-                </div>
+                  <div class="relative">
+                    <img
+                      :src="image"
+                      alt="附加图片"
+                      class="w-full h-20 object-cover rounded"
+                    />
+                    <button
+                      class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                      type="button"
+                      @click="removeAdditionalImage(index)"
+                    >
+                      <X class="w-3 h-3" />
+                    </button>
+                  </div>
+                </template>
                 <div
                   v-if="form.additional_images.length < 4"
                   class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400"
-                  @click="$refs.additionalImageInput.click()"
+                  @click="handleAdditionalImagesClick"
                 >
                   <Plus class="w-6 h-6 text-gray-400 mb-1" />
                   <span class="text-xs text-gray-500">添加图片</span>
                 </div>
               </div>
               <input
+                ref="additionalImageInput"
                 type="file"
                 accept="image/*"
                 multiple
                 class="hidden"
-                ref="additionalImageInput"
                 @change="handleAdditionalImagesUpload"
               />
             </div>
@@ -253,7 +280,10 @@
             <h3 class="text-xl font-semibold text-gray-900 mb-6">产品标签</h3>
             <div class="space-y-4">
               <div>
-                <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  for="tags"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   添加标签
                 </label>
                 <div class="flex space-x-2">
@@ -266,14 +296,14 @@
                   />
                   <button
                     type="button"
-                    @click="addTag"
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    @click="addTag"
                   >
                     添加
                   </button>
                 </div>
               </div>
-              
+
               <!-- 标签列表 -->
               <div v-if="form.tags.length > 0" class="flex flex-wrap gap-2">
                 <span
@@ -283,9 +313,9 @@
                 >
                   {{ tag }}
                   <button
+                    class="ml-2 text-blue-600 hover:text-blue-800"
                     type="button"
                     @click="removeTag(index)"
-                    class="ml-2 text-blue-600 hover:text-blue-800"
                   >
                     <X class="w-3 h-3" />
                   </button>
@@ -297,19 +327,19 @@
           <!-- 提交按钮 -->
           <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
             <button
+              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               type="button"
               @click="resetForm"
-              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
               重置
             </button>
             <button
+              class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
               type="submit"
               :disabled="isSubmitting"
-              class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
             >
               <Loader2 v-if="isSubmitting" class="w-4 h-4 mr-2 animate-spin" />
-              {{ isSubmitting ? '提交中...' : '提交审核' }}
+              {{ isSubmitting ? "提交中..." : "提交审核" }}
             </button>
           </div>
         </form>
@@ -323,22 +353,38 @@
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
           <div class="text-center">
-            <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-semibold">1</div>
+            <div
+              class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-semibold"
+            >
+              1
+            </div>
             <p class="font-medium">提交产品</p>
             <p class="text-gray-600">填写完整信息</p>
           </div>
           <div class="text-center">
-            <div class="w-8 h-8 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-2 font-semibold">2</div>
+            <div
+              class="w-8 h-8 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-2 font-semibold"
+            >
+              2
+            </div>
             <p class="font-medium">初步审核</p>
             <p class="text-gray-600">1个工作日内</p>
           </div>
           <div class="text-center">
-            <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-2 font-semibold">3</div>
+            <div
+              class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-2 font-semibold"
+            >
+              3
+            </div>
             <p class="font-medium">详细审核</p>
             <p class="text-gray-600">2-3个工作日</p>
           </div>
           <div class="text-center">
-            <div class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-2 font-semibold">4</div>
+            <div
+              class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-2 font-semibold"
+            >
+              4
+            </div>
             <p class="font-medium">上线发布</p>
             <p class="text-gray-600">审核通过后</p>
           </div>
@@ -349,130 +395,155 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
-import { 
-  Info, 
-  Upload, 
-  X, 
-  Plus, 
-  Clock, 
-  Loader2 
-} from 'lucide-vue-next'
+import { ref, reactive } from "vue";
+import type { Ref } from "vue";
+import { useRouter } from "vue-router";
+import { useProductsStore } from "@/stores/products";
+import { Info, Upload, X, Plus, Clock, Loader2 } from "lucide-vue-next";
+
+const router = useRouter();
+const productsStore = useProductsStore();
 
 // 分类数据
 const categories = ref([
-  { id: 1, name: '开发工具' },
-  { id: 2, name: '设计工具' },
-  { id: 3, name: '办公软件' },
-  { id: 4, name: '学习资源' },
-  { id: 5, name: '其他工具' }
-])
+  { id: 1, name: "开发工具" },
+  { id: 2, name: "设计工具" },
+  { id: 3, name: "办公软件" },
+  { id: 4, name: "学习资源" },
+  { id: 5, name: "其他工具" },
+]);
 
 // 表单数据
+const mainImageInput = ref<HTMLInputElement>();
+const additionalImageInput = ref<HTMLInputElement>();
+
 const form = reactive({
-  name: '',
-  category_id: '',
-  type: '',
+  name: "",
+  category_id: "",
+  type: "",
   price: 0,
-  url: '',
-  description: '',
-  content: '',
-  main_image: '',
+  url: "",
+  description: "",
+  content: "",
+  main_image: "" as string,
   additional_images: [] as string[],
-  tags: [] as string[]
-})
+  tags: [] as string[],
+});
 
 // 状态
-const isSubmitting = ref(false)
-const newTag = ref('')
+const isSubmitting = ref(false);
+const newTag = ref("");
 
 // 方法
 const handleMainImageUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement
+  const target = event.target as HTMLInputElement;
   if (target.files && target.files[0]) {
-    const file = target.files[0]
-    const reader = new FileReader()
+    const file = target.files[0];
+    const reader = new FileReader();
     reader.onload = (e) => {
-      form.main_image = e.target?.result as string
-    }
-    reader.readAsDataURL(file)
+      form.main_image = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
   }
-}
+};
 
 const handleAdditionalImagesUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement
+  const target = event.target as HTMLInputElement;
   if (target.files) {
-    const files = Array.from(target.files)
-    files.forEach(file => {
+    const files = Array.from(target.files);
+    files.forEach((file) => {
       if (form.additional_images.length < 4) {
-        const reader = new FileReader()
+        const reader = new FileReader();
         reader.onload = (e) => {
-          form.additional_images.push(e.target?.result as string)
-        }
-        reader.readAsDataURL(file)
+          form.additional_images.push(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
       }
-    })
+    });
   }
-}
+};
 
 const removeAdditionalImage = (index: number) => {
-  form.additional_images.splice(index, 1)
-}
+  form.additional_images.splice(index, 1);
+};
 
 const addTag = () => {
   if (newTag.value.trim() && !form.tags.includes(newTag.value.trim())) {
-    form.tags.push(newTag.value.trim())
-    newTag.value = ''
+    form.tags.push(newTag.value.trim());
+    newTag.value = "";
   }
-}
+};
 
 const removeTag = (index: number) => {
-  form.tags.splice(index, 1)
-}
+  form.tags.splice(index, 1);
+};
 
 const resetForm = () => {
   Object.assign(form, {
-    name: '',
-    category_id: '',
-    type: '',
+    name: "",
+    category_id: "",
+    type: "",
     price: 0,
-    url: '',
-    description: '',
-    content: '',
-    main_image: '',
+    url: "",
+    description: "",
+    content: "",
+    main_image: "",
     additional_images: [],
-    tags: []
-  })
-  newTag.value = ''
-}
+    tags: [],
+  });
+  newTag.value = "";
+};
+
+// 点击处理函数
+const handleMainImageClick = () => {
+  mainImageInput.value?.click();
+};
+
+const handleAdditionalImagesClick = () => {
+  additionalImageInput.value?.click();
+};
 
 const submitProduct = async () => {
-  if (!form.name || !form.category_id || !form.type || !form.description || !form.main_image) {
-    alert('请填写必填字段')
-    return
+  if (
+    !form.name ||
+    !form.category_id ||
+    !form.type ||
+    !form.description ||
+    !form.main_image
+  ) {
+    alert("请填写必填字段");
+    return;
   }
 
-  isSubmitting.value = true
+  isSubmitting.value = true;
 
   try {
-    // 这里应该调用API提交产品
-    console.log('提交产品:', form)
+    // 准备产品数据
+    const productData = {
+      name: form.name,
+      category_id: form.category_id,
+      type: form.type,
+      price: form.price,
+      url: form.url,
+      description: form.description,
+      content: form.content,
+      tags: form.tags,
+      main_image: form.main_image,
+      additional_images: form.additional_images,
+    };
 
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // 调用store创建产品
+    await productsStore.createProduct(productData);
 
-    alert('产品提交成功！我们会在1-3个工作日内完成审核。')
-    resetForm()
+    // 提交成功后重置表单并跳转
+    resetForm();
+    router.push({ name: "Products" });
+    alert("产品提交成功！我们会在1-3个工作日内完成审核。");
   } catch (error) {
-    console.error('提交失败:', error)
-    alert('提交失败，请稍后重试')
+    console.error("产品提交失败:", error);
+    alert("产品提交失败，请稍后重试");
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
-}
-
-// 生命周期
-onMounted(() => {
-  document.title = '产品上传 - 工具导航站'
-})
+};
 </script>

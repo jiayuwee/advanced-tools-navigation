@@ -35,7 +35,7 @@ async function initializeCoreStores() {
     ]);
 
     // 初始化主题系统
-    const { applyTheme } = useTheme();
+    const { applyTheme } = useSimpleTheme();
     applyTheme();
 
     console.log("✅ Core stores and theme system initialized successfully.");

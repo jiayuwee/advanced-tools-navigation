@@ -215,7 +215,7 @@ const testData = () => {
     footerConfig: footerConfig.value,
   });
   alert(
-    `当前数据:\n网站名称: ${siteConfig.value.name}\n联系邮箱: ${siteConfig.value.contact.email}\n版权信息: ${footerConfig.value.copyright}`
+    `当前数据:\n网站名称: ${siteConfig.value.name}\n联系邮箱: ${siteConfig.value.contact.email}\n版权信息: ${footerConfig.value.copyright}`,
   );
 };
 

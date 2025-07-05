@@ -180,7 +180,7 @@ async function initializeData() {
 
     for (const tool of tools) {
       const category = categoriesData.find(
-        (cat) => cat.name === tool.category_name
+        (cat) => cat.name === tool.category_name,
       );
       if (!category) {
         console.error(`找不到分类: ${tool.category_name}`);

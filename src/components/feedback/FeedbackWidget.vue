@@ -3,20 +3,22 @@
     <!-- 反馈按钮 -->
     <button
       v-if="!showPanel"
-      @click="togglePanel"
       class="feedback-button"
       :class="{ 'has-feedback': unreadCount > 0 }"
       title="用户反馈"
+      @click="togglePanel"
     >
       <MessageCircleIcon class="icon" />
-      <span v-if="unreadCount > 0" class="feedback-badge">{{ unreadCount }}</span>
+      <span v-if="unreadCount > 0" class="feedback-badge">{{
+        unreadCount
+      }}</span>
     </button>
 
     <!-- 反馈面板 -->
     <div v-if="showPanel" class="feedback-panel">
       <div class="panel-header">
         <h3 class="panel-title">用户反馈</h3>
-        <button @click="togglePanel" class="close-button">
+        <button class="close-button" @click="togglePanel">
           <XIcon class="icon" />
         </button>
       </div>
@@ -25,9 +27,9 @@
         <button
           v-for="tab in tabs"
           :key="tab.id"
-          @click="activeTab = tab.id"
           class="tab-button"
           :class="{ active: activeTab === tab.id }"
+          @click="activeTab = tab.id"
         >
           {{ tab.label }}
         </button>
@@ -36,7 +38,7 @@
       <div class="panel-content">
         <!-- 提交反馈 -->
         <div v-if="activeTab === 'submit'" class="submit-feedback">
-          <form @submit.prevent="submitFeedback" class="feedback-form">
+          <form class="feedback-form" @submit.prevent="submitFeedback">
             <div class="form-group">
               <label for="feedback-type" class="form-label">反馈类型</label>
               <select
@@ -109,7 +111,7 @@
                 :disabled="submitting"
                 class="submit-button"
               >
-                {{ submitting ? '提交中...' : '提交反馈' }}
+                {{ submitting ? "提交中..." : "提交反馈" }}
               </button>
             </div>
           </form>
@@ -213,158 +215,157 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
-import { MessageCircleIcon, XIcon, CheckCircleIcon } from 'lucide-vue-next'
-import { useAuthStore } from '@/stores/auth'
+import { ref, reactive, onMounted, computed } from "vue";
+import { MessageCircleIcon, XIcon, CheckCircleIcon } from "lucide-vue-next";
+import { useAuthStore } from "@/stores/auth";
 
 interface FeedbackForm {
-  type: string
-  title: string
-  content: string
-  priority: string
-  includeSystemInfo: boolean
+  type: string;
+  title: string;
+  content: string;
+  priority: string;
+  includeSystemInfo: boolean;
 }
 
 interface Feedback {
-  id: string
-  type: string
-  title: string
-  content: string
-  priority: string
-  status: string
-  response?: string
-  response_at?: string
-  is_read: boolean
-  created_at: string
+  id: string;
+  type: string;
+  title: string;
+  content: string;
+  priority: string;
+  status: string;
+  response?: string;
+  response_at?: string;
+  is_read: boolean;
+  created_at: string;
 }
 
 interface FeedbackStats {
-  total: number
-  pending: number
-  resolved: number
-  response_rate: number
-  by_type: Record<string, number>
+  total: number;
+  pending: number;
+  resolved: number;
+  response_rate: number;
+  by_type: Record<string, number>;
 }
 
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 // 状态
-const showPanel = ref(false)
-const activeTab = ref('submit')
-const loading = ref(false)
-const submitting = ref(false)
-const showSuccessMessage = ref(false)
+const showPanel = ref(false);
+const activeTab = ref("submit");
+const loading = ref(false);
+const submitting = ref(false);
+const showSuccessMessage = ref(false);
 
 // 表单数据
 const feedbackForm = reactive<FeedbackForm>({
-  type: '',
-  title: '',
-  content: '',
-  priority: 'medium',
-  includeSystemInfo: true
-})
+  type: "",
+  title: "",
+  content: "",
+  priority: "medium",
+  includeSystemInfo: true,
+});
 
 // 反馈数据
-const feedbackList = ref<Feedback[]>([])
+const feedbackList = ref<Feedback[]>([]);
 const stats = ref<FeedbackStats>({
   total: 0,
   pending: 0,
   resolved: 0,
   response_rate: 0,
-  by_type: {}
-})
+  by_type: {},
+});
 
 // 标签页配置
 const tabs = [
-  { id: 'submit', label: '提交反馈' },
-  { id: 'history', label: '反馈历史' },
-  { id: 'stats', label: '反馈统计' }
-]
+  { id: "submit", label: "提交反馈" },
+  { id: "history", label: "反馈历史" },
+  { id: "stats", label: "反馈统计" },
+];
 
 // 计算属性
 const unreadCount = computed(() => {
-  return feedbackList.value.filter(f => !f.is_read).length
-})
+  return feedbackList.value.filter((f) => !f.is_read).length;
+});
 
 // 方法
 const togglePanel = () => {
-  showPanel.value = !showPanel.value
-  if (showPanel.value && activeTab.value === 'history') {
-    loadFeedbackHistory()
+  showPanel.value = !showPanel.value;
+  if (showPanel.value && activeTab.value === "history") {
+    loadFeedbackHistory();
   }
-}
+};
 
 const submitFeedback = async () => {
   if (!authStore.user) {
-    alert('请先登录后再提交反馈')
-    return
+    alert("请先登录后再提交反馈");
+    return;
   }
 
   try {
-    submitting.value = true
+    submitting.value = true;
 
     const feedbackData = {
       ...feedbackForm,
       user_id: authStore.user.id,
-      system_info: feedbackForm.includeSystemInfo ? getSystemInfo() : null
-    }
+      system_info: feedbackForm.includeSystemInfo ? getSystemInfo() : null,
+    };
 
     // 这里应该调用实际的 API
-    console.log('提交反馈:', feedbackData)
+    console.log("提交反馈:", feedbackData);
 
     // 模拟 API 调用
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // 重置表单
     Object.assign(feedbackForm, {
-      type: '',
-      title: '',
-      content: '',
-      priority: 'medium',
-      includeSystemInfo: true
-    })
+      type: "",
+      title: "",
+      content: "",
+      priority: "medium",
+      includeSystemInfo: true,
+    });
 
     // 显示成功消息
-    showSuccessMessage.value = true
+    showSuccessMessage.value = true;
     setTimeout(() => {
-      showSuccessMessage.value = false
-    }, 3000)
+      showSuccessMessage.value = false;
+    }, 3000);
 
     // 关闭面板
-    showPanel.value = false
-
+    showPanel.value = false;
   } catch (error) {
-    console.error('提交反馈失败:', error)
-    alert('提交反馈失败，请稍后重试')
+    console.error("提交反馈失败:", error);
+    alert("提交反馈失败，请稍后重试");
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
-}
+};
 
 const loadFeedbackHistory = async () => {
-  if (!authStore.user) return
+  if (!authStore.user) return;
 
   try {
-    loading.value = true
+    loading.value = true;
 
     // 这里应该调用实际的 API
-    console.log('加载反馈历史')
+    console.log("加载反馈历史");
 
     // 模拟数据
     feedbackList.value = [
       {
-        id: '1',
-        type: 'feature',
-        title: '希望增加暗色主题',
-        content: '建议增加暗色主题选项，方便夜间使用',
-        priority: 'medium',
-        status: 'resolved',
-        response: '感谢您的建议！暗色主题功能已经在最新版本中上线。',
-        response_at: '2024-12-25T10:00:00Z',
+        id: "1",
+        type: "feature",
+        title: "希望增加暗色主题",
+        content: "建议增加暗色主题选项，方便夜间使用",
+        priority: "medium",
+        status: "resolved",
+        response: "感谢您的建议！暗色主题功能已经在最新版本中上线。",
+        response_at: "2024-12-25T10:00:00Z",
         is_read: true,
-        created_at: '2024-12-24T15:30:00Z'
-      }
-    ]
+        created_at: "2024-12-24T15:30:00Z",
+      },
+    ];
 
     stats.value = {
       total: 5,
@@ -374,16 +375,15 @@ const loadFeedbackHistory = async () => {
       by_type: {
         bug: 2,
         feature: 2,
-        improvement: 1
-      }
-    }
-
+        improvement: 1,
+      },
+    };
   } catch (error) {
-    console.error('加载反馈历史失败:', error)
+    console.error("加载反馈历史失败:", error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const getSystemInfo = () => {
   return {
@@ -391,41 +391,41 @@ const getSystemInfo = () => {
     platform: navigator.platform,
     language: navigator.language,
     screenResolution: `${screen.width}x${screen.height}`,
-    timestamp: new Date().toISOString()
-  }
-}
+    timestamp: new Date().toISOString(),
+  };
+};
 
 const getTypeLabel = (type: string) => {
   const labels: Record<string, string> = {
-    bug: 'Bug 报告',
-    feature: '功能建议',
-    improvement: '改进建议',
-    question: '问题咨询',
-    other: '其他'
-  }
-  return labels[type] || type
-}
+    bug: "Bug 报告",
+    feature: "功能建议",
+    improvement: "改进建议",
+    question: "问题咨询",
+    other: "其他",
+  };
+  return labels[type] || type;
+};
 
 const getPriorityLabel = (priority: string) => {
   const labels: Record<string, string> = {
-    low: '低',
-    medium: '中',
-    high: '高',
-    urgent: '紧急'
-  }
-  return labels[priority] || priority
-}
+    low: "低",
+    medium: "中",
+    high: "高",
+    urgent: "紧急",
+  };
+  return labels[priority] || priority;
+};
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+  return new Date(dateString).toLocaleString("zh-CN");
+};
 
 // 生命周期
 onMounted(() => {
   if (authStore.user) {
-    loadFeedbackHistory()
+    loadFeedbackHistory();
   }
-})
+});
 </script>
 
 <style scoped>
@@ -656,7 +656,9 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .empty-icon {
@@ -698,12 +700,27 @@ onMounted(() => {
   font-weight: 500;
 }
 
-.feedback-type.bug { background: #fef2f2; color: #dc2626; }
-.feedback-type.feature { background: #f0f9ff; color: #2563eb; }
-.feedback-type.improvement { background: #f0fdf4; color: #16a34a; }
+.feedback-type.bug {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.feedback-type.feature {
+  background: #f0f9ff;
+  color: #2563eb;
+}
+.feedback-type.improvement {
+  background: #f0fdf4;
+  color: #16a34a;
+}
 
-.feedback-priority.high { background: #fef2f2; color: #dc2626; }
-.feedback-priority.urgent { background: #7c2d12; color: white; }
+.feedback-priority.high {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.feedback-priority.urgent {
+  background: #7c2d12;
+  color: white;
+}
 
 .feedback-date {
   color: var(--color-text-secondary);
@@ -859,12 +876,12 @@ onMounted(() => {
     bottom: 1rem;
     right: 1rem;
   }
-  
+
   .feedback-panel {
     width: calc(100vw - 2rem);
     max-width: 20rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }

@@ -5,9 +5,9 @@
       <h1 class="page-title">本地管理</h1>
       <div class="header-actions">
         <button
-          @click="refreshData"
           class="btn btn-primary"
           :disabled="loading"
+          @click="refreshData"
         >
           <RefreshCwIcon :class="{ 'animate-spin': loading }" />
           刷新数据
@@ -37,17 +37,17 @@
           </div>
           <div class="card-actions">
             <button
-              @click="clearCache"
               class="btn btn-outline"
               :disabled="loading"
+              @click="clearCache"
             >
               <TrashIcon />
               清理缓存
             </button>
             <button
-              @click="refreshCache"
               class="btn btn-outline"
               :disabled="loading"
+              @click="refreshCache"
             >
               <RefreshCwIcon />
               刷新缓存
@@ -75,14 +75,14 @@
             </div>
           </div>
           <div class="card-actions">
-            <button @click="viewStorageData" class="btn btn-outline">
+            <button class="btn btn-outline" @click="viewStorageData">
               <EyeIcon />
               查看数据
             </button>
             <button
-              @click="clearStorage"
               class="btn btn-outline"
               :disabled="loading"
+              @click="clearStorage"
             >
               <TrashIcon />
               清理存储
@@ -110,14 +110,14 @@
             </div>
           </div>
           <div class="card-actions">
-            <button @click="viewLogs" class="btn btn-outline">
+            <button class="btn btn-outline" @click="viewLogs">
               <EyeIcon />
               查看日志
             </button>
             <button
-              @click="exportLogs"
               class="btn btn-outline"
               :disabled="loading"
+              @click="exportLogs"
             >
               <DownloadIcon />
               导出日志
@@ -146,14 +146,14 @@
           </div>
           <div class="card-actions">
             <button
-              @click="runPerformanceTest"
               class="btn btn-outline"
               :disabled="loading"
+              @click="runPerformanceTest"
             >
               <PlayIcon />
               性能测试
             </button>
-            <button @click="viewPerformanceReport" class="btn btn-outline">
+            <button class="btn btn-outline" @click="viewPerformanceReport">
               <BarChartIcon />
               性能报告
             </button>
@@ -321,7 +321,7 @@ const loadPerformanceStats = async () => {
     }
 
     const navigation = performance.getEntriesByType(
-      "navigation"
+      "navigation",
     )[0] as PerformanceNavigationTiming;
     if (navigation) {
       const loadTime = navigation.loadEventEnd - navigation.navigationStart;
@@ -443,7 +443,7 @@ const exportLogs = () => {
       logs: "模拟日志数据",
     },
     null,
-    2
+    2,
   );
 
   const blob = new Blob([logs], { type: "application/json" });

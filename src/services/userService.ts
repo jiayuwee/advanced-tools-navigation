@@ -61,7 +61,7 @@ export class UserService {
   // 更新用户资料
   static async updateProfile(
     userId: string,
-    profileData: ProfileForm
+    profileData: ProfileForm,
   ): Promise<User> {
     try {
       const updateData: UserProfileUpdate = {
@@ -175,7 +175,7 @@ export class UserService {
   // 检查用户名是否可用
   static async checkUsernameAvailability(
     username: string,
-    excludeUserId?: string
+    excludeUserId?: string,
   ): Promise<boolean> {
     try {
       let query = supabase
@@ -222,7 +222,7 @@ export class UserService {
 
       const favoriteToolsCount = favorites.filter((f) => f.tool_id).length;
       const favoriteProductsCount = favorites.filter(
-        (f) => f.product_id
+        (f) => f.product_id,
       ).length;
       const ordersCount = orders.length;
       const totalSpent = orders

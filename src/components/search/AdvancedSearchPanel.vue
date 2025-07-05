@@ -2,7 +2,7 @@
   <div class="advanced-search-panel" :class="{ 'is-open': isOpen }">
     <div class="panel-header">
       <h3>高级搜索</h3>
-      <button @click="$emit('close')" class="close-button">
+      <button class="close-button" @click="$emit('close')">
         <XIcon class="icon" />
       </button>
     </div>
@@ -13,7 +13,11 @@
         <label class="filter-label">分类</label>
         <select v-model="localFilters.category" class="filter-select">
           <option value="">所有分类</option>
-          <option v-for="category in categories" :key="category.id" :value="category.id">
+          <option
+            v-for="category in categories"
+            :key="category.id"
+            :value="category.id"
+          >
             {{ category.name }}
           </option>
         </select>
@@ -28,18 +32,18 @@
             <button
               v-for="tag in popularTags"
               :key="tag"
-              @click="toggleTag(tag)"
               class="tag-button"
               :class="{ active: localFilters.tags.includes(tag) }"
+              @click="toggleTag(tag)"
             >
               {{ tag }}
             </button>
           </div>
           <input
             v-model="tagInput"
-            @keydown.enter="addCustomTag"
             placeholder="输入自定义标签..."
             class="tag-input"
+            @keydown.enter="addCustomTag"
           />
           <div v-if="localFilters.tags.length > 0" class="selected-tags">
             <span class="tags-subtitle">已选标签:</span>
@@ -49,7 +53,7 @@
               class="selected-tag"
             >
               {{ tag }}
-              <button @click="removeTag(tag)" class="tag-remove">×</button>
+              <button class="tag-remove" @click="removeTag(tag)">×</button>
             </span>
           </div>
         </div>
@@ -68,8 +72,14 @@
               @click="setRating(i)"
             />
           </div>
-          <span class="rating-text">{{ getRatingText(localFilters.rating) }}</span>
-          <button v-if="localFilters.rating > 0" @click="setRating(0)" class="clear-rating">
+          <span class="rating-text">{{
+            getRatingText(localFilters.rating)
+          }}</span>
+          <button
+            v-if="localFilters.rating > 0"
+            class="clear-rating"
+            @click="setRating(0)"
+          >
             清除
           </button>
         </div>
@@ -80,11 +90,11 @@
         <label class="filter-label">特殊筛选</label>
         <div class="checkbox-group">
           <label class="checkbox-item">
-            <input type="checkbox" v-model="localFilters.isFeatured" />
+            <input v-model="localFilters.isFeatured" type="checkbox" />
             <span class="checkbox-label">仅显示特色工具</span>
           </label>
           <label class="checkbox-item">
-            <input type="checkbox" v-model="localFilters.hasUrl" />
+            <input v-model="localFilters.hasUrl" type="checkbox" />
             <span class="checkbox-label">仅显示可访问工具</span>
           </label>
         </div>
@@ -101,9 +111,9 @@
             <option value="created_at">创建时间</option>
           </select>
           <button
-            @click="toggleSortOrder"
             class="sort-order-button"
             :title="localFilters.sortOrder === 'asc' ? '升序' : '降序'"
+            @click="toggleSortOrder"
           >
             <ArrowUpIcon v-if="localFilters.sortOrder === 'asc'" class="icon" />
             <ArrowDownIcon v-else class="icon" />
@@ -118,8 +128,8 @@
           <button
             v-for="(search, index) in searchHistory.slice(0, 5)"
             :key="index"
-            @click="$emit('search', search)"
             class="history-item"
+            @click="$emit('search', search)"
           >
             <ClockIcon class="icon" />
             {{ search }}
@@ -134,8 +144,8 @@
           <button
             v-for="search in popularSearches.slice(0, 5)"
             :key="search"
-            @click="$emit('search', search)"
             class="popular-item"
+            @click="$emit('search', search)"
           >
             <TrendingUpIcon class="icon" />
             {{ search }}
@@ -145,11 +155,11 @@
     </div>
 
     <div class="panel-footer">
-      <button @click="resetFilters" class="reset-button">
+      <button class="reset-button" @click="resetFilters">
         <RotateCcwIcon class="icon" />
         重置筛选
       </button>
-      <button @click="applyFilters" class="apply-button">
+      <button class="apply-button" @click="applyFilters">
         <SearchIcon class="icon" />
         应用筛选
       </button>
@@ -158,7 +168,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch } from "vue";
 import {
   XIcon,
   StarIcon,
@@ -167,114 +177,123 @@ import {
   ClockIcon,
   TrendingUpIcon,
   RotateCcwIcon,
-  SearchIcon
-} from 'lucide-vue-next'
-import { useToolsStore } from '@/stores/tools'
-import type { SearchFilters } from '@/composables/useAdvancedSearch'
+  SearchIcon,
+} from "lucide-vue-next";
+import { useToolsStore } from "@/stores/tools";
+import type { SearchFilters } from "@/composables/useAdvancedSearch";
 
 interface Props {
-  isOpen: boolean
-  filters: SearchFilters
-  searchHistory: string[]
-  popularSearches: string[]
+  isOpen: boolean;
+  filters: SearchFilters;
+  searchHistory: string[];
+  popularSearches: string[];
 }
 
 interface Emits {
-  (e: 'close'): void
-  (e: 'update:filters', filters: SearchFilters): void
-  (e: 'search', query: string): void
+  (e: "close"): void;
+  (e: "update:filters", filters: SearchFilters): void;
+  (e: "search", query: string): void;
 }
 
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
-const toolsStore = useToolsStore()
-const tagInput = ref('')
+const toolsStore = useToolsStore();
+const tagInput = ref("");
 
-const localFilters = ref<SearchFilters>({ ...props.filters })
+const localFilters = ref<SearchFilters>({ ...props.filters });
 
 // 监听外部筛选器变化
-watch(() => props.filters, (newFilters) => {
-  localFilters.value = { ...newFilters }
-}, { deep: true })
+watch(
+  () => props.filters,
+  (newFilters) => {
+    localFilters.value = { ...newFilters };
+  },
+  { deep: true },
+);
 
-const categories = computed(() => toolsStore.categories)
+const categories = computed(() => toolsStore.categories);
 
 const popularTags = computed(() => {
-  const tagCounts = new Map<string, number>()
-  
-  toolsStore.tools.forEach(tool => {
+  const tagCounts = new Map<string, number>();
+
+  toolsStore.tools.forEach((tool) => {
     if (tool.tags) {
       tool.tags.forEach((tag: string) => {
-        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
-      })
+        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+      });
     }
-  })
-  
+  });
+
   return Array.from(tagCounts.entries())
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10)
-    .map(([tag]) => tag)
-})
+    .map(([tag]) => tag);
+});
 
 const toggleTag = (tag: string) => {
-  const index = localFilters.value.tags.indexOf(tag)
+  const index = localFilters.value.tags.indexOf(tag);
   if (index > -1) {
-    localFilters.value.tags.splice(index, 1)
+    localFilters.value.tags.splice(index, 1);
   } else {
-    localFilters.value.tags.push(tag)
+    localFilters.value.tags.push(tag);
   }
-}
+};
 
 const addCustomTag = () => {
-  const tag = tagInput.value.trim()
+  const tag = tagInput.value.trim();
   if (tag && !localFilters.value.tags.includes(tag)) {
-    localFilters.value.tags.push(tag)
-    tagInput.value = ''
+    localFilters.value.tags.push(tag);
+    tagInput.value = "";
   }
-}
+};
 
 const removeTag = (tag: string) => {
-  const index = localFilters.value.tags.indexOf(tag)
+  const index = localFilters.value.tags.indexOf(tag);
   if (index > -1) {
-    localFilters.value.tags.splice(index, 1)
+    localFilters.value.tags.splice(index, 1);
   }
-}
+};
 
 const setRating = (rating: number) => {
-  localFilters.value.rating = rating
-}
+  localFilters.value.rating = rating;
+};
 
 const getRatingText = (rating: number) => {
-  const texts = ['不限', '1星以上', '2星以上', '3星以上', '4星以上', '5星']
-  return texts[rating] || '不限'
-}
+  const texts = ["不限", "1星以上", "2星以上", "3星以上", "4星以上", "5星"];
+  return texts[rating] || "不限";
+};
 
 const toggleSortOrder = () => {
-  localFilters.value.sortOrder = localFilters.value.sortOrder === 'asc' ? 'desc' : 'asc'
-}
+  localFilters.value.sortOrder =
+    localFilters.value.sortOrder === "asc" ? "desc" : "asc";
+};
 
 const resetFilters = () => {
   localFilters.value = {
-    category: '',
+    category: "",
     tags: [],
     rating: 0,
     isFeatured: false,
     hasUrl: false,
-    sortBy: 'name',
-    sortOrder: 'asc'
-  }
-  applyFilters()
-}
+    sortBy: "name",
+    sortOrder: "asc",
+  };
+  applyFilters();
+};
 
 const applyFilters = () => {
-  emit('update:filters', { ...localFilters.value })
-}
+  emit("update:filters", { ...localFilters.value });
+};
 
 // 实时应用筛选器
-watch(localFilters, () => {
-  applyFilters()
-}, { deep: true })
+watch(
+  localFilters,
+  () => {
+    applyFilters();
+  },
+  { deep: true },
+);
 </script>
 
 <style scoped>
@@ -344,7 +363,8 @@ watch(localFilters, () => {
   color: #333;
 }
 
-.filter-select, .sort-select {
+.filter-select,
+.sort-select {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -362,7 +382,8 @@ watch(localFilters, () => {
   margin-right: 8px;
 }
 
-.popular-tags, .selected-tags {
+.popular-tags,
+.selected-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -496,13 +517,15 @@ watch(localFilters, () => {
   border-color: #667eea;
 }
 
-.search-history, .popular-searches {
+.search-history,
+.popular-searches {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.history-item, .popular-item {
+.history-item,
+.popular-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -516,7 +539,8 @@ watch(localFilters, () => {
   transition: background 0.2s ease;
 }
 
-.history-item:hover, .popular-item:hover {
+.history-item:hover,
+.popular-item:hover {
   background: #e9ecef;
 }
 
@@ -528,7 +552,8 @@ watch(localFilters, () => {
   background: #f8f9fa;
 }
 
-.reset-button, .apply-button {
+.reset-button,
+.apply-button {
   display: flex;
   align-items: center;
   gap: 6px;

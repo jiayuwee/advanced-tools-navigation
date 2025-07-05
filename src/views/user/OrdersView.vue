@@ -322,7 +322,7 @@ const downloadOrder = async (order: Order) => {
     // 验证下载权限并获取最新订单信息
     const latestOrder = await OrderService.getOrderById(
       order.id,
-      authStore.user.id
+      authStore.user.id,
     );
     if (!latestOrder || latestOrder.status !== "paid") {
       alert("订单状态异常，无法下载");

@@ -33,7 +33,7 @@ class GitHubSecretsUpdater {
     console.log("\n🔧 手动更新 GitHub Secrets 步骤:");
     console.log("=====================================");
     console.log(
-      "1. 访问: https://github.com/jiayuwee/advanced-tools-navigation/settings/secrets/actions"
+      "1. 访问: https://github.com/jiayuwee/advanced-tools-navigation/settings/secrets/actions",
     );
     console.log("2. 找到 VITE_SUPABASE_ANON_KEY");
     console.log('3. 点击 "Update" 按钮');
@@ -114,7 +114,7 @@ class GitHubSecretsUpdater {
       ];
 
       const missingSecrets = requiredSecrets.filter(
-        (required) => !data.secrets.find((secret) => secret.name === required)
+        (required) => !data.secrets.find((secret) => secret.name === required),
       );
 
       if (missingSecrets.length > 0) {
@@ -147,7 +147,7 @@ class GitHubSecretsUpdater {
 
       console.log("✅ 部署工作流已触发");
       console.log(
-        "🔗 查看状态: https://github.com/jiayuwee/advanced-tools-navigation/actions"
+        "🔗 查看状态: https://github.com/jiayuwee/advanced-tools-navigation/actions",
       );
     } catch (error) {
       console.error("❌ 触发部署失败:", error.message);

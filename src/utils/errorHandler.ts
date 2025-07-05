@@ -2,16 +2,39 @@
  * 错误处理工具类
  */
 
+// 类型定义
+interface AxiosError {
+  response?: {
+    status: number;
+    data: any;
+  };
+  request?: any;
+  message: string;
+}
+
+interface NetworkError {
+  request: any;
+}
+
+function isAxiosError(error: unknown): error is AxiosError {
+  return typeof error === 'object' && error !== null && 
+    ('response' in error || 'request' in error);
+}
+
+function isNetworkError(error: unknown): error is NetworkError {
+  return typeof error === 'object' && error !== null && 'request' in error;
+}
+
 export interface AppError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
   timestamp: Date;
 }
 
 export class ErrorHandler {
   // 创建应用错误
-  static createError(code: string, message: string, details?: any): AppError {
+  static createError(code: string, message: string, details?: unknown): AppError {
     return {
       code,
       message,
@@ -21,12 +44,19 @@ export class ErrorHandler {
   }
 
   // 处理 API 错误
-  static handleApiError(error: any): AppError {
-    if (error.response) {
-      // 服务器响应错误
-      const status = error.response.status;
-      const data = error.response.data;
+  static handleApiError(error: unknown): AppError {
+    // 处理Axios错误响应
+    if (isAxiosError(error)) {
+      const status = error.response?.status;
+      const data = error.response?.data;
 
+      if (!status) {
+        return this.createError(
+          "UNKNOWN_ERROR", 
+          "未知API错误",
+          error
+        );
+      }
       switch (status) {
         case 400:
           return this.createError(
@@ -65,19 +95,26 @@ export class ErrorHandler {
         default:
           return this.createError("HTTP_ERROR", `HTTP错误: ${status}`, data);
       }
-    } else if (error.request) {
+    } else if (isNetworkError(error)) {
       // 网络错误
       return this.createError(
         "NETWORK_ERROR",
         "网络连接失败，请检查网络设置",
         error.request,
       );
-    } else {
-      // 其他错误
+    } else if (error instanceof Error) {
+      // 标准错误对象
       return this.createError(
         "UNKNOWN_ERROR",
-        error.message || "未知错误",
-        error,
+        error.message,
+        error
+      );
+    } else {
+      // 其他未知类型错误
+      return this.createError(
+        "UNKNOWN_ERROR",
+        "发生未知错误",
+        String(error)
       );
     }
   }

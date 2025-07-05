@@ -18,7 +18,7 @@ export class OrderService {
   // 创建订单
   static async createOrder(
     orderData: CreateOrderData,
-    userId: string
+    userId: string,
   ): Promise<Order> {
     try {
       // 获取产品信息
@@ -123,7 +123,7 @@ export class OrderService {
   // 验证用户是否有下载权限
   static async verifyDownloadPermission(
     productId: string,
-    userId: string
+    userId: string,
   ): Promise<boolean> {
     try {
       const { data, error } = await supabase
@@ -136,7 +136,7 @@ export class OrderService {
             user_id,
             status
           )
-        `
+        `,
         )
         .eq("product_id", productId)
         .eq("orders.user_id", userId)
@@ -163,7 +163,7 @@ export class OrderService {
             *,
             products(id, name, images, short_description)
           )
-        `
+        `,
         )
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
@@ -229,7 +229,7 @@ export class OrderService {
   // 获取订单详情
   static async getOrderById(
     orderId: string,
-    userId: string
+    userId: string,
   ): Promise<Order | null> {
     try {
       const { data, error } = await supabase
@@ -241,7 +241,7 @@ export class OrderService {
             *,
             products(id, name, images, short_description, download_url)
           )
-        `
+        `,
         )
         .eq("id", orderId)
         .eq("user_id", userId)
@@ -316,7 +316,7 @@ export class OrderService {
             products(id, name, images, short_description)
           )
         `,
-        { count: "exact" }
+        { count: "exact" },
       );
 
       // 应用筛选条件
@@ -331,7 +331,7 @@ export class OrderService {
       if (filters?.search) {
         const search = filters.search.toLowerCase();
         query = query.or(
-          `id.ilike.%${search}%,user_profiles.email.ilike.%${search}%,user_profiles.full_name.ilike.%${search}%`
+          `id.ilike.%${search}%,user_profiles.email.ilike.%${search}%,user_profiles.full_name.ilike.%${search}%`,
         );
       }
 
@@ -409,7 +409,7 @@ export class OrderService {
   static async updateOrderStatus(
     orderId: string,
     status: "pending" | "paid" | "cancelled" | "refunded",
-    adminUserId: string
+    adminUserId: string,
   ): Promise<void> {
     try {
       const updateData: any = {
@@ -430,7 +430,7 @@ export class OrderService {
       if (error) throw error;
 
       console.log(
-        `管理员 ${adminUserId} 将订单 ${orderId} 状态更新为 ${status}`
+        `管理员 ${adminUserId} 将订单 ${orderId} 状态更新为 ${status}`,
       );
     } catch (error) {
       console.error("更新订单状态失败:", error);

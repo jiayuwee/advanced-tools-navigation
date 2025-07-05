@@ -21,7 +21,7 @@ if (!supabaseUrl || !supabaseServiceKey) {
   console.error("   VITE_SUPABASE_URL:", supabaseUrl ? "✅" : "❌");
   console.error(
     "   SUPABASE_SERVICE_ROLE_KEY:",
-    supabaseServiceKey ? "✅" : "❌"
+    supabaseServiceKey ? "✅" : "❌",
   );
   process.exit(1);
 }
@@ -255,7 +255,7 @@ async function createCorrectPolicies() {
         .split("\n")
         .map((line) => line.trim())
         .filter(
-          (line) => line && !line.startsWith("--") && !line.startsWith("#")
+          (line) => line && !line.startsWith("--") && !line.startsWith("#"),
         )
         .join(" ")
         .replace(/\s+/g, " ")

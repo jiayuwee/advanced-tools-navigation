@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* 优化后的浅色主题 - 使用更舒适的色彩 */
-    --background: 210 20% 94%;
+    --background: 210 40% 96%;
     --foreground: 210 15% 15%;
     --card: 210 20% 96%;
     --card-foreground: 210 15% 15%;

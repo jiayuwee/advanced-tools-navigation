@@ -2,9 +2,9 @@
   <div class="simple-theme-selector">
     <!-- 主题切换按钮 -->
     <button
-      @click="showPanel = !showPanel"
       class="theme-toggle-button"
       :title="getThemeTitle()"
+      @click="showPanel = !showPanel"
     >
       <SunIcon v-if="themeConfig.mode === 'light'" class="icon" />
       <MoonIcon v-else-if="themeConfig.mode === 'dark'" class="icon" />
@@ -15,7 +15,7 @@
     <div v-if="showPanel" class="theme-panel" @click.stop>
       <div class="panel-header">
         <h3 class="panel-title">选择主题</h3>
-        <button @click="showPanel = false" class="close-button">
+        <button class="close-button" @click="showPanel = false">
           <XIcon class="icon" />
         </button>
       </div>
@@ -26,9 +26,9 @@
           <button
             v-for="mode in themeModes"
             :key="mode.value"
-            @click="selectMode(mode.value)"
             class="theme-option"
             :class="{ active: themeConfig.mode === mode.value }"
+            @click="selectMode(mode.value)"
           >
             <component :is="mode.icon" class="option-icon" />
             <div class="option-content">

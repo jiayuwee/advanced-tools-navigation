@@ -1,10 +1,10 @@
 <template>
   <div class="simple-theme-selector">
     <!-- 主题切换按钮 -->
-    <button 
-      @click="showPanel = !showPanel"
+    <button
       class="theme-toggle-button"
       :title="getThemeTitle()"
+      @click="showPanel = !showPanel"
     >
       <SunIcon v-if="themeConfig.mode === 'light'" class="icon" />
       <MoonIcon v-else-if="themeConfig.mode === 'dark'" class="icon" />
@@ -15,7 +15,7 @@
     <div v-if="showPanel" class="theme-panel" @click.stop>
       <div class="panel-header">
         <h3 class="panel-title">选择主题</h3>
-        <button @click="showPanel = false" class="close-button">
+        <button class="close-button" @click="showPanel = false">
           <XIcon class="icon" />
         </button>
       </div>
@@ -26,68 +26,70 @@
           <button
             v-for="mode in themeModes"
             :key="mode.value"
-            @click="selectMode(mode.value)"
             class="theme-option"
             :class="{ active: themeConfig.mode === mode.value }"
+            @click="selectMode(mode.value)"
           >
             <component :is="mode.icon" class="option-icon" />
             <div class="option-content">
               <span class="option-label">{{ mode.label }}</span>
               <span class="option-desc">{{ mode.description }}</span>
             </div>
-            <div v-if="themeConfig.mode === mode.value" class="check-icon">✓</div>
+            <div v-if="themeConfig.mode === mode.value" class="check-icon">
+              ✓
+            </div>
           </button>
         </div>
       </div>
     </div>
 
     <!-- 点击外部关闭面板 -->
-    <div v-if="showPanel" class="panel-overlay" @click="showPanel = false"></div>
+    <div
+      v-if="showPanel"
+      class="panel-overlay"
+      @click="showPanel = false"
+    ></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useSimpleTheme } from '@/composables/useSimpleTheme'
-import { SunIcon, MoonIcon, XIcon, MonitorIcon } from 'lucide-vue-next'
-import type { SimpleThemeMode } from '@/composables/useSimpleTheme'
+import { ref } from "vue";
+import { useSimpleTheme } from "@/composables/useSimpleTheme";
+import { SunIcon, MoonIcon, XIcon, MonitorIcon } from "lucide-vue-next";
+import type { SimpleThemeMode } from "@/composables/useSimpleTheme";
 
-const {
-  themeConfig,
-  setThemeMode,
-  getThemeTitle
-} = useSimpleTheme()
+const { themeConfig, setThemeMode, getThemeTitle } = useSimpleTheme();
 
 // 状态
-const showPanel = ref(false)
+const showPanel = ref(false);
 
 // 简化的主题模式选项
 const themeModes = [
-  { 
-    value: 'light' as SimpleThemeMode, 
-    label: '浅色', 
+  {
+    value: "light" as SimpleThemeMode,
+    label: "浅色",
     icon: SunIcon,
-    description: '始终使用浅色主题'
+    description: "始终使用浅色主题",
   },
-  { 
-    value: 'dark' as SimpleThemeMode, 
-    label: '深色', 
+  {
+    value: "dark" as SimpleThemeMode,
+    label: "深色",
     icon: MoonIcon,
-    description: '始终使用深色主题'
+    description: "始终使用深色主题",
   },
-  { 
-    value: 'auto' as SimpleThemeMode, 
-    label: '跟随系统', 
+  {
+    value: "auto" as SimpleThemeMode,
+    label: "跟随系统",
     icon: MonitorIcon,
-    description: '根据系统设置自动切换'
-  }
-]
+    description: "根据系统设置自动切换",
+  },
+];
 
 // 选择主题模式
 const selectMode = (mode: SimpleThemeMode) => {
-  setThemeMode(mode)
-  showPanel.value = false
-}
+  setThemeMode(mode);
+  showPanel.value = false;
+};
 </script>
 
 <style scoped>

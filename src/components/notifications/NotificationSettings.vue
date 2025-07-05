@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title">通知设置</h2>
-        <button @click="$emit('close')" class="close-button">
+        <button class="close-button" @click="$emit('close')">
           <XIcon class="icon" />
         </button>
       </div>
@@ -22,7 +22,7 @@
             <div class="setting-grid">
               <div class="setting-item">
                 <label class="setting-label">
-                  <input 
+                  <input
                     v-model="preferences.email_notifications"
                     type="checkbox"
                     class="setting-checkbox"
@@ -34,7 +34,7 @@
 
               <div class="setting-item">
                 <label class="setting-label">
-                  <input 
+                  <input
                     v-model="preferences.push_notifications"
                     type="checkbox"
                     class="setting-checkbox"
@@ -46,7 +46,7 @@
 
               <div class="setting-item">
                 <label class="setting-label">
-                  <input 
+                  <input
                     v-model="preferences.system_notifications"
                     type="checkbox"
                     class="setting-checkbox"
@@ -58,7 +58,7 @@
 
               <div class="setting-item">
                 <label class="setting-label">
-                  <input 
+                  <input
                     v-model="preferences.product_notifications"
                     type="checkbox"
                     class="setting-checkbox"
@@ -70,7 +70,7 @@
 
               <div class="setting-item">
                 <label class="setting-label">
-                  <input 
+                  <input
                     v-model="preferences.order_notifications"
                     type="checkbox"
                     class="setting-checkbox"
@@ -82,7 +82,7 @@
 
               <div class="setting-item">
                 <label class="setting-label">
-                  <input 
+                  <input
                     v-model="preferences.marketing_notifications"
                     type="checkbox"
                     class="setting-checkbox"
@@ -98,13 +98,15 @@
           <div class="setting-section">
             <h3 class="section-title">通知频率</h3>
             <div class="frequency-options">
-              <label 
+              <label
                 v-for="option in frequencyOptions"
                 :key="option.value"
                 class="frequency-option"
-                :class="{ active: preferences.notification_frequency === option.value }"
+                :class="{
+                  active: preferences.notification_frequency === option.value,
+                }"
               >
-                <input 
+                <input
                   v-model="preferences.notification_frequency"
                   :value="option.value"
                   type="radio"
@@ -112,7 +114,9 @@
                 />
                 <div class="option-content">
                   <span class="option-title">{{ option.label }}</span>
-                  <span class="option-description">{{ option.description }}</span>
+                  <span class="option-description">{{
+                    option.description
+                  }}</span>
                 </div>
               </label>
             </div>
@@ -124,7 +128,7 @@
             <div class="quiet-hours">
               <div class="time-input-group">
                 <label class="time-label">开始时间</label>
-                <input 
+                <input
                   v-model="preferences.quiet_hours_start"
                   type="time"
                   class="time-input"
@@ -133,7 +137,7 @@
               <div class="time-separator">-</div>
               <div class="time-input-group">
                 <label class="time-label">结束时间</label>
-                <input 
+                <input
                   v-model="preferences.quiet_hours_end"
                   type="time"
                   class="time-input"
@@ -146,18 +150,15 @@
       </div>
 
       <div class="modal-footer">
-        <button 
-          @click="$emit('close')"
-          class="button button-secondary"
-        >
+        <button class="button button-secondary" @click="$emit('close')">
           取消
         </button>
-        <button 
-          @click="saveSettings"
+        <button
           :disabled="saving"
           class="button button-primary"
+          @click="saveSettings"
         >
-          {{ saving ? '保存中...' : '保存设置' }}
+          {{ saving ? "保存中..." : "保存设置" }}
         </button>
       </div>
     </div>
@@ -165,102 +166,107 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { notificationService } from '@/services/notificationService'
-import { XIcon } from 'lucide-vue-next'
-import type { NotificationPreferences } from '@/services/notificationService'
+import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { notificationService } from "@/services/notificationService";
+import { XIcon } from "lucide-vue-next";
+import type { NotificationPreferences } from "@/services/notificationService";
 
 interface Emits {
-  (e: 'close'): void
-  (e: 'updated'): void
+  (e: "close"): void;
+  (e: "updated"): void;
 }
 
-const emit = defineEmits<Emits>()
-const authStore = useAuthStore()
+const emit = defineEmits<Emits>();
+const authStore = useAuthStore();
 
 // 状态
-const loading = ref(true)
-const saving = ref(false)
+const loading = ref(true);
+const saving = ref(false);
 const preferences = ref<NotificationPreferences>({
-  id: '',
-  user_id: '',
+  id: "",
+  user_id: "",
   email_notifications: true,
   push_notifications: true,
   system_notifications: true,
   product_notifications: true,
   order_notifications: true,
   marketing_notifications: false,
-  notification_frequency: 'immediate',
-  quiet_hours_start: '22:00',
-  quiet_hours_end: '08:00',
-  created_at: '',
-  updated_at: ''
-})
+  notification_frequency: "immediate",
+  quiet_hours_start: "22:00",
+  quiet_hours_end: "08:00",
+  created_at: "",
+  updated_at: "",
+});
 
 // 频率选项
 const frequencyOptions = [
   {
-    value: 'immediate',
-    label: '立即通知',
-    description: '收到通知后立即推送'
+    value: "immediate",
+    label: "立即通知",
+    description: "收到通知后立即推送",
   },
   {
-    value: 'daily',
-    label: '每日汇总',
-    description: '每天汇总一次发送'
+    value: "daily",
+    label: "每日汇总",
+    description: "每天汇总一次发送",
   },
   {
-    value: 'weekly',
-    label: '每周汇总',
-    description: '每周汇总一次发送'
+    value: "weekly",
+    label: "每周汇总",
+    description: "每周汇总一次发送",
   },
   {
-    value: 'never',
-    label: '从不',
-    description: '不接收任何通知'
-  }
-]
+    value: "never",
+    label: "从不",
+    description: "不接收任何通知",
+  },
+];
 
 // 方法
 const loadPreferences = async () => {
-  if (!authStore.user) return
+  if (!authStore.user) return;
 
   try {
-    loading.value = true
-    const userPreferences = await notificationService.getUserPreferences(authStore.user.id)
-    
+    loading.value = true;
+    const userPreferences = await notificationService.getUserPreferences(
+      authStore.user.id,
+    );
+
     if (userPreferences) {
-      preferences.value = userPreferences
+      preferences.value = userPreferences;
     }
   } catch (error) {
-    console.error('加载通知偏好失败:', error)
+    console.error("加载通知偏好失败:", error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const saveSettings = async () => {
-  if (!authStore.user || saving.value) return
+  if (!authStore.user || saving.value) return;
 
   try {
-    saving.value = true
-    
-    await notificationService.updatePreferences(authStore.user.id, preferences.value)
-    
-    emit('updated')
-    emit('close')
+    saving.value = true;
+
+    await notificationService.updatePreferences(
+      authStore.user.id,
+      preferences.value,
+    );
+
+    emit("updated");
+    emit("close");
   } catch (error) {
-    console.error('保存通知设置失败:', error)
+    console.error("保存通知设置失败:", error);
   } finally {
-    saving.value = false
+    saving.value = false;
   }
-}
+};
 
 // 生命周期
 onMounted(() => {
-  loadPreferences()
-})
+  loadPreferences();
+});
 </script>
 
 <style scoped>
@@ -365,7 +371,9 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .setting-section {
@@ -554,16 +562,16 @@ onMounted(() => {
     border-radius: 0;
     height: 100vh;
   }
-  
+
   .setting-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .quiet-hours {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .time-separator {
     margin: 0;
     text-align: center;

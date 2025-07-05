@@ -66,7 +66,7 @@
             />
           </div>
         </div>
-        
+
         <!-- 统计数据 -->
         <div class="stats-config">
           <h3>底部统计数据</h3>
@@ -171,19 +171,10 @@
 
       <!-- 操作按钮 -->
       <div class="settings-actions">
-        <button
-          class="save-button"
-          :disabled="saving"
-          @click="saveSettings"
-        >
-          {{ saving ? '保存中...' : '保存设置' }}
+        <button class="save-button" :disabled="saving" @click="saveSettings">
+          {{ saving ? "保存中..." : "保存设置" }}
         </button>
-        <button
-          class="reset-button"
-          @click="resetSettings"
-        >
-          重置为默认
-        </button>
+        <button class="reset-button" @click="resetSettings">重置为默认</button>
       </div>
 
       <!-- 消息提示 -->
@@ -195,138 +186,150 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from "vue";
 
 // 响应式数据
-const saving = ref(false)
-const message = ref('')
-const messageType = ref<'success' | 'error'>('success')
+const saving = ref(false);
+const message = ref("");
+const messageType = ref<"success" | "error">("success");
 
 // 网站配置
 const siteConfig = ref({
-  name: '工具导航站',
-  description: '专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。',
+  name: "工具导航站",
+  description:
+    "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
   contact: {
-    email: 'contact@ramusi.cn',
-    phone: '+86 138-0000-0000'
-  }
-})
+    email: "contact@ramusi.cn",
+    phone: "+86 138-0000-0000",
+  },
+});
 
 // 页面底部配置
 const footerConfig = ref({
-  companyDescription: '专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。',
-  copyright: '© 2024 工具导航站. 保留所有权利.',
+  companyDescription:
+    "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
+  copyright: "© 2024 工具导航站. 保留所有权利.",
   stats: {
     toolsCount: 1000,
     categoriesCount: 50,
-    usersCount: 10000
+    usersCount: 10000,
   },
   social: {
-    wechat: '',
-    weibo: '',
-    github: 'https://github.com/jiayuwee/advanced-tools-navigation',
-    email: 'contact@ramusi.cn'
-  }
-})
+    wechat: "",
+    weibo: "",
+    github: "https://github.com/jiayuwee/advanced-tools-navigation",
+    email: "contact@ramusi.cn",
+  },
+});
 
 // SEO配置
 const seoConfig = ref({
-  title: '工具导航站 - 高效工具导航平台',
-  description: '发现和使用最优质的在线工具，提升工作效率。精心挑选的工具分类，让您快速找到所需工具。',
-  keywords: '工具导航,在线工具,效率工具,开发工具,设计工具,办公工具'
-})
+  title: "工具导航站 - 高效工具导航平台",
+  description:
+    "发现和使用最优质的在线工具，提升工作效率。精心挑选的工具分类，让您快速找到所需工具。",
+  keywords: "工具导航,在线工具,效率工具,开发工具,设计工具,办公工具",
+});
 
 // 方法
 const saveSettings = async () => {
   try {
-    saving.value = true
-    message.value = ''
+    saving.value = true;
+    message.value = "";
 
     // 保存到localStorage（实际项目中应该保存到数据库）
-    localStorage.setItem('siteConfig', JSON.stringify(siteConfig.value))
-    localStorage.setItem('footerConfig', JSON.stringify(footerConfig.value))
-    localStorage.setItem('seoConfig', JSON.stringify(seoConfig.value))
+    localStorage.setItem("siteConfig", JSON.stringify(siteConfig.value));
+    localStorage.setItem("footerConfig", JSON.stringify(footerConfig.value));
+    localStorage.setItem("seoConfig", JSON.stringify(seoConfig.value));
 
-    message.value = '设置保存成功！'
-    messageType.value = 'success'
+    message.value = "设置保存成功！";
+    messageType.value = "success";
 
     // 3秒后清除消息
     setTimeout(() => {
-      message.value = ''
-    }, 3000)
+      message.value = "";
+    }, 3000);
   } catch (error) {
-    console.error('保存设置失败:', error)
-    message.value = '保存设置失败，请重试'
-    messageType.value = 'error'
+    console.error("保存设置失败:", error);
+    message.value = "保存设置失败，请重试";
+    messageType.value = "error";
   } finally {
-    saving.value = false
+    saving.value = false;
   }
-}
+};
 
 const resetSettings = () => {
-  if (confirm('确定要重置为默认设置吗？这将清除所有自定义配置。')) {
+  if (confirm("确定要重置为默认设置吗？这将清除所有自定义配置。")) {
     // 重置为默认值
     siteConfig.value = {
-      name: '工具导航站',
-      description: '专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。',
+      name: "工具导航站",
+      description:
+        "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
       contact: {
-        email: 'contact@ramusi.cn',
-        phone: '+86 138-0000-0000'
-      }
-    }
+        email: "contact@ramusi.cn",
+        phone: "+86 138-0000-0000",
+      },
+    };
 
     footerConfig.value = {
-      companyDescription: '专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。',
-      copyright: '© 2024 工具导航站. 保留所有权利.',
+      companyDescription:
+        "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
+      copyright: "© 2024 工具导航站. 保留所有权利.",
       stats: {
         toolsCount: 1000,
         categoriesCount: 50,
-        usersCount: 10000
+        usersCount: 10000,
       },
       social: {
-        wechat: '',
-        weibo: '',
-        github: 'https://github.com/jiayuwee/advanced-tools-navigation',
-        email: 'contact@ramusi.cn'
-      }
-    }
+        wechat: "",
+        weibo: "",
+        github: "https://github.com/jiayuwee/advanced-tools-navigation",
+        email: "contact@ramusi.cn",
+      },
+    };
 
     seoConfig.value = {
-      title: '工具导航站 - 高效工具导航平台',
-      description: '发现和使用最优质的在线工具，提升工作效率。精心挑选的工具分类，让您快速找到所需工具。',
-      keywords: '工具导航,在线工具,效率工具,开发工具,设计工具,办公工具'
-    }
+      title: "工具导航站 - 高效工具导航平台",
+      description:
+        "发现和使用最优质的在线工具，提升工作效率。精心挑选的工具分类，让您快速找到所需工具。",
+      keywords: "工具导航,在线工具,效率工具,开发工具,设计工具,办公工具",
+    };
 
-    message.value = '设置已重置为默认值'
-    messageType.value = 'success'
+    message.value = "设置已重置为默认值";
+    messageType.value = "success";
   }
-}
+};
 
 const loadSettings = () => {
   try {
     // 从localStorage加载设置
-    const savedSiteConfig = localStorage.getItem('siteConfig')
-    const savedFooterConfig = localStorage.getItem('footerConfig')
-    const savedSeoConfig = localStorage.getItem('seoConfig')
+    const savedSiteConfig = localStorage.getItem("siteConfig");
+    const savedFooterConfig = localStorage.getItem("footerConfig");
+    const savedSeoConfig = localStorage.getItem("seoConfig");
 
     if (savedSiteConfig) {
-      siteConfig.value = { ...siteConfig.value, ...JSON.parse(savedSiteConfig) }
+      siteConfig.value = {
+        ...siteConfig.value,
+        ...JSON.parse(savedSiteConfig),
+      };
     }
     if (savedFooterConfig) {
-      footerConfig.value = { ...footerConfig.value, ...JSON.parse(savedFooterConfig) }
+      footerConfig.value = {
+        ...footerConfig.value,
+        ...JSON.parse(savedFooterConfig),
+      };
     }
     if (savedSeoConfig) {
-      seoConfig.value = { ...seoConfig.value, ...JSON.parse(savedSeoConfig) }
+      seoConfig.value = { ...seoConfig.value, ...JSON.parse(savedSeoConfig) };
     }
   } catch (error) {
-    console.error('加载设置失败:', error)
+    console.error("加载设置失败:", error);
   }
-}
+};
 
 // 生命周期
 onMounted(() => {
-  loadSettings()
-})
+  loadSettings();
+});
 </script>
 
 <style scoped>
@@ -498,19 +501,19 @@ onMounted(() => {
   .settings-view {
     padding: 15px;
   }
-  
+
   .settings-section {
     padding: 20px;
   }
-  
+
   .form-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .settings-actions {
     flex-direction: column;
   }

@@ -43,21 +43,31 @@
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
               <div class="text-center p-4 border border-gray-200 rounded-lg">
-                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div
+                  class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3"
+                >
                   <Search class="w-6 h-6 text-blue-600" />
                 </div>
                 <h3 class="font-semibold text-gray-900 mb-2">1. 搜索工具</h3>
-                <p class="text-sm text-gray-600">使用搜索功能快速找到您需要的工具</p>
+                <p class="text-sm text-gray-600">
+                  使用搜索功能快速找到您需要的工具
+                </p>
               </div>
               <div class="text-center p-4 border border-gray-200 rounded-lg">
-                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div
+                  class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3"
+                >
                   <Heart class="w-6 h-6 text-green-600" />
                 </div>
                 <h3 class="font-semibold text-gray-900 mb-2">2. 收藏工具</h3>
-                <p class="text-sm text-gray-600">收藏喜欢的工具，方便下次使用</p>
+                <p class="text-sm text-gray-600">
+                  收藏喜欢的工具，方便下次使用
+                </p>
               </div>
               <div class="text-center p-4 border border-gray-200 rounded-lg">
-                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div
+                  class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3"
+                >
                   <ShoppingCart class="w-6 h-6 text-purple-600" />
                 </div>
                 <h3 class="font-semibold text-gray-900 mb-2">3. 购买产品</h3>
@@ -68,7 +78,10 @@
         </section>
 
         <!-- 账户管理 -->
-        <section id="account-management" class="bg-white rounded-lg shadow-md p-8">
+        <section
+          id="account-management"
+          class="bg-white rounded-lg shadow-md p-8"
+        >
           <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
             <User class="w-6 h-6 mr-3 text-green-600" />
             账户管理
@@ -92,7 +105,9 @@
               </ol>
             </div>
             <div>
-              <h3 class="text-lg font-semibold text-gray-900 mb-3">修改个人信息</h3>
+              <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                修改个人信息
+              </h3>
               <ol class="list-decimal list-inside space-y-2 text-gray-700">
                 <li>登录后点击右上角的用户头像</li>
                 <li>选择"个人中心"</li>
@@ -139,7 +154,10 @@
         </section>
 
         <!-- 产品购买 -->
-        <section id="product-purchase" class="bg-white rounded-lg shadow-md p-8">
+        <section
+          id="product-purchase"
+          class="bg-white rounded-lg shadow-md p-8"
+        >
           <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
             <ShoppingCart class="w-6 h-6 mr-3 text-orange-600" />
             产品购买
@@ -223,15 +241,24 @@
           <div class="space-y-4">
             <div class="border-l-4 border-blue-500 pl-4">
               <h3 class="font-semibold text-gray-900">Q: 忘记密码怎么办？</h3>
-              <p class="text-gray-700">A: 在登录页面点击"忘记密码"，输入邮箱地址即可重置密码。</p>
+              <p class="text-gray-700">
+                A: 在登录页面点击"忘记密码"，输入邮箱地址即可重置密码。
+              </p>
             </div>
             <div class="border-l-4 border-green-500 pl-4">
               <h3 class="font-semibold text-gray-900">Q: 如何联系客服？</h3>
-              <p class="text-gray-700">A: 您可以通过页面底部的联系方式或意见反馈功能联系我们。</p>
+              <p class="text-gray-700">
+                A: 您可以通过页面底部的联系方式或意见反馈功能联系我们。
+              </p>
             </div>
             <div class="border-l-4 border-purple-500 pl-4">
-              <h3 class="font-semibold text-gray-900">Q: 产品下载失败怎么办？</h3>
-              <p class="text-gray-700">A: 请检查网络连接，或尝试使用其他浏览器下载。如问题持续，请联系技术支持。</p>
+              <h3 class="font-semibold text-gray-900">
+                Q: 产品下载失败怎么办？
+              </h3>
+              <p class="text-gray-700">
+                A:
+                请检查网络连接，或尝试使用其他浏览器下载。如问题持续，请联系技术支持。
+              </p>
             </div>
           </div>
         </section>
@@ -263,31 +290,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { 
-  Rocket, 
-  Search, 
-  Heart, 
-  ShoppingCart, 
-  User, 
-  Upload, 
-  HelpCircle, 
-  MessageCircle 
-} from 'lucide-vue-next'
+import { ref, onMounted } from "vue";
+import {
+  Rocket,
+  Search,
+  Heart,
+  ShoppingCart,
+  User,
+  Upload,
+  HelpCircle,
+  MessageCircle,
+} from "lucide-vue-next";
 
 // 目录数据
 const sections = ref([
-  { id: 'getting-started', title: '快速开始' },
-  { id: 'account-management', title: '账户管理' },
-  { id: 'tool-browsing', title: '工具搜索与浏览' },
-  { id: 'product-purchase', title: '产品购买' },
-  { id: 'product-upload', title: '产品上传' },
-  { id: 'common-issues', title: '常见问题' }
-])
+  { id: "getting-started", title: "快速开始" },
+  { id: "account-management", title: "账户管理" },
+  { id: "tool-browsing", title: "工具搜索与浏览" },
+  { id: "product-purchase", title: "产品购买" },
+  { id: "product-upload", title: "产品上传" },
+  { id: "common-issues", title: "常见问题" },
+]);
 
 // 生命周期
 onMounted(() => {
   // 设置页面标题
-  document.title = '使用指南 - 工具导航站'
-})
+  document.title = "使用指南 - 工具导航站";
+});
 </script>

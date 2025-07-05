@@ -30,19 +30,19 @@
           <!-- 清除按钮 -->
           <button
             v-if="query"
-            @click="clearSearch"
             class="clear-button"
             type="button"
+            @click="clearSearch"
           >
             <XIcon class="icon" />
           </button>
 
           <!-- 高级搜索按钮 -->
           <button
-            @click="toggleAdvanced"
             class="advanced-button"
             :class="{ active: showAdvanced }"
             type="button"
+            @click="toggleAdvanced"
           >
             <FilterIcon class="icon" />
           </button>
@@ -86,7 +86,7 @@
         >
           <div class="suggestions-header">
             <span>最近搜索</span>
-            <button @click="clearHistory" class="clear-history-button">
+            <button class="clear-history-button" @click="clearHistory">
               清除
             </button>
           </div>
@@ -116,8 +116,8 @@
             <button
               v-for="popular in popularSearches"
               :key="popular"
-              @click="selectSuggestion(popular)"
               class="popular-search-tag"
+              @click="selectSuggestion(popular)"
             >
               {{ popular }}
             </button>
@@ -198,7 +198,7 @@
                   class="selected-tag"
                 >
                   {{ tag.name }}
-                  <button @click="removeTag(tag)" class="remove-tag">
+                  <button class="remove-tag" @click="removeTag(tag)">
                     <XIcon class="icon" />
                   </button>
                 </span>
@@ -229,8 +229,8 @@
         </div>
 
         <div class="advanced-actions">
-          <button @click="resetFilters" class="reset-button">重置</button>
-          <button @click="applyFilters" class="apply-button">应用筛选</button>
+          <button class="reset-button" @click="resetFilters">重置</button>
+          <button class="apply-button" @click="applyFilters">应用筛选</button>
         </div>
       </div>
     </div>
@@ -376,7 +376,7 @@ const handleKeydown = (event: KeyboardEvent) => {
       event.preventDefault();
       selectedIndex.value = Math.min(
         selectedIndex.value + 1,
-        allSuggestions.value.length - 1
+        allSuggestions.value.length - 1,
       );
       break;
     case "ArrowUp":

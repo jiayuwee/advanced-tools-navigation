@@ -49,7 +49,7 @@ async function testConnection() {
         `
         *,
         category:categories(*)
-      `
+      `,
       )
       .eq("status", "active")
       .eq("is_active", true)
@@ -72,7 +72,7 @@ async function testConnection() {
         `
         *,
         category:product_categories(*)
-      `
+      `,
       )
       .eq("status", "active")
       .order("sort_order", { ascending: true });

@@ -12,8 +12,8 @@
           </div>
           <div class="flex space-x-3">
             <button
-              @click="refreshData"
               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              @click="refreshData"
             >
               <RefreshCw class="w-4 h-4 mr-2" />
               刷新
@@ -281,34 +281,34 @@
                 <td class="px-6 py-4">
                   <div class="flex space-x-2">
                     <button
-                      @click="viewProduct(product)"
                       class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      @click="viewProduct(product)"
                     >
                       查看
                     </button>
                     <button
                       v-if="product.status === 'pending'"
-                      @click="approveProduct(product)"
                       class="text-green-600 hover:text-green-800 text-sm font-medium"
+                      @click="approveProduct(product)"
                     >
                       通过
                     </button>
                     <button
                       v-if="product.status === 'pending'"
-                      @click="rejectProduct(product)"
                       class="text-red-600 hover:text-red-800 text-sm font-medium"
+                      @click="rejectProduct(product)"
                     >
                       拒绝
                     </button>
                     <button
-                      @click="editProduct(product)"
                       class="text-gray-600 hover:text-gray-800 text-sm font-medium"
+                      @click="editProduct(product)"
                     >
                       编辑
                     </button>
                     <button
-                      @click="deleteProduct(product)"
                       class="text-red-600 hover:text-red-800 text-sm font-medium"
+                      @click="deleteProduct(product)"
                     >
                       删除
                     </button>
@@ -330,8 +330,8 @@
             <div class="flex space-x-2">
               <button
                 :disabled="currentPage === 1"
-                @click="currentPage--"
                 class="px-3 py-1 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                @click="currentPage--"
               >
                 上一页
               </button>
@@ -340,8 +340,8 @@
               </span>
               <button
                 :disabled="currentPage === totalPages"
-                @click="currentPage++"
                 class="px-3 py-1 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                @click="currentPage++"
               >
                 下一页
               </button>
@@ -417,7 +417,7 @@ const stats = computed(() => {
   const total = products.value.length;
   const pending = products.value.filter((p) => p.status === "pending").length;
   const published = products.value.filter(
-    (p) => p.status === "published"
+    (p) => p.status === "published",
   ).length;
   const rejected = products.value.filter((p) => p.status === "rejected").length;
 
