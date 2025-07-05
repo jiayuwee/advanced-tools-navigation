@@ -72,7 +72,7 @@
             :class="{ favorited: tool.isFavorite }"
             @click.stop="toggleFavorite(tool)"
           >
-            <HeartIcon class="icon" />
+            <Heart class="icon" />
           </button>
 
           <div class="tool-header">
@@ -110,7 +110,7 @@ import { useToolsStore } from "@/stores/tools";
 import { useCategoriesStore } from "@/stores/categories";
 import { useAuthStore } from "@/stores/auth";
 import EnhancedSearchBox from "@/components/search/EnhancedSearchBox.vue";
-import HeartIcon from "lucide-vue-next/dist/esm/icons/Heart";
+import { Heart } from 'lucide-vue-next';
 // 提升 mousemoveHandler 到外部作用域，便于 onMounted/onUnmounted 都能访问
 const mousemoveHandler = (e: MouseEvent) => {
   let cursor = document.querySelector(".cursor") as HTMLElement;
