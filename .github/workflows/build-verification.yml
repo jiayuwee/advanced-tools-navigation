@@ -51,8 +51,8 @@ jobs:
             rm -rf node_modules package-lock.json
             echo "清理npm缓存..."
             npm cache clean --force
-            echo "安装依赖（跳过可选依赖和平台特定依赖）..."
-            npm install --prefer-offline --no-audit --no-optional --ignore-platform
+            echo "安装依赖..."
+            npm install --prefer-offline --no-audit
             echo "✅ 依赖安装完成"
           else
             echo "❌ package.json 不存在"
