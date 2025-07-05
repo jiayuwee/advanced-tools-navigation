@@ -79,7 +79,7 @@ export default defineConfig({
       external: ['@rollup/rollup-win32-x64-msvc'],
       output: {
         manualChunks: {
-          vendor: ["vue", "pinia", "lucide-vue-next"],
+          vendor: ["vue", "pinia"],
         },
       },
     },
