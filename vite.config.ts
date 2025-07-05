@@ -6,7 +6,6 @@ import { copyFileSync } from "fs";
 export default defineConfig({
   plugins: [
     vue(),
-    // 自定义插件：复制CNAME文件到构建目录
     {
       name: "copy-cname",
       writeBundle() {
@@ -18,7 +17,6 @@ export default defineConfig({
         }
       },
     },
-    // 自定义插件：修复HTML文件
     {
       name: "fix-html",
       transformIndexHtml(html) {
@@ -29,7 +27,6 @@ export default defineConfig({
     <div class="loading">正在加载工具导航站...</div>
   </div>
   <script>
-    // 错误处理
     window.addEventListener('error', function(e) {
       console.error('页面加载错误:', e.error);
       const app = document.getElementById('app');
@@ -37,8 +34,6 @@ export default defineConfig({
         app.innerHTML = '<div class="loading">加载失败，请刷新页面重试</div>';
       }
     });
-
-    // 检查资源加载
     setTimeout(function() {
       const app = document.getElementById('app');
       if (app && app.innerHTML.includes('正在加载')) {
@@ -51,11 +46,9 @@ export default defineConfig({
             "min-height: 100vh;\n    }",
             `min-height: 100vh;
     }
-
     #app {
       min-height: 100vh;
     }
-
     .loading {
       display: flex;
       align-items: center;
@@ -83,6 +76,7 @@ export default defineConfig({
     sourcemap: false,
     minify: "terser",
     rollupOptions: {
+      external: ['@rollup/rollup-win32-x64-msvc'],
       output: {
         manualChunks: {
           vendor: ["vue", "pinia", "lucide-vue-next"],
