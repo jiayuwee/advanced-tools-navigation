@@ -76,7 +76,7 @@ export default defineConfig({
     sourcemap: false,
     minify: "terser",
     rollupOptions: {
-      external: ['@rollup/rollup-win32-x64-msvc'],
+      external: ['@rollup/rollup-win32-x64-msvc', 'lucide-vue-next'],
       output: {
         manualChunks: {
           vendor: ["vue", "pinia"],
