@@ -23,10 +23,10 @@
               <XIcon class="icon" />
             </button>
             <button
-              @click="showAdvancedSearch = !showAdvancedSearch"
               class="advanced-search-button"
               :class="{ active: showAdvancedSearch }"
               title="高级搜索"
+              @click="showAdvancedSearch = !showAdvancedSearch"
             >
               <FilterIcon class="icon" />
             </button>
@@ -155,16 +155,16 @@
             </div>
             <div class="tool-actions">
               <button
-                @click.stop="goToToolDetail(tool.id)"
                 class="detail-button"
                 title="查看详情"
+                @click.stop="goToToolDetail(tool.id)"
               >
                 <InfoIcon class="icon" />
               </button>
               <button
-                @click.stop="handleToolClick(tool)"
                 class="visit-button"
                 title="访问工具"
+                @click.stop="handleToolClick(tool)"
               >
                 <ExternalLinkIcon class="icon" />
               </button>
@@ -389,7 +389,7 @@ watch(
       toolsStore.setSearchQuery(newQuery.search);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // 监听分类变化

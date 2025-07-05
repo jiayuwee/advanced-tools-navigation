@@ -26,7 +26,9 @@ console.log("   4. 验证 SSL 证书状态\n");
 
 console.log("步骤 3: 检查构建配置");
 console.log("   1. 在 Netlify 站点设置中检查 'Build & deploy'");
-console.log("   2. 确认构建命令: npm cache clean --force && npm install --no-optional && npm run build");
+console.log(
+  "   2. 确认构建命令: npm cache clean --force && npm install --no-optional && npm run build",
+);
 console.log("   3. 确认发布目录: dist");
 console.log("   4. 检查环境变量是否正确设置\n");
 

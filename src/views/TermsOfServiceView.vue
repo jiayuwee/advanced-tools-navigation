@@ -51,9 +51,7 @@
         <section id="service-description">
           <h2 class="text-2xl font-bold text-gray-900 mb-4">2. 服务描述</h2>
           <div class="prose prose-lg max-w-none text-gray-700">
-            <p>
-              本网站是一个工具导航和产品展示平台，为用户提供以下服务：
-            </p>
+            <p>本网站是一个工具导航和产品展示平台，为用户提供以下服务：</p>
             <ul class="list-disc list-inside space-y-2">
               <li>工具和资源的分类展示和搜索</li>
               <li>产品信息展示和购买服务</li>
@@ -71,9 +69,7 @@
         <section id="user-responsibilities">
           <h2 class="text-2xl font-bold text-gray-900 mb-4">3. 用户责任</h2>
           <div class="prose prose-lg max-w-none text-gray-700">
-            <p>
-              作为本网站的用户，您同意：
-            </p>
+            <p>作为本网站的用户，您同意：</p>
             <ul class="list-disc list-inside space-y-2">
               <li>提供真实、准确、完整的注册信息</li>
               <li>保护您的账户安全，不与他人共享登录凭据</li>
@@ -82,9 +78,7 @@
               <li>不上传恶意软件、病毒或其他有害内容</li>
               <li>尊重知识产权和他人权利</li>
             </ul>
-            <p>
-              您对通过您的账户进行的所有活动承担全部责任。
-            </p>
+            <p>您对通过您的账户进行的所有活动承担全部责任。</p>
           </div>
         </section>
 
@@ -114,12 +108,8 @@
             <p>
               我们重视您的隐私保护。我们收集、使用和保护您的个人信息的方式详见我们的隐私政策。
             </p>
-            <p>
-              通过使用本网站，您同意我们按照隐私政策收集和使用您的信息。
-            </p>
-            <p>
-              我们采取合理的安全措施保护您的个人信息，但无法保证绝对安全。
-            </p>
+            <p>通过使用本网站，您同意我们按照隐私政策收集和使用您的信息。</p>
+            <p>我们采取合理的安全措施保护您的个人信息，但无法保证绝对安全。</p>
           </div>
         </section>
 
@@ -127,18 +117,14 @@
         <section id="paid-services">
           <h2 class="text-2xl font-bold text-gray-900 mb-4">6. 付费服务</h2>
           <div class="prose prose-lg max-w-none text-gray-700">
-            <p>
-              本网站可能提供付费产品和服务。对于付费服务：
-            </p>
+            <p>本网站可能提供付费产品和服务。对于付费服务：</p>
             <ul class="list-disc list-inside space-y-2">
               <li>所有价格均以人民币计价，除非另有说明</li>
               <li>付款完成后，您将获得相应的产品或服务访问权限</li>
               <li>退款政策将根据具体产品或服务而定</li>
               <li>我们保留随时修改价格的权利</li>
             </ul>
-            <p>
-              您有责任支付所有适用的税费。
-            </p>
+            <p>您有责任支付所有适用的税费。</p>
           </div>
         </section>
 
@@ -155,9 +141,7 @@
               <li>服务不会中断或无错误</li>
               <li>通过服务获得的信息的准确性</li>
             </ul>
-            <p>
-              您使用本网站的风险由您自行承担。
-            </p>
+            <p>您使用本网站的风险由您自行承担。</p>
           </div>
         </section>
 
@@ -165,18 +149,14 @@
         <section id="limitation-of-liability">
           <h2 class="text-2xl font-bold text-gray-900 mb-4">8. 责任限制</h2>
           <div class="prose prose-lg max-w-none text-gray-700">
-            <p>
-              在法律允许的最大范围内，我们不对以下情况承担责任：
-            </p>
+            <p>在法律允许的最大范围内，我们不对以下情况承担责任：</p>
             <ul class="list-disc list-inside space-y-2">
               <li>任何间接、偶然、特殊或后果性损害</li>
               <li>利润损失、数据丢失或业务中断</li>
               <li>第三方内容或服务造成的损害</li>
               <li>不可抗力事件造成的损失</li>
             </ul>
-            <p>
-              我们的总责任不超过您在过去12个月内向我们支付的费用。
-            </p>
+            <p>我们的总责任不超过您在过去12个月内向我们支付的费用。</p>
           </div>
         </section>
 
@@ -184,9 +164,7 @@
         <section id="termination">
           <h2 class="text-2xl font-bold text-gray-900 mb-4">9. 服务终止</h2>
           <div class="prose prose-lg max-w-none text-gray-700">
-            <p>
-              我们保留在以下情况下暂停或终止您的账户的权利：
-            </p>
+            <p>我们保留在以下情况下暂停或终止您的账户的权利：</p>
             <ul class="list-disc list-inside space-y-2">
               <li>违反本服务条款</li>
               <li>进行欺诈或非法活动</li>
@@ -206,9 +184,7 @@
             <p>
               本服务条款受中华人民共和国法律管辖。任何争议应通过友好协商解决。
             </p>
-            <p>
-              如协商不成，争议应提交至我们所在地有管辖权的人民法院解决。
-            </p>
+            <p>如协商不成，争议应提交至我们所在地有管辖权的人民法院解决。</p>
           </div>
         </section>
 
@@ -216,9 +192,7 @@
         <section id="contact">
           <h2 class="text-2xl font-bold text-gray-900 mb-4">11. 联系我们</h2>
           <div class="prose prose-lg max-w-none text-gray-700">
-            <p>
-              如果您对本服务条款有任何疑问，请通过以下方式联系我们：
-            </p>
+            <p>如果您对本服务条款有任何疑问，请通过以下方式联系我们：</p>
             <ul class="list-disc list-inside space-y-2">
               <li>邮箱：support@ramusi.cn</li>
               <li>电话：+86 400-123-4567</li>
@@ -253,27 +227,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Shield, MessageCircle } from 'lucide-vue-next'
+import { ref } from "vue";
+import { Shield, MessageCircle } from "lucide-vue-next";
 
 // 最后更新时间
-const lastUpdated = ref('2024年1月1日')
+const lastUpdated = ref("2024年1月1日");
 
 // 目录数据
 const sections = ref([
-  { id: 'acceptance', title: '1. 接受条款' },
-  { id: 'service-description', title: '2. 服务描述' },
-  { id: 'user-responsibilities', title: '3. 用户责任' },
-  { id: 'intellectual-property', title: '4. 知识产权' },
-  { id: 'privacy', title: '5. 隐私保护' },
-  { id: 'paid-services', title: '6. 付费服务' },
-  { id: 'disclaimer', title: '7. 免责声明' },
-  { id: 'limitation-of-liability', title: '8. 责任限制' },
-  { id: 'termination', title: '9. 服务终止' },
-  { id: 'governing-law', title: '10. 适用法律' },
-  { id: 'contact', title: '11. 联系我们' }
-])
+  { id: "acceptance", title: "1. 接受条款" },
+  { id: "service-description", title: "2. 服务描述" },
+  { id: "user-responsibilities", title: "3. 用户责任" },
+  { id: "intellectual-property", title: "4. 知识产权" },
+  { id: "privacy", title: "5. 隐私保护" },
+  { id: "paid-services", title: "6. 付费服务" },
+  { id: "disclaimer", title: "7. 免责声明" },
+  { id: "limitation-of-liability", title: "8. 责任限制" },
+  { id: "termination", title: "9. 服务终止" },
+  { id: "governing-law", title: "10. 适用法律" },
+  { id: "contact", title: "11. 联系我们" },
+]);
 
 // 设置页面标题
-document.title = '服务条款 - 工具导航站'
+document.title = "服务条款 - 工具导航站";
 </script>

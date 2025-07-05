@@ -132,13 +132,13 @@ class BuildOptimizer {
           // 大于 500KB
           largeImages++;
           this.addWarning(
-            `大图片文件: ${path.relative(projectRoot, imagePath)} (${Math.round(stat.size / 1024)}KB)`
+            `大图片文件: ${path.relative(projectRoot, imagePath)} (${Math.round(stat.size / 1024)}KB)`,
           );
         }
       });
 
       this.log(
-        `图片总大小: ${Math.round((totalSize / 1024 / 1024) * 100) / 100}MB`
+        `图片总大小: ${Math.round((totalSize / 1024 / 1024) * 100) / 100}MB`,
       );
 
       if (largeImages > 0) {
@@ -200,7 +200,7 @@ class BuildOptimizer {
           // 大于 50KB
           largeFiles++;
           this.addWarning(
-            `大脚本文件: ${path.relative(projectRoot, filePath)} (${Math.round(stat.size / 1024)}KB)`
+            `大脚本文件: ${path.relative(projectRoot, filePath)} (${Math.round(stat.size / 1024)}KB)`,
           );
         }
       });
@@ -321,7 +321,7 @@ class BuildOptimizer {
       this.log("Gzip 压缩效果:");
       compressionResults.forEach((result) => {
         this.log(
-          `  ${result.path}: ${result.original}KB → ${result.compressed}KB (${result.ratio}%)`
+          `  ${result.path}: ${result.original}KB → ${result.compressed}KB (${result.ratio}%)`,
         );
       });
     } catch (error) {
@@ -364,10 +364,10 @@ class BuildOptimizer {
     this.log("\n=== 构建优化报告 ===");
 
     const completedOptimizations = this.optimizations.filter(
-      (opt) => opt.completed
+      (opt) => opt.completed,
     );
     const failedOptimizations = this.optimizations.filter(
-      (opt) => !opt.completed
+      (opt) => !opt.completed,
     );
 
     this.log(`✅ 完成的优化: ${completedOptimizations.length}`);
@@ -398,7 +398,7 @@ class BuildOptimizer {
 
     const success = this.errors.length === 0;
     this.log(
-      `\n${success ? "🎉 构建优化完成！" : "⚠️  构建优化完成，但有错误"}`
+      `\n${success ? "🎉 构建优化完成！" : "⚠️  构建优化完成，但有错误"}`,
     );
 
     return success;

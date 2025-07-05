@@ -62,6 +62,11 @@ onMounted(() => {
   window.addEventListener("offline", () => {
     error.value = "网络连接已断开";
   });
+
+  // 监听在线状态
+  window.addEventListener("online", () => {
+    if (error.value === "网络连接已断开") error.value = null;
+  });
 });
 </script>
 

@@ -149,7 +149,7 @@ const downloadProducts = async () => {
     // 获取订单详情
     const order = await OrderService.getOrderById(
       orderParam as string,
-      authStore.user.id
+      authStore.user.id,
     );
     if (!order || order.status !== "paid") {
       alert("订单不存在或未支付");

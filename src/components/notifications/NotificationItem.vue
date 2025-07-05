@@ -1,10 +1,10 @@
 <template>
-  <div 
-    class="notification-item" 
-    :class="{ 
+  <div
+    class="notification-item"
+    :class="{
       'is-unread': !notification.is_read,
       'is-important': notification.is_important,
-      [`type-${notification.type}`]: true
+      [`type-${notification.type}`]: true,
     }"
   >
     <div class="notification-content">
@@ -14,130 +14,129 @@
         </div>
         <div class="notification-meta">
           <h4 class="notification-title">{{ notification.title }}</h4>
-          <span class="notification-time">{{ formatTime(notification.created_at) }}</span>
+          <span class="notification-time">{{
+            formatTime(notification.created_at)
+          }}</span>
         </div>
         <div class="notification-actions">
-          <button 
+          <button
             v-if="!notification.is_read"
-            @click="markAsRead"
             class="action-button read-button"
             title="标记为已读"
+            @click="markAsRead"
           >
             <CheckIcon class="icon" />
           </button>
-          <button 
-            @click="deleteNotification"
+          <button
             class="action-button delete-button"
             title="删除通知"
+            @click="deleteNotification"
           >
             <XIcon class="icon" />
           </button>
         </div>
       </div>
-      
+
       <div class="notification-body">
         <p class="notification-message">{{ notification.message }}</p>
-        
+
         <div v-if="notification.action_url" class="notification-action">
-          <button 
-            @click="handleAction"
-            class="action-link"
-          >
-            {{ notification.action_text || '查看详情' }}
+          <button class="action-link" @click="handleAction">
+            {{ notification.action_text || "查看详情" }}
             <ExternalLinkIcon class="icon" />
           </button>
         </div>
       </div>
     </div>
-    
+
     <div v-if="!notification.is_read" class="unread-indicator"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { 
-  InfoIcon, 
-  CheckCircleIcon, 
-  AlertTriangleIcon, 
+import { computed } from "vue";
+import {
+  InfoIcon,
+  CheckCircleIcon,
+  AlertTriangleIcon,
   XCircleIcon,
   BellIcon,
   PackageIcon,
   ShoppingCartIcon,
   CheckIcon,
   XIcon,
-  ExternalLinkIcon
-} from 'lucide-vue-next'
-import type { Notification } from '@/services/notificationService'
+  ExternalLinkIcon,
+} from "lucide-vue-next";
+import type { Notification } from "@/services/notificationService";
 
 interface Props {
-  notification: Notification
+  notification: Notification;
 }
 
 interface Emits {
-  (e: 'read', notificationId: string): void
-  (e: 'delete', notificationId: string): void
-  (e: 'action', notification: Notification): void
+  (e: "read", notificationId: string): void;
+  (e: "delete", notificationId: string): void;
+  (e: "action", notification: Notification): void;
 }
 
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
 // 获取类型图标
 const getTypeIcon = () => {
   switch (props.notification.type) {
-    case 'success':
-      return CheckCircleIcon
-    case 'warning':
-      return AlertTriangleIcon
-    case 'error':
-      return XCircleIcon
-    case 'system':
-      return BellIcon
-    case 'product':
-      return PackageIcon
-    case 'order':
-      return ShoppingCartIcon
+    case "success":
+      return CheckCircleIcon;
+    case "warning":
+      return AlertTriangleIcon;
+    case "error":
+      return XCircleIcon;
+    case "system":
+      return BellIcon;
+    case "product":
+      return PackageIcon;
+    case "order":
+      return ShoppingCartIcon;
     default:
-      return InfoIcon
+      return InfoIcon;
   }
-}
+};
 
 // 格式化时间
 const formatTime = (dateString: string) => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  
-  const minutes = Math.floor(diff / 60000)
-  const hours = Math.floor(diff / 3600000)
-  const days = Math.floor(diff / 86400000)
-  
-  if (minutes < 1) return '刚刚'
-  if (minutes < 60) return `${minutes}分钟前`
-  if (hours < 24) return `${hours}小时前`
-  if (days < 7) return `${days}天前`
-  
-  return date.toLocaleDateString('zh-CN', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
+  const date = new Date(dateString);
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+
+  if (minutes < 1) return "刚刚";
+  if (minutes < 60) return `${minutes}分钟前`;
+  if (hours < 24) return `${hours}小时前`;
+  if (days < 7) return `${days}天前`;
+
+  return date.toLocaleDateString("zh-CN", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 // 方法
 const markAsRead = () => {
-  emit('read', props.notification.id)
-}
+  emit("read", props.notification.id);
+};
 
 const deleteNotification = () => {
-  emit('delete', props.notification.id)
-}
+  emit("delete", props.notification.id);
+};
 
 const handleAction = () => {
-  emit('action', props.notification)
-}
+  emit("action", props.notification);
+};
 </script>
 
 <style scoped>
@@ -348,15 +347,15 @@ const handleAction = () => {
   .notification-item {
     padding: 0.75rem 1rem;
   }
-  
+
   .notification-header {
     gap: 0.5rem;
   }
-  
+
   .notification-body {
     margin-left: 2.25rem;
   }
-  
+
   .notification-actions {
     opacity: 1;
   }

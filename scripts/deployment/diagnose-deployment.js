@@ -57,7 +57,9 @@ async function diagnoseDeploy() {
           method: "HEAD",
           timeout: 10000,
         });
-        console.log(`✅ ${endpoint}: ${response.status} ${response.statusText}`);
+        console.log(
+          `✅ ${endpoint}: ${response.status} ${response.statusText}`,
+        );
       } catch (error) {
         console.log(`❌ ${endpoint}: ${error.message}`);
       }
@@ -72,9 +74,9 @@ async function diagnoseDeploy() {
       try {
         const healthCheck = await fetch(`${supabaseUrl}/rest/v1/`, {
           headers: {
-            'apikey': supabaseKey,
-            'Authorization': `Bearer ${supabaseKey}`
-          }
+            apikey: supabaseKey,
+            Authorization: `Bearer ${supabaseKey}`,
+          },
         });
         console.log(`✅ Supabase 连接: ${healthCheck.status}`);
       } catch (error) {
@@ -89,16 +91,16 @@ async function diagnoseDeploy() {
     try {
       const fs = await import("fs");
       const path = await import("path");
-      
+
       // 检查关键文件
       const criticalFiles = [
         "package.json",
-        "netlify.toml", 
+        "netlify.toml",
         "dist/index.html",
-        ".env.local"
+        ".env.local",
       ];
 
-      criticalFiles.forEach(file => {
+      criticalFiles.forEach((file) => {
         if (fs.existsSync(file)) {
           console.log(`✅ ${file} 存在`);
         } else {
@@ -112,7 +114,6 @@ async function diagnoseDeploy() {
       } else {
         console.log("❌ node_modules 不存在，请运行 npm install");
       }
-
     } catch (error) {
       console.log("⚠️ 无法检查文件系统");
     }
@@ -140,7 +141,6 @@ async function diagnoseDeploy() {
     console.log("   - 验证项目状态: Active");
     console.log("   - 检查 API 密钥有效性");
     console.log("   - 测试数据库连接");
-
   } catch (error) {
     console.error("❌ 诊断过程中出错:", error.message);
     console.log("\n🔍 详细错误信息:");
@@ -151,15 +151,15 @@ async function diagnoseDeploy() {
 // 添加网络诊断函数
 async function networkDiagnostics() {
   console.log("\n🔍 执行网络诊断 (Context7 方法)...");
-  
+
   const diagnosticCommands = [
     "ping -c 4 ramusi.cn",
-    "nslookup ramusi.cn", 
-    "curl -I https://ramusi.cn"
+    "nslookup ramusi.cn",
+    "curl -I https://ramusi.cn",
   ];
 
   console.log("💡 建议手动执行以下命令进行网络诊断:");
-  diagnosticCommands.forEach(cmd => {
+  diagnosticCommands.forEach((cmd) => {
     console.log(`   ${cmd}`);
   });
 }

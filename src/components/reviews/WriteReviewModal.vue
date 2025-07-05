@@ -3,15 +3,15 @@
     <div class="modal-content" @click.stop>
       <div class="modal-header">
         <h3>写评价</h3>
-        <button @click="$emit('close')" class="close-btn">×</button>
+        <button class="close-btn" @click="$emit('close')">×</button>
       </div>
-      
-      <form @submit.prevent="submitReview" class="review-form">
+
+      <form class="review-form" @submit.prevent="submitReview">
         <div class="rating-input">
           <label>评分</label>
           <StarRating v-model:rating="form.rating" :readonly="false" />
         </div>
-        
+
         <div class="form-group">
           <label for="title">标题</label>
           <input
@@ -22,7 +22,7 @@
             required
           />
         </div>
-        
+
         <div class="form-group">
           <label for="content">评价内容</label>
           <textarea
@@ -33,13 +33,13 @@
             required
           ></textarea>
         </div>
-        
+
         <div class="form-actions">
-          <button type="button" @click="$emit('close')" class="btn-cancel">
+          <button type="button" class="btn-cancel" @click="$emit('close')">
             取消
           </button>
           <button type="submit" :disabled="submitting" class="btn-submit">
-            {{ submitting ? '提交中...' : '提交评价' }}
+            {{ submitting ? "提交中..." : "提交评价" }}
           </button>
         </div>
       </form>
@@ -48,44 +48,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { reviewService } from '@/services/reviewService'
-import StarRating from '@/components/ui/StarRating.vue'
+import { ref, reactive } from "vue";
+import { reviewService } from "@/services/reviewService";
+import StarRating from "@/components/ui/StarRating.vue";
 
 interface Props {
-  productId: string
+  productId: string;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 const emit = defineEmits<{
-  close: []
-  success: []
-}>()
+  close: [];
+  success: [];
+}>();
 
-const submitting = ref(false)
+const submitting = ref(false);
 const form = reactive({
   rating: 5,
-  title: '',
-  content: ''
-})
+  title: "",
+  content: "",
+});
 
 const submitReview = async () => {
   try {
-    submitting.value = true
+    submitting.value = true;
     await reviewService.createReview({
       product_id: props.productId,
       rating: form.rating,
       title: form.title,
-      content: form.content
-    })
-    emit('success')
-    emit('close')
+      content: form.content,
+    });
+    emit("success");
+    emit("close");
   } catch (error) {
-    console.error('提交评价失败:', error)
+    console.error("提交评价失败:", error);
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
-}
+};
 </script>
 
 <style scoped>

@@ -262,11 +262,11 @@ const removeFavorite = async (type: "tool" | "product", id: string) => {
 
     if (type === "tool") {
       favoriteTools.value = favoriteTools.value.filter(
-        (item) => item.id !== id
+        (item) => item.id !== id,
       );
     } else {
       favoriteProducts.value = favoriteProducts.value.filter(
-        (item) => item.id !== id
+        (item) => item.id !== id,
       );
     }
   } catch (error) {

@@ -31,7 +31,7 @@ vi.mock("@/services/searchService", () => ({
         suggestions: [],
         facets: { categories: [], tags: [], priceRanges: [] },
         searchTime: 100,
-      })
+      }),
     ),
     getSmartSuggestions: vi.fn(() => Promise.resolve([])),
     getPopularSearches: vi.fn(() => Promise.resolve([])),
@@ -47,7 +47,7 @@ vi.mock("@/services/notificationService", () => ({
         notifications: [],
         total: 0,
         stats: { total: 0, unread: 0, important: 0, by_type: {} },
-      })
+      }),
     ),
     getNotificationStats: vi.fn(() =>
       Promise.resolve({
@@ -55,7 +55,7 @@ vi.mock("@/services/notificationService", () => ({
         unread: 0,
         important: 0,
         by_type: {},
-      })
+      }),
     ),
     markAsRead: vi.fn(() => Promise.resolve()),
     deleteNotification: vi.fn(() => Promise.resolve()),
@@ -78,7 +78,7 @@ vi.mock("@/services/reviewService", () => ({
           verified_purchase_percentage: 0,
           recent_reviews_count: 0,
         },
-      })
+      }),
     ),
     createReview: vi.fn(() => Promise.resolve({ id: "review-123" })),
     voteReview: vi.fn(() => Promise.resolve()),
@@ -160,7 +160,7 @@ describe("组件集成测试", () => {
 
       expect(wrapper.find(".search-input").exists()).toBe(true);
       expect(wrapper.find(".search-input").attributes("placeholder")).toBe(
-        "搜索测试"
+        "搜索测试",
       );
     });
 

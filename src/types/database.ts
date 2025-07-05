@@ -300,7 +300,13 @@ export interface Database {
           status: "pending" | "paid" | "cancelled" | "refunded";
           payment_method: string | null;
           payment_id: string | null;
-          billing_address: any | null;
+          billing_address: {
+            street: string;
+            city: string;
+            state: string;
+            postal_code: string;
+            country: string;
+          } | null;
           created_at: string;
           updated_at: string;
           completed_at: string | null;
@@ -313,7 +319,13 @@ export interface Database {
           status?: "pending" | "paid" | "cancelled" | "refunded";
           payment_method?: string | null;
           payment_id?: string | null;
-          billing_address?: any | null;
+          billing_address?: {
+            street: string;
+            city: string;
+            state: string;
+            postal_code: string;
+            country: string;
+          } | null;
           created_at?: string;
           updated_at?: string;
           completed_at?: string | null;
@@ -326,7 +338,13 @@ export interface Database {
           status?: "pending" | "paid" | "cancelled" | "refunded";
           payment_method?: string | null;
           payment_id?: string | null;
-          billing_address?: any | null;
+          billing_address?: {
+            street: string;
+            city: string;
+            state: string;
+            postal_code: string;
+            country: string;
+          } | null;
           created_at?: string;
           updated_at?: string;
           completed_at?: string | null;

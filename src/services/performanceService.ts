@@ -331,7 +331,7 @@ class PerformanceService {
     name: string,
     value: number,
     unit: PerformanceMetric["unit"],
-    additionalData?: Record<string, any>
+    additionalData?: Record<string, any>,
   ): void {
     if (!this.isEnabled) return;
 
@@ -356,7 +356,7 @@ class PerformanceService {
   trackCustomMetric(
     name: string,
     value: number,
-    unit: PerformanceMetric["unit"]
+    unit: PerformanceMetric["unit"],
   ): void {
     this.trackMetric("user_action", name, value, unit);
   }
@@ -367,7 +367,7 @@ class PerformanceService {
     method: string,
     duration: number,
     status: number,
-    size: number
+    size: number,
   ): void {
     this.trackMetric("api_call", `${method} ${endpoint}`, duration, "ms", {
       status,
@@ -434,7 +434,7 @@ class PerformanceService {
   // 获取性能报告
   async getPerformanceReport(
     startDate: string,
-    endDate: string
+    endDate: string,
   ): Promise<PerformanceReport> {
     try {
       // 调用 Supabase 函数来生成报告

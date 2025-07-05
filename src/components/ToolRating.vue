@@ -6,9 +6,9 @@
         <div class="average-rating">
           <span class="rating-score">{{ averageRating.toFixed(1) }}</span>
           <div class="stars">
-            <StarIcon 
-              v-for="i in 5" 
-              :key="i" 
+            <StarIcon
+              v-for="i in 5"
+              :key="i"
               :class="{ filled: i <= Math.round(averageRating) }"
               class="star"
             />
@@ -20,7 +20,11 @@
 
     <!-- 评分分布 -->
     <div class="rating-distribution">
-      <div v-for="(count, rating) in ratingDistribution" :key="rating" class="rating-bar">
+      <div
+        v-for="(count, rating) in ratingDistribution"
+        :key="rating"
+        class="rating-bar"
+      >
         <span class="rating-label">{{ rating }}星</span>
         <div class="bar-container">
           <div class="bar" :style="{ width: getBarWidth(count) + '%' }"></div>
@@ -31,12 +35,12 @@
 
     <!-- 用户评分区域 -->
     <div v-if="authStore.isAuthenticated" class="user-rating-section">
-      <h4>{{ userRating ? '修改评价' : '添加评价' }}</h4>
+      <h4>{{ userRating ? "修改评价" : "添加评价" }}</h4>
       <div class="rating-input">
         <div class="stars-input">
-          <StarIcon 
-            v-for="i in 5" 
-            :key="i" 
+          <StarIcon
+            v-for="i in 5"
+            :key="i"
             :class="{ filled: i <= currentRating, hover: i <= hoverRating }"
             class="star clickable"
             @click="setRating(i)"
@@ -46,21 +50,25 @@
         </div>
         <span class="rating-text">{{ getRatingText(currentRating) }}</span>
       </div>
-      
-      <textarea 
-        v-model="reviewText" 
+
+      <textarea
+        v-model="reviewText"
         placeholder="分享您的使用体验（可选）"
         class="review-input"
         rows="3"
       ></textarea>
-      
+
       <div class="rating-actions">
         <label class="anonymous-checkbox">
-          <input type="checkbox" v-model="isAnonymous" />
+          <input v-model="isAnonymous" type="checkbox" />
           匿名评价
         </label>
-        <button @click="submitRating" :disabled="!currentRating || submitting" class="submit-button">
-          {{ submitting ? '提交中...' : (userRating ? '更新评价' : '提交评价') }}
+        <button
+          :disabled="!currentRating || submitting"
+          class="submit-button"
+          @click="submitRating"
+        >
+          {{ submitting ? "提交中..." : userRating ? "更新评价" : "提交评价" }}
         </button>
       </div>
     </div>
@@ -68,7 +76,9 @@
     <!-- 登录提示 -->
     <div v-else class="login-prompt">
       <p>登录后可以评价工具</p>
-      <button @click="$router.push('/auth/login')" class="login-button">立即登录</button>
+      <button class="login-button" @click="$router.push('/auth/login')">
+        立即登录
+      </button>
     </div>
 
     <!-- 评价列表 -->
@@ -82,12 +92,16 @@
           <div class="review-header">
             <div class="reviewer-info">
               <span class="reviewer-name">
-                {{ review.is_anonymous ? '匿名用户' : (review.user_profiles?.username || '用户') }}
+                {{
+                  review.is_anonymous
+                    ? "匿名用户"
+                    : review.user_profiles?.username || "用户"
+                }}
               </span>
               <div class="review-rating">
-                <StarIcon 
-                  v-for="i in 5" 
-                  :key="i" 
+                <StarIcon
+                  v-for="i in 5"
+                  :key="i"
                   :class="{ filled: i <= review.rating }"
                   class="star small"
                 />
@@ -103,149 +117,148 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { StarIcon } from 'lucide-vue-next'
-import { useAuthStore } from '@/stores/auth'
-import { supabase } from '@/lib/supabase'
+import { ref, computed, onMounted } from "vue";
+import { StarIcon } from "lucide-vue-next";
+import { useAuthStore } from "@/stores/auth";
+import { supabase } from "@/lib/supabase";
 
 interface Props {
-  toolId: string
+  toolId: string;
 }
 
-const props = defineProps<Props>()
-const authStore = useAuthStore()
+const props = defineProps<Props>();
+const authStore = useAuthStore();
 
-const ratings = ref([])
-const reviews = ref([])
-const userRating = ref(null)
-const currentRating = ref(0)
-const hoverRating = ref(0)
-const reviewText = ref('')
-const isAnonymous = ref(false)
-const submitting = ref(false)
+const ratings = ref([]);
+const reviews = ref([]);
+const userRating = ref(null);
+const currentRating = ref(0);
+const hoverRating = ref(0);
+const reviewText = ref("");
+const isAnonymous = ref(false);
+const submitting = ref(false);
 
 const averageRating = computed(() => {
-  if (ratings.value.length === 0) return 0
-  const sum = ratings.value.reduce((acc, rating) => acc + rating.rating, 0)
-  return sum / ratings.value.length
-})
+  if (ratings.value.length === 0) return 0;
+  const sum = ratings.value.reduce((acc, rating) => acc + rating.rating, 0);
+  return sum / ratings.value.length;
+});
 
-const totalRatings = computed(() => ratings.value.length)
+const totalRatings = computed(() => ratings.value.length);
 
 const ratingDistribution = computed(() => {
-  const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
-  ratings.value.forEach(rating => {
-    distribution[rating.rating]++
-  })
-  return distribution
-})
+  const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  ratings.value.forEach((rating) => {
+    distribution[rating.rating]++;
+  });
+  return distribution;
+});
 
 onMounted(async () => {
-  await loadRatings()
-  await loadUserRating()
-})
+  await loadRatings();
+  await loadUserRating();
+});
 
 const loadRatings = async () => {
   try {
     const { data, error } = await supabase
-      .from('tool_ratings')
-      .select(`
+      .from("tool_ratings")
+      .select(
+        `
         *,
         user_profiles (username)
-      `)
-      .eq('tool_id', props.toolId)
-      .order('created_at', { ascending: false })
+      `,
+      )
+      .eq("tool_id", props.toolId)
+      .order("created_at", { ascending: false });
 
-    if (error) throw error
-    
-    ratings.value = data || []
-    reviews.value = data?.filter(r => r.review) || []
+    if (error) throw error;
+
+    ratings.value = data || [];
+    reviews.value = data?.filter((r) => r.review) || [];
   } catch (error) {
-    console.error('加载评分失败:', error)
+    console.error("加载评分失败:", error);
   }
-}
+};
 
 const loadUserRating = async () => {
-  if (!authStore.user) return
-  
+  if (!authStore.user) return;
+
   try {
     const { data, error } = await supabase
-      .from('tool_ratings')
-      .select('*')
-      .eq('tool_id', props.toolId)
-      .eq('user_id', authStore.user.id)
-      .single()
+      .from("tool_ratings")
+      .select("*")
+      .eq("tool_id", props.toolId)
+      .eq("user_id", authStore.user.id)
+      .single();
 
     if (data) {
-      userRating.value = data
-      currentRating.value = data.rating
-      reviewText.value = data.review || ''
-      isAnonymous.value = data.is_anonymous
+      userRating.value = data;
+      currentRating.value = data.rating;
+      reviewText.value = data.review || "";
+      isAnonymous.value = data.is_anonymous;
     }
   } catch (error) {
     // 用户还没有评分，这是正常的
   }
-}
+};
 
 const setRating = (rating: number) => {
-  currentRating.value = rating
-}
+  currentRating.value = rating;
+};
 
 const getRatingText = (rating: number) => {
-  const texts = ['', '很差', '一般', '不错', '很好', '极佳']
-  return texts[rating] || ''
-}
+  const texts = ["", "很差", "一般", "不错", "很好", "极佳"];
+  return texts[rating] || "";
+};
 
 const getBarWidth = (count: number) => {
-  if (totalRatings.value === 0) return 0
-  return (count / totalRatings.value) * 100
-}
+  if (totalRatings.value === 0) return 0;
+  return (count / totalRatings.value) * 100;
+};
 
 const submitRating = async () => {
-  if (!currentRating.value || !authStore.user) return
-  
+  if (!currentRating.value || !authStore.user) return;
+
   try {
-    submitting.value = true
-    
+    submitting.value = true;
+
     const ratingData = {
       tool_id: props.toolId,
       user_id: authStore.user.id,
       rating: currentRating.value,
       review: reviewText.value.trim() || null,
-      is_anonymous: isAnonymous.value
-    }
+      is_anonymous: isAnonymous.value,
+    };
 
     if (userRating.value) {
       // 更新现有评分
       const { error } = await supabase
-        .from('tool_ratings')
+        .from("tool_ratings")
         .update(ratingData)
-        .eq('id', userRating.value.id)
-      
-      if (error) throw error
+        .eq("id", userRating.value.id);
+
+      if (error) throw error;
     } else {
       // 创建新评分
-      const { error } = await supabase
-        .from('tool_ratings')
-        .insert(ratingData)
-      
-      if (error) throw error
+      const { error } = await supabase.from("tool_ratings").insert(ratingData);
+
+      if (error) throw error;
     }
 
-    await loadRatings()
-    await loadUserRating()
-    
+    await loadRatings();
+    await loadUserRating();
   } catch (error) {
-    console.error('提交评分失败:', error)
-    alert('提交失败，请重试')
+    console.error("提交评分失败:", error);
+    alert("提交失败，请重试");
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
-}
+};
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('zh-CN')
-}
+  return new Date(dateString).toLocaleDateString("zh-CN");
+};
 </script>
 
 <style scoped>

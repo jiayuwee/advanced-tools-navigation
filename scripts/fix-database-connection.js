@@ -26,7 +26,7 @@ console.log("=".repeat(50));
 console.log("📋 检查环境配置...");
 console.log(`Supabase URL: ${supabaseUrl}`);
 console.log(
-  `API Key: ${supabaseKey ? supabaseKey.substring(0, 20) + "..." : "未设置"}`
+  `API Key: ${supabaseKey ? supabaseKey.substring(0, 20) + "..." : "未设置"}`,
 );
 
 if (!supabaseUrl || !supabaseKey) {

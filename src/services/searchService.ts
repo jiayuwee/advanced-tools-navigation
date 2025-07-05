@@ -137,7 +137,7 @@ class SearchService {
         categories!inner(name, icon, color),
         tool_tags!inner(tags!inner(name, color))
       `,
-      { count: "exact" }
+      { count: "exact" },
     );
 
     // 全文搜索
@@ -212,7 +212,7 @@ class SearchService {
         *,
         product_categories!inner(name, icon, color)
       `,
-      { count: "exact" }
+      { count: "exact" },
     );
 
     // 全文搜索
@@ -261,7 +261,7 @@ class SearchService {
     const facets = await this.generateProductsFacets(
       query,
       category,
-      priceRange
+      priceRange,
     );
 
     return {
@@ -346,7 +346,7 @@ class SearchService {
   private async generateToolsFacets(
     query?: string,
     selectedCategory?: string,
-    selectedTags?: string[]
+    selectedTags?: string[],
   ): Promise<SearchFacets> {
     // 获取分类分面
     const categoriesQuery = supabase
@@ -356,7 +356,7 @@ class SearchService {
         id, name,
         tools!inner(id)
       `,
-        { count: "exact" }
+        { count: "exact" },
       )
       .eq("is_active", true);
 
@@ -380,7 +380,7 @@ class SearchService {
         id, name,
         tool_tags!inner(tools!inner(id))
       `,
-      { count: "exact" }
+      { count: "exact" },
     );
 
     if (query) {
@@ -408,7 +408,7 @@ class SearchService {
   private async generateProductsFacets(
     query?: string,
     selectedCategory?: string,
-    selectedPriceRange?: [number, number]
+    selectedPriceRange?: [number, number],
   ): Promise<SearchFacets> {
     // 获取分类分面
     const categoriesQuery = supabase.from(TABLES.PRODUCT_CATEGORIES).select(
@@ -416,7 +416,7 @@ class SearchService {
         id, name,
         products!inner(id)
       `,
-      { count: "exact" }
+      { count: "exact" },
     );
 
     if (query) {
@@ -453,7 +453,7 @@ class SearchService {
   // 生成搜索建议
   private async generateSuggestions(
     query: string,
-    type: string
+    type: string,
   ): Promise<string[]> {
     if (!query || query.length < 2) return [];
 
@@ -536,7 +536,7 @@ class SearchService {
     try {
       localStorage.setItem(
         "search_history",
-        JSON.stringify(this.searchHistory)
+        JSON.stringify(this.searchHistory),
       );
     } catch (error) {
       console.error("保存搜索历史失败:", error);
@@ -572,7 +572,7 @@ class SearchService {
 
     // 避免重复
     this.searchHistory = this.searchHistory.filter(
-      (item) => item.query !== query || item.type !== type
+      (item) => item.query !== query || item.type !== type,
     );
 
     this.searchHistory.unshift(historyItem);

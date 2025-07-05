@@ -70,7 +70,7 @@ class NotificationService {
       type?: string;
       unread_only?: boolean;
       important_only?: boolean;
-    } = {}
+    } = {},
   ): Promise<{
     notifications: Notification[];
     total: number;
@@ -105,7 +105,7 @@ class NotificationService {
 
       // 过滤过期通知
       query = query.or(
-        "expires_at.is.null,expires_at.gt." + new Date().toISOString()
+        "expires_at.is.null,expires_at.gt." + new Date().toISOString(),
       );
 
       // 排序和分页
@@ -171,7 +171,7 @@ class NotificationService {
 
   // 创建通知
   async createNotification(
-    notificationData: CreateNotificationData
+    notificationData: CreateNotificationData,
   ): Promise<Notification | null> {
     try {
       const { data, error } = await supabase
@@ -200,7 +200,7 @@ class NotificationService {
 
   // 批量创建通知
   async createBulkNotifications(
-    notifications: CreateNotificationData[]
+    notifications: CreateNotificationData[],
   ): Promise<Notification[]> {
     try {
       const notificationsToCreate = notifications.map((notification) => ({
@@ -276,7 +276,7 @@ class NotificationService {
   // 删除通知
   async deleteNotification(
     notificationId: string,
-    userId: string
+    userId: string,
   ): Promise<void> {
     try {
       const { error } = await supabase
@@ -309,7 +309,7 @@ class NotificationService {
 
   // 获取用户通知偏好
   async getUserPreferences(
-    userId: string
+    userId: string,
   ): Promise<NotificationPreferences | null> {
     try {
       const { data, error } = await supabase
@@ -337,7 +337,7 @@ class NotificationService {
 
   // 创建默认通知偏好
   async createDefaultPreferences(
-    userId: string
+    userId: string,
   ): Promise<NotificationPreferences | null> {
     try {
       const defaultPreferences = {
@@ -374,7 +374,7 @@ class NotificationService {
   // 更新通知偏好
   async updatePreferences(
     userId: string,
-    preferences: Partial<NotificationPreferences>
+    preferences: Partial<NotificationPreferences>,
   ): Promise<NotificationPreferences> {
     try {
       const { data, error } = await supabase
@@ -409,7 +409,7 @@ class NotificationService {
   // 订阅实时通知
   subscribeToNotifications(
     userId: string,
-    callback: (notification: Notification) => void
+    callback: (notification: Notification) => void,
   ): () => void {
     const channel = supabase
       .channel(`notifications:${userId}`)
@@ -423,7 +423,7 @@ class NotificationService {
         },
         (payload) => {
           callback(payload.new as Notification);
-        }
+        },
       )
       .subscribe();
 
@@ -453,7 +453,7 @@ class NotificationService {
   // 显示浏览器通知
   async showBrowserNotification(
     title: string,
-    options: NotificationOptions = {}
+    options: NotificationOptions = {},
   ): Promise<void> {
     try {
       const permission = await this.requestNotificationPermission();
@@ -486,7 +486,7 @@ class NotificationService {
       action_text?: string;
       is_important?: boolean;
       expires_at?: string;
-    } = {}
+    } = {},
   ): Promise<void> {
     try {
       const notifications = userIds.map((userId) => ({

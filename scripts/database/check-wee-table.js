@@ -83,7 +83,7 @@ async function checkWeeTable() {
         WHERE table_name = 'wee' AND table_schema = 'public'
         ORDER BY ordinal_position;
       `,
-      }
+      },
     );
 
     if (columnsError) {
@@ -93,7 +93,7 @@ async function checkWeeTable() {
       if (columns && columns.length > 0) {
         columns.forEach((col) => {
           console.log(
-            `   - ${col.column_name}: ${col.data_type} ${col.is_nullable === "NO" ? "NOT NULL" : "NULL"} ${col.column_default ? `DEFAULT ${col.column_default}` : ""}`
+            `   - ${col.column_name}: ${col.data_type} ${col.is_nullable === "NO" ? "NOT NULL" : "NULL"} ${col.column_default ? `DEFAULT ${col.column_default}` : ""}`,
           );
         });
       }
@@ -104,7 +104,7 @@ async function checkWeeTable() {
       "exec_sql",
       {
         sql: "SELECT COUNT(*) as count FROM public.wee;",
-      }
+      },
     );
 
     if (countError) {
@@ -119,7 +119,7 @@ async function checkWeeTable() {
         "exec_sql",
         {
           sql: "SELECT * FROM public.wee LIMIT 5;",
-        }
+        },
       );
 
       if (!sampleError && sampleData && sampleData.length > 0) {
@@ -147,14 +147,14 @@ async function checkWeeTable() {
         WHERE tc.constraint_type = 'FOREIGN KEY'
           AND (tc.table_name = 'wee' OR ccu.table_name = 'wee');
       `,
-      }
+      },
     );
 
     if (!depError && dependencies && dependencies.length > 0) {
       console.log("🔗 外键依赖:");
       dependencies.forEach((dep) => {
         console.log(
-          `   - ${dep.table_name}.${dep.column_name} -> ${dep.foreign_table_name}.${dep.foreign_column_name}`
+          `   - ${dep.table_name}.${dep.column_name} -> ${dep.foreign_table_name}.${dep.foreign_column_name}`,
         );
       });
     } else {

@@ -2,7 +2,7 @@
   <div class="tool-detail-view">
     <div class="container">
       <!-- 返回按钮 -->
-      <button @click="goBack" class="back-button">
+      <button class="back-button" @click="goBack">
         <ArrowLeftIcon class="icon" />
         返回工具列表
       </button>
@@ -21,14 +21,14 @@
             </div>
           </div>
           <div class="tool-actions">
-            <button @click="openTool" class="primary-button">
+            <button class="primary-button" @click="openTool">
               <ExternalLinkIcon class="icon" />
               访问工具
             </button>
             <button
-              @click="toggleFavorite"
               class="favorite-button"
               :class="{ favorited: isFavorited }"
+              @click="toggleFavorite"
             >
               <StarIcon class="icon" />
               {{ isFavorited ? "已收藏" : "收藏" }}
@@ -126,7 +126,7 @@
       <!-- 错误状态 -->
       <div v-else class="error-state">
         <p>工具不存在或加载失败</p>
-        <button @click="goBack" class="secondary-button">返回</button>
+        <button class="secondary-button" @click="goBack">返回</button>
       </div>
     </div>
   </div>
@@ -179,7 +179,7 @@ const loadToolDetail = async () => {
       relatedTools.value = toolsStore.tools
         .filter(
           (t) =>
-            t.category_id === tool.value.category_id && t.id !== tool.value.id
+            t.category_id === tool.value.category_id && t.id !== tool.value.id,
         )
         .slice(0, 4);
     }

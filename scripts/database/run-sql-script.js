@@ -53,7 +53,7 @@ async function runSqlScript(scriptPath) {
       try {
         console.log(`\n⏳ 执行语句 ${i + 1}/${statements.length}...`);
         console.log(
-          `📝 SQL: ${statement.substring(0, 100)}${statement.length > 100 ? "..." : ""}`
+          `📝 SQL: ${statement.substring(0, 100)}${statement.length > 100 ? "..." : ""}`,
         );
 
         const { data, error } = await supabase.rpc("exec_sql", {

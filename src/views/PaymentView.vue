@@ -216,7 +216,7 @@ const paymentMethods = [
 const subtotal = computed(() => {
   return orderItems.value.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
 });
 
@@ -282,7 +282,7 @@ const handlePayment = async () => {
 
       const newOrder = await OrderService.createOrder(
         orderData,
-        authStore.user.id
+        authStore.user.id,
       );
       orderId = newOrder.id;
     }

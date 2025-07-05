@@ -3,9 +3,9 @@
     <div class="modal-content" @click.stop>
       <div class="modal-header">
         <h3>回复评价</h3>
-        <button @click="$emit('close')" class="close-btn">×</button>
+        <button class="close-btn" @click="$emit('close')">×</button>
       </div>
-      
+
       <div class="original-review">
         <h4>原评价</h4>
         <div class="review-info">
@@ -14,8 +14,8 @@
         </div>
         <p class="review-content">{{ review.content }}</p>
       </div>
-      
-      <form @submit.prevent="submitReply" class="reply-form">
+
+      <form class="reply-form" @submit.prevent="submitReply">
         <div class="form-group">
           <label for="reply">回复内容</label>
           <textarea
@@ -26,13 +26,13 @@
             required
           ></textarea>
         </div>
-        
+
         <div class="form-actions">
-          <button type="button" @click="$emit('close')" class="btn-cancel">
+          <button type="button" class="btn-cancel" @click="$emit('close')">
             取消
           </button>
           <button type="submit" :disabled="submitting" class="btn-submit">
-            {{ submitting ? '提交中...' : '提交回复' }}
+            {{ submitting ? "提交中..." : "提交回复" }}
           </button>
         </div>
       </form>
@@ -41,36 +41,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { reviewService } from '@/services/reviewService'
-import StarRating from '@/components/ui/StarRating.vue'
-import type { Review } from '@/services/reviewService'
+import { ref } from "vue";
+import { reviewService } from "@/services/reviewService";
+import StarRating from "@/components/ui/StarRating.vue";
+import type { Review } from "@/services/reviewService";
 
 interface Props {
-  review: Review
+  review: Review;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 const emit = defineEmits<{
-  close: []
-  success: []
-}>()
+  close: [];
+  success: [];
+}>();
 
-const submitting = ref(false)
-const replyContent = ref('')
+const submitting = ref(false);
+const replyContent = ref("");
 
 const submitReply = async () => {
   try {
-    submitting.value = true
-    await reviewService.replyToReview(props.review.id, replyContent.value)
-    emit('success')
-    emit('close')
+    submitting.value = true;
+    await reviewService.replyToReview(props.review.id, replyContent.value);
+    emit("success");
+    emit("close");
   } catch (error) {
-    console.error('提交回复失败:', error)
+    console.error("提交回复失败:", error);
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
-}
+};
 </script>
 
 <style scoped>

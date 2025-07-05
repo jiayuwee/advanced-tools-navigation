@@ -312,7 +312,7 @@ watch(
   () => {
     loadFormData();
   },
-  { deep: true }
+  { deep: true },
 );
 </script>
 

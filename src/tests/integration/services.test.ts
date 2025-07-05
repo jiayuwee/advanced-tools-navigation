@@ -27,7 +27,7 @@ vi.mock("@/lib/supabase", () => ({
       insert: vi.fn(() => ({
         select: vi.fn(() => ({
           single: vi.fn(() =>
-            Promise.resolve({ data: { id: "test-id" }, error: null })
+            Promise.resolve({ data: { id: "test-id" }, error: null }),
           ),
         })),
       })),
@@ -303,7 +303,7 @@ describe("服务集成测试", () => {
       const id = "record-123";
 
       await expect(
-        databaseService.delete(mockTable, id)
+        databaseService.delete(mockTable, id),
       ).resolves.not.toThrow();
     });
 
@@ -374,7 +374,7 @@ describe("服务集成测试", () => {
         "notification",
         "create_notification",
         duration,
-        "ms"
+        "ms",
       );
 
       expect(duration).toBeGreaterThan(0);

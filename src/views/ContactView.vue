@@ -156,7 +156,7 @@
           <h2 class="text-2xl font-bold text-gray-900 mb-8">快速联系</h2>
 
           <div class="bg-white rounded-lg shadow-md p-8">
-            <form @submit.prevent="submitContact" class="space-y-6">
+            <form class="space-y-6" @submit.prevent="submitContact">
               <!-- 姓名 -->
               <div>
                 <label

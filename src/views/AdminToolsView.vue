@@ -110,22 +110,22 @@
           <div class="col-actions">
             <button
               class="action-btn edit"
-              @click="editTool(tool)"
               title="编辑"
+              @click="editTool(tool)"
             >
               <Edit class="icon" />
             </button>
             <button
               class="action-btn delete"
-              @click="deleteTool(tool)"
               title="删除"
+              @click="deleteTool(tool)"
             >
               <TrashIcon class="icon" />
             </button>
             <button
               class="action-btn toggle"
-              @click="toggleToolStatus(tool)"
               :title="tool.status === 'active' ? '停用' : '启用'"
+              @click="toggleToolStatus(tool)"
             >
               <EyeIcon v-if="tool.status === 'active'" class="icon" />
               <EyeOffIcon v-else class="icon" />
@@ -138,8 +138,8 @@
       <div v-if="totalPages > 1" class="pagination">
         <button
           :disabled="currentPage === 1"
-          @click="currentPage--"
           class="page-btn"
+          @click="currentPage--"
         >
           上一页
         </button>
@@ -148,8 +148,8 @@
         </span>
         <button
           :disabled="currentPage === totalPages"
-          @click="currentPage++"
           class="page-btn"
+          @click="currentPage++"
         >
           下一页
         </button>
@@ -170,7 +170,7 @@
           </button>
         </div>
 
-        <form @submit.prevent="saveTool" class="tool-form">
+        <form class="tool-form" @submit.prevent="saveTool">
           <div class="form-grid">
             <div class="form-group">
               <label>工具名称 *</label>
@@ -238,7 +238,7 @@
           </div>
 
           <div class="form-actions">
-            <button type="button" @click="closeModals" class="cancel-btn">
+            <button type="button" class="cancel-btn" @click="closeModals">
               取消
             </button>
             <button type="submit" :disabled="saving" class="save-btn">
@@ -307,7 +307,7 @@ const filteredTools = computed(() => {
     tools = tools.filter(
       (tool) =>
         tool.name.toLowerCase().includes(query) ||
-        tool.description.toLowerCase().includes(query)
+        tool.description.toLowerCase().includes(query),
     );
   }
 
@@ -325,15 +325,15 @@ const filteredTools = computed(() => {
 });
 
 const featuredCount = computed(
-  () => toolsStore.tools.filter((tool) => tool.is_featured).length
+  () => toolsStore.tools.filter((tool) => tool.is_featured).length,
 );
 
 const activeToolsCount = computed(
-  () => toolsStore.tools.filter((tool) => tool.status === "active").length
+  () => toolsStore.tools.filter((tool) => tool.status === "active").length,
 );
 
 const totalPages = computed(() =>
-  Math.ceil(filteredTools.value.length / pageSize.value)
+  Math.ceil(filteredTools.value.length / pageSize.value),
 );
 
 const paginatedTools = computed(() => {
