@@ -62,7 +62,6 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "rollup": "^4.44.0",
     "@types/node": "^20.10.0",
     "@vitejs/plugin-vue": "^5.0.0",
     "@vitest/ui": "^0.34.3",
@@ -79,7 +78,6 @@
     "postcss": "^8.4.32",
     "prettier": "^3.1.0",
     "rimraf": "^5.0.10",
-    "rollup": "^4.44.0",
     "tailwindcss": "^3.4.0",
     "terser": "^5.43.1",
     "ts-node": "10.9.2",
