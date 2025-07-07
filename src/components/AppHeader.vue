@@ -54,8 +54,8 @@
         <div v-if="authStore.isAuthenticated" class="user-menu">
           <button class="user-avatar" @click="toggleUserMenu">
             <img
-              v-if="authStore.user?.avatarUrl"
-              :src="authStore.user.avatarUrl"
+              v-if="authStore.user?.avatar_url"
+              :src="authStore.user.avatar_url"
               :alt="authStore.user.username"
               class="avatar-image"
             />

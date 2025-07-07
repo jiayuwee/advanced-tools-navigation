@@ -1,0 +1,87 @@
+name: Build Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-verification:
+    runs-on: ubuntu-latest
+    name: Build Verification
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        timeout-minutes: 2
+
+      - name: Setup Node.js
+        run: |
+          echo "🔧 设置 Node.js 环境..."
+          node --version
+          npm --version
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        timeout-minutes: 2
+
+      - name: Install dependencies
+        run: |
+          echo "📦 安装依赖..."
+          echo "检查 package.json..."
+          if [ -f "package.json" ]; then
+            echo "package.json 存在，开始安装依赖..."
+            echo "清理npm缓存..."
+            npm cache clean --force
+            echo "安装依赖..."
+            npm install --prefer-offline --no-audit
+            echo "✅ 依赖安装完成"
+          else
+            echo "❌ package.json 不存在"
+            exit 1
+          fi
+        timeout-minutes: 5
+
+      - name: Build project
+        run: |
+          echo "🔨 开始构建项目..."
+          echo "检查环境变量..."
+          echo "VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:0:20}..."
+          echo "VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:+已设置}"
+          echo "⏱️ 构建开始时间: $(date)"
+          npm run build
+          echo "✅ 构建完成"
+          echo "⏱️ 构建结束时间: $(date)"
+        timeout-minutes: 10
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          NODE_ENV: production
+
+      - name: Verify build output
+        run: |
+          echo "🔍 验证构建输出..."
+          ls -la dist/
+          if [ -f "dist/index.html" ]; then
+            echo "✅ 构建成功 - index.html 存在"
+            echo "📊 构建统计:"
+            du -sh dist/
+            echo "📁 主要文件:"
+            ls -lh dist/assets/ | head -10
+          else
+            echo "❌ 构建失败 - index.html 不存在"
+            exit 1
+          fi
+
+      - name: Deployment notification
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          echo "🚀 代码已推送到 main 分支"
+          echo "📦 Netlify 将自动检测并部署此次构建" 
+          echo "⏱️ 部署通常需要 1-3 分钟"
+          echo "🌐 网站地址: https://ramusi.cn"
+          echo "✅ 构建验证通过，等待 Netlify 部署..."
