@@ -68,7 +68,13 @@ export function useRealtime(options: RealtimeOptions) {
   // 取消订阅
   const unsubscribe = () => {
     if (channel.value) {
-      databaseService.unsubscribe(channel.value);
+      // 传递实际的RealtimeChannel对象，而不是包装的channel.value
+      const actualChannel = channel.value as any;
+      if (actualChannel && actualChannel.unsubscribe) {
+        actualChannel.unsubscribe();
+      } else {
+        databaseService.unsubscribe(actualChannel);
+      }
       channel.value = null;
       isConnected.value = false;
     }
@@ -118,16 +124,16 @@ export function useRealtimeList<T>(
 
   // 添加项目
   const addItem = (item: T) => {
-    data.value.unshift(item);
+    (data.value as T[]).unshift(item);
   };
 
   // 更新项目
   const updateItem = (updatedItem: T) => {
-    const index = data.value.findIndex(
+    const index = (data.value as T[]).findIndex(
       (item) => (item as any)[keyField] === (updatedItem as any)[keyField],
     );
     if (index !== -1) {
-      data.value[index] = updatedItem;
+      (data.value as T[])[index] = updatedItem;
     }
   };
 
@@ -341,6 +347,7 @@ export function useRealtimeConnection() {
   // 检查连接质量
   const checkConnection = async () => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const start = Date.now();
       const { latency } = await databaseService.healthCheck();
       lastPing.value = latency;

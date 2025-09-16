@@ -1,21 +1,40 @@
-name: Health Check
+name: 🏥 Website Health Monitor
 
 on:
   push:
     branches: [main]
   schedule:
     - cron: "0 */6 * * *" # 每6小时运行一次
+    - cron: "0 8 * * 1" # 每周一早上8点运行完整检查
   workflow_dispatch:
+    inputs:
+      check_type:
+        description: '检查类型'
+        required: false
+        default: 'basic'
+        type: choice
+        options:
+        - 'basic'
+        - 'comprehensive'
+
+env:
+  WEBSITE_URL: 'https://ramusi.cn'
+  TIMEOUT: 30
 
 jobs:
-  health-check:
+  # 基本健康检查
+  basic-health-check:
     runs-on: ubuntu-latest
-    name: Website Health Check
+    name: 🔍 Basic Health Check
     steps:
-      - name: Check website accessibility
+      - name: 🌐 Check website accessibility
         run: |
           echo "🔍 检查网站可访问性..."
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://ramusi.cn)
+          echo "目标URL: ${{ env.WEBSITE_URL }}"
+          
+          # 检查HTTP状态码
+          response=$(curl -s -o /dev/null -w "%{http_code}" --max-time ${{ env.TIMEOUT }} ${{ env.WEBSITE_URL }})
+          
           if [ "$response" = "200" ]; then
             echo "✅ 网站正常访问 (HTTP $response)"
           else
@@ -23,19 +42,162 @@ jobs:
             exit 1
           fi
 
-      - name: Check basic functionality
+      - name: 📄 Check page content
         run: |
-          echo "🔍 检查基本功能..."
-          content=$(curl -s https://ramusi.cn)
+          echo "🔍 检查页面内容..."
+          content=$(curl -s --max-time ${{ env.TIMEOUT }} ${{ env.WEBSITE_URL }})
+          
+          # 检查关键内容
           if echo "$content" | grep -q "Ramusi"; then
-            echo "✅ 网站内容正常"
+            echo "✅ 网站标题正常"
           else
-            echo "❌ 网站内容异常"
+            echo "❌ 网站标题缺失"
+            exit 1
+          fi
+          
+          # 检查是否有JavaScript错误（基本检查）
+          if echo "$content" | grep -q "<!DOCTYPE html>"; then
+            echo "✅ HTML结构正常"
+          else
+            echo "❌ HTML结构异常"
             exit 1
           fi
 
-      - name: Health check summary
+      - name: ⚡ Performance check
         run: |
-          echo "📊 健康检查完成"
-          echo "✅ 网站可访问性: 正常"
-          echo "✅ 基本功能: 正常"
+          echo "⚡ 检查网站性能..."
+          
+          # 测量响应时间
+          start_time=$(date +%s%N)
+          curl -s --max-time ${{ env.TIMEOUT }} ${{ env.WEBSITE_URL }} > /dev/null
+          end_time=$(date +%s%N)
+          
+          duration=$(( (end_time - start_time) / 1000000 )) # 转换为毫秒
+          
+          echo "响应时间: ${duration}ms"
+          
+          if [ $duration -lt 3000 ]; then
+            echo "✅ 响应时间正常 (${duration}ms < 3000ms)"
+          elif [ $duration -lt 5000 ]; then
+            echo "⚠️ 响应时间较慢 (${duration}ms)"
+          else
+            echo "❌ 响应时间过慢 (${duration}ms)"
+            exit 1
+          fi
+
+  # 全面健康检查（周期性或手动触发）
+  comprehensive-health-check:
+    runs-on: ubuntu-latest
+    name: 🔬 Comprehensive Health Check
+    if: github.event_name == 'schedule' && github.event.schedule == '0 8 * * 1' || github.event.inputs.check_type == 'comprehensive'
+    steps:
+      - name: 🌐 Multi-endpoint check
+        run: |
+          echo "🔍 检查多个端点..."
+          
+          # 定义要检查的端点
+          endpoints=(
+            "${{ env.WEBSITE_URL }}"
+            "${{ env.WEBSITE_URL }}/tools"
+            "${{ env.WEBSITE_URL }}/products"
+          )
+          
+          for endpoint in "${endpoints[@]}"; do
+            echo "检查: $endpoint"
+            response=$(curl -s -o /dev/null -w "%{http_code}" --max-time ${{ env.TIMEOUT }} "$endpoint")
+            
+            if [ "$response" = "200" ]; then
+              echo "✅ $endpoint 正常 (HTTP $response)"
+            else
+              echo "❌ $endpoint 异常 (HTTP $response)"
+              exit 1
+            fi
+          done
+
+      - name: 🔒 Security headers check
+        run: |
+          echo "🔒 检查安全头..."
+          
+          headers=$(curl -s -I --max-time ${{ env.TIMEOUT }} ${{ env.WEBSITE_URL }})
+          
+          # 检查重要的安全头
+          if echo "$headers" | grep -qi "x-frame-options\|content-security-policy"; then
+            echo "✅ 发现安全头配置"
+          else
+            echo "⚠️ 未发现明显的安全头配置"
+          fi
+          
+          # 检查HTTPS重定向
+          http_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time ${{ env.TIMEOUT }} "http://ramusi.cn" || echo "000")
+          if [ "$http_response" = "301" ] || [ "$http_response" = "302" ]; then
+            echo "✅ HTTP重定向到HTTPS正常"
+          else
+            echo "⚠️ HTTP重定向状态: $http_response"
+          fi
+
+      - name: 📱 Mobile responsiveness check
+        run: |
+          echo "📱 检查移动端响应..."
+          
+          # 模拟移动端User-Agent
+          mobile_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time ${{ env.TIMEOUT }} \
+            -H "User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15" \
+            ${{ env.WEBSITE_URL }})
+          
+          if [ "$mobile_response" = "200" ]; then
+            echo "✅ 移动端访问正常 (HTTP $mobile_response)"
+          else
+            echo "❌ 移动端访问异常 (HTTP $mobile_response)"
+            exit 1
+          fi
+
+  # 健康检查总结
+  health-summary:
+    runs-on: ubuntu-latest
+    name: 📊 Health Check Summary
+    needs: [basic-health-check]
+    if: always()
+    steps:
+      - name: 📊 Generate summary
+        run: |
+          echo "📊 健康检查总结报告"
+          echo "==========================================="
+          echo "检查时间: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "目标网站: ${{ env.WEBSITE_URL }}"
+          echo ""
+          
+          # 检查基本健康检查结果
+          if [ "${{ needs.basic-health-check.result }}" = "success" ]; then
+            echo "✅ 基本健康检查: 通过"
+            echo "  - ✅ 网站可访问性: 正常"
+            echo "  - ✅ 页面内容: 正常"
+            echo "  - ✅ 性能检查: 正常"
+          else
+            echo "❌ 基本健康检查: 失败"
+            echo "  详细信息请查看上方日志"
+          fi
+          
+          echo ""
+          echo "📈 监控建议:"
+          echo "  - 定期检查网站可用性"
+          echo "  - 监控响应时间变化"
+          echo "  - 关注错误日志"
+          echo "  - 备份重要数据"
+          
+          echo ""
+          echo "🔗 相关链接:"
+          echo "  - 网站: ${{ env.WEBSITE_URL }}"
+          echo "  - GitHub: https://github.com/jiayuwee/advanced-tools-navigation"
+          echo "  - 工作流: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: 🚨 Alert on failure
+        if: needs.basic-health-check.result == 'failure'
+        run: |
+          echo "🚨 健康检查失败告警"
+          echo "==========================================="
+          echo "时间: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "网站: ${{ env.WEBSITE_URL }}"
+          echo "状态: 异常"
+          echo "工作流: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo ""
+          echo "请立即检查网站状态并采取相应措施。"

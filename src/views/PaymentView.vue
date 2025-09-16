@@ -275,9 +275,9 @@ const handlePayment = async () => {
       }
 
       const orderData = {
-        productId,
+        product_id: productId,
         quantity: 1,
-        billingAddress: billingInfo.value,
+        billing_address: billingInfo.value,
       };
 
       const newOrder = await OrderService.createOrder(
@@ -292,7 +292,7 @@ const handlePayment = async () => {
 
     // 处理支付成功
     await OrderService.processPayment({
-      orderId,
+      order_id: orderId,
       paymentMethod: selectedMethod.value!,
       paymentId: `PAY_${Date.now()}`, // 模拟支付ID
       amount: finalAmount.value,

@@ -180,6 +180,7 @@ import {
   SearchIcon,
 } from "lucide-vue-next";
 import { useToolsStore } from "@/stores/tools";
+import { useCategoriesStore } from "@/stores/categories";
 import type { SearchFilters } from "@/composables/useAdvancedSearch";
 
 interface Props {
@@ -199,6 +200,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const toolsStore = useToolsStore();
+const categoriesStore = useCategoriesStore();
 const tagInput = ref("");
 
 const localFilters = ref<SearchFilters>({ ...props.filters });
@@ -212,7 +214,7 @@ watch(
   { deep: true },
 );
 
-const categories = computed(() => toolsStore.categories);
+const categories = computed(() => categoriesStore.categories);
 
 const popularTags = computed(() => {
   const tagCounts = new Map<string, number>();

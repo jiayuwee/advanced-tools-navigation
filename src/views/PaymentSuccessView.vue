@@ -158,9 +158,9 @@ const downloadProducts = async () => {
 
     // 下载所有产品
     for (const item of order.items) {
-      if (item.product?.downloadUrl) {
+      if (item.product?.download_url) {
         const link = document.createElement("a");
-        link.href = item.product.downloadUrl;
+        link.href = item.product.download_url;
         link.download = `${item.product.name}.zip`;
         link.target = "_blank";
         document.body.appendChild(link);

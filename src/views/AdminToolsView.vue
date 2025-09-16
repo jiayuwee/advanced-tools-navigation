@@ -366,7 +366,7 @@ const resetForm = () => {
     icon: "🔧",
     category_id: "",
     status: "active",
-    isFeatured: false,
+    is_featured: false,
   };
 };
 

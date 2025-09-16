@@ -1,70 +1,117 @@
-name: Build Verification
+name: 🔨 Build & Quality Verification
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18.19.0'
+  CACHE_VERSION: 'v1'
 
 jobs:
-  build-verification:
+  # 代码质量检查
+  code-quality:
     runs-on: ubuntu-latest
-    name: Build Verification
+    name: 📋 Code Quality Check
     steps:
-      - name: Manual checkout
-        run: |
-          echo "🔄 手动检出代码..."
-          echo "当前工作目录: $(pwd)"
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-          # 使用 curl 下载源码
-          echo "下载源码压缩包..."
-          curl -L -o source.zip "https://github.com/jiayuwee/advanced-tools-navigation/archive/${{ github.sha }}.zip"
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
 
-          # 解压源码
-          echo "解压源码..."
-          unzip -q source.zip
-
-          # 移动文件到工作目录
-          echo "移动文件到工作目录..."
-          mv advanced-tools-navigation-*/* .
-          mv advanced-tools-navigation-*/.[^.]* . 2>/dev/null || true
-
-          # 清理
-          rm -rf advanced-tools-navigation-* source.zip
-
-          echo "当前目录内容:"
-          ls -la
-
-      - name: Setup Node.js
-        run: |
-          echo "🔧 设置 Node.js 环境..."
-          node --version
-          npm --version
-
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
-          echo "检查 package.json..."
-          if [ -f "package.json" ]; then
-            echo "package.json 存在，开始安装依赖..."
-            echo "删除 node_modules 和 package-lock.json，防止 rollup 可选依赖 bug..."
-            rm -rf node_modules package-lock.json
-            echo "清理npm缓存..."
-            npm cache clean --force
-            echo "安装依赖..."
-            npm install --prefer-offline --no-audit
-            echo "✅ 依赖安装完成"
-          else
-            echo "❌ package.json 不存在"
-            exit 1
-          fi
+          npm ci --prefer-offline --no-audit
+          echo "✅ 依赖安装完成"
 
-      - name: Build project
+      - name: 🔍 ESLint Check
+        run: |
+          echo "🔍 运行 ESLint 检查..."
+          npm run lint
+          echo "✅ ESLint 检查通过"
+
+      - name: 🔧 TypeScript Type Check
+        run: |
+          echo "🔧 运行 TypeScript 类型检查..."
+          npm run type-check
+          echo "✅ TypeScript 类型检查通过"
+
+  # 测试执行
+  test:
+    runs-on: ubuntu-latest
+    name: 🧪 Run Tests
+    needs: code-quality
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 📦 Install dependencies
+        run: |
+          echo "📦 安装依赖..."
+          npm ci --prefer-offline --no-audit
+          echo "✅ 依赖安装完成"
+
+      - name: 🧪 Run unit tests
+        run: |
+          echo "🧪 运行单元测试..."
+          npm run test:run
+          echo "✅ 单元测试通过"
+
+      - name: 📊 Generate test coverage
+        run: |
+          echo "📊 生成测试覆盖率报告..."
+          npm run test:coverage
+          echo "✅ 测试覆盖率报告生成完成"
+
+  # 构建验证
+  build-verification:
+    runs-on: ubuntu-latest
+    name: 🔨 Build Verification
+    needs: [code-quality, test]
+    strategy:
+      matrix:
+        node-version: ['18.19.0', '20.x']
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 📦 Install dependencies
+        run: |
+          echo "📦 安装依赖 (Node.js ${{ matrix.node-version }})..."
+          npm ci --prefer-offline --no-audit
+          echo "✅ 依赖安装完成"
+
+      - name: 🔨 Build project
         run: |
           echo "🔨 开始构建项目..."
-          echo "检查环境变量..."
-          echo "VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:0:20}..."
-          echo "VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:+已设置}"
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
           npm run build
           echo "✅ 构建完成"
         env:
@@ -72,26 +119,70 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           NODE_ENV: production
 
-      - name: Verify build output
+      - name: 🔍 Verify build output
         run: |
           echo "🔍 验证构建输出..."
-          ls -la dist/
-          if [ -f "dist/index.html" ]; then
-            echo "✅ 构建成功 - index.html 存在"
-            echo "📊 构建统计:"
-            du -sh dist/
-            echo "📁 主要文件:"
-            ls -lh dist/assets/ | head -10
-          else
-            echo "❌ 构建失败 - index.html 不存在"
+          if [ ! -d "dist" ]; then
+            echo "❌ dist 目录不存在"
             exit 1
           fi
+          
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ index.html 不存在"
+            exit 1
+          fi
+          
+          echo "✅ 构建成功验证"
+          echo "📊 构建统计:"
+          du -sh dist/
+          echo "📁 主要文件:"
+          find dist -name "*.js" -o -name "*.css" -o -name "*.html" | head -10 | xargs ls -lh
 
-      - name: Deployment notification
-        if: ${{ github.ref == 'refs/heads/main' }}
+      - name: 📤 Upload build artifacts
+        if: matrix.node-version == '18.19.0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
+
+  # 安全性检查
+  security-check:
+    runs-on: ubuntu-latest
+    name: 🔒 Security Check
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 🔒 Security audit
+        run: |
+          echo "🔒 运行安全审计..."
+          npm audit --audit-level moderate
+          echo "✅ 安全审计完成"
+
+  # 部署通知
+  deployment-notification:
+    runs-on: ubuntu-latest
+    name: 🚀 Deployment Notification
+    needs: [build-verification, security-check]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: 🚀 Deployment notification
         run: |
           echo "🚀 代码已推送到 main 分支"
           echo "📦 Netlify 将自动检测并部署此次构建" 
           echo "⏱️ 部署通常需要 1-3 分钟"
           echo "🌐 网站地址: https://ramusi.cn"
-          echo "✅ 构建验证通过，等待 Netlify 部署..."
+          echo "✅ 所有检查通过，等待 Netlify 部署..."
+          echo "📊 构建摘要:"
+          echo "  - ✅ 代码质量检查通过"
+          echo "  - ✅ 测试执行通过"
+          echo "  - ✅ 构建验证通过"
+          echo "  - ✅ 安全检查通过"

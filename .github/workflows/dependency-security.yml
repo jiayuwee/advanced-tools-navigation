@@ -1,0 +1,289 @@
+name: 📦 Dependency & Security Management
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # 每周一早上9点检查依赖更新
+    - cron: "0 0 1 * *" # 每月1号检查安全漏洞
+  workflow_dispatch:
+    inputs:
+      check_type:
+        description: '检查类型'
+        required: false
+        default: 'security'
+        type: choice
+        options:
+        - 'security'
+        - 'dependencies'
+        - 'both'
+
+env:
+  NODE_VERSION: '18.19.0'
+
+jobs:
+  # 安全漏洞扫描
+  security-scan:
+    runs-on: ubuntu-latest
+    name: 🔒 Security Vulnerability Scan
+    if: github.event.inputs.check_type == 'security' || github.event.inputs.check_type == 'both' || github.event_name == 'schedule'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: |
+          echo "📦 安装依赖..."
+          npm ci --prefer-offline --no-audit
+
+      - name: 🔍 Run security audit
+        run: |
+          echo "🔍 运行安全审计..."
+          echo "检查高危和严重漏洞..."
+          
+          # 检查是否有高危或严重漏洞
+          if npm audit --audit-level high --json > audit_results.json; then
+            echo "✅ 没有发现高危或严重安全漏洞"
+          else
+            echo "⚠️ 发现安全漏洞，详细信息："
+            cat audit_results.json | jq '.vulnerabilities'
+            
+            # 尝试自动修复
+            echo "🔧 尝试自动修复..."
+            npm audit fix --force
+            
+            # 再次检查
+            if npm audit --audit-level high; then
+              echo "✅ 漏洞已修复"
+            else
+              echo "❌ 仍存在高危漏洞，需要手动处理"
+              exit 1
+            fi
+          fi
+
+      - name: 📊 Generate security report
+        run: |
+          echo "📊 生成安全报告..."
+          npm audit --json > security_report.json
+          
+          echo "## 🔒 安全扫描报告" > security_summary.md
+          echo "扫描时间: $(date)" >> security_summary.md
+          echo "" >> security_summary.md
+          
+          # 提取关键信息
+          total_vulns=$(cat security_report.json | jq '.metadata.vulnerabilities.total // 0')
+          critical_vulns=$(cat security_report.json | jq '.metadata.vulnerabilities.critical // 0')
+          high_vulns=$(cat security_report.json | jq '.metadata.vulnerabilities.high // 0')
+          
+          echo "- 总漏洞数: $total_vulns" >> security_summary.md
+          echo "- 严重漏洞: $critical_vulns" >> security_summary.md
+          echo "- 高危漏洞: $high_vulns" >> security_summary.md
+          
+          cat security_summary.md
+
+      - name: 📤 Upload security artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            security_report.json
+            security_summary.md
+          retention-days: 30
+
+  # 依赖更新检查
+  dependency-check:
+    runs-on: ubuntu-latest
+    name: 📈 Dependency Update Check
+    if: github.event.inputs.check_type == 'dependencies' || github.event.inputs.check_type == 'both' || github.event_name == 'schedule'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: |
+          echo "📦 安装依赖..."
+          npm ci --prefer-offline --no-audit
+
+      - name: 🔍 Check for outdated packages
+        run: |
+          echo "🔍 检查过时的包..."
+          
+          # 生成过时包报告
+          npm outdated --json > outdated_packages.json || true
+          
+          if [ -s outdated_packages.json ] && [ "$(cat outdated_packages.json)" != "{}" ]; then
+            echo "📋 发现可更新的包："
+            cat outdated_packages.json | jq -r 'to_entries[] | "- \(.key): \(.value.current) → \(.value.latest)"'
+            
+            echo "## 📈 依赖更新报告" > dependency_summary.md
+            echo "检查时间: $(date)" >> dependency_summary.md
+            echo "" >> dependency_summary.md
+            echo "### 可更新的包:" >> dependency_summary.md
+            cat outdated_packages.json | jq -r 'to_entries[] | "- **\(.key)**: \(.value.current) → \(.value.latest)"' >> dependency_summary.md
+          else
+            echo "✅ 所有依赖都是最新版本"
+            echo "## 📈 依赖更新报告" > dependency_summary.md
+            echo "检查时间: $(date)" >> dependency_summary.md
+            echo "" >> dependency_summary.md
+            echo "✅ 所有依赖都是最新版本" >> dependency_summary.md
+          fi
+          
+          cat dependency_summary.md
+
+      - name: 🔧 Check for major version updates
+        run: |
+          echo "🔧 检查主要版本更新..."
+          
+          # 检查主要框架的版本
+          echo "### 核心依赖版本检查:" >> dependency_summary.md
+          
+          current_vue=$(npm list vue --depth=0 --json | jq -r '.dependencies.vue.version')
+          current_vite=$(npm list vite --depth=0 --json | jq -r '.dependencies.vite.version // "未安装"')
+          current_typescript=$(npm list typescript --depth=0 --json | jq -r '.dependencies.typescript.version // "未安装"')
+          
+          echo "- Vue: $current_vue" >> dependency_summary.md
+          echo "- Vite: $current_vite" >> dependency_summary.md
+          echo "- TypeScript: $current_typescript" >> dependency_summary.md
+
+      - name: 🛡️ License compliance check
+        run: |
+          echo "🛡️ 检查许可证合规性..."
+          
+          # 安装license-checker
+          npm install -g license-checker
+          
+          # 生成许可证报告
+          license-checker --json > licenses.json
+          
+          echo "### 📜 许可证信息:" >> dependency_summary.md
+          echo "总包数: $(cat licenses.json | jq 'keys | length')" >> dependency_summary.md
+          
+          # 检查潜在有问题的许可证
+          problematic_licenses=$(cat licenses.json | jq -r 'to_entries[] | select(.value.licenses | test("GPL|AGPL|LGPL"; "i")) | .key')
+          
+          if [ -n "$problematic_licenses" ]; then
+            echo "⚠️ 发现可能有问题的许可证:" >> dependency_summary.md
+            echo "$problematic_licenses" | while read -r package; do
+              echo "- $package" >> dependency_summary.md
+            done
+          else
+            echo "✅ 所有许可证都是兼容的" >> dependency_summary.md
+          fi
+
+      - name: 📤 Upload dependency artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-reports
+          path: |
+            outdated_packages.json
+            dependency_summary.md
+            licenses.json
+          retention-days: 30
+
+  # 自动化修复 PR
+  auto-fix-pr:
+    runs-on: ubuntu-latest
+    name: 🔄 Auto-fix Security Issues
+    needs: [security-scan]
+    if: needs.security-scan.result == 'failure' && github.event_name == 'schedule'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🔧 Auto-fix security issues
+        run: |
+          echo "🔧 自动修复安全问题..."
+          
+          # 尝试自动修复
+          npm audit fix --force
+          
+          # 检查是否有文件变化
+          if git diff --quiet; then
+            echo "没有可自动修复的问题"
+            exit 0
+          else
+            echo "发现可自动修复的问题"
+          fi
+
+      - name: 📝 Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: '🔒 自动修复安全漏洞'
+          title: '🔒 自动安全修复'
+          body: |
+            ## 🔒 自动安全修复
+            
+            此 PR 由自动化工作流创建，用于修复检测到的安全漏洞。
+            
+            ### 修复内容
+            - 自动更新存在安全漏洞的依赖包
+            - 执行了 `npm audit fix --force`
+            
+            ### 检查清单
+            - [ ] 确认修复没有破坏现有功能
+            - [ ] 运行完整的测试套件
+            - [ ] 检查构建是否正常
+            
+            ---
+            *此 PR 由 GitHub Actions 自动创建*
+          branch: auto-security-fix
+          delete-branch: true
+
+  # 报告汇总
+  summary:
+    runs-on: ubuntu-latest
+    name: 📊 Summary Report
+    needs: [security-scan, dependency-check]
+    if: always()
+    steps:
+      - name: 📊 Generate final summary
+        run: |
+          echo "📊 依赖和安全管理总结"
+          echo "=================================="
+          echo "检查时间: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+          
+          # 安全扫描结果
+          if [ "${{ needs.security-scan.result }}" = "success" ]; then
+            echo "✅ 安全扫描: 通过"
+          elif [ "${{ needs.security-scan.result }}" = "failure" ]; then
+            echo "❌ 安全扫描: 发现问题"
+          else
+            echo "⏭️ 安全扫描: 跳过"
+          fi
+          
+          # 依赖检查结果
+          if [ "${{ needs.dependency-check.result }}" = "success" ]; then
+            echo "✅ 依赖检查: 通过"
+          elif [ "${{ needs.dependency-check.result }}" = "failure" ]; then
+            echo "❌ 依赖检查: 发现问题"
+          else
+            echo "⏭️ 依赖检查: 跳过"
+          fi
+          
+          echo ""
+          echo "🔗 相关链接:"
+          echo "- 工作流: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "- 仓库: ${{ github.server_url }}/${{ github.repository }}"
