@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabaseClient";
 import { UserService } from "./userService";
+import { ErrorHandler } from "../utils/errorHandler";
 import type { User, LoginForm, RegisterForm } from "../types";
 
 export class AuthService {
@@ -28,8 +29,9 @@ export class AuthService {
         session: data.session,
       };
     } catch (error) {
-      console.error("登录失败:", error);
-      throw new Error(error instanceof Error ? error.message : "登录失败");
+      const appError = ErrorHandler.handleApiError(error);
+      ErrorHandler.logError(appError, "AuthService.login");
+      throw appError;
     }
   }
 
@@ -53,7 +55,7 @@ export class AuthService {
         password: userData.password,
         options: {
           data: {
-            full_name: userData.fullName,
+            full_name: userData.full_name,
             username: userData.username,
           },
         },
@@ -69,9 +71,9 @@ export class AuthService {
       );
 
       // 如果有额外信息，更新用户资料
-      if (userData.fullName || userData.username) {
+      if (userData.full_name || userData.username) {
         const updatedProfile = await UserService.updateProfile(data.user.id, {
-          fullName: userData.fullName,
+          full_name: userData.full_name,
           username: userData.username,
         });
 
@@ -86,8 +88,9 @@ export class AuthService {
         session: data.session,
       };
     } catch (error) {
-      console.error("注册失败:", error);
-      throw new Error(error instanceof Error ? error.message : "注册失败");
+      const appError = ErrorHandler.handleApiError(error);
+      ErrorHandler.logError(appError, "AuthService.register");
+      throw appError;
     }
   }
 
@@ -97,8 +100,9 @@ export class AuthService {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
     } catch (error) {
-      console.error("登出失败:", error);
-      throw new Error("登出失败");
+      const appError = ErrorHandler.handleApiError(error);
+      ErrorHandler.logError(appError, "AuthService.logout");
+      throw appError;
     }
   }
 
@@ -111,8 +115,9 @@ export class AuthService {
 
       if (error) throw error;
     } catch (error) {
-      console.error("发送重置密码邮件失败:", error);
-      throw new Error("发送重置密码邮件失败");
+      const appError = ErrorHandler.handleApiError(error);
+      ErrorHandler.logError(appError, "AuthService.forgotPassword");
+      throw appError;
     }
   }
 
@@ -125,8 +130,9 @@ export class AuthService {
 
       if (error) throw error;
     } catch (error) {
-      console.error("重置密码失败:", error);
-      throw new Error("重置密码失败");
+      const appError = ErrorHandler.handleApiError(error);
+      ErrorHandler.logError(appError, "AuthService.resetPassword");
+      throw appError;
     }
   }
 

@@ -443,10 +443,10 @@ export function usePerformanceReport() {
 
     return {
       loadTime: navigation
-        ? navigation.loadEventEnd - navigation.navigationStart
+        ? navigation.loadEventEnd - navigation.fetchStart
         : 0,
       domContentLoaded: navigation
-        ? navigation.domContentLoadedEventEnd - navigation.navigationStart
+        ? navigation.domContentLoadedEventEnd - navigation.fetchStart
         : 0,
       firstPaint: paint.find((p) => p.name === "first-paint")?.startTime || 0,
       firstContentfulPaint:

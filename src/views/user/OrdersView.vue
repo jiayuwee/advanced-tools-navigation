@@ -57,21 +57,21 @@
               <div class="item-info">
                 <h4 class="item-name">{{ item.product?.name }}</h4>
                 <p class="item-description">
-                  {{ item.product?.shortDescription }}
+                  {{ item.product?.short_description }}
                 </p>
                 <div class="item-meta">
                   <span class="item-quantity">数量: {{ item.quantity }}</span>
-                  <span class="item-price">单价: ¥{{ item.unitPrice }}</span>
+                  <span class="item-price">单价: ¥{{ item.unit_price }}</span>
                 </div>
               </div>
-              <div class="item-total">¥{{ item.totalPrice }}</div>
+              <div class="item-total">¥{{ item.total_price }}</div>
             </div>
           </div>
 
           <div class="order-footer">
             <div class="order-total">
               <span class="total-label">订单总额:</span>
-              <span class="total-amount">¥{{ order.totalAmount }}</span>
+              <span class="total-amount">¥{{ order.total_amount }}</span>
             </div>
             <div class="order-actions">
               <button
@@ -196,7 +196,7 @@ const loadOrders = async () => {
             product: {
               id: "product-1",
               name: "高效办公套件",
-              shortDescription: "提升办公效率的完整解决方案",
+              short_description: "提升办公效率的完整解决方案",
               images: ["/placeholder.jpg"],
             },
           },
@@ -224,7 +224,7 @@ const loadOrders = async () => {
             product: {
               id: "product-2",
               name: "设计师工具包",
-              shortDescription: "专业设计师必备工具集合",
+              short_description: "专业设计师必备工具集合",
               images: ["/placeholder.jpg"],
             },
           },
@@ -332,9 +332,9 @@ const downloadOrder = async (order: Order) => {
     // 下载所有产品
     let downloadCount = 0;
     for (const item of latestOrder.items) {
-      if (item.product?.downloadUrl) {
+      if (item.product?.download_url) {
         const link = document.createElement("a");
-        link.href = item.product.downloadUrl;
+        link.href = item.product.download_url;
         link.download = `${item.product.name}.zip`;
         link.target = "_blank";
         document.body.appendChild(link);

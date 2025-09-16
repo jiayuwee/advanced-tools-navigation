@@ -67,6 +67,13 @@ export const useCategoriesStore = defineStore("categories", () => {
     error.value = null;
   }
 
+  /**
+   * 加载分类数据（fetchCategories 的别名，为了向后兼容）。
+   */
+  async function loadCategories() {
+    await fetchCategories();
+  }
+
   // --- Return (导出) ---
   // 所有需要被外部组件访问的状态、Getter 和操作都必须在这里返回。
   // 这是最容易出现 "is not a function" 错误的地方。
@@ -79,6 +86,7 @@ export const useCategoriesStore = defineStore("categories", () => {
 
     // Actions
     fetchCategories, // 确保这个函数被导出，解决你遇到的问题
+    loadCategories, // 向后兼容的别名
     initialize, // 确保调试组件能正常工作
     clearError,
   };

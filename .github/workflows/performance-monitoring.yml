@@ -1,0 +1,324 @@
+name: 🚀 Performance Monitoring
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 2 * * *" # 每天凌晨2点运行性能测试
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: '性能测试类型'
+        required: false
+        default: 'lighthouse'
+        type: choice
+        options:
+        - 'lighthouse'
+        - 'load-test'
+        - 'comprehensive'
+
+env:
+  WEBSITE_URL: 'https://ramusi.cn'
+  NODE_VERSION: '18.19.0'
+
+jobs:
+  # Lighthouse 性能测试
+  lighthouse-audit:
+    runs-on: ubuntu-latest
+    name: 💡 Lighthouse Performance Audit
+    if: github.event.inputs.test_type == 'lighthouse' || github.event.inputs.test_type == 'comprehensive' || github.event_name == 'push' || github.event_name == 'schedule'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Install Lighthouse CI
+        run: |
+          echo "📦 安装 Lighthouse CI..."
+          npm install -g @lhci/cli@0.12.x
+
+      - name: 🏃 Run Lighthouse audit
+        run: |
+          echo "🏃 运行 Lighthouse 审计..."
+          
+          # 创建 Lighthouse 配置
+          cat > lighthouserc.json << EOF
+          {
+            "ci": {
+              "collect": {
+                "url": ["${{ env.WEBSITE_URL }}"],
+                "numberOfRuns": 3
+              },
+              "assert": {
+                "assertions": {
+                  "categories:performance": ["warn", {"minScore": 0.7}],
+                  "categories:accessibility": ["error", {"minScore": 0.9}],
+                  "categories:best-practices": ["warn", {"minScore": 0.8}],
+                  "categories:seo": ["warn", {"minScore": 0.8}]
+                }
+              },
+              "upload": {
+                "target": "temporary-public-storage"
+              }
+            }
+          }
+          EOF
+          
+          # 运行 Lighthouse
+          lhci autorun --config=lighthouserc.json
+
+      - name: 📊 Parse Lighthouse results
+        run: |
+          echo "📊 解析 Lighthouse 结果..."
+          
+          # 查找最新的报告文件
+          if [ -d ".lighthouseci" ]; then
+            latest_report=$(find .lighthouseci -name "*.json" | head -1)
+            
+            if [ -f "$latest_report" ]; then
+              echo "## 💡 Lighthouse 性能报告" > lighthouse_summary.md
+              echo "测试时间: $(date)" >> lighthouse_summary.md
+              echo "测试URL: ${{ env.WEBSITE_URL }}" >> lighthouse_summary.md
+              echo "" >> lighthouse_summary.md
+              
+              # 提取核心指标
+              performance=$(cat "$latest_report" | jq '.categories.performance.score * 100 | floor')
+              accessibility=$(cat "$latest_report" | jq '.categories.accessibility.score * 100 | floor')
+              best_practices=$(cat "$latest_report" | jq '.categories["best-practices"].score * 100 | floor')
+              seo=$(cat "$latest_report" | jq '.categories.seo.score * 100 | floor')
+              
+              echo "### 📈 核心指标" >> lighthouse_summary.md
+              echo "- 🚀 性能: ${performance}/100" >> lighthouse_summary.md
+              echo "- ♿ 可访问性: ${accessibility}/100" >> lighthouse_summary.md
+              echo "- ✅ 最佳实践: ${best_practices}/100" >> lighthouse_summary.md
+              echo "- 🔍 SEO: ${seo}/100" >> lighthouse_summary.md
+              echo "" >> lighthouse_summary.md
+              
+              # 提取 Web Vitals
+              echo "### 🎯 Core Web Vitals" >> lighthouse_summary.md
+              
+              fcp=$(cat "$latest_report" | jq '.audits["first-contentful-paint"].numericValue | floor')
+              lcp=$(cat "$latest_report" | jq '.audits["largest-contentful-paint"].numericValue | floor')
+              cls=$(cat "$latest_report" | jq '.audits["cumulative-layout-shift"].numericValue')
+              
+              echo "- First Contentful Paint: ${fcp}ms" >> lighthouse_summary.md
+              echo "- Largest Contentful Paint: ${lcp}ms" >> lighthouse_summary.md
+              echo "- Cumulative Layout Shift: ${cls}" >> lighthouse_summary.md
+              
+              cat lighthouse_summary.md
+            else
+              echo "❌ 未找到 Lighthouse 报告文件"
+            fi
+          else
+            echo "❌ 未找到 .lighthouseci 目录"
+          fi
+
+      - name: 📤 Upload Lighthouse artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: |
+            .lighthouseci/
+            lighthouse_summary.md
+          retention-days: 30
+
+  # 构建性能分析
+  build-performance:
+    runs-on: ubuntu-latest
+    name: 🔧 Build Performance Analysis
+    if: github.event_name == 'push' || github.event.inputs.test_type == 'comprehensive'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: |
+          echo "📦 安装依赖..."
+          npm ci --prefer-offline --no-audit
+
+      - name: 🔧 Analyze build performance
+        run: |
+          echo "🔧 分析构建性能..."
+          
+          # 记录构建开始时间
+          start_time=$(date +%s)
+          
+          # 运行构建并记录详细信息
+          npm run build 2>&1 | tee build_output.log
+          
+          # 记录构建结束时间
+          end_time=$(date +%s)
+          build_duration=$((end_time - start_time))
+          
+          echo "## 🔧 构建性能分析" > build_performance.md
+          echo "构建时间: $(date)" >> build_performance.md
+          echo "构建耗时: ${build_duration}秒" >> build_performance.md
+          echo "" >> build_performance.md
+          
+          # 分析构建产物大小
+          if [ -d "dist" ]; then
+            echo "### 📊 构建产物分析" >> build_performance.md
+            echo "总大小: $(du -sh dist | cut -f1)" >> build_performance.md
+            echo "" >> build_performance.md
+            
+            echo "### 📁 主要文件大小" >> build_performance.md
+            find dist -type f -name "*.js" -o -name "*.css" | \
+            while read file; do
+              size=$(du -h "$file" | cut -f1)
+              echo "- $(basename "$file"): $size" >> build_performance.md
+            done
+            
+            # 检查大文件
+            echo "" >> build_performance.md
+            echo "### ⚠️ 大文件警告 (>100KB)" >> build_performance.md
+            find dist -type f -size +100k | \
+            while read file; do
+              size=$(du -h "$file" | cut -f1)
+              echo "- $(basename "$file"): $size" >> build_performance.md
+            done || echo "无大文件" >> build_performance.md
+          fi
+          
+          cat build_performance.md
+
+      - name: 📊 Bundle analysis
+        run: |
+          echo "📊 运行 bundle 分析..."
+          
+          # 安装分析工具
+          npm install --no-save vite-bundle-analyzer
+          
+          # 生成 bundle 分析报告
+          npm run build
+          npx vite-bundle-analyzer dist --mode json > bundle-analysis.json
+          
+          echo "### 📦 Bundle 分析" >> build_performance.md
+          echo "详细的 bundle 分析报告已生成" >> build_performance.md
+
+      - name: 📤 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-performance
+          path: |
+            build_performance.md
+            build_output.log
+            bundle-analysis.json
+          retention-days: 30
+
+  # 负载测试
+  load-test:
+    runs-on: ubuntu-latest
+    name: 🔥 Load Testing
+    if: github.event.inputs.test_type == 'load-test' || github.event.inputs.test_type == 'comprehensive'
+    steps:
+      - name: 🔥 Run load test
+        run: |
+          echo "🔥 运行负载测试..."
+          
+          # 使用 Apache Bench 进行简单负载测试
+          echo "安装测试工具..."
+          sudo apt-get update
+          sudo apt-get install -y apache2-utils
+          
+          echo "## 🔥 负载测试报告" > load_test.md
+          echo "测试时间: $(date)" >> load_test.md
+          echo "测试目标: ${{ env.WEBSITE_URL }}" >> load_test.md
+          echo "" >> load_test.md
+          
+          # 并发测试 - 10个并发用户，100个请求
+          echo "### 📊 并发测试 (10并发, 100请求)" >> load_test.md
+          ab -n 100 -c 10 -g load_test_data.tsv ${{ env.WEBSITE_URL }}/ > load_test_output.txt 2>&1
+          
+          # 提取关键指标
+          if [ -f "load_test_output.txt" ]; then
+            requests_per_second=$(grep "Requests per second" load_test_output.txt | cut -d: -f2 | xargs)
+            time_per_request=$(grep "Time per request" load_test_output.txt | head -1 | cut -d: -f2 | xargs)
+            failed_requests=$(grep "Failed requests" load_test_output.txt | cut -d: -f2 | xargs)
+            
+            echo "- 每秒请求数: $requests_per_second" >> load_test.md
+            echo "- 平均请求时间: $time_per_request" >> load_test.md
+            echo "- 失败请求数: $failed_requests" >> load_test.md
+          fi
+          
+          echo "" >> load_test.md
+          echo "### 📈 性能基准" >> load_test.md
+          echo "- ✅ 优秀: >50 req/sec" >> load_test.md
+          echo "- ⚠️ 一般: 20-50 req/sec" >> load_test.md
+          echo "- ❌ 需优化: <20 req/sec" >> load_test.md
+          
+          cat load_test.md
+
+      - name: 📤 Upload load test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-results
+          path: |
+            load_test.md
+            load_test_output.txt
+            load_test_data.tsv
+          retention-days: 30
+
+  # 性能监控总结
+  performance-summary:
+    runs-on: ubuntu-latest
+    name: 📊 Performance Summary
+    needs: [lighthouse-audit, build-performance, load-test]
+    if: always()
+    steps:
+      - name: 📊 Generate performance summary
+        run: |
+          echo "📊 性能监控总结报告"
+          echo "=================================="
+          echo "监控时间: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "目标网站: ${{ env.WEBSITE_URL }}"
+          echo ""
+          
+          # Lighthouse 结果
+          if [ "${{ needs.lighthouse-audit.result }}" = "success" ]; then
+            echo "✅ Lighthouse 审计: 完成"
+          elif [ "${{ needs.lighthouse-audit.result }}" = "failure" ]; then
+            echo "❌ Lighthouse 审计: 失败"
+          else
+            echo "⏭️ Lighthouse 审计: 跳过"
+          fi
+          
+          # 构建性能结果
+          if [ "${{ needs.build-performance.result }}" = "success" ]; then
+            echo "✅ 构建性能分析: 完成"
+          elif [ "${{ needs.build-performance.result }}" = "failure" ]; then
+            echo "❌ 构建性能分析: 失败"
+          else
+            echo "⏭️ 构建性能分析: 跳过"
+          fi
+          
+          # 负载测试结果
+          if [ "${{ needs.load-test.result }}" = "success" ]; then
+            echo "✅ 负载测试: 完成"
+          elif [ "${{ needs.load-test.result }}" = "failure" ]; then
+            echo "❌ 负载测试: 失败"
+          else
+            echo "⏭️ 负载测试: 跳过"
+          fi
+          
+          echo ""
+          echo "📈 性能优化建议:"
+          echo "- 定期监控 Core Web Vitals"
+          echo "- 优化大文件和资源加载"
+          echo "- 实施代码分割和懒加载"
+          echo "- 使用 CDN 加速静态资源"
+          echo "- 监控构建时间和产物大小"
+          
+          echo ""
+          echo "🔗 相关链接:"
+          echo "- 网站: ${{ env.WEBSITE_URL }}"
+          echo "- 工作流: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "- 项目: ${{ github.server_url }}/${{ github.repository }}"
