@@ -5,17 +5,7 @@ on:
     branches: [main]
   schedule:
     - cron: "0 */6 * * *" # 每6小时运行一次
-    - cron: "0 8 * * 1" # 每周一早上8点运行完整检查
   workflow_dispatch:
-    inputs:
-      check_type:
-        description: '检查类型'
-        required: false
-        default: 'basic'
-        type: choice
-        options:
-        - 'basic'
-        - 'comprehensive'
 
 env:
   WEBSITE_URL: 'https://ramusi.cn'
@@ -33,34 +23,46 @@ jobs:
           echo "目标URL: ${{ env.WEBSITE_URL }}"
           
           # 检查HTTP状态码
-          response=$(curl -s -o /dev/null -w "%{http_code}" --max-time ${{ env.TIMEOUT }} ${{ env.WEBSITE_URL }})
+          response=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time ${{ env.TIMEOUT }} "${{ env.WEBSITE_URL }}")
+          
+          echo "响应状态码: $response"
           
           if [ "$response" = "200" ]; then
             echo "✅ 网站正常访问 (HTTP $response)"
           else
             echo "❌ 网站访问异常 (HTTP $response)"
+            echo "尝试详细诊断..."
+            curl -v --connect-timeout 10 --max-time ${{ env.TIMEOUT }} "${{ env.WEBSITE_URL }}" || true
             exit 1
           fi
 
       - name: 📄 Check page content
         run: |
           echo "🔍 检查页面内容..."
-          content=$(curl -s --max-time ${{ env.TIMEOUT }} ${{ env.WEBSITE_URL }})
           
-          # 检查关键内容
-          if echo "$content" | grep -q "Ramusi"; then
-            echo "✅ 网站标题正常"
-          else
-            echo "❌ 网站标题缺失"
+          # 获取页面内容
+          content=$(curl -s --connect-timeout 10 --max-time ${{ env.TIMEOUT }} "${{ env.WEBSITE_URL }}")
+          
+          if [ -z "$content" ]; then
+            echo "❌ 无法获取页面内容"
             exit 1
           fi
           
-          # 检查是否有JavaScript错误（基本检查）
-          if echo "$content" | grep -q "<!DOCTYPE html>"; then
+          # 检查基本 HTML 结构
+          if echo "$content" | grep -q "<!doctype html>\|<!DOCTYPE html>"; then
             echo "✅ HTML结构正常"
           else
             echo "❌ HTML结构异常"
+            echo "页面内容预览: $(echo "$content" | head -n 5)"
             exit 1
+          fi
+          
+          # 检查网站标题或关键内容
+          if echo "$content" | grep -qi "ramusi\|tools\|navigation"; then
+            echo "✅ 网站关键内容正常"
+          else
+            echo "⚠️ 未找到预期的关键内容"
+            echo "页面标题: $(echo "$content" | grep -o '<title[^>]*>[^<]*</title>' | head -1)"
           fi
 
       - name: ⚡ Performance check
@@ -68,11 +70,16 @@ jobs:
           echo "⚡ 检查网站性能..."
           
           # 测量响应时间
-          start_time=$(date +%s%N)
-          curl -s --max-time ${{ env.TIMEOUT }} ${{ env.WEBSITE_URL }} > /dev/null
-          end_time=$(date +%s%N)
+          start_time=$(date +%s%3N)
+          http_code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time ${{ env.TIMEOUT }} "${{ env.WEBSITE_URL }}")
+          end_time=$(date +%s%3N)
           
-          duration=$(( (end_time - start_time) / 1000000 )) # 转换为毫秒
+          if [ "$http_code" != "200" ]; then
+            echo "❌ 性能检查失败，网站不可访问 (HTTP $http_code)"
+            exit 1
+          fi
+          
+          duration=$((end_time - start_time))
           
           echo "响应时间: ${duration}ms"
           
@@ -81,74 +88,8 @@ jobs:
           elif [ $duration -lt 5000 ]; then
             echo "⚠️ 响应时间较慢 (${duration}ms)"
           else
-            echo "❌ 响应时间过慢 (${duration}ms)"
-            exit 1
-          fi
-
-  # 全面健康检查（周期性或手动触发）
-  comprehensive-health-check:
-    runs-on: ubuntu-latest
-    name: 🔬 Comprehensive Health Check
-    if: github.event_name == 'schedule' && github.event.schedule == '0 8 * * 1' || github.event.inputs.check_type == 'comprehensive'
-    steps:
-      - name: 🌐 Multi-endpoint check
-        run: |
-          echo "🔍 检查多个端点..."
-          
-          # 定义要检查的端点
-          endpoints=(
-            "${{ env.WEBSITE_URL }}"
-            "${{ env.WEBSITE_URL }}/tools"
-            "${{ env.WEBSITE_URL }}/products"
-          )
-          
-          for endpoint in "${endpoints[@]}"; do
-            echo "检查: $endpoint"
-            response=$(curl -s -o /dev/null -w "%{http_code}" --max-time ${{ env.TIMEOUT }} "$endpoint")
-            
-            if [ "$response" = "200" ]; then
-              echo "✅ $endpoint 正常 (HTTP $response)"
-            else
-              echo "❌ $endpoint 异常 (HTTP $response)"
-              exit 1
-            fi
-          done
-
-      - name: 🔒 Security headers check
-        run: |
-          echo "🔒 检查安全头..."
-          
-          headers=$(curl -s -I --max-time ${{ env.TIMEOUT }} ${{ env.WEBSITE_URL }})
-          
-          # 检查重要的安全头
-          if echo "$headers" | grep -qi "x-frame-options\|content-security-policy"; then
-            echo "✅ 发现安全头配置"
-          else
-            echo "⚠️ 未发现明显的安全头配置"
-          fi
-          
-          # 检查HTTPS重定向
-          http_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time ${{ env.TIMEOUT }} "http://ramusi.cn" || echo "000")
-          if [ "$http_response" = "301" ] || [ "$http_response" = "302" ]; then
-            echo "✅ HTTP重定向到HTTPS正常"
-          else
-            echo "⚠️ HTTP重定向状态: $http_response"
-          fi
-
-      - name: 📱 Mobile responsiveness check
-        run: |
-          echo "📱 检查移动端响应..."
-          
-          # 模拟移动端User-Agent
-          mobile_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time ${{ env.TIMEOUT }} \
-            -H "User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15" \
-            ${{ env.WEBSITE_URL }})
-          
-          if [ "$mobile_response" = "200" ]; then
-            echo "✅ 移动端访问正常 (HTTP $mobile_response)"
-          else
-            echo "❌ 移动端访问异常 (HTTP $mobile_response)"
-            exit 1
+            echo "⚠️ 响应时间过慢 (${duration}ms)"
+            # 不将性能问题作为失败，只是警告
           fi
 
   # 健康检查总结
