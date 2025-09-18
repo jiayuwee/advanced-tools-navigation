@@ -3,15 +3,32 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- 创建枚举类型
-CREATE TYPE user_role AS ENUM ('user', 'admin', 'super_admin');
-CREATE TYPE tool_status AS ENUM ('active', 'inactive', 'draft');
-CREATE TYPE product_status AS ENUM ('active', 'inactive', 'draft');
-CREATE TYPE order_status AS ENUM ('pending', 'paid', 'cancelled', 'refunded');
-CREATE TYPE payment_status AS ENUM ('pending', 'completed', 'failed', 'cancelled');
+-- 创建枚举类型（使用DO块确保幂等性）
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+        CREATE TYPE user_role AS ENUM ('user', 'admin', 'super_admin');
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tool_status') THEN
+        CREATE TYPE tool_status AS ENUM ('active', 'inactive', 'draft');
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'product_status') THEN
+        CREATE TYPE product_status AS ENUM ('active', 'inactive', 'draft');
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'order_status') THEN
+        CREATE TYPE order_status AS ENUM ('pending', 'paid', 'cancelled', 'refunded');
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_status') THEN
+        CREATE TYPE payment_status AS ENUM ('pending', 'completed', 'failed', 'cancelled');
+    END IF;
+END $$;
 
--- 用户资料表
-CREATE TABLE user_profiles (
+-- 用户资料表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS user_profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     username TEXT UNIQUE,
@@ -28,8 +45,8 @@ CREATE TABLE user_profiles (
     last_login_at TIMESTAMP WITH TIME ZONE
 );
 
--- 分类表（工具和产品共用）
-CREATE TABLE categories (
+-- 分类表（工具和产品共用，使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS categories (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
@@ -42,8 +59,8 @@ CREATE TABLE categories (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 产品分类表
-CREATE TABLE product_categories (
+-- 产品分类表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS product_categories (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
@@ -56,8 +73,8 @@ CREATE TABLE product_categories (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 工具表
-CREATE TABLE tools (
+-- 工具表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS tools (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
@@ -75,8 +92,8 @@ CREATE TABLE tools (
     sort_order INTEGER DEFAULT 0
 );
 
--- 产品表
-CREATE TABLE products (
+-- 产品表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS products (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
@@ -103,16 +120,16 @@ CREATE TABLE products (
     total_reviews INTEGER DEFAULT 0
 );
 
--- 标签表
-CREATE TABLE tags (
+-- 标签表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS tags (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
     color TEXT DEFAULT '#0078d4',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 工具标签关联表
-CREATE TABLE tool_tags (
+-- 工具标签关联表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS tool_tags (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     tool_id UUID REFERENCES tools(id) ON DELETE CASCADE,
     tag_id UUID REFERENCES tags(id) ON DELETE CASCADE,
@@ -120,23 +137,23 @@ CREATE TABLE tool_tags (
     UNIQUE(tool_id, tag_id)
 );
 
--- 收藏表
-CREATE TABLE favorites (
+-- 收藏表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS favorites (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
     tool_id UUID REFERENCES tools(id) ON DELETE CASCADE,
     product_id UUID REFERENCES products(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT favorites_check CHECK (
-        (tool_id IS NOT NULL AND product_id IS NULL) OR 
+        (tool_id IS NOT NULL AND product_id IS NULL) OR
         (tool_id IS NULL AND product_id IS NOT NULL)
     ),
     UNIQUE(user_id, tool_id),
     UNIQUE(user_id, product_id)
 );
 
--- 订单表
-CREATE TABLE orders (
+-- 订单表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS orders (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id UUID REFERENCES user_profiles(id) ON DELETE SET NULL,
     total_amount DECIMAL(10,2) NOT NULL,
@@ -148,8 +165,8 @@ CREATE TABLE orders (
     completed_at TIMESTAMP WITH TIME ZONE
 );
 
--- 订单项表
-CREATE TABLE order_items (
+-- 订单项表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS order_items (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
     product_id UUID REFERENCES products(id) ON DELETE SET NULL,
@@ -159,8 +176,8 @@ CREATE TABLE order_items (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 支付表
-CREATE TABLE payments (
+-- 支付表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS payments (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
     amount DECIMAL(10,2) NOT NULL,
@@ -174,8 +191,8 @@ CREATE TABLE payments (
     completed_at TIMESTAMP WITH TIME ZONE
 );
 
--- 评论表
-CREATE TABLE product_reviews (
+-- 评论表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS product_reviews (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id UUID REFERENCES user_profiles(id) ON DELETE SET NULL,
     product_id UUID REFERENCES products(id) ON DELETE CASCADE,
@@ -188,8 +205,8 @@ CREATE TABLE product_reviews (
     UNIQUE(user_id, product_id)
 );
 
--- 分析数据表
-CREATE TABLE analytics (
+-- 分析数据表（使用 IF NOT EXISTS 确保幂等性）
+CREATE TABLE IF NOT EXISTS analytics (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     event_type TEXT NOT NULL,
     event_data JSONB,

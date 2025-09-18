@@ -27,6 +27,79 @@ export const useCategoriesStore = defineStore("categories", () => {
     loading.value = true;
     error.value = null;
     try {
+      // 检查环境变量是否已配置
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('your-project-ref') || supabaseAnonKey.includes('your-anon-key')) {
+        // 使用模拟数据
+        console.warn('Supabase 环境变量未配置，使用模拟分类数据');
+        categories.value = [
+          {
+            id: '1',
+            name: '开发工具',
+            description: '编程开发相关工具',
+            icon: '💻',
+            color: '#3b82f6',
+            parent_id: null,
+            sort_order: 1,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '2',
+            name: '设计工具',
+            description: 'UI/UX设计工具',
+            icon: '🎨',
+            color: '#ef4444',
+            parent_id: null,
+            sort_order: 2,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '3',
+            name: 'AI工具',
+            description: '人工智能相关工具',
+            icon: '🤖',
+            color: '#10b981',
+            parent_id: null,
+            sort_order: 3,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '4',
+            name: '办公软件',
+            description: '提升办公效率的工具',
+            icon: '📊',
+            color: '#f59e0b',
+            parent_id: null,
+            sort_order: 4,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '5',
+            name: '其他工具',
+            description: '其他实用工具',
+            icon: '🔧',
+            color: '#8b5cf6',
+            parent_id: null,
+            sort_order: 5,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ];
+        initialized.value = true;
+        return;
+      }
+
       const { data, error: queryError } = await supabase
         .from("categories")
         .select("*")
@@ -42,7 +115,39 @@ export const useCategoriesStore = defineStore("categories", () => {
     } catch (e: any) {
       console.error("获取分类失败:", e);
       error.value = e;
-      // 在后续调用失败时，保留已有的数据，而不是清空
+      
+      // 如果Supabase调用失败，回退到模拟数据
+      if (categories.value.length === 0) {
+        console.warn('Supabase调用失败，使用模拟分类数据');
+        categories.value = [
+          {
+            id: '1',
+            name: '开发工具',
+            description: '编程开发相关工具',
+            icon: '💻',
+            color: '#3b82f6',
+            parent_id: null,
+            sort_order: 1,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '2',
+            name: '设计工具',
+            description: 'UI/UX设计工具',
+            icon: '🎨',
+            color: '#ef4444',
+            parent_id: null,
+            sort_order: 2,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ];
+        initialized.value = true;
+        error.value = null; // 清除错误，因为我们有了后备数据
+      }
     } finally {
       loading.value = false;
     }

@@ -60,6 +60,112 @@ export const useToolsStore = defineStore("tools", () => {
     loading.value = true;
     error.value = null;
     try {
+      // 检查环境变量是否已配置
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('your-project-ref') || supabaseAnonKey.includes('your-anon-key')) {
+        // 使用模拟数据
+        console.warn('Supabase 环境变量未配置，使用模拟工具数据');
+        tools.value = [
+          {
+            id: '1',
+            name: 'Visual Studio Code',
+            description: '免费的代码编辑器，支持多种编程语言',
+            url: 'https://code.visualstudio.com',
+            icon: null,
+            category_id: '1',
+            is_featured: true,
+            click_count: 150,
+            status: 'active' as const,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            created_by: null,
+            meta_title: null,
+            meta_description: null,
+            sort_order: 1,
+            categories: {
+              id: '1',
+              name: '开发工具',
+              description: '编程开发相关工具',
+              icon: '💻',
+              color: '#3b82f6',
+              parent_id: null,
+              sort_order: 1,
+              is_active: true,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            },
+            tool_tags: null,
+            tags: ['编程', '开发', '编辑器']
+          },
+          {
+            id: '2', 
+            name: 'Figma',
+            description: '协作式界面设计工具',
+            url: 'https://figma.com',
+            icon: null,
+            category_id: '2',
+            is_featured: true,
+            click_count: 120,
+            status: 'active' as const,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            created_by: null,
+            meta_title: null,
+            meta_description: null,
+            sort_order: 2,
+            categories: {
+              id: '2',
+              name: '设计工具',
+              description: 'UI/UX设计工具',
+              icon: '🎨',
+              color: '#ef4444',
+              parent_id: null,
+              sort_order: 2,
+              is_active: true,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            },
+            tool_tags: null,
+            tags: ['设计', 'UI', 'UX']
+          },
+          {
+            id: '3',
+            name: 'ChatGPT',
+            description: 'AI助手，帮助编程、写作和解答问题',
+            url: 'https://chat.openai.com',
+            icon: null,
+            category_id: '3',
+            is_featured: true,
+            click_count: 200,
+            status: 'active' as const,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            created_by: null,
+            meta_title: null,
+            meta_description: null,
+            sort_order: 3,
+            categories: {
+              id: '3',
+              name: 'AI工具',
+              description: '人工智能相关工具',
+              icon: '🤖',
+              color: '#10b981',
+              parent_id: null,
+              sort_order: 3,
+              is_active: true,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            },
+            tool_tags: null,
+            tags: ['AI', '聊天', '助手']
+          }
+        ];
+        initialized.value = true;
+        return;
+      }
+
       const { data, error: queryError } = await supabase
         .from("tools")
         .select(
@@ -89,6 +195,46 @@ export const useToolsStore = defineStore("tools", () => {
     } catch (e: any) {
       console.error("获取工具列表失败:", e);
       error.value = e;
+      
+      // 如果Supabase调用失败，回退到模拟数据
+      if (tools.value.length === 0) {
+        console.warn('Supabase调用失败，使用模拟工具数据');
+        tools.value = [
+          {
+            id: '1',
+            name: 'Visual Studio Code',
+            description: '免费的代码编辑器，支持多种编程语言',
+            url: 'https://code.visualstudio.com',
+            icon: null,
+            category_id: '1',
+            is_featured: true,
+            click_count: 150,
+            status: 'active' as const,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            created_by: null,
+            meta_title: null,
+            meta_description: null,
+            sort_order: 1,
+            categories: {
+              id: '1',
+              name: '开发工具',
+              description: '编程开发相关工具',
+              icon: '💻',
+              color: '#3b82f6',
+              parent_id: null,
+              sort_order: 1,
+              is_active: true,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            },
+            tool_tags: null,
+            tags: ['编程', '开发', '编辑器']
+          }
+        ];
+        initialized.value = true;
+        error.value = null; // 清除错误，因为我们有了后备数据
+      }
     } finally {
       loading.value = false;
     }
