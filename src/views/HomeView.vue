@@ -200,11 +200,20 @@ const toggleFavorite = async (tool: any) => {
 
 // 生命周期
 onMounted(async () => {
-  if (!toolsStore.initialized) await toolsStore.initialize();
-  if (!categoriesStore.initialized) await categoriesStore.initialize();
+  try {
+    // 等待 store 初始化完成
+    if (!toolsStore.initialized) {
+      await toolsStore.initialize();
+    }
+    if (!categoriesStore.initialized) {
+      await categoriesStore.initialize();
+    }
 
-  // 添加鼠标跟踪光标效果
-  document.addEventListener("mousemove", mousemoveHandler);
+    // 添加鼠标跟踪光标效果
+    document.addEventListener("mousemove", mousemoveHandler);
+  } catch (error) {
+    console.error('初始化页面失败:', error);
+  }
 });
 
 onUnmounted(() => {

@@ -20,12 +20,12 @@ import { useSimpleTheme } from "@/composables/useSimpleTheme";
 async function initializeCoreStores() {
   console.log("🚀 Initializing core stores and theme system...");
 
-  // 必须在 Pinia 实例被 app 使用后，才能获取 store 实例
-  const authStore = useAuthStore();
-  const categoriesStore = useCategoriesStore();
-  const toolsStore = useToolsStore();
-
   try {
+    // 必须在 Pinia 实例被 app 使用后，才能获取 store 实例
+    const authStore = useAuthStore();
+    const categoriesStore = useCategoriesStore();
+    const toolsStore = useToolsStore();
+
     // 使用 Promise.all 并发执行所有 stores 的初始化，提升启动性能。
     // 任何一个 store 初始化失败都会进入 catch 块。
     await Promise.all([

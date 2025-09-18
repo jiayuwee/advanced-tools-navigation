@@ -75,6 +75,16 @@ export default defineConfig({
     assetsDir: "assets",
     sourcemap: false,
     minify: "terser",
+    terserOptions: {
+      compress: {
+        keep_fnames: true,
+        keep_classnames: true,
+      },
+      mangle: {
+        keep_fnames: true,
+        keep_classnames: true,
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks: {
