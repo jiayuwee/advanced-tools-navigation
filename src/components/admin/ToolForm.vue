@@ -299,7 +299,7 @@ const loadFormData = () => {
 onMounted(async () => {
   // 加载分类数据
   if (categories.value.length === 0) {
-    await categoriesStore.loadCategories();
+    await categoriesStore.initialize();
   }
 
   // 加载表单数据

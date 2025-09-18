@@ -577,7 +577,7 @@ onMounted(async () => {
 
   // 加载分类数据
   if (categoriesStore.categories.length === 0) {
-    await categoriesStore.loadCategories();
+    await categoriesStore.initialize();
   }
 });
 
