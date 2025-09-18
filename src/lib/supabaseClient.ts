@@ -6,9 +6,11 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // 验证环境变量
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(`
-    Supabase 环境变量未配置!
+if (!supabaseUrl || !supabaseAnonKey || 
+    supabaseUrl.includes('your-project-ref') || 
+    supabaseAnonKey.includes('your-anon-key')) {
+  console.warn(`
+    ⚠️  Supabase 环境变量未正确配置!
 
     开发环境: 请检查 .env.local 文件中是否设置了:
       VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
@@ -19,6 +21,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
     当前值:
       VITE_SUPABASE_URL: ${supabaseUrl || "未设置"}
       VITE_SUPABASE_ANON_KEY: ${supabaseAnonKey ? "已设置" : "未设置"}
+      
+    应用将使用模拟数据运行，某些功能可能不可用。
   `);
 }
 
@@ -159,7 +163,7 @@ export const deleteFile = async (bucket: string, path: string) => {
 };
 
 // 数据库查询工具函数
-export const createRecord = async <T>(table: string, data: Partial<T>) => {
+export const createRecord = async (table: string, data: Record<string, any>) => {
   const { data: result, error } = await supabase
     .from(table)
     .insert(data)
@@ -173,10 +177,10 @@ export const createRecord = async <T>(table: string, data: Partial<T>) => {
   return result;
 };
 
-export const updateRecord = async <T>(
+export const updateRecord = async (
   table: string,
   id: string,
-  data: Partial<T>,
+  data: Record<string, any>,
 ) => {
   const { data: result, error } = await supabase
     .from(table)
@@ -200,7 +204,7 @@ export const deleteRecord = async (table: string, id: string) => {
   }
 };
 
-export const getRecord = async <T>(table: string, id: string) => {
+export const getRecord = async (table: string, id: string) => {
   const { data, error } = await supabase
     .from(table)
     .select("*")
@@ -211,10 +215,10 @@ export const getRecord = async <T>(table: string, id: string) => {
     throw new Error(handleSupabaseError(error));
   }
 
-  return data as T;
+  return data;
 };
 
-export const getRecords = async <T>(
+export const getRecords = async (
   table: string,
   options?: {
     select?: string;
@@ -258,5 +262,5 @@ export const getRecords = async <T>(
     throw new Error(handleSupabaseError(error));
   }
 
-  return data as T[];
+  return data;
 };

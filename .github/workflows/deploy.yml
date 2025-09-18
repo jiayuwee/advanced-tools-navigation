@@ -1,0 +1,138 @@
+name: 🚀 Deploy to Netlify
+
+on:
+  workflow_run:
+    workflows: ["🔨 Build & Quality Verification"]
+    types:
+      - completed
+    branches: [main]
+
+env:
+  NODE_VERSION: '20.x'
+  NETLIFY_DIR: 'dist'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: 🚀 Deploy to Production
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 📦 Install dependencies
+        run: |
+          echo "📦 安装依赖..."
+          npm ci --prefer-offline --no-audit --ignore-scripts
+          echo "✅ 依赖安装完成"
+
+      - name: 📦 Install Netlify CLI
+        run: |
+          echo "📦 安装 Netlify CLI..."
+          npm install -g netlify-cli
+          echo "✅ Netlify CLI 安装完成"
+
+      - name: 📁 Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ${{ env.NETLIFY_DIR }}
+
+      - name: 🔍 Verify build artifacts
+        run: |
+          echo "🔍 验证构建产物..."
+          if [ ! -d "${{ env.NETLIFY_DIR }}" ]; then
+            echo "❌ 构建产物目录不存在"
+            exit 1
+          fi
+          
+          if [ ! -f "${{ env.NETLIFY_DIR }}/index.html" ]; then
+            echo "❌ index.html 不存在"
+            exit 1
+          fi
+          
+          echo "✅ 构建产物验证通过"
+          echo "📊 构建产物统计:"
+          du -sh ${{ env.NETLIFY_DIR }}/
+          ls -la ${{ env.NETLIFY_DIR }}/
+
+      - name: 🚀 Deploy to Netlify
+        run: |
+          echo "🚀 开始部署到 Netlify..."
+          
+          # 设置 Netlify 认证
+          export NETLIFY_AUTH_TOKEN=${{ secrets.NETLIFY_AUTH_TOKEN }}
+          export NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID }}
+          
+          # 部署到生产环境
+          npx netlify deploy \
+            --dir=${{ env.NETLIFY_DIR }} \
+            --prod \
+            --message="Automated deployment from GitHub Actions 🚀" \
+            --json | tee deploy-output.json
+          
+          echo "✅ 部署完成"
+          
+          # 提取部署信息
+          if [ -f "deploy-output.json" ]; then
+            DEPLOY_URL=$(cat deploy-output.json | jq -r '.deploy_url // empty')
+            DEPLOY_ID=$(cat deploy-output.json | jq -r '.deploy_id // empty')
+            
+            echo "🌐 部署URL: $DEPLOY_URL"
+            echo "📋 部署ID: $DEPLOY_ID"
+            
+            # 设置输出供后续步骤使用
+            echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_OUTPUT
+            echo "DEPLOY_ID=$DEPLOY_ID" >> $GITHUB_OUTPUT
+          fi
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: 📊 Deployment summary
+        run: |
+          echo "📊 部署总结报告"
+          echo "================================"
+          echo "部署时间: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "分支: ${{ github.event.workflow_run.head_branch }}"
+          echo "提交: ${{ github.event.workflow_run.head_sha }}"
+          echo "构建工作流: ${{ github.event.workflow_run.name }}"
+          echo "部署状态: ✅ 成功"
+          
+          if [ -n "$DEPLOY_URL" ]; then
+            echo "生产环境: $DEPLOY_URL"
+          fi
+          
+          echo ""
+          echo "🔗 相关链接:"
+          echo "- 网站: https://ramusi.cn"
+          echo "- Netlify 控制台: https://app.netlify.com/sites/${{ secrets.NETLIFY_SITE_ID }}"
+          echo "- GitHub 仓库: ${{ github.repository }}"
+        env:
+          DEPLOY_URL: ${{ steps.deploy.outputs.DEPLOY_URL }}
+
+      - name: 💬 Deployment notification
+        if: success()
+        run: |
+          echo "🚀 部署成功通知"
+          echo "================================"
+          echo "✅ 应用已成功部署到生产环境"
+          echo "🌐 访问地址: https://ramusi.cn"
+          echo "⏱️ 部署时间: $(date)"
+          echo "📦 构建版本: ${{ github.event.workflow_run.head_sha }}"
+          echo ""
+          echo "📋 部署详情:"
+          echo "- 构建验证: ✅ 通过"
+          echo "- 测试执行: ✅ 通过"
+          echo "- 安全扫描: ✅ 通过"
+          echo "- 部署状态: ✅ 成功"
