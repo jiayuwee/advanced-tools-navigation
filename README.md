@@ -214,6 +214,28 @@ npm run lint
 npm run type-check
 ```
 
+### 支付配置
+
+项目支持多种支付方式，包括Stripe、支付宝和微信支付。要启用支付功能，请在 `.env` 文件中配置相应的支付密钥：
+
+```env
+# Stripe支付配置
+VITE_STRIPE_PUBLIC_KEY=your-stripe-public-key
+VITE_STRIPE_SECRET_KEY=your-stripe-secret-key
+
+# 支付宝支付配置
+VITE_ALIPAY_APP_ID=your-alipay-app-id
+VITE_ALIPAY_PRIVATE_KEY=your-alipay-private-key
+VITE_ALIPAY_PUBLIC_KEY=your-alipay-public-key
+
+# 微信支付配置
+VITE_WECHAT_APP_ID=your-wechat-app-id
+VITE_WECHAT_MCH_ID=your-wechat-merchant-id
+VITE_WECHAT_API_KEY=your-wechat-api-key
+```
+
+> 注意：在生产环境中，请确保将这些密钥存储在安全的地方，并不要提交到版本控制系统中。
+
 ## 📄 许可证
 
 本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。

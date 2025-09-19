@@ -237,17 +237,22 @@ const canPay = computed(() => {
 });
 
 // 方法
-const loadOrderData = () => {
-  // TODO: 根据路由参数加载订单数据
-  const productId = route.query.product;
-  const orderId = route.query.order;
+const loadOrderData = async () => {
+  try {
+    const productId = route.query.product;
+    const orderId = route.query.order;
 
-  if (productId) {
-    // 从产品创建订单
-    console.log("从产品创建订单:", productId);
-  } else if (orderId) {
-    // 加载现有订单
-    console.log("加载现有订单:", orderId);
+    if (productId) {
+      // 从产品创建订单
+      console.log("从产品创建订单:", productId);
+      // TODO: 从API获取产品信息
+    } else if (orderId) {
+      // 加载现有订单
+      console.log("加载现有订单:", orderId);
+      // TODO: 从API获取订单信息
+    }
+  } catch (err) {
+    error.value = "加载订单信息失败";
   }
 };
 
@@ -258,6 +263,7 @@ const handlePayment = async () => {
 
     // 导入必要的服务
     const { OrderService } = await import("@/services/orderService");
+    const { PaymentService } = await import("@/services/paymentService");
     const { useAuthStore } = await import("@/stores/auth");
 
     const authStore = useAuthStore();
@@ -288,30 +294,48 @@ const handlePayment = async () => {
       orderId = newOrder.id;
     }
 
-    // 模拟支付处理
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // 处理支付成功
-    await OrderService.processPayment({
+    // 根据选择的支付方式处理支付
+    const paymentResult = await PaymentService.processPayment({
       order_id: orderId,
-      payment_method: selectedMethod.value!,
-      payment_id: `PAY_${Date.now()}`, // 模拟支付ID
+      payment_method: selectedMethod.value,
+      payment_id: `PAY_${Date.now()}`,
       amount: finalAmount.value,
-    });
+    }, selectedMethod.value);
 
-    // 支付成功，跳转到成功页面
-    router.push({
-      path: "/payment/success",
-      query: {
-        order: orderId,
-        amount: finalAmount.value.toString(),
-      },
-    });
+    if (paymentResult.success) {
+      // 处理支付成功
+      await processPaymentSuccess(orderId);
+    } else {
+      throw new Error(paymentResult.message || "支付失败");
+    }
   } catch (err) {
     error.value = err instanceof Error ? err.message : "支付失败，请重试";
   } finally {
     loading.value = false;
   }
+};
+
+// 支付处理方法 (已移至PaymentService)
+
+const processPaymentSuccess = async (orderId: string) => {
+  const { OrderService } = await import("@/services/orderService");
+  
+  // 处理支付成功
+  await OrderService.processPayment({
+    order_id: orderId,
+    payment_method: selectedMethod.value!,
+    payment_id: `PAY_${Date.now()}`, // 模拟支付ID
+    amount: finalAmount.value,
+  });
+
+  // 支付成功，跳转到成功页面
+  router.push({
+    path: "/payment/success",
+    query: {
+      order: orderId,
+      amount: finalAmount.value.toString(),
+    },
+  });
 };
 
 const goBack = () => {
