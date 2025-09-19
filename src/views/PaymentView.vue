@@ -83,7 +83,7 @@
                 <label for="fullName">姓名 *</label>
                 <input
                   id="fullName"
-                  v-model="billingInfo.fullName"
+                  v-model="billingInfo.full_name"
                   type="text"
                   required
                   placeholder="请输入姓名"
@@ -184,11 +184,12 @@ const orderItems = ref([
 ]);
 
 const billingInfo = ref({
-  fullName: "",
+  full_name: "",
   email: "",
   country: "",
   city: "",
   address: "",
+  postal_code: "",
 });
 
 const paymentMethods = [
@@ -227,7 +228,7 @@ const finalAmount = computed(() => subtotal.value - discount.value);
 const canPay = computed(() => {
   return (
     selectedMethod.value &&
-    billingInfo.value.fullName &&
+    billingInfo.value.full_name &&
     billingInfo.value.email &&
     billingInfo.value.country &&
     billingInfo.value.city &&
@@ -293,8 +294,8 @@ const handlePayment = async () => {
     // 处理支付成功
     await OrderService.processPayment({
       order_id: orderId,
-      paymentMethod: selectedMethod.value!,
-      paymentId: `PAY_${Date.now()}`, // 模拟支付ID
+      payment_method: selectedMethod.value!,
+      payment_id: `PAY_${Date.now()}`, // 模拟支付ID
       amount: finalAmount.value,
     });
 
