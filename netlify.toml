@@ -1,11 +1,12 @@
 
 [build]
-  command = "rm -rf node_modules && npm install && npm install --optional && npm run build"
+  command = "npm install --no-optional && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--prefer-offline --no-audit"
+  NPM_CONFIG_OPTIONAL = "false"
   # Supabase 环境变量通过 Netlify 环境变量设置
   
 # SPA重定向规则 - 所有请求重定向到index.html
