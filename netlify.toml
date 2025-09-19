@@ -1,6 +1,6 @@
 
 [build]
-  command = "npm install && npm run build"
+  command = "rm -rf node_modules && npm install && npm install --optional && npm run build"
   publish = "dist"
 
 [build.environment]
