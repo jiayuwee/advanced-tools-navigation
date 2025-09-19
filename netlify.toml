@@ -1,6 +1,6 @@
 
 [build]
-  command = "rm -rf node_modules package-lock.json && npm cache clean --force && npm install && npm run build"
+  command = "npm install && npm run build"
   publish = "dist"
 
 [build.environment]
