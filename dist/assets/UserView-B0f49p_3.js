@@ -1,0 +1,2 @@
+import{d as s,m as a,q as e,y as r,L as o,A as t}from"./vendor-dtMHlISa.js";import{_ as d}from"./index-BbQlNKpj.js";const n={class:"user-view"},i={class:"container"},c=d(s({__name:"UserView",setup:s=>(s,d)=>{const c=o("router-view");return t(),a("div",n,[e("div",i,[d[0]||(d[0]=e("h1",null,"个人中心",-1)),d[1]||(d[1]=e("p",null,"用户功能正在开发中...",-1)),r(c)])])}}),[["__scopeId","data-v-7d8c2daa"]]);export{c as default};
+//# sourceMappingURL=UserView-B0f49p_3.js.map

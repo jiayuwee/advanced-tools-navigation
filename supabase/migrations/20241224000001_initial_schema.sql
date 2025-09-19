@@ -160,6 +160,8 @@ CREATE TABLE IF NOT EXISTS orders (
     currency TEXT DEFAULT 'CNY',
     status order_status DEFAULT 'pending',
     payment_method TEXT,
+    payment_id TEXT,
+    billing_address JSONB,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     completed_at TIMESTAMP WITH TIME ZONE
