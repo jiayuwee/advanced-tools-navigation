@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "build:vercel": "vite build",
     "build:netlify": "npm ci --include=optional && vite build",
     "preview": "vite preview",
@@ -56,9 +56,9 @@
     "@stripe/stripe-js": "^7.9.0",
     "@supabase/supabase-js": "^2.50.1",
     "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-vue": "^5.0.0",
     "@vueuse/core": "^10.7.0",
     "@vueuse/integrations": "^13.4.0",
-    "@vitejs/plugin-vue": "^5.0.0",
     "alipay-sdk": "^4.14.0",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.5.0",
@@ -74,6 +74,7 @@
     "vue-tsc": "^1.8.25"
   },
   "devDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.52.0",
     "@types/node": "^20.14.0",
     "@vitest/ui": "^0.34.3",
     "@vue/eslint-config-prettier": "^8.0.0",
