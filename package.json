@@ -74,8 +74,6 @@
     "vue-tsc": "^1.8.25"
   },
   "devDependencies": {
-    "@esbuild/linux-x64": "^0.19.0",
-    "@rollup/rollup-linux-x64-gnu": "^4.50.2",
     "@types/node": "^20.14.0",
     "@vitest/ui": "^0.34.3",
     "@vue/eslint-config-prettier": "^8.0.0",
