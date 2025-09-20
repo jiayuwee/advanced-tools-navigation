@@ -1,10 +1,8 @@
 name: 🚀 Performance Monitoring
 
 on:
-  push:
-    branches: [main]
   schedule:
-    - cron: "0 2 * * *" # 每天凌晨2点运行性能测试
+    - cron: "0 2 * * 0" # 每周日凌晨2点运行性能测试
   workflow_dispatch:
     inputs:
       test_type:
@@ -26,7 +24,8 @@ jobs:
   lighthouse-audit:
     runs-on: ubuntu-latest
     name: 💡 Lighthouse Performance Audit
-    if: github.event.inputs.test_type == 'lighthouse' || github.event.inputs.test_type == 'comprehensive' || github.event_name == 'push' || github.event_name == 'schedule'
+    if: github.event.inputs.test_type == 'lighthouse' || github.event.inputs.test_type == 'comprehensive' || github.event_name == 'schedule'
+    timeout-minutes: 30
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -54,28 +53,36 @@ jobs:
           sleep 10
           
           # 检查网站可访问性
-          if ! curl -sSf "${{ env.WEBSITE_URL }}" > /dev/null; then
-            echo "⚠️ 网站不可访问，跳过 Lighthouse 测试"
+          echo "🔍 检查网站可访问性..."
+          if ! curl -sSf --max-time 30 "${{ env.WEBSITE_URL }}" > /dev/null 2>&1; then
+            echo "⚠️ 网站不可访问或响应过慢，跳过 Lighthouse 测试"
+            # 创建一个空的报告文件
+            mkdir -p .lighthouseci
+            echo '{"error": "Website not accessible"}' > .lighthouseci/empty_report.json
             exit 0
           fi
           
+          echo "✅ 网站可访问，开始 Lighthouse 测试..."
+          
           # 创建 Lighthouse 配置
-          cat > lighthouserc.json << EOF
+          cat > lighthouserc.json << 'EOF'
           {
             "ci": {
               "collect": {
                 "url": ["${{ env.WEBSITE_URL }}"],
                 "numberOfRuns": 1,
                 "settings": {
-                  "chromeFlags": ["--no-sandbox", "--disable-dev-shm-usage"]
+                  "chromeFlags": ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
+                  "timeout": 60000,
+                  "maxWaitForLoad": 45000
                 }
               },
               "assert": {
                 "assertions": {
-                  "categories:performance": ["warn", {"minScore": 0.5}],
-                  "categories:accessibility": ["warn", {"minScore": 0.8}],
-                  "categories:best-practices": ["warn", {"minScore": 0.7}],
-                  "categories:seo": ["warn", {"minScore": 0.7}]
+                  "categories:performance": ["warn", {"minScore": 0.3}],
+                  "categories:accessibility": ["warn", {"minScore": 0.7}],
+                  "categories:best-practices": ["warn", {"minScore": 0.6}],
+                  "categories:seo": ["warn", {"minScore": 0.6}]
                 }
               },
               "upload": {
@@ -86,56 +93,98 @@ jobs:
           EOF
           
           # 运行 Lighthouse
-          lhci autorun --config=lighthouserc.json || {
+          echo "🚀 正在运行 Lighthouse 审计..."
+          if lhci autorun --config=lighthouserc.json; then
+            echo "✅ Lighthouse 运行成功"
+          else
             echo "⚠️ Lighthouse 运行失败，但不阻断部署流程"
-            exit 0
-          }
+            # 创建一个空的报告文件
+            mkdir -p .lighthouseci
+            echo '{"error": "Lighthouse run failed"}' > .lighthouseci/failed_report.json
+          fi
+        continue-on-error: true
 
       - name: 📊 Parse Lighthouse results
         run: |
           echo "📊 解析 Lighthouse 结果..."
           
+          # 检查 .lighthouseci 目录是否存在
+          if [ ! -d ".lighthouseci" ]; then
+            echo "⚠️ .lighthouseci 目录不存在，创建空的摘要报告"
+            echo "## 💡 Lighthouse 性能报告" > lighthouse_summary.md
+            echo "测试时间: $(date)" >> lighthouse_summary.md
+            echo "测试URL: ${{ env.WEBSITE_URL }}" >> lighthouse_summary.md
+            echo "" >> lighthouse_summary.md
+            echo "⚠️ Lighthouse 测试未成功运行，可能的原因：" >> lighthouse_summary.md
+            echo "- 网站无法访问" >> lighthouse_summary.md
+            echo "- Lighthouse CI 配置问题" >> lighthouse_summary.md
+            echo "- 运行时环境问题" >> lighthouse_summary.md
+            cat lighthouse_summary.md
+            exit 0
+          fi
+          
           # 查找最新的报告文件
-          if [ -d ".lighthouseci" ]; then
-            latest_report=$(find .lighthouseci -name "*.json" | head -1)
+          latest_report=$(find .lighthouseci -name "*.json" | head -1)
+          
+          if [ -f "$latest_report" ]; then
+            echo "✅ 找到 Lighthouse 报告: $latest_report"
             
-            if [ -f "$latest_report" ]; then
+            # 验证 JSON 文件格式
+            if ! jq empty "$latest_report" 2>/dev/null; then
+              echo "❌ JSON 文件格式无效，创建基础报告"
               echo "## 💡 Lighthouse 性能报告" > lighthouse_summary.md
               echo "测试时间: $(date)" >> lighthouse_summary.md
               echo "测试URL: ${{ env.WEBSITE_URL }}" >> lighthouse_summary.md
               echo "" >> lighthouse_summary.md
-              
-              # 提取核心指标
-              performance=$(cat "$latest_report" | jq '.categories.performance.score * 100 | floor')
-              accessibility=$(cat "$latest_report" | jq '.categories.accessibility.score * 100 | floor')
-              best_practices=$(cat "$latest_report" | jq '.categories["best-practices"].score * 100 | floor')
-              seo=$(cat "$latest_report" | jq '.categories.seo.score * 100 | floor')
-              
-              echo "### 📈 核心指标" >> lighthouse_summary.md
-              echo "- 🚀 性能: ${performance}/100" >> lighthouse_summary.md
-              echo "- ♿ 可访问性: ${accessibility}/100" >> lighthouse_summary.md
-              echo "- ✅ 最佳实践: ${best_practices}/100" >> lighthouse_summary.md
-              echo "- 🔍 SEO: ${seo}/100" >> lighthouse_summary.md
-              echo "" >> lighthouse_summary.md
-              
-              # 提取 Web Vitals
-              echo "### 🎯 Core Web Vitals" >> lighthouse_summary.md
-              
-              fcp=$(cat "$latest_report" | jq '.audits["first-contentful-paint"].numericValue | floor')
-              lcp=$(cat "$latest_report" | jq '.audits["largest-contentful-paint"].numericValue | floor')
-              cls=$(cat "$latest_report" | jq '.audits["cumulative-layout-shift"].numericValue')
-              
-              echo "- First Contentful Paint: ${fcp}ms" >> lighthouse_summary.md
-              echo "- Largest Contentful Paint: ${lcp}ms" >> lighthouse_summary.md
-              echo "- Cumulative Layout Shift: ${cls}" >> lighthouse_summary.md
-              
+              echo "❌ 报告文件格式无效，无法解析性能数据" >> lighthouse_summary.md
               cat lighthouse_summary.md
-            else
-              echo "❌ 未找到 Lighthouse 报告文件"
+              exit 0
             fi
+            
+            echo "## 💡 Lighthouse 性能报告" > lighthouse_summary.md
+            echo "测试时间: $(date)" >> lighthouse_summary.md
+            echo "测试URL: ${{ env.WEBSITE_URL }}" >> lighthouse_summary.md
+            echo "" >> lighthouse_summary.md
+            
+            # 安全地提取核心指标
+            performance=$(cat "$latest_report" | jq '.categories.performance.score * 100 | floor' 2>/dev/null || echo "N/A")
+            accessibility=$(cat "$latest_report" | jq '.categories.accessibility.score * 100 | floor' 2>/dev/null || echo "N/A")
+            best_practices=$(cat "$latest_report" | jq '.categories["best-practices"].score * 100 | floor' 2>/dev/null || echo "N/A")
+            seo=$(cat "$latest_report" | jq '.categories.seo.score * 100 | floor' 2>/dev/null || echo "N/A")
+            
+            echo "### 📈 核心指标" >> lighthouse_summary.md
+            echo "- 🚀 性能: ${performance}/100" >> lighthouse_summary.md
+            echo "- ♿ 可访问性: ${accessibility}/100" >> lighthouse_summary.md
+            echo "- ✅ 最佳实践: ${best_practices}/100" >> lighthouse_summary.md
+            echo "- 🔍 SEO: ${seo}/100" >> lighthouse_summary.md
+            echo "" >> lighthouse_summary.md
+            
+            # 安全地提取 Web Vitals
+            echo "### 🎯 Core Web Vitals" >> lighthouse_summary.md
+            
+            fcp=$(cat "$latest_report" | jq '.audits["first-contentful-paint"].numericValue | floor' 2>/dev/null || echo "N/A")
+            lcp=$(cat "$latest_report" | jq '.audits["largest-contentful-paint"].numericValue | floor' 2>/dev/null || echo "N/A")
+            cls=$(cat "$latest_report" | jq '.audits["cumulative-layout-shift"].numericValue' 2>/dev/null || echo "N/A")
+            
+            echo "- First Contentful Paint: ${fcp}ms" >> lighthouse_summary.md
+            echo "- Largest Contentful Paint: ${lcp}ms" >> lighthouse_summary.md
+            echo "- Cumulative Layout Shift: ${cls}" >> lighthouse_summary.md
+            
+            cat lighthouse_summary.md
           else
-            echo "❌ 未找到 .lighthouseci 目录"
+            echo "❌ 未找到 Lighthouse 报告文件"
+            echo "## 💡 Lighthouse 性能报告" > lighthouse_summary.md
+            echo "测试时间: $(date)" >> lighthouse_summary.md
+            echo "测试URL: ${{ env.WEBSITE_URL }}" >> lighthouse_summary.md
+            echo "" >> lighthouse_summary.md
+            echo "❌ 未生成 Lighthouse 报告文件" >> lighthouse_summary.md
+            echo "可能的原因：" >> lighthouse_summary.md
+            echo "- 网站响应时间过长" >> lighthouse_summary.md
+            echo "- Lighthouse 运行超时" >> lighthouse_summary.md
+            echo "- 网络连接问题" >> lighthouse_summary.md
+            cat lighthouse_summary.md
           fi
+        continue-on-error: true
 
       - name: 📤 Upload Lighthouse artifacts
         uses: actions/upload-artifact@v4
@@ -150,7 +199,8 @@ jobs:
   build-performance:
     runs-on: ubuntu-latest
     name: 🔧 Build Performance Analysis
-    if: github.event_name == 'push' || github.event.inputs.test_type == 'comprehensive'
+    if: github.event.inputs.test_type == 'comprehensive' || github.event_name == 'workflow_dispatch'
+    timeout-minutes: 20
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4

@@ -1,0 +1,148 @@
+name: 🚀 Deploy Performance Check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  WEBSITE_URL: 'https://ramusi.cn'
+  NODE_VERSION: '18.19.0'
+
+jobs:
+  # 简化的性能检查 - 只在部署时运行
+  deploy-check:
+    runs-on: ubuntu-latest
+    name: 🎯 Deploy Performance Check
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: |
+          echo "📦 安装依赖..."
+          npm ci --prefer-offline --no-audit
+
+      - name: 🔨 Build project
+        run: |
+          echo "🔨 构建项目..."
+          npm run build
+
+      - name: 📊 Basic performance check
+        run: |
+          echo "📊 基础性能检查..."
+          
+          # 检查构建产物大小
+          if [ -d "dist" ]; then
+            total_size=$(du -sh dist | cut -f1)
+            echo "构建产物总大小: $total_size"
+            
+            # 检查是否有过大的文件
+            large_files=$(find dist -type f -size +1M | wc -l)
+            if [ "$large_files" -gt 0 ]; then
+              echo "⚠️ 发现 $large_files 个大文件 (>1MB):"
+              find dist -type f -size +1M -exec ls -lh {} \;
+            else
+              echo "✅ 无过大文件"
+            fi
+            
+            # 检查 JS 文件数量
+            js_files=$(find dist -name "*.js" | wc -l)
+            css_files=$(find dist -name "*.css" | wc -l)
+            echo "JavaScript 文件数量: $js_files"
+            echo "CSS 文件数量: $css_files"
+            
+          else
+            echo "❌ dist 目录不存在"
+            exit 1
+          fi
+
+      - name: 🌐 Website accessibility check
+        run: |
+          echo "🌐 网站可访问性检查..."
+          
+          # 简单的网站可访问性检查
+          if curl -sSf --max-time 30 "${{ env.WEBSITE_URL }}" > /dev/null 2>&1; then
+            echo "✅ 网站可访问"
+            
+            # 获取响应时间
+            response_time=$(curl -o /dev/null -s -w '%{time_total}' "${{ env.WEBSITE_URL }}")
+            echo "响应时间: ${response_time}秒"
+            
+            # 检查响应时间是否合理
+            if (( $(echo "$response_time > 5.0" | bc -l) )); then
+              echo "⚠️ 响应时间较慢 (>5秒)"
+            else
+              echo "✅ 响应时间正常"
+            fi
+            
+          else
+            echo "❌ 网站无法访问"
+            # 不让这个失败阻止整个流程
+          fi
+        continue-on-error: true
+
+      - name: 📋 Generate simple report
+        run: |
+          echo "📋 生成简单报告..."
+          
+          echo "## 🚀 部署性能检查报告" > deploy_check.md
+          echo "检查时间: $(date)" >> deploy_check.md
+          echo "目标网站: ${{ env.WEBSITE_URL }}" >> deploy_check.md
+          echo "" >> deploy_check.md
+          
+          if [ -d "dist" ]; then
+            total_size=$(du -sh dist | cut -f1)
+            echo "### 📊 构建统计" >> deploy_check.md
+            echo "- 构建产物大小: $total_size" >> deploy_check.md
+            echo "- JavaScript 文件: $(find dist -name "*.js" | wc -l) 个" >> deploy_check.md
+            echo "- CSS 文件: $(find dist -name "*.css" | wc -l) 个" >> deploy_check.md
+            echo "- 图片文件: $(find dist -name "*.png" -o -name "*.jpg" -o -name "*.svg" | wc -l) 个" >> deploy_check.md
+          fi
+          
+          echo "" >> deploy_check.md
+          echo "### 🌐 网站状态" >> deploy_check.md
+          if curl -sSf --max-time 30 "${{ env.WEBSITE_URL }}" > /dev/null 2>&1; then
+            response_time=$(curl -o /dev/null -s -w '%{time_total}' "${{ env.WEBSITE_URL }}")
+            echo "- 可访问性: ✅ 正常" >> deploy_check.md
+            echo "- 响应时间: ${response_time}秒" >> deploy_check.md
+          else
+            echo "- 可访问性: ❌ 无法访问" >> deploy_check.md
+          fi
+          
+          echo "" >> deploy_check.md
+          echo "### 📈 优化建议" >> deploy_check.md
+          echo "- 监控构建产物大小变化" >> deploy_check.md
+          echo "- 定期检查网站响应时间" >> deploy_check.md
+          echo "- 使用 CDN 加速静态资源" >> deploy_check.md
+          
+          cat deploy_check.md
+
+      - name: 📤 Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-check-report
+          path: deploy_check.md
+          retention-days: 7
+
+  # 可选的详细性能测试 - 只在手动触发时运行
+  detailed-performance:
+    runs-on: ubuntu-latest
+    name: 🔍 Detailed Performance Test
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: 🔍 Run detailed tests
+        run: |
+          echo "🔍 运行详细性能测试..."
+          echo "这个步骤只在手动触发时运行，避免影响正常部署"
+          
+          # 这里可以添加更复杂的性能测试
+          # 比如 Lighthouse、负载测试等
+          
+          echo "✅ 详细测试完成"

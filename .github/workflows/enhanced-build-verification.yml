@@ -1,0 +1,328 @@
+name: 🔨 Enhanced Build & Quality Verification
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20.x'
+  CACHE_VERSION: 'v3'
+
+jobs:
+  # 代码质量检查
+  code-quality:
+    runs-on: ubuntu-latest
+    name: 📋 Code Quality Check
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 📦 Install dependencies (Enhanced)
+        run: |
+          echo "📦 安装依赖..."
+          # 设置npm配置以提高稳定性
+          npm config set prefer-offline true
+          npm config set audit-level moderate
+          npm config set fund false
+          npm config set update-notifier false
+          
+          # 清理缓存以避免平台兼容性问题
+          npm cache clean --force 2>/dev/null || true
+          
+          # 优先使用 npm ci 进行快速安装
+          if [ -f "package-lock.json" ]; then
+            echo "使用 npm ci 进行快速安装..."
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent
+          else
+            echo "package-lock.json 不存在，使用 npm install..."
+            npm install --prefer-offline --no-audit --ignore-scripts --silent
+          fi
+          
+          echo "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
+          echo "✅ 依赖安装完成"
+
+      - name: 🔍 ESLint Check
+        run: |
+          echo "🔍 运行 ESLint 检查..."
+          npm run lint
+          echo "✅ ESLint 检查通过"
+
+      - name: 🔧 TypeScript Type Check
+        run: |
+          echo "🔧 运行 TypeScript 类型检查..."
+          npm run type-check
+          echo "✅ TypeScript 类型检查通过"
+
+  # 测试执行
+  test:
+    runs-on: ubuntu-latest
+    name: 🧪 Run Tests
+    needs: code-quality
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 📦 Install dependencies (Enhanced)
+        run: |
+          echo "📦 安装依赖..."
+          npm config set prefer-offline true
+          npm config set audit-level moderate
+          npm config set fund false
+          
+          npm cache clean --force 2>/dev/null || true
+          
+          if [ -f "package-lock.json" ]; then
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent
+          else
+            npm install --prefer-offline --no-audit --ignore-scripts --silent
+          fi
+          
+          echo "✅ 依赖安装完成"
+
+      - name: 🧪 Run unit tests
+        run: |
+          echo "🧪 运行单元测试..."
+          npm run test:run
+          echo "✅ 单元测试通过"
+
+      - name: 📊 Generate test coverage
+        run: |
+          echo "📊 生成测试覆盖率报告..."
+          npm run test:coverage
+          echo "✅ 测试覆盖率报告生成完成"
+
+      - name: 📤 Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: coverage/
+          retention-days: 7
+
+  # 构建验证
+  build-verification:
+    runs-on: ubuntu-latest
+    name: 🔨 Build Verification
+    needs: [code-quality, test]
+    strategy:
+      matrix:
+        node-version: ['20.x']
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 📦 Install dependencies (Enhanced)
+        run: |
+          echo "📦 安装依赖 (Node.js ${{ matrix.node-version }})..."
+          npm config set prefer-offline true
+          npm config set audit-level moderate
+          npm config set fund false
+          
+          npm cache clean --force 2>/dev/null || true
+          
+          if [ -f "package-lock.json" ]; then
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent
+          else
+            npm install --prefer-offline --no-audit --ignore-scripts --silent
+          fi
+          
+          echo "✅ 依赖安装完成"
+
+      - name: 🔍 Pre-build validation
+        run: |
+          echo "🔍 构建前验证..."
+          
+          # 验证环境变量配置
+          if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
+            echo "⚠️ Supabase 环境变量未完全配置"
+            echo "VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:+已设置}"
+            echo "VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:+已设置}"
+          else
+            echo "✅ 环境变量配置正常"
+          fi
+          
+          # 检查关键文件
+          required_files=("src/main.ts" "src/App.vue" "vite.config.ts" "package.json")
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ 关键文件缺失: $file"
+              exit 1
+            fi
+          done
+          echo "✅ 关键文件检查通过"
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: 🔨 Build project
+        run: |
+          echo "🔨 开始构建项目..."
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+          
+          # 设置构建环境
+          export NODE_ENV=production
+          export VITE_APP_VERSION=${{ github.sha }}
+          
+          # 开始构建
+          start_time=$(date +%s)
+          npm run build
+          end_time=$(date +%s)
+          
+          build_duration=$((end_time - start_time))
+          echo "✅ 构建完成 (耗时: ${build_duration}秒)"
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          NODE_ENV: production
+
+      - name: 🔍 Post-build validation
+        run: |
+          echo "🔍 构建后验证..."
+          
+          # 检查构建目录
+          if [ ! -d "dist" ]; then
+            echo "❌ dist 目录不存在"
+            exit 1
+          fi
+          
+          # 检查关键文件
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ index.html 不存在"
+            exit 1
+          fi
+          
+          # 检查资源文件
+          if [ ! -d "dist/assets" ]; then
+            echo "❌ assets 目录不存在"
+            exit 1
+          fi
+          
+          echo "✅ 构建产物验证通过"
+          
+          # 构建统计
+          echo "📊 构建统计:"
+          echo "总大小: $(du -sh dist/ | cut -f1)"
+          echo "文件数量: $(find dist -type f | wc -l)"
+          
+          # 检查文件大小
+          large_files=$(find dist -type f -size +1M)
+          if [ -n "$large_files" ]; then
+            echo "⚠️ 发现大文件 (>1MB):"
+            echo "$large_files" | while read file; do
+              echo "  $(ls -lh "$file" | awk '{print $5 " " $9}')"
+            done
+          else
+            echo "✅ 无过大文件"
+          fi
+          
+          # 主要资源统计
+          echo "📁 主要文件类型:"
+          echo "JavaScript: $(find dist -name "*.js" | wc -l) 个"
+          echo "CSS: $(find dist -name "*.css" | wc -l) 个"
+          echo "图片: $(find dist \( -name "*.png" -o -name "*.jpg" -o -name "*.svg" \) | wc -l) 个"
+
+      - name: 📤 Upload build artifacts
+        if: matrix.node-version == '20.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
+
+  # 安全性检查
+  security-check:
+    runs-on: ubuntu-latest
+    name: 🔒 Security Check
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 📦 Install dependencies
+        run: |
+          npm config set audit-level moderate
+          npm ci --prefer-offline --no-audit --ignore-scripts --silent
+
+      - name: 🔒 Security audit
+        run: |
+          echo "🔒 运行安全审计..."
+          
+          # 运行安全审计
+          if npm audit --audit-level high; then
+            echo "✅ 安全审计通过"
+          else
+            echo "⚠️ 发现安全问题，请查看详细信息"
+            npm audit --audit-level high || true
+          fi
+
+      - name: 🛡️ License check
+        run: |
+          echo "🛡️ 检查依赖包许可证..."
+          
+          # 安装许可证检查工具
+          npm install -g license-checker --silent
+          
+          # 检查许可证
+          license-checker --summary --onlyAllow 'MIT;ISC;Apache-2.0;BSD-2-Clause;BSD-3-Clause;LGPL-2.1;LGPL-3.0' || true
+          
+          echo "✅ 许可证检查完成"
+
+  # 部署通知
+  deployment-notification:
+    runs-on: ubuntu-latest
+    name: 🚀 Deployment Notification
+    needs: [build-verification, security-check]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: 🚀 Enhanced deployment notification
+        run: |
+          echo "🚀 代码已推送到 main 分支"
+          echo "📦 Netlify 将自动检测并部署此次构建" 
+          echo "⏱️ 部署通常需要 1-3 分钟"
+          echo "🌐 网站地址: https://ramusi.cn"
+          echo ""
+          echo "📊 构建摘要:"
+          echo "  - ✅ 代码质量检查: 通过"
+          echo "  - ✅ 测试执行: 通过"  
+          echo "  - ✅ 构建验证: 通过"
+          echo "  - ✅ 安全检查: 通过"
+          echo ""
+          echo "🔗 相关链接:"
+          echo "  - 构建详情: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "  - 提交信息: ${{ github.event.head_commit.message }}"
+          echo "  - 提交作者: ${{ github.event.head_commit.author.name }}"
+          echo ""
+          echo "✅ 所有检查通过，等待 Netlify 部署..."

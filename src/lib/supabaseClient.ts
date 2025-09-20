@@ -1,39 +1,17 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../types/database";
+import { getEnvironmentConfig } from "../utils/envValidation";
 
-// 获取环境变量
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// 验证环境变量
-if (!supabaseUrl || !supabaseAnonKey || 
-    supabaseUrl.includes('your-project-ref') || 
-    supabaseAnonKey.includes('your-anon-key')) {
-  console.warn(`
-    ⚠️  Supabase 环境变量未正确配置!
-
-    开发环境: 请检查 .env.local 文件中是否设置了:
-      VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
-
-    生产环境: 请确保 Netlify 环境变量已设置:
-      VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
-
-    当前值:
-      VITE_SUPABASE_URL: ${supabaseUrl || "未设置"}
-      VITE_SUPABASE_ANON_KEY: ${supabaseAnonKey ? "已设置" : "未设置"}
-      
-    应用将使用模拟数据运行，某些功能可能不可用。
-  `);
-}
+// 获取验证后的环境配置
+const envConfig = getEnvironmentConfig();
+const { supabase: supabaseConfig } = envConfig;
 
 // 创建 Supabase 客户端
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-  },
-});
+export const supabase = createClient<Database>(
+  supabaseConfig.url,
+  supabaseConfig.anonKey,
+  supabaseConfig.options
+);
 
 // 数据库表名常量
 export const TABLES = {
@@ -101,7 +79,7 @@ export const getCurrentUser = async () => {
 };
 
 // 获取用户角色
-export const getUserRole = async (userId: string) => {
+export const getUserRole = async (userId: string): Promise<string> => {
   const { data, error } = await supabase
     .from(TABLES.USER_PROFILES)
     .select("role")
@@ -113,7 +91,7 @@ export const getUserRole = async (userId: string) => {
     return "user";
   }
 
-  return data?.role || "user";
+  return data?.role ?? "user";
 };
 
 // 检查用户是否为管理员
@@ -163,8 +141,8 @@ export const deleteFile = async (bucket: string, path: string) => {
 };
 
 // 数据库查询工具函数
-export const createRecord = async (table: string, data: Record<string, any>) => {
-  const { data: result, error } = await supabase
+export const createRecord = async (table: string, data: any): Promise<any> => {
+  const { data: result, error } = await (supabase as any)
     .from(table)
     .insert(data)
     .select()
@@ -180,9 +158,9 @@ export const createRecord = async (table: string, data: Record<string, any>) => 
 export const updateRecord = async (
   table: string,
   id: string,
-  data: Record<string, any>,
-) => {
-  const { data: result, error } = await supabase
+  data: any,
+): Promise<any> => {
+  const { data: result, error } = await (supabase as any)
     .from(table)
     .update(data)
     .eq("id", id)
@@ -197,7 +175,7 @@ export const updateRecord = async (
 };
 
 export const deleteRecord = async (table: string, id: string) => {
-  const { error } = await supabase.from(table).delete().eq("id", id);
+  const { error } = await supabase.from(table as any).delete().eq("id", id);
 
   if (error) {
     throw new Error(handleSupabaseError(error));
@@ -206,7 +184,7 @@ export const deleteRecord = async (table: string, id: string) => {
 
 export const getRecord = async (table: string, id: string) => {
   const { data, error } = await supabase
-    .from(table)
+    .from(table as any)
     .select("*")
     .eq("id", id)
     .single();
@@ -228,7 +206,7 @@ export const getRecords = async (
     offset?: number;
   },
 ) => {
-  let query = supabase.from(table).select(options?.select || "*");
+  let query = supabase.from(table as any).select(options?.select || "*");
 
   // 应用过滤条件
   if (options?.filter) {

@@ -60,11 +60,11 @@ export const useCategoriesStore = defineStore("categories", () => {
             updated_at: new Date().toISOString()
           },
           {
-            id: '3',
-            name: 'AI工具',
-            description: '人工智能相关工具',
-            icon: '🤖',
-            color: '#10b981',
+            id: '550e8400-e29b-41d4-a716-446655440003',
+            name: '办公工具',
+            description: '办公和生产力工具',
+            icon: '📊',
+            color: '#388e3c',
             parent_id: null,
             sort_order: 3,
             is_active: true,
@@ -72,11 +72,11 @@ export const useCategoriesStore = defineStore("categories", () => {
             updated_at: new Date().toISOString()
           },
           {
-            id: '4',
-            name: '办公软件',
-            description: '提升办公效率的工具',
-            icon: '📊',
-            color: '#f59e0b',
+            id: '550e8400-e29b-41d4-a716-446655440004',
+            name: '学习工具',
+            description: '学习和教育相关的工具',
+            icon: '📚',
+            color: '#f57c00',
             parent_id: null,
             sort_order: 4,
             is_active: true,
@@ -84,13 +84,37 @@ export const useCategoriesStore = defineStore("categories", () => {
             updated_at: new Date().toISOString()
           },
           {
-            id: '5',
-            name: '其他工具',
-            description: '其他实用工具',
-            icon: '🔧',
-            color: '#8b5cf6',
+            id: '550e8400-e29b-41d4-a716-446655440005',
+            name: '网络工具',
+            description: '网络服务和云平台',
+            icon: '🌐',
+            color: '#2196f3',
             parent_id: null,
             sort_order: 5,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '550e8400-e29b-41d4-a716-446655440006',
+            name: '娱乐工具',
+            description: '娱乐和休闲工具',
+            icon: '🎮',
+            color: '#e91e63',
+            parent_id: null,
+            sort_order: 6,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '550e8400-e29b-41d4-a716-446655440007',
+            name: '实用工具',
+            description: '日常实用工具',
+            icon: '🔧',
+            color: '#607d8b',
+            parent_id: null,
+            sort_order: 7,
             is_active: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -117,7 +141,7 @@ export const useCategoriesStore = defineStore("categories", () => {
       error.value = e;
       
       // 如果Supabase调用失败，回退到模拟数据
-      if (categories.value.length === 0) {
+        if (categories.value.length === 0) {
         console.warn('Supabase调用失败，使用模拟分类数据');
         categories.value = [
           {
@@ -140,6 +164,30 @@ export const useCategoriesStore = defineStore("categories", () => {
             color: '#ef4444',
             parent_id: null,
             sort_order: 2,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '550e8400-e29b-41d4-a716-446655440003',
+            name: '办公工具',
+            description: '办公和生产力工具',
+            icon: '📊',
+            color: '#388e3c',
+            parent_id: null,
+            sort_order: 3,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '550e8400-e29b-41d4-a716-446655440004',
+            name: '学习工具',
+            description: '学习和教育相关的工具',
+            icon: '📚',
+            color: '#f57c00',
+            parent_id: null,
+            sort_order: 4,
             is_active: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()

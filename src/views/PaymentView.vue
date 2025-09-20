@@ -136,8 +136,40 @@
           </form>
         </div>
 
+        <!-- 支付组件 -->
+        <div v-if="showPaymentComponent" class="payment-component">
+          <!-- Stripe 支付 -->
+          <StripePayment
+            v-if="selectedMethod === 'stripe' && stripeClientSecret"
+            :client-secret="stripeClientSecret"
+            :amount="finalAmount"
+            :order-id="currentOrderId"
+            @success="onPaymentSuccess"
+            @error="onPaymentError"
+          />
+          
+          <!-- 支付宝支付 -->
+          <AlipayPayment
+            v-else-if="selectedMethod === 'alipay'"
+            :amount="finalAmount"
+            :order-id="currentOrderId"
+            @success="onPaymentSuccess"
+            @error="onPaymentError"
+          />
+          
+          <!-- 微信支付 -->
+          <WechatPayment
+            v-else-if="selectedMethod === 'wechat'"
+            :amount="finalAmount"
+            :order-id="currentOrderId"
+            @success="onPaymentSuccess"
+            @error="onPaymentError"
+            @cancel="onPaymentCancel"
+          />
+        </div>
+
         <!-- 支付按钮 -->
-        <div class="payment-actions">
+        <div v-else class="payment-actions">
           <button class="cancel-btn" @click="goBack">取消订单</button>
           <button
             class="pay-btn"
@@ -163,6 +195,9 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { CheckIcon } from "lucide-vue-next";
+import StripePayment from "@/components/StripePayment.vue";
+import AlipayPayment from "@/components/AlipayPayment.vue";
+import WechatPayment from "@/components/WechatPayment.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -171,6 +206,9 @@ const route = useRoute();
 const loading = ref(false);
 const error = ref<string | null>(null);
 const selectedMethod = ref("");
+const showPaymentComponent = ref(false);
+const stripeClientSecret = ref("");
+const currentOrderId = ref("");
 
 const orderItems = ref([
   {
@@ -294,25 +332,67 @@ const handlePayment = async () => {
       orderId = newOrder.id;
     }
 
-    // 根据选择的支付方式处理支付
-    const paymentResult = await PaymentService.processPayment({
-      order_id: orderId,
-      payment_method: selectedMethod.value,
-      payment_id: `PAY_${Date.now()}`,
-      amount: finalAmount.value,
-    }, selectedMethod.value);
+    currentOrderId.value = orderId;
 
-    if (paymentResult.success) {
-      // 处理支付成功
-      await processPaymentSuccess(orderId);
+    // 如果选择的是 Stripe，创建 PaymentIntent
+    if (selectedMethod.value === 'stripe') {
+      const paymentResult = await PaymentService.processStripePayment({
+        order_id: orderId,
+        payment_method: selectedMethod.value,
+        payment_id: `PAY_${Date.now()}`,
+        amount: finalAmount.value,
+      });
+
+      if (paymentResult.success && paymentResult.clientSecret) {
+        stripeClientSecret.value = paymentResult.clientSecret;
+        showPaymentComponent.value = true;
+      } else {
+        throw new Error(paymentResult.message || "Stripe 支付初始化失败");
+      }
+    } else if (selectedMethod.value === 'alipay' || selectedMethod.value === 'wechat') {
+      // 支付宝和微信支付直接显示支付组件
+      showPaymentComponent.value = true;
     } else {
-      throw new Error(paymentResult.message || "支付失败");
+      // 其他支付方式
+      const paymentResult = await PaymentService.processPayment({
+        order_id: orderId,
+        payment_method: selectedMethod.value,
+        payment_id: `PAY_${Date.now()}`,
+        amount: finalAmount.value,
+      }, selectedMethod.value);
+
+      if (paymentResult.success) {
+        await processPaymentSuccess(orderId);
+      } else {
+        throw new Error(paymentResult.message || "支付失败");
+      }
     }
   } catch (err) {
     error.value = err instanceof Error ? err.message : "支付失败，请重试";
   } finally {
     loading.value = false;
   }
+};
+
+// Stripe 支付成功回调
+const onPaymentSuccess = async (paymentResult: any) => {
+  try {
+    await processPaymentSuccess(paymentResult.orderId);
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : "支付成功但处理失败";
+  }
+};
+
+// 支付错误回调
+const onPaymentError = (errorMessage: string) => {
+  error.value = errorMessage;
+  showPaymentComponent.value = false;
+};
+
+// 支付取消回调
+const onPaymentCancel = () => {
+  showPaymentComponent.value = false;
+  selectedMethod.value = '';
 };
 
 // 支付处理方法 (已移至PaymentService)

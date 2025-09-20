@@ -22,7 +22,7 @@
 
 ```bash
 # 更新这个密钥
-VITE_SUPABASE_ANON_KEY=你的新密钥
+VITE_SUPABASE_ANON_KEY=sb_publishable_ldLDhQu2qPEppQcIabkYSQ_UDiVVHoV
 
 # 确保URL正确
 VITE_SUPABASE_URL=https://fytiwsutzgmygfxnqoft.supabase.co

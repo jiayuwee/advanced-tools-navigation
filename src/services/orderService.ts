@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import type { Order, BillingAddress, Product } from "@/types";
 
 export interface CreateOrderData {
@@ -48,7 +48,7 @@ export class OrderService {
       const totalAmount = (product as any).price * orderData.quantity;
 
       // 创建订单
-      const orderInsertData = {
+      const orderInsertData: any = {
         user_id: userId,
         total_amount: totalAmount,
         currency: "CNY",
@@ -67,7 +67,7 @@ export class OrderService {
       if (!order) throw new Error("创建订单失败");
 
       // 创建订单项
-      const orderItemInsertData = {
+      const orderItemInsertData: any = {
         order_id: (order as any).id,
         product_id: orderData.product_id,
         quantity: orderData.quantity,
@@ -134,7 +134,7 @@ export class OrderService {
   // 处理支付
   static async processPayment(paymentData: PaymentData): Promise<void> {
     try {
-      const orderUpdateData = {
+      const orderUpdateData: any = {
         status: "paid",
         payment_method: paymentData.payment_method,
         payment_id: paymentData.payment_id,
@@ -152,7 +152,7 @@ export class OrderService {
       if (error) throw error;
       
       // 创建支付记录
-      const paymentInsertData = {
+      const paymentInsertData: any = {
         order_id: paymentData.order_id,
         amount: paymentData.amount,
         currency: "CNY",
@@ -181,7 +181,6 @@ export class OrderService {
     userId: string,
   ): Promise<boolean> {
     try {
-      // @ts-ignore
       const { data, error } = await supabase
         .from("order_items")
         .select(
@@ -210,7 +209,6 @@ export class OrderService {
   // 获取用户订单列表
   static async getUserOrders(userId: string): Promise<Order[]> {
     try {
-      // @ts-ignore
       const { data, error } = await supabase
         .from("orders")
         .select(
@@ -290,7 +288,6 @@ export class OrderService {
         updated_at: new Date().toISOString(),
       };
 
-      // @ts-ignore
       const { error } = await supabase
         .from("orders")
         .update(orderUpdateData)
@@ -311,7 +308,6 @@ export class OrderService {
     userId: string,
   ): Promise<Order | null> {
     try {
-      // @ts-ignore
       const { data, error } = await supabase
         .from("orders")
         .select(
@@ -406,7 +402,6 @@ export class OrderService {
       const limit = filters?.limit || 10;
       const offset = (page - 1) * limit;
 
-      // @ts-ignore
       let query = supabase.from("orders").select(
         `
           *,
@@ -450,7 +445,6 @@ export class OrderService {
         .order("created_at", { ascending: false })
         .range(offset, offset + limit - 1);
 
-      // @ts-ignore
       const { data, error, count } = await query;
 
       if (error) throw error;
@@ -542,7 +536,6 @@ export class OrderService {
         updateData.completed_at = new Date().toISOString();
       }
 
-      // @ts-ignore
       const { error } = await supabase
         .from("orders")
         .update(updateData)
@@ -571,7 +564,6 @@ export class OrderService {
   }> {
     try {
       // 获取所有订单统计
-      // @ts-ignore
       const { data: allOrders, error: allError } = await supabase
         .from("orders")
         .select("status, total_amount, created_at");
@@ -583,7 +575,6 @@ export class OrderService {
       today.setHours(0, 0, 0, 0);
       const todayISO = today.toISOString();
 
-      // @ts-ignore
       const { data: todayOrders, error: todayError } = await supabase
         .from("orders")
         .select("status, total_amount")
@@ -632,7 +623,6 @@ export class OrderService {
     endDate?: string;
   }): Promise<string> {
     try {
-      // @ts-ignore
       let query = supabase.from("orders").select(`
           *,
           user_profiles!inner(email, full_name),
@@ -659,7 +649,6 @@ export class OrderService {
 
       query = query.order("created_at", { ascending: false });
 
-      // @ts-ignore
       const { data, error } = await query;
 
       if (error) throw error;
