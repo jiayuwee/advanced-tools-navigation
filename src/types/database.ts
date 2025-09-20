@@ -381,6 +381,49 @@ export interface Database {
           created_at?: string;
         };
       };
+
+      // 支付表
+      payments: {
+        Row: {
+          id: string;
+          order_id: string;
+          amount: number;
+          currency: string;
+          payment_method: string;
+          payment_provider: string | null;
+          provider_payment_id: string | null;
+          status: "pending" | "completed" | "failed" | "cancelled";
+          created_at: string;
+          updated_at: string;
+          completed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          amount: number;
+          currency?: string;
+          payment_method: string;
+          payment_provider?: string | null;
+          provider_payment_id?: string | null;
+          status?: "pending" | "completed" | "failed" | "cancelled";
+          created_at?: string;
+          updated_at?: string;
+          completed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          amount?: number;
+          currency?: string;
+          payment_method?: string;
+          payment_provider?: string | null;
+          provider_payment_id?: string | null;
+          status?: "pending" | "completed" | "failed" | "cancelled";
+          created_at?: string;
+          updated_at?: string;
+          completed_at?: string | null;
+        };
+      };
     };
     Views: {
       [_ in never]: never;

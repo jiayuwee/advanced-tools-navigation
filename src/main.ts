@@ -39,9 +39,73 @@ async function initializeCoreStores() {
     applyTheme();
 
     console.log("✅ Core stores and theme system initialized successfully.");
+    return true;
   } catch (error) {
     console.error("❌ Failed to initialize one or more stores:", error);
-    // 在这里可以添加全局错误处理逻辑，例如向用户显示一个无法加载应用的提示。
+    
+    // 显示用户友好的错误信息
+    const app = document.getElementById("app");
+    if (app) {
+      app.innerHTML = `
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          padding: 20px;
+          font-family: system-ui, -apple-system, sans-serif;
+          text-align: center;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+        ">
+          <h2 style="margin-bottom: 16px;">🚨 应用初始化失败</h2>
+          <p style="margin-bottom: 24px; opacity: 0.9;">抱歉，应用加载时遇到问题。请尝试以下解决方案：</p>
+          <div style="margin-bottom: 24px;">
+            <button onclick="location.reload()" style="
+              padding: 12px 24px;
+              margin: 8px;
+              border: none;
+              border-radius: 8px;
+              background: rgba(255,255,255,0.2);
+              color: white;
+              cursor: pointer;
+              font-size: 16px;
+              transition: background 0.3s;
+            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+              🔄 刷新页面
+            </button>
+            <button onclick="localStorage.clear(); location.reload()" style="
+              padding: 12px 24px;
+              margin: 8px;
+              border: none;
+              border-radius: 8px;
+              background: rgba(255,255,255,0.2);
+              color: white;
+              cursor: pointer;
+              font-size: 16px;
+              transition: background 0.3s;
+            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+              🗑️ 清除缓存并刷新
+            </button>
+          </div>
+          <details style="margin-top: 16px; text-align: left; max-width: 600px;">
+            <summary style="cursor: pointer; opacity: 0.8;">🔍 技术详情</summary>
+            <pre style="
+              margin-top: 8px;
+              padding: 16px;
+              background: rgba(0,0,0,0.3);
+              border-radius: 8px;
+              overflow: auto;
+              font-size: 12px;
+              text-align: left;
+            ">${error}</pre>
+          </details>
+        </div>
+      `;
+    }
+    
+    return false;
   }
 }
 
@@ -52,7 +116,14 @@ const pinia = createPinia();
 app.use(pinia);
 app.use(router);
 
-// 先执行异步初始化，完成后再挂载 Vue 应用
-initializeCoreStores().then(() => {
-  app.mount("#app");
+// 先执行异步初始化，成功后才挂载 Vue 应用
+initializeCoreStores().then((success) => {
+  if (success) {
+    app.mount("#app");
+    console.log("✅ Vue 应用挂载成功");
+  } else {
+    console.error("❌ Vue 应用挂载失败 - Store 初始化错误");
+  }
+}).catch((error) => {
+  console.error("❌ Vue 应用启动失败:", error);
 });
