@@ -69,7 +69,7 @@ export default defineConfig({
       "@docs": resolve(__dirname, "docs"),
     },
   },
-  base: "./",
+  base: "/",
   build: {
     outDir: "dist",
     assetsDir: "assets",
