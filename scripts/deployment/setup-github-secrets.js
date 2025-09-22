@@ -10,7 +10,7 @@
  * 2. 运行: node scripts/deployment/setup-github-secrets.js
  */
 
-import { readFileSync, existsSync } from "fs";
+import { existsSync } from "fs";
 import { execSync } from "child_process";
 import dotenv from "dotenv";
 

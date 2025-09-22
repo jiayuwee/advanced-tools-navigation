@@ -167,7 +167,7 @@ async function testSupabaseConnection() {
     console.log("   测试数据库连接...");
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("categories")
       .select("count")
       .limit(1);
