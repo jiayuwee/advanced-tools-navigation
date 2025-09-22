@@ -110,7 +110,7 @@ import { useToolsStore } from "@/stores/tools";
 import { useCategoriesStore } from "@/stores/categories";
 import { useAuthStore } from "@/stores/auth";
 import EnhancedSearchBox from "@/components/search/EnhancedSearchBox.vue";
-import { Heart } from 'lucide-vue-next';
+import { Heart } from "lucide-vue-next";
 // 提升 mousemoveHandler 到外部作用域，便于 onMounted/onUnmounted 都能访问
 const mousemoveHandler = (e: MouseEvent) => {
   let cursor = document.querySelector(".cursor") as HTMLElement;
@@ -212,7 +212,7 @@ onMounted(async () => {
     // 添加鼠标跟踪光标效果
     document.addEventListener("mousemove", mousemoveHandler);
   } catch (error) {
-    console.error('初始化页面失败:', error);
+    console.error("初始化页面失败:", error);
   }
 });
 
@@ -232,12 +232,13 @@ onUnmounted(() => {
   position: fixed;
   top: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   z-index: 1000;
   padding: 1rem 0;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
 .nav-container {

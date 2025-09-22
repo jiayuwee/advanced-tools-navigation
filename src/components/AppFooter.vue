@@ -91,21 +91,43 @@
         <!-- 联系信息 -->
         <div class="footer-section contact-info">
           <h4>联系我们</h4>
-          <div v-if="siteConfig.contact.phone" class="contact-item">
-            <PhoneIcon class="contact-icon" />
-            <span>{{ siteConfig.contact.phone }}</span>
-          </div>
-          <div v-if="siteConfig.contact.email" class="contact-item">
-            <MailIcon class="contact-icon" />
-            <span>{{ siteConfig.contact.email }}</span>
-          </div>
-          <div class="contact-item">
-            <MapPinIcon class="contact-icon" />
-            <span>北京市朝阳区科技园区</span>
-          </div>
-          <div class="contact-item">
-            <ClockIcon class="contact-icon" />
-            <span>工作时间：9:00-18:00</span>
+          <div class="contact-card">
+            <div v-if="siteConfig.contact.phone" class="contact-item phone-item" @click="handleContactClick('phone', siteConfig.contact.phone)">
+              <div class="contact-icon-wrapper">
+                <PhoneIcon class="contact-icon" />
+              </div>
+              <div class="contact-content">
+                <span class="contact-label">电话咨询</span>
+                <span class="contact-value">{{ siteConfig.contact.phone }}</span>
+              </div>
+            </div>
+            <div v-if="siteConfig.contact.email" class="contact-item email-item" @click="handleContactClick('email', siteConfig.contact.email)">
+              <div class="contact-icon-wrapper">
+                <MailIcon class="contact-icon" />
+              </div>
+              <div class="contact-content">
+                <span class="contact-label">邮箱联系</span>
+                <span class="contact-value">{{ siteConfig.contact.email }}</span>
+              </div>
+            </div>
+            <div class="contact-item address-item">
+              <div class="contact-icon-wrapper">
+                <MapPinIcon class="contact-icon" />
+              </div>
+              <div class="contact-content">
+                <span class="contact-label">公司地址</span>
+                <span class="contact-value">北京市朝阳区科技园区</span>
+              </div>
+            </div>
+            <div class="contact-item hours-item">
+              <div class="contact-icon-wrapper">
+                <ClockIcon class="contact-icon" />
+              </div>
+              <div class="contact-content">
+                <span class="contact-label">工作时间</span>
+                <span class="contact-value">周一至周五 9:00-18:00</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -184,6 +206,20 @@ const footerConfig = ref({
     email: "contact@ramusi.cn",
   },
 });
+
+// 处理联系方式点击
+const handleContactClick = (type: string, value: string) => {
+  switch (type) {
+    case 'phone':
+      window.location.href = `tel:${value}`;
+      break;
+    case 'email':
+      window.location.href = `mailto:${value}`;
+      break;
+    default:
+      break;
+  }
+};
 
 // 加载配置
 const loadConfig = () => {
@@ -323,18 +359,77 @@ onMounted(() => {
   color: white;
 }
 
-.contact-info .contact-item {
+.contact-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  font-size: 14px;
+  gap: 12px;
+  padding: 12px 0;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.contact-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+
+.contact-item.phone-item:hover,
+.contact-item.email-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.contact-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.contact-item:hover .contact-icon-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
 
 .contact-icon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.8;
+  width: 20px;
+  height: 20px;
+  color: white;
+  opacity: 0.9;
+}
+
+.contact-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.contact-label {
+  font-size: 12px;
+  opacity: 0.7;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contact-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  line-height: 1.4;
 }
 
 .footer-bottom {
