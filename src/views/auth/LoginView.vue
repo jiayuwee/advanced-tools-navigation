@@ -76,6 +76,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { EyeIcon, EyeOffIcon } from "lucide-vue-next";
+import { AuthService } from "@/services/authService";
 
 const router = useRouter();
 
@@ -95,13 +96,9 @@ const handleLogin = async () => {
     loading.value = true;
     error.value = null;
 
-    // TODO: 实现登录逻辑
-    // const result = await AuthService.login(form.value)
+    const result = await AuthService.login(form.value);
 
-    // 模拟登录
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    console.log("登录成功:", form.value.email);
+    console.log("登录成功:", result.user.email);
     router.push("/");
   } catch (err) {
     error.value = err instanceof Error ? err.message : "登录失败，请重试";

@@ -33,9 +33,25 @@
       <div class="bg-white rounded-lg shadow-md p-8">
         <form class="space-y-8" @submit.prevent="submitProduct">
           <!-- 基本信息 -->
-          <div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-6">基本信息</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-section">
+            <button
+              type="button"
+              class="section-header"
+              @click="toggleSection('basic')"
+            >
+              <h3 class="text-xl font-semibold text-gray-900">基本信息</h3>
+              <ChevronDown
+                :class="[
+                  'w-5 h-5 text-gray-500 transition-transform',
+                  expandedSections.basic ? 'transform rotate-180' : '',
+                ]"
+              />
+            </button>
+            <div
+              v-if="expandedSections.basic"
+              class="section-content"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- 产品名称 -->
               <div class="md:col-span-2">
                 <label
@@ -79,27 +95,29 @@
                 </select>
               </div>
 
-              <!-- 产品类型 -->
+              <!-- 是否数字产品 -->
               <div>
-                <label
-                  for="type"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  产品类型 <span class="text-red-500">*</span>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  产品类型
                 </label>
-                <select
-                  id="type"
-                  v-model="form.type"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">请选择类型</option>
-                  <option value="software">软件工具</option>
-                  <option value="template">模板素材</option>
-                  <option value="course">教程课程</option>
-                  <option value="service">服务</option>
-                  <option value="other">其他</option>
-                </select>
+                <div class="flex items-center space-x-4">
+                  <label class="flex items-center">
+                    <input
+                      v-model="form.is_digital"
+                      type="checkbox"
+                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span class="ml-2 text-sm text-gray-700">数字产品</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      v-model="form.is_featured"
+                      type="checkbox"
+                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span class="ml-2 text-sm text-gray-700">推荐产品</span>
+                  </label>
+                </div>
               </div>
 
               <!-- 价格设置 -->
@@ -138,12 +156,29 @@
                   placeholder="https://example.com"
                 />
               </div>
+              </div>
             </div>
           </div>
 
           <!-- 产品描述 -->
-          <div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-6">产品描述</h3>
+          <div class="form-section">
+            <button
+              type="button"
+              class="section-header"
+              @click="toggleSection('description')"
+            >
+              <h3 class="text-xl font-semibold text-gray-900">产品描述</h3>
+              <ChevronDown
+                :class="[
+                  'w-5 h-5 text-gray-500 transition-transform',
+                  expandedSections.description ? 'transform rotate-180' : '',
+                ]"
+              />
+            </button>
+            <div
+              v-if="expandedSections.description"
+              class="section-content"
+            >
 
             <!-- 简短描述 -->
             <div class="mb-6">
@@ -185,11 +220,28 @@
                 {{ form.content.length }}/2000 字符
               </div>
             </div>
+            </div>
           </div>
 
           <!-- 产品图片 -->
-          <div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-6">产品图片</h3>
+          <div class="form-section">
+            <button
+              type="button"
+              class="section-header"
+              @click="toggleSection('images')"
+            >
+              <h3 class="text-xl font-semibold text-gray-900">产品图片</h3>
+              <ChevronDown
+                :class="[
+                  'w-5 h-5 text-gray-500 transition-transform',
+                  expandedSections.images ? 'transform rotate-180' : '',
+                ]"
+              />
+            </button>
+            <div
+              v-if="expandedSections.images"
+              class="section-content"
+            >
 
             <!-- 主图上传 -->
             <div class="mb-6">
@@ -273,53 +325,71 @@
                 @change="handleAdditionalImagesUpload"
               />
             </div>
+            </div>
           </div>
 
           <!-- 标签 -->
-          <div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-6">产品标签</h3>
-            <div class="space-y-4">
-              <div>
-                <label
-                  for="tags"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  添加标签
-                </label>
-                <div class="flex space-x-2">
-                  <input
-                    v-model="newTag"
-                    type="text"
-                    class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="输入标签名称"
-                    @keyup.enter="addTag"
-                  />
-                  <button
-                    type="button"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    @click="addTag"
+          <div class="form-section">
+            <button
+              type="button"
+              class="section-header"
+              @click="toggleSection('tags')"
+            >
+              <h3 class="text-xl font-semibold text-gray-900">产品标签</h3>
+              <ChevronDown
+                :class="[
+                  'w-5 h-5 text-gray-500 transition-transform',
+                  expandedSections.tags ? 'transform rotate-180' : '',
+                ]"
+              />
+            </button>
+            <div
+              v-if="expandedSections.tags"
+              class="section-content"
+            >
+              <div class="space-y-4">
+                <div>
+                  <label
+                    for="tags"
+                    class="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    添加
-                  </button>
+                    添加标签
+                  </label>
+                  <div class="flex space-x-2">
+                    <input
+                      v-model="newTag"
+                      type="text"
+                      class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="输入标签名称"
+                      @keyup.enter="addTag"
+                    />
+                    <button
+                      type="button"
+                      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      @click="addTag"
+                    >
+                      添加
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <!-- 标签列表 -->
-              <div v-if="form.tags.length > 0" class="flex flex-wrap gap-2">
-                <span
-                  v-for="(tag, index) in form.tags"
-                  :key="index"
-                  class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-                >
-                  {{ tag }}
-                  <button
-                    class="ml-2 text-blue-600 hover:text-blue-800"
-                    type="button"
-                    @click="removeTag(index)"
+                <!-- 标签列表 -->
+                <div v-if="form.tags.length > 0" class="flex flex-wrap gap-2">
+                  <span
+                    v-for="(tag, index) in form.tags"
+                    :key="index"
+                    class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
                   >
-                    <X class="w-3 h-3" />
-                  </button>
-                </span>
+                    {{ tag }}
+                    <button
+                      class="ml-2 text-blue-600 hover:text-blue-800"
+                      type="button"
+                      @click="removeTag(index)"
+                    >
+                      <X class="w-3 h-3" />
+                    </button>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -395,44 +465,86 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import type { Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useProductsStore } from "@/stores/products";
-import { Info, Upload, X, Plus, Clock, Loader2 } from "lucide-vue-next";
+import { supabase } from "@/lib/supabase";
+import { Info, Upload, X, Plus, Clock, Loader2, ChevronDown } from "lucide-vue-next";
 
 const router = useRouter();
 const productsStore = useProductsStore();
 
 // 分类数据
-const categories = ref([
-  { id: 1, name: "开发工具" },
-  { id: 2, name: "设计工具" },
-  { id: 3, name: "办公软件" },
-  { id: 4, name: "学习资源" },
-  { id: 5, name: "其他工具" },
-]);
+const categories = ref<any[]>([]);
+
+// 加载分类数据
+const loadCategories = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("product_categories")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true });
+
+    if (error) throw error;
+    categories.value = data || [];
+  } catch (error) {
+    console.error("加载分类失败:", error);
+  }
+};
+
+// 组件挂载时加载分类
+onMounted(() => {
+  loadCategories();
+});
 
 // 表单数据
 const mainImageInput = ref<HTMLInputElement>();
 const additionalImageInput = ref<HTMLInputElement>();
 
+// 为了向后兼容，保留旧字段名用于模板显示
 const form = reactive({
   name: "",
   category_id: "",
-  type: "",
   price: 0,
+  currency: "CNY",
   url: "",
   description: "",
-  content: "",
-  main_image: "" as string,
-  additional_images: [] as string[],
+  short_description: "",
+  features: [] as string[],
+  images: [] as string[],
+  demo_url: "",
+  download_url: "",
+  is_featured: false,
+  is_digital: false,
+  stock_quantity: 0,
+  meta_title: "",
+  meta_description: "",
   tags: [] as string[],
+  // 向后兼容字段
+  type: "",
+  content: "",
+  main_image: "",
+  additional_images: [] as string[],
 });
 
 // 状态
 const isSubmitting = ref(false);
 const newTag = ref("");
+
+// 折叠状态
+const expandedSections = reactive({
+  basic: true,
+  description: true,
+  images: true,
+  tags: true,
+});
+
+// 切换折叠状态
+const toggleSection = (section: keyof typeof expandedSections) => {
+  expandedSections[section] = !expandedSections[section];
+};
 
 // 方法
 const handleMainImageUpload = (event: Event) => {
@@ -441,7 +553,10 @@ const handleMainImageUpload = (event: Event) => {
     const file = target.files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
-      form.main_image = e.target?.result as string;
+      const imageUrl = e.target?.result as string;
+      form.main_image = imageUrl;
+      // 将主图添加到images数组的开头
+      form.images = [imageUrl, ...form.additional_images];
     };
     reader.readAsDataURL(file);
   }
@@ -455,7 +570,10 @@ const handleAdditionalImagesUpload = (event: Event) => {
       if (form.additional_images.length < 4) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          form.additional_images.push(e.target?.result as string);
+          const imageUrl = e.target?.result as string;
+          form.additional_images.push(imageUrl);
+          // 重新构建images数组
+          form.images = [form.main_image, ...form.additional_images].filter(Boolean);
         };
         reader.readAsDataURL(file);
       }
@@ -507,7 +625,6 @@ const submitProduct = async () => {
   if (
     !form.name ||
     !form.category_id ||
-    !form.type ||
     !form.description ||
     !form.main_image
   ) {
@@ -518,18 +635,24 @@ const submitProduct = async () => {
   isSubmitting.value = true;
 
   try {
-    // 准备产品数据
+    // 准备产品数据，匹配数据库schema
     const productData = {
       name: form.name,
       category_id: form.category_id,
-      type: form.type,
       price: form.price,
-      url: form.url,
+      currency: form.currency,
+      url: form.url || undefined,
       description: form.description,
-      content: form.content,
-      tags: form.tags,
-      main_image: form.main_image,
-      additional_images: form.additional_images,
+      short_description: form.short_description || undefined,
+      features: form.features,
+      images: form.images,
+      demo_url: form.demo_url || undefined,
+      download_url: form.download_url || undefined,
+      is_featured: form.is_featured,
+      is_digital: form.is_digital,
+      stock_quantity: form.stock_quantity || undefined,
+      meta_title: form.meta_title || undefined,
+      meta_description: form.meta_description || undefined,
     };
 
     // 调用store创建产品
@@ -547,3 +670,74 @@ const submitProduct = async () => {
   }
 };
 </script>
+
+<style scoped>
+/* 表单折叠样式 */
+.form-section {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.section-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.section-header:hover {
+  background: #f3f4f6;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.section-content {
+  padding: 1.5rem;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .section-header {
+    padding: 1rem;
+  }
+
+  .section-content {
+    padding: 1rem;
+  }
+
+  .section-header h3 {
+    font-size: 1.125rem;
+  }
+}
+</style>

@@ -199,8 +199,8 @@ const siteConfig = ref({
   description:
     "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
   contact: {
-    email: "contact@ramusi.cn",
-    phone: "+86 138-0000-0000",
+    email: "jiayuwee@outlook.com",
+    phone: "+86 19053267804",
   },
 });
 
@@ -208,7 +208,7 @@ const siteConfig = ref({
 const footerConfig = ref({
   companyDescription:
     "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
-  copyright: "© 2024 工具导航站. 保留所有权利.",
+  copyright: "© 2025 工具导航站. 保留所有权利.",
   stats: {
     toolsCount: 1000,
     categoriesCount: 50,
@@ -234,23 +234,22 @@ const seoConfig = ref({
 const saveSettings = async () => {
   try {
     saving.value = true;
-    message.value = "";
-
-    // 保存到localStorage（实际项目中应该保存到数据库）
-    localStorage.setItem("siteConfig", JSON.stringify(siteConfig.value));
-    localStorage.setItem("footerConfig", JSON.stringify(footerConfig.value));
-    localStorage.setItem("seoConfig", JSON.stringify(seoConfig.value));
-
+    
+    // 保存到数据库
+    const { error } = await supabase
+      .from('system_settings')
+      .upsert({
+        key: 'site_config',
+        value: siteConfig.value,
+        updated_at: new Date().toISOString()
+      });
+    
+    if (error) throw error;
+    
     message.value = "设置保存成功！";
     messageType.value = "success";
-
-    // 3秒后清除消息
-    setTimeout(() => {
-      message.value = "";
-    }, 3000);
   } catch (error) {
-    console.error("保存设置失败:", error);
-    message.value = "保存设置失败，请重试";
+    message.value = "保存设置失败";
     messageType.value = "error";
   } finally {
     saving.value = false;
@@ -265,15 +264,15 @@ const resetSettings = () => {
       description:
         "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
       contact: {
-        email: "contact@ramusi.cn",
-        phone: "+86 138-0000-0000",
+        email: "jiayuwee@outlook.com",
+        phone: "+86 19053267804",
       },
     };
 
     footerConfig.value = {
       companyDescription:
         "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
-      copyright: "© 2024 工具导航站. 保留所有权利.",
+      copyright: "© 2025 工具导航站. 保留所有权利.",
       stats: {
         toolsCount: 1000,
         categoriesCount: 50,

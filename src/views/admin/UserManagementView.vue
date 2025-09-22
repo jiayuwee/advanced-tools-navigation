@@ -327,33 +327,13 @@ const paginatedUsers = computed(() => {
 const loadUsers = async () => {
   try {
     loading.value = true;
-    // TODO: 实现真实的用户数据加载
-    // const result = await UserService.getAllUsers()
-    // users.value = result
-
-    // 模拟数据
-    users.value = [
-      {
-        id: "1",
-        email: "admin@example.com",
-        full_name: "系统管理员",
-        username: "admin",
-        role: "super_admin",
-        is_active: true,
-        created_at: "2024-01-01T00:00:00Z",
-        last_login_at: "2024-06-30T12:00:00Z",
-      },
-      {
-        id: "2",
-        email: "user@example.com",
-        full_name: "普通用户",
-        username: "user1",
-        role: "user",
-        is_active: true,
-        created_at: "2024-06-01T00:00:00Z",
-        last_login_at: "2024-06-29T10:00:00Z",
-      },
-    ];
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    users.value = data || [];
   } catch (error) {
     console.error("加载用户数据失败:", error);
   } finally {
