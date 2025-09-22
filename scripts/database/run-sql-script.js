@@ -1,6 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
-import path from "path";
 import dotenv from "dotenv";
 
 // 加载环境变量
@@ -56,7 +55,7 @@ async function runSqlScript(scriptPath) {
           `📝 SQL: ${statement.substring(0, 100)}${statement.length > 100 ? "..." : ""}`,
         );
 
-        const { data, error } = await supabase.rpc("exec_sql", {
+        const { error } = await supabase.rpc("exec_sql", {
           sql: statement,
         });
 
