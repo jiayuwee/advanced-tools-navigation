@@ -90,7 +90,6 @@ async function diagnoseDeploy() {
     console.log("\n📦 检查构建状态...");
     try {
       const fs = await import("fs");
-      const path = await import("path");
 
       // 检查关键文件
       const criticalFiles = [

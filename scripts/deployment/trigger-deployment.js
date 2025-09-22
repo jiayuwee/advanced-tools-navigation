@@ -77,17 +77,16 @@ async function triggerDeployment() {
     // 触发工作流
     console.log("🚀 触发部署...");
 
-    const { data: dispatch } =
-      await octokit.rest.actions.createWorkflowDispatch({
-        owner: REPO_OWNER,
-        repo: REPO_NAME,
-        workflow_id: supabaseWorkflow.id,
-        ref: "main", // 部署 main 分支
-        inputs: {
-          force_deploy: "false",
-          environment: "production",
-        },
-      });
+    await octokit.rest.actions.createWorkflowDispatch({
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+      workflow_id: supabaseWorkflow.id,
+      ref: "main", // 部署 main 分支
+      inputs: {
+        force_deploy: "false",
+        environment: "production",
+      },
+    });
 
     console.log("✅ 部署已触发！");
     console.log("");

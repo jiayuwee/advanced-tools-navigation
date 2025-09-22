@@ -4,7 +4,6 @@
  * 检查 Netlify 配置和环境变量
  */
 
-import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
