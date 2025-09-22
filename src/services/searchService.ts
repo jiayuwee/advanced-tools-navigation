@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { supabase, TABLES } from "@/lib/supabaseClient";
-import { databaseService } from "./databaseService";
 import type { Tool, Product, Category } from "@/types";
 
 export interface SearchOptions {
@@ -52,7 +51,7 @@ class SearchService {
   // 主搜索方法
   async search<T>(options: SearchOptions): Promise<SearchResult<T>> {
     const startTime = Date.now();
-    const { query, type = "all", limit = 20, offset = 0 } = options;
+    const { query, type = "all" } = options;
 
     try {
       let results: T[] = [];
@@ -98,7 +97,7 @@ class SearchService {
       }
 
       // 生成搜索建议
-      const suggestions = await this.generateSuggestions(query, type);
+      const suggestions = await this.generateSuggestions(query);
 
       const searchTime = Date.now() - startTime;
 
@@ -346,8 +345,6 @@ class SearchService {
   // 生成工具分面数据
   private async generateToolsFacets(
     query?: string,
-    selectedCategory?: string,
-    selectedTags?: string[],
   ): Promise<SearchFacets> {
     // 获取分类分面
     const categoriesQuery = supabase
@@ -408,8 +405,6 @@ class SearchService {
   // 生成产品分面数据
   private async generateProductsFacets(
     query?: string,
-    selectedCategory?: string,
-    selectedPriceRange?: [number, number],
   ): Promise<SearchFacets> {
     // 获取分类分面
     const categoriesQuery = supabase.from(TABLES.PRODUCT_CATEGORIES).select(
@@ -454,7 +449,6 @@ class SearchService {
   // 生成搜索建议
   private async generateSuggestions(
     query: string,
-    type: string,
   ): Promise<string[]> {
     if (!query || query.length < 2) return [];
 
