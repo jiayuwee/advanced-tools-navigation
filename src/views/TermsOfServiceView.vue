@@ -194,9 +194,9 @@
           <div class="prose prose-lg max-w-none text-gray-700">
             <p>如果您对本服务条款有任何疑问，请通过以下方式联系我们：</p>
             <ul class="list-disc list-inside space-y-2">
-              <li>邮箱：support@ramusi.cn</li>
-              <li>电话：+86 400-123-4567</li>
-              <li>地址：中国 北京市 朝阳区 xxx街道 xxx号</li>
+              <li>邮箱：jiayuwee@outlook.com</li>
+              <li>电话：+86 19053267804</li>
+              <li>地址：中国 北京市 朝阳区 朝阳北路 101号</li>
             </ul>
           </div>
         </section>
@@ -231,7 +231,7 @@ import { ref } from "vue";
 import { Shield, MessageCircle } from "lucide-vue-next";
 
 // 最后更新时间
-const lastUpdated = ref("2024年1月1日");
+const lastUpdated = ref("2025年8月1日");
 
 // 目录数据
 const sections = ref([

@@ -235,17 +235,26 @@ const recentOrders = ref([
 // 方法
 const loadDashboardData = async () => {
   try {
-    // TODO: 实现仪表盘数据加载
-    // 模拟数据
+    // 将模拟数据替换为真实API调用
+const loadDashboardData = async () => {
+  try {
+    // 获取工具统计
+    const toolsResult = await supabase
+      .from('tools')
+      .select('id, status, is_featured, created_at', { count: 'exact' });
+    
+    // 获取用户统计  
+    const usersResult = await supabase
+      .from('user_profiles')
+      .select('id, role, created_at', { count: 'exact' });
+    
+    // 计算统计数据
     stats.value = {
-      totalTools: 156,
-      totalProducts: 42,
-      totalUsers: 1284,
-      totalRevenue: 125680,
-      newToolsThisMonth: 12,
-      newProductsThisMonth: 5,
-      newUsersThisMonth: 89,
-      revenueGrowth: 15.6,
+      totalTools: toolsResult.count || 0,
+      totalProducts: 0, // 需要实现产品统计
+      totalUsers: usersResult.count || 0,
+      totalRevenue: 0, // 需要实现收入统计
+      // ... 其他统计
     };
   } catch (error) {
     console.error("加载仪表盘数据失败:", error);

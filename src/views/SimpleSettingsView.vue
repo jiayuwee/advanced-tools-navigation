@@ -33,7 +33,7 @@
             <input
               v-model="siteConfig.contact.email"
               type="email"
-              placeholder="contact@example.com"
+              placeholder="jiayuwee@outlook.com"
               @input="onInputChange"
             />
           </div>
@@ -42,7 +42,7 @@
             <input
               v-model="siteConfig.contact.phone"
               type="tel"
-              placeholder="+86 138-0000-0000"
+              placeholder="+86 19053267804"
               @input="onInputChange"
             />
           </div>
@@ -67,7 +67,7 @@
             <input
               v-model="footerConfig.copyright"
               type="text"
-              placeholder="© 2024 工具导航站. 保留所有权利."
+              placeholder="© 2025 工具导航站. 保留所有权利."
               @input="onInputChange"
             />
           </div>
@@ -122,7 +122,7 @@
             <input
               v-model="footerConfig.social.email"
               type="email"
-              placeholder="contact@example.com"
+              placeholder="jiayuwee@outlook.com"
               @input="onInputChange"
             />
           </div>
@@ -178,8 +178,8 @@ const siteConfig = ref({
   description:
     "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
   contact: {
-    email: "contact@ramusi.cn",
-    phone: "+86 138-0000-0000",
+    email: "jiayuwee@outlook.com",
+    phone: "+86 19053267804",
   },
 });
 
@@ -187,7 +187,7 @@ const siteConfig = ref({
 const footerConfig = ref({
   companyDescription:
     "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
-  copyright: "© 2024 工具导航站. 保留所有权利.",
+  copyright: "© 2025 工具导航站. 保留所有权利.",
   stats: {
     toolsCount: 1000,
     categoriesCount: 50,
@@ -252,15 +252,15 @@ const resetSettings = () => {
       description:
         "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
       contact: {
-        email: "contact@ramusi.cn",
-        phone: "+86 138-0000-0000",
+        email: "jiayuwee@outlook.com",
+        phone: "+86 19053267804",
       },
     };
 
     footerConfig.value = {
       companyDescription:
         "专注于为用户提供优质的工具导航和产品展示服务，致力于提升工作效率，让每个人都能找到最适合的工具和产品。",
-      copyright: "© 2024 工具导航站. 保留所有权利.",
+      copyright: "© 2025 工具导航站. 保留所有权利.",
       stats: {
         toolsCount: 1000,
         categoriesCount: 50,

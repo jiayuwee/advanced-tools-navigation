@@ -229,9 +229,9 @@ onUnmounted(() => {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
 }
 
@@ -294,12 +294,12 @@ onUnmounted(() => {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: #1f2937;
+  color: #0f172a;
 }
 
 .title-text span {
   font-size: 12px;
-  color: #6b7280;
+  color: #374151;
   margin-top: -2px;
 }
 
@@ -516,16 +516,16 @@ onUnmounted(() => {
 /* 暗色主题 */
 @media (prefers-color-scheme: dark) {
   .app-header {
-    background: rgba(17, 24, 39, 0.95);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    background: rgba(17, 24, 39, 0.98);
+    border-bottom-color: rgba(255, 255, 255, 0.2);
   }
 
   .title-text h1 {
-    color: #f9fafb;
+    color: #ffffff;
   }
 
   .title-text span {
-    color: #9ca3af;
+    color: #e5e7eb;
   }
 
   .search-container {
