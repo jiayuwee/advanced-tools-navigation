@@ -35,7 +35,7 @@ async function verifyDeployment() {
     console.log("📊 检查数据库连接...");
 
     // 测试基本连接
-    const { data: healthCheck, error: healthError } = await supabase
+    const { error: healthError } = await supabase
       .from("categories")
       .select("count")
       .limit(1);

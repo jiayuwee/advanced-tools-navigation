@@ -6,8 +6,6 @@
  */
 
 import { Octokit } from "@octokit/rest";
-import crypto from "crypto";
-import { execSync } from "child_process";
 
 class GitHubSecretsUpdater {
   constructor() {
@@ -58,9 +56,6 @@ class GitHubSecretsUpdater {
 
   encryptSecret(secret, publicKey) {
     // 使用 libsodium 加密（这里简化处理）
-    const messageBytes = Buffer.from(secret);
-    const keyBytes = Buffer.from(publicKey, "base64");
-
     // 注意：这里需要使用 libsodium 的 sealed box 加密
     // 由于环境限制，这里只是示例代码
     console.log("⚠️ 需要使用 libsodium 进行加密");

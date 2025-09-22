@@ -1,6 +1,5 @@
 // 配置匹配验证脚本
 import { readFileSync } from "fs";
-import { join } from "path";
 
 console.log("🔍 验证项目配置匹配性");
 console.log("=====================================");

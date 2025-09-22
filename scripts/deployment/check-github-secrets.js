@@ -88,7 +88,7 @@ async function testSupabaseConnection() {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // 测试基本连接
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("categories")
       .select("count")
       .limit(1);
