@@ -7,7 +7,7 @@ on:
 
 env:
   WEBSITE_URL: 'https://ramusi.cn'
-  NODE_VERSION: '18.19.0'
+  NODE_VERSION: '20.x'
 
 jobs:
   # 简化的性能检查 - 只在部署时运行
