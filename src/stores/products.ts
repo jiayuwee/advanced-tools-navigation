@@ -167,7 +167,7 @@ export const useProductsStore = defineStore("products", () => {
       error.value = null;
 
       const newProduct = await ProductsService.createProduct(
-        productData as any,
+        productData as unknown as any,
       );
       products.value.unshift(newProduct);
 
@@ -273,7 +273,9 @@ export const useProductsStore = defineStore("products", () => {
     }
   };
 
-  const setSortBy = (sort: string) => {
+  const setSortBy = (
+    sort: "name" | "price" | "rating" | "created_at" | "click_count",
+  ) => {
     sortBy.value = sort;
     if (searchQuery.value.trim()) {
       searchProducts(searchQuery.value);

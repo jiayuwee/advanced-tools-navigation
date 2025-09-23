@@ -1,4 +1,4 @@
-import { supabase, TABLES, REALTIME_CHANNELS } from "@/lib/supabase";
+import { supabase, TABLES } from "@/lib/supabase";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
 export interface QueryOptions {
@@ -6,7 +6,7 @@ export interface QueryOptions {
   limit?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   search?: string;
   searchFields?: string[];
 }
@@ -28,7 +28,7 @@ export interface CacheOptions {
 class DatabaseService {
   private cache = new Map<
     string,
-    { data: any; timestamp: number; ttl: number }
+    { data: unknown; timestamp: number; ttl: number }
   >();
   private realtimeChannels = new Map<string, RealtimeChannel>();
 
@@ -225,7 +225,7 @@ class DatabaseService {
   // 实时订阅
   subscribeToTable(
     table: string,
-    callback: (payload: any) => void,
+    callback: (payload: unknown) => void,
     filter?: string,
   ): RealtimeChannel {
     const channelName = `${table}-${Date.now()}`;
@@ -297,7 +297,7 @@ class DatabaseService {
       return null;
     }
 
-    return cached.data;
+    return cached.data as T;
   }
 
   private setCache<T>(key: string, data: T, ttl: number): void {

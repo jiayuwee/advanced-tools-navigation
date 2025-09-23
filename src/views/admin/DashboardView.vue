@@ -238,13 +238,13 @@ const loadDashboardData = async () => {
   try {
     // 获取工具统计
     const toolsResult = await supabase
-      .from('tools')
-      .select('id, status, is_featured, created_at', { count: 'exact' });
+      .from("tools")
+      .select("id, status, is_featured, created_at", { count: "exact" });
 
     // 获取用户统计
     const usersResult = await supabase
-      .from('user_profiles')
-      .select('id, role, created_at', { count: 'exact' });
+      .from("user_profiles")
+      .select("id, role, created_at", { count: "exact" });
 
     // 计算统计数据
     stats.value = {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { supabase, TABLES } from "@/lib/supabaseClient";
 import type { Tool, Product, Category } from "@/types";
 
@@ -35,6 +34,11 @@ export interface SearchSuggestion {
   type: "query" | "category" | "tag" | "tool" | "product";
   count?: number;
 }
+
+export type SearchAllItem =
+  | (Tool & { _type: "tool" })
+  | (Product & { _type: "product" })
+  | (Category & { _type: "category" });
 
 export interface SearchHistory {
   id: string;
@@ -306,7 +310,7 @@ class SearchService {
 
   // 综合搜索
   private async searchAll(options: SearchOptions): Promise<{
-    items: any[];
+    items: SearchAllItem[];
     total: number;
     facets: SearchFacets;
   }> {
@@ -343,9 +347,7 @@ class SearchService {
   }
 
   // 生成工具分面数据
-  private async generateToolsFacets(
-    query?: string,
-  ): Promise<SearchFacets> {
+  private async generateToolsFacets(query?: string): Promise<SearchFacets> {
     // 获取分类分面
     const categoriesQuery = supabase
       .from(TABLES.CATEGORIES)
@@ -403,9 +405,7 @@ class SearchService {
   }
 
   // 生成产品分面数据
-  private async generateProductsFacets(
-    query?: string,
-  ): Promise<SearchFacets> {
+  private async generateProductsFacets(query?: string): Promise<SearchFacets> {
     // 获取分类分面
     const categoriesQuery = supabase.from(TABLES.PRODUCT_CATEGORIES).select(
       `
@@ -447,9 +447,7 @@ class SearchService {
   }
 
   // 生成搜索建议
-  private async generateSuggestions(
-    query: string,
-  ): Promise<string[]> {
+  private async generateSuggestions(query: string): Promise<string[]> {
     if (!query || query.length < 2) return [];
 
     const suggestions: string[] = [];
@@ -544,9 +542,10 @@ class SearchService {
       const stored = localStorage.getItem("search_history");
       if (stored) {
         const parsed = JSON.parse(stored);
-        this.searchHistory = parsed.map((item: any) => ({
+        this.searchHistory = parsed.map((item: unknown) => ({
           ...item,
-          timestamp: new Date(item.timestamp),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          timestamp: new Date((item as any).timestamp),
         }));
       }
     } catch (error) {

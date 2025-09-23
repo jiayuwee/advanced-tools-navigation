@@ -64,21 +64,26 @@ export const useToolsStore = defineStore("tools", () => {
       // 检查环境变量是否已配置
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      
-      if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('your-project-ref') || supabaseAnonKey.includes('your-anon-key')) {
+
+      if (
+        !supabaseUrl ||
+        !supabaseAnonKey ||
+        supabaseUrl.includes("your-project-ref") ||
+        supabaseAnonKey.includes("your-anon-key")
+      ) {
         // 使用模拟数据
-        console.warn('Supabase 环境变量未配置，使用模拟工具数据');
+        console.warn("Supabase 环境变量未配置，使用模拟工具数据");
         const mockTools = [
           {
-            id: '1',
-            name: 'Visual Studio Code',
-            description: '免费的代码编辑器，支持多种编程语言',
-            url: 'https://code.visualstudio.com',
-            icon: '💻',
-            category_id: '1',
+            id: "1",
+            name: "Visual Studio Code",
+            description: "免费的代码编辑器，支持多种编程语言",
+            url: "https://code.visualstudio.com",
+            icon: "💻",
+            category_id: "1",
             is_featured: true,
             click_count: 150,
-            status: 'active' as const,
+            status: "active" as const,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             created_by: null,
@@ -86,30 +91,30 @@ export const useToolsStore = defineStore("tools", () => {
             meta_description: null,
             sort_order: 1,
             categories: {
-              id: '1',
-              name: '开发工具',
-              description: '编程开发相关工具',
-              icon: '💻',
-              color: '#3b82f6',
+              id: "1",
+              name: "开发工具",
+              description: "编程开发相关工具",
+              icon: "💻",
+              color: "#3b82f6",
               parent_id: null,
               sort_order: 1,
               is_active: true,
               created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             },
             tool_tags: null,
-            tags: ['编程', '开发', '编辑器']
+            tags: ["编程", "开发", "编辑器"],
           },
           {
-            id: '2', 
-            name: 'Figma',
-            description: '协作式界面设计工具',
-            url: 'https://figma.com',
-            icon: '🎨',
-            category_id: '2',
+            id: "2",
+            name: "Figma",
+            description: "协作式界面设计工具",
+            url: "https://figma.com",
+            icon: "🎨",
+            category_id: "2",
             is_featured: true,
             click_count: 120,
-            status: 'active' as const,
+            status: "active" as const,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             created_by: null,
@@ -117,30 +122,30 @@ export const useToolsStore = defineStore("tools", () => {
             meta_description: null,
             sort_order: 2,
             categories: {
-              id: '2',
-              name: '设计工具',
-              description: 'UI/UX设计工具',
-              icon: '🎨',
-              color: '#ef4444',
+              id: "2",
+              name: "设计工具",
+              description: "UI/UX设计工具",
+              icon: "🎨",
+              color: "#ef4444",
               parent_id: null,
               sort_order: 2,
               is_active: true,
               created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             },
             tool_tags: null,
-            tags: ['设计', 'UI', 'UX']
+            tags: ["设计", "UI", "UX"],
           },
           {
-            id: '3',
-            name: 'ChatGPT',
-            description: 'AI助手，帮助编程、写作和解答问题',
-            url: 'https://chat.openai.com',
-            icon: '🤖',
-            category_id: '3',
+            id: "3",
+            name: "ChatGPT",
+            description: "AI助手，帮助编程、写作和解答问题",
+            url: "https://chat.openai.com",
+            icon: "🤖",
+            category_id: "3",
             is_featured: true,
             click_count: 200,
-            status: 'active' as const,
+            status: "active" as const,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             created_by: null,
@@ -148,24 +153,24 @@ export const useToolsStore = defineStore("tools", () => {
             meta_description: null,
             sort_order: 3,
             categories: {
-              id: '3',
-              name: 'AI工具',
-              description: '人工智能相关工具',
-              icon: '🤖',
-              color: '#10b981',
+              id: "3",
+              name: "AI工具",
+              description: "人工智能相关工具",
+              icon: "🤖",
+              color: "#10b981",
               parent_id: null,
               sort_order: 3,
               is_active: true,
               created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             },
             tool_tags: null,
-            tags: ['AI', '聊天', '助手']
-          }
+            tags: ["AI", "聊天", "助手"],
+          },
         ];
-        
+
         // 添加额外的工具数据，并为它们分配正确的分类
-        const extendedTools = additionalTools.map(tool => ({
+        const extendedTools = additionalTools.map((tool) => ({
           ...tool,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -174,9 +179,9 @@ export const useToolsStore = defineStore("tools", () => {
           meta_description: null,
           categories: getCategoryById(tool.category_id),
           tool_tags: null,
-          tags: getTagsForTool(tool.id)
+          tags: getTagsForTool(tool.id),
         }));
-        
+
         tools.value = [...mockTools, ...extendedTools];
         initialized.value = true;
         return;
@@ -211,21 +216,21 @@ export const useToolsStore = defineStore("tools", () => {
     } catch (e: any) {
       console.error("获取工具列表失败:", e);
       error.value = e;
-      
+
       // 如果Supabase调用失败，回退到模拟数据
       if (tools.value.length === 0) {
-        console.warn('Supabase调用失败，使用模拟工具数据');
+        console.warn("Supabase调用失败，使用模拟工具数据");
         const fallbackTools = [
           {
-            id: '1',
-            name: 'Visual Studio Code',
-            description: '免费的代码编辑器，支持多种编程语言',
-            url: 'https://code.visualstudio.com',
-            icon: '💻',
-            category_id: '1',
+            id: "1",
+            name: "Visual Studio Code",
+            description: "免费的代码编辑器，支持多种编程语言",
+            url: "https://code.visualstudio.com",
+            icon: "💻",
+            category_id: "1",
             is_featured: true,
             click_count: 150,
-            status: 'active' as const,
+            status: "active" as const,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             created_by: null,
@@ -233,24 +238,24 @@ export const useToolsStore = defineStore("tools", () => {
             meta_description: null,
             sort_order: 1,
             categories: {
-              id: '1',
-              name: '开发工具',
-              description: '编程开发相关工具',
-              icon: '💻',
-              color: '#3b82f6',
+              id: "1",
+              name: "开发工具",
+              description: "编程开发相关工具",
+              icon: "💻",
+              color: "#3b82f6",
               parent_id: null,
               sort_order: 1,
               is_active: true,
               created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             },
             tool_tags: null,
-            tags: ['编程', '开发', '编辑器']
-          }
+            tags: ["编程", "开发", "编辑器"],
+          },
         ];
-        
+
         // 添加额外的工具数据
-        const extendedFallbackTools = additionalTools.map(tool => ({
+        const extendedFallbackTools = additionalTools.map((tool) => ({
           ...tool,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -259,9 +264,9 @@ export const useToolsStore = defineStore("tools", () => {
           meta_description: null,
           categories: getCategoryById(tool.category_id),
           tool_tags: null,
-          tags: getTagsForTool(tool.id)
+          tags: getTagsForTool(tool.id),
         }));
-        
+
         tools.value = [...fallbackTools, ...extendedFallbackTools];
         initialized.value = true;
         error.value = null; // 清除错误，因为我们有了后备数据
@@ -374,119 +379,121 @@ export const useToolsStore = defineStore("tools", () => {
 // 辅助函数：根据分类ID获取分类信息
 function getCategoryById(categoryId: string) {
   const categories: Record<string, any> = {
-    '550e8400-e29b-41d4-a716-446655440001': {
-      id: '550e8400-e29b-41d4-a716-446655440001',
-      name: '开发工具',
-      description: '编程和开发相关的工具',
-      icon: '💻',
-      color: '#0078d4',
+    "550e8400-e29b-41d4-a716-446655440001": {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      name: "开发工具",
+      description: "编程和开发相关的工具",
+      icon: "💻",
+      color: "#0078d4",
       parent_id: null,
       sort_order: 1,
       is_active: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     },
-    '550e8400-e29b-41d4-a716-446655440002': {
-      id: '550e8400-e29b-41d4-a716-446655440002',
-      name: '设计工具',
-      description: '设计和创意相关的工具',
-      icon: '🎨',
-      color: '#7b1fa2',
+    "550e8400-e29b-41d4-a716-446655440002": {
+      id: "550e8400-e29b-41d4-a716-446655440002",
+      name: "设计工具",
+      description: "设计和创意相关的工具",
+      icon: "🎨",
+      color: "#7b1fa2",
       parent_id: null,
       sort_order: 2,
       is_active: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     },
-    '550e8400-e29b-41d4-a716-446655440003': {
-      id: '550e8400-e29b-41d4-a716-446655440003',
-      name: '办公工具',
-      description: '办公和生产力工具',
-      icon: '📊',
-      color: '#388e3c',
+    "550e8400-e29b-41d4-a716-446655440003": {
+      id: "550e8400-e29b-41d4-a716-446655440003",
+      name: "办公工具",
+      description: "办公和生产力工具",
+      icon: "📊",
+      color: "#388e3c",
       parent_id: null,
       sort_order: 3,
       is_active: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     },
-    '550e8400-e29b-41d4-a716-446655440004': {
-      id: '550e8400-e29b-41d4-a716-446655440004',
-      name: '学习工具',
-      description: '学习和教育相关的工具',
-      icon: '📚',
-      color: '#f57c00',
+    "550e8400-e29b-41d4-a716-446655440004": {
+      id: "550e8400-e29b-41d4-a716-446655440004",
+      name: "学习工具",
+      description: "学习和教育相关的工具",
+      icon: "📚",
+      color: "#f57c00",
       parent_id: null,
       sort_order: 4,
       is_active: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     },
-    '550e8400-e29b-41d4-a716-446655440005': {
-      id: '550e8400-e29b-41d4-a716-446655440005',
-      name: '网络工具',
-      description: '网络服务和云平台',
-      icon: '🌐',
-      color: '#2196f3',
+    "550e8400-e29b-41d4-a716-446655440005": {
+      id: "550e8400-e29b-41d4-a716-446655440005",
+      name: "网络工具",
+      description: "网络服务和云平台",
+      icon: "🌐",
+      color: "#2196f3",
       parent_id: null,
       sort_order: 5,
       is_active: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     },
-    '550e8400-e29b-41d4-a716-446655440006': {
-      id: '550e8400-e29b-41d4-a716-446655440006',
-      name: '娱乐工具',
-      description: '娱乐和休闲工具',
-      icon: '🎮',
-      color: '#e91e63',
+    "550e8400-e29b-41d4-a716-446655440006": {
+      id: "550e8400-e29b-41d4-a716-446655440006",
+      name: "娱乐工具",
+      description: "娱乐和休闲工具",
+      icon: "🎮",
+      color: "#e91e63",
       parent_id: null,
       sort_order: 6,
       is_active: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     },
-    '550e8400-e29b-41d4-a716-446655440007': {
-      id: '550e8400-e29b-41d4-a716-446655440007',
-      name: '实用工具',
-      description: '日常实用工具',
-      icon: '🔧',
-      color: '#607d8b',
+    "550e8400-e29b-41d4-a716-446655440007": {
+      id: "550e8400-e29b-41d4-a716-446655440007",
+      name: "实用工具",
+      description: "日常实用工具",
+      icon: "🔧",
+      color: "#607d8b",
       parent_id: null,
       sort_order: 7,
       is_active: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
+      updated_at: new Date().toISOString(),
+    },
   };
-  
-  return categories[categoryId] || categories['550e8400-e29b-41d4-a716-446655440007'];
+
+  return (
+    categories[categoryId] || categories["550e8400-e29b-41d4-a716-446655440007"]
+  );
 }
 
 // 辅助函数：根据工具ID获取标签
 function getTagsForTool(toolId: string): string[] {
   const toolTags: Record<string, string[]> = {
-    '850e8400-e29b-41d4-a716-446655440013': ['部署', '静态网站', '前端'],
-    '850e8400-e29b-41d4-a716-446655440014': ['部署', '静态网站', 'CDN'],
-    '850e8400-e29b-41d4-a716-446655440015': ['容器', 'DevOps', '部署'],
-    '850e8400-e29b-41d4-a716-446655440016': ['问答', '学习', '编程'],
-    '850e8400-e29b-41d4-a716-446655440017': ['设计', 'UI', 'Mac'],
-    '850e8400-e29b-41d4-a716-446655440018': ['设计', 'UI', 'Adobe'],
-    '850e8400-e29b-41d4-a716-446655440019': ['团队', '沟通', '协作'],
-    '850e8400-e29b-41d4-a716-446655440020': ['视频', '会议', '远程'],
-    '850e8400-e29b-41d4-a716-446655440021': ['云存储', 'Google', '协作'],
-    '850e8400-e29b-41d4-a716-446655440022': ['云存储', '同步', '备份'],
-    '850e8400-e29b-41d4-a716-446655440023': ['AI', '助手', '写作'],
-    '850e8400-e29b-41d4-a716-446655440024': ['AI', '图像', '生成'],
-    '850e8400-e29b-41d4-a716-446655440025': ['AI', '编程', '代码'],
-    '850e8400-e29b-41d4-a716-446655440026': ['CDN', '安全', '网络'],
-    '850e8400-e29b-41d4-a716-446655440027': ['视频', '娱乐', '分享'],
-    '850e8400-e29b-41d4-a716-446655440028': ['短视频', '社交', '娱乐'],
-    '850e8400-e29b-41d4-a716-446655440029': ['音乐', '流媒体', '娱乐'],
-    '850e8400-e29b-41d4-a716-446655440030': ['翻译', '语言', '工具'],
-    '850e8400-e29b-41d4-a716-446655440031': ['密码', '安全', '管理'],
-    '850e8400-e29b-41d4-a716-446655440032': ['支付', '金融', '在线']
+    "850e8400-e29b-41d4-a716-446655440013": ["部署", "静态网站", "前端"],
+    "850e8400-e29b-41d4-a716-446655440014": ["部署", "静态网站", "CDN"],
+    "850e8400-e29b-41d4-a716-446655440015": ["容器", "DevOps", "部署"],
+    "850e8400-e29b-41d4-a716-446655440016": ["问答", "学习", "编程"],
+    "850e8400-e29b-41d4-a716-446655440017": ["设计", "UI", "Mac"],
+    "850e8400-e29b-41d4-a716-446655440018": ["设计", "UI", "Adobe"],
+    "850e8400-e29b-41d4-a716-446655440019": ["团队", "沟通", "协作"],
+    "850e8400-e29b-41d4-a716-446655440020": ["视频", "会议", "远程"],
+    "850e8400-e29b-41d4-a716-446655440021": ["云存储", "Google", "协作"],
+    "850e8400-e29b-41d4-a716-446655440022": ["云存储", "同步", "备份"],
+    "850e8400-e29b-41d4-a716-446655440023": ["AI", "助手", "写作"],
+    "850e8400-e29b-41d4-a716-446655440024": ["AI", "图像", "生成"],
+    "850e8400-e29b-41d4-a716-446655440025": ["AI", "编程", "代码"],
+    "850e8400-e29b-41d4-a716-446655440026": ["CDN", "安全", "网络"],
+    "850e8400-e29b-41d4-a716-446655440027": ["视频", "娱乐", "分享"],
+    "850e8400-e29b-41d4-a716-446655440028": ["短视频", "社交", "娱乐"],
+    "850e8400-e29b-41d4-a716-446655440029": ["音乐", "流媒体", "娱乐"],
+    "850e8400-e29b-41d4-a716-446655440030": ["翻译", "语言", "工具"],
+    "850e8400-e29b-41d4-a716-446655440031": ["密码", "安全", "管理"],
+    "850e8400-e29b-41d4-a716-446655440032": ["支付", "金融", "在线"],
   };
-  
-  return toolTags[toolId] || ['工具'];
+
+  return toolTags[toolId] || ["工具"];
 }

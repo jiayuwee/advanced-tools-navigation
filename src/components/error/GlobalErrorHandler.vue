@@ -46,19 +46,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from "vue";
 import {
   AlertCircleIcon,
   AlertTriangleIcon,
   InfoIcon,
   CheckCircleIcon,
   XIcon,
-  WifiOffIcon
-} from 'lucide-vue-next';
+  WifiOffIcon,
+} from "lucide-vue-next";
 
 interface ErrorItem {
   id: string;
-  type: 'error' | 'warning' | 'info' | 'success';
+  type: "error" | "warning" | "info" | "success";
   title: string;
   message: string;
   duration?: number;
@@ -73,16 +73,16 @@ const errors = ref<ErrorItem[]>([]);
 const isOnline = ref(navigator.onLine);
 
 // 添加错误
-const addError = (error: Omit<ErrorItem, 'id'>) => {
+const addError = (error: Omit<ErrorItem, "id">) => {
   const id = Date.now().toString();
   const errorItem: ErrorItem = {
     ...error,
     id,
-    duration: error.duration || 5000
+    duration: error.duration || 5000,
   };
-  
+
   errors.value.push(errorItem);
-  
+
   // 自动移除
   if (errorItem.duration > 0) {
     setTimeout(() => {
@@ -93,7 +93,7 @@ const addError = (error: Omit<ErrorItem, 'id'>) => {
 
 // 移除错误
 const dismissError = (id: string) => {
-  const index = errors.value.findIndex(error => error.id === id);
+  const index = errors.value.findIndex((error) => error.id === id);
   if (index > -1) {
     errors.value.splice(index, 1);
   }
@@ -108,10 +108,10 @@ const clearAllErrors = () => {
 const handleOnline = () => {
   isOnline.value = true;
   addError({
-    type: 'success',
-    title: '网络已连接',
-    message: '网络连接已恢复',
-    duration: 3000
+    type: "success",
+    title: "网络已连接",
+    message: "网络连接已恢复",
+    duration: 3000,
   });
 };
 
@@ -122,52 +122,52 @@ const handleOffline = () => {
 // 全局错误监听
 const handleUnhandledError = (event: ErrorEvent) => {
   addError({
-    type: 'error',
-    title: '应用程序错误',
-    message: event.error?.message || '发生未知错误',
+    type: "error",
+    title: "应用程序错误",
+    message: event.error?.message || "发生未知错误",
     actions: [
       {
-        label: '刷新页面',
-        handler: () => window.location.reload()
-      }
-    ]
+        label: "刷新页面",
+        handler: () => window.location.reload(),
+      },
+    ],
   });
 };
 
 const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
   addError({
-    type: 'error',
-    title: '网络请求失败',
-    message: event.reason?.message || '请求处理失败',
+    type: "error",
+    title: "网络请求失败",
+    message: event.reason?.message || "请求处理失败",
     actions: [
       {
-        label: '重试',
-        handler: () => window.location.reload()
-      }
-    ]
+        label: "重试",
+        handler: () => window.location.reload(),
+      },
+    ],
   });
 };
 
 // 生命周期
 onMounted(() => {
-  window.addEventListener('online', handleOnline);
-  window.addEventListener('offline', handleOffline);
-  window.addEventListener('error', handleUnhandledError);
-  window.addEventListener('unhandledrejection', handleUnhandledRejection);
+  window.addEventListener("online", handleOnline);
+  window.addEventListener("offline", handleOffline);
+  window.addEventListener("error", handleUnhandledError);
+  window.addEventListener("unhandledrejection", handleUnhandledRejection);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('online', handleOnline);
-  window.removeEventListener('offline', handleOffline);
-  window.removeEventListener('error', handleUnhandledError);
-  window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+  window.removeEventListener("online", handleOnline);
+  window.removeEventListener("offline", handleOffline);
+  window.removeEventListener("error", handleUnhandledError);
+  window.removeEventListener("unhandledrejection", handleUnhandledRejection);
 });
 
 // 暴露方法给全局使用
 defineExpose({
   addError,
   dismissError,
-  clearAllErrors
+  clearAllErrors,
 });
 </script>
 

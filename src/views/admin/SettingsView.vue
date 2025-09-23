@@ -234,18 +234,16 @@ const seoConfig = ref({
 const saveSettings = async () => {
   try {
     saving.value = true;
-    
+
     // 保存到数据库
-    const { error } = await supabase
-      .from('system_settings')
-      .upsert({
-        key: 'site_config',
-        value: siteConfig.value,
-        updated_at: new Date().toISOString()
-      });
-    
+    const { error } = await supabase.from("system_settings").upsert({
+      key: "site_config",
+      value: siteConfig.value,
+      updated_at: new Date().toISOString(),
+    });
+
     if (error) throw error;
-    
+
     message.value = "设置保存成功！";
     messageType.value = "success";
   } catch (error) {

@@ -9,7 +9,7 @@ export class FavoritesService {
   static async getFavoriteTools(userId: string): Promise<Tool[]> {
     try {
       // 首先获取收藏记录
-      const { data: favorites, error: favoritesError } = await (supabase as any)
+      const { data: favorites, error: favoritesError } = await supabase
         .from("favorites")
         .select("tool_id")
         .eq("user_id", userId)
@@ -20,19 +20,23 @@ export class FavoritesService {
       if (!favorites || favorites.length === 0) return [];
 
       // 获取工具详情
-      const toolIds = favorites.map((f: any) => f.tool_id).filter(Boolean) as string[];
-      const { data: tools, error: toolsError } = await (supabase as any)
+      const toolIds = favorites
+        .map((f) => f.tool_id)
+        .filter(Boolean) as string[];
+      const { data: tools, error: toolsError } = await supabase
         .from("tools")
-        .select(`
+        .select(
+          `
           *,
           category:categories(*)
-        `)
+        `,
+        )
         .in("id", toolIds)
         .eq("status", "active");
 
       if (toolsError) throw toolsError;
 
-      return (tools || []).map((tool: any) => ({
+      return (tools || []).map((tool) => ({
         id: tool.id,
         name: tool.name,
         description: tool.description,
@@ -50,19 +54,21 @@ export class FavoritesService {
         meta_title: tool.meta_title,
         meta_description: tool.meta_description,
         sort_order: tool.sort_order,
-        category: tool.category ? {
-          id: tool.category.id,
-          name: tool.category.name,
-          description: tool.category.description,
-          icon: tool.category.icon,
-          color: tool.category.color,
-          parent_id: tool.category.parent_id,
-          count: 0,
-          sort_order: tool.category.sort_order,
-          is_active: tool.category.is_active,
-          created_at: tool.category.created_at,
-          updated_at: tool.category.updated_at,
-        } : undefined,
+        category: tool.category
+          ? {
+              id: tool.category.id,
+              name: tool.category.name,
+              description: tool.category.description,
+              icon: tool.category.icon,
+              color: tool.category.color,
+              parent_id: tool.category.parent_id,
+              count: 0,
+              sort_order: tool.category.sort_order,
+              is_active: tool.category.is_active,
+              created_at: tool.category.created_at,
+              updated_at: tool.category.updated_at,
+            }
+          : undefined,
       })) as Tool[];
     } catch (error) {
       console.error("获取收藏工具失败:", error);
@@ -85,13 +91,17 @@ export class FavoritesService {
       if (!favorites || favorites.length === 0) return [];
 
       // 获取产品详情
-      const productIds = favorites.map((f: any) => f.product_id).filter(Boolean) as string[];
+      const productIds = favorites
+        .map((f: any) => f.product_id)
+        .filter(Boolean) as string[];
       const { data: products, error: productsError } = await (supabase as any)
         .from("products")
-        .select(`
+        .select(
+          `
           *,
           category:product_categories(*)
-        `)
+        `,
+        )
         .in("id", productIds)
         .eq("status", "active");
 
@@ -106,19 +116,21 @@ export class FavoritesService {
         original_price: product.original_price,
         currency: product.currency,
         category_id: product.category_id,
-        category: product.category ? {
-          id: product.category.id,
-          name: product.category.name,
-          description: product.category.description,
-          icon: product.category.icon,
-          color: product.category.color,
-          parent_id: product.category.parent_id,
-          count: 0,
-          sort_order: product.category.sort_order,
-          is_active: product.category.is_active,
-          created_at: product.category.created_at,
-          updated_at: product.category.updated_at,
-        } : undefined,
+        category: product.category
+          ? {
+              id: product.category.id,
+              name: product.category.name,
+              description: product.category.description,
+              icon: product.category.icon,
+              color: product.category.color,
+              parent_id: product.category.parent_id,
+              count: 0,
+              sort_order: product.category.sort_order,
+              is_active: product.category.is_active,
+              created_at: product.category.created_at,
+              updated_at: product.category.updated_at,
+            }
+          : undefined,
         images: product.images || [],
         features: product.features || [],
         demo_url: product.demo_url,
@@ -334,7 +346,9 @@ export class FavoritesService {
         product_id: item.type === "product" ? item.id : null,
       }));
 
-      const { error } = await (supabase as any).from("favorites").insert(favoriteData);
+      const { error } = await (supabase as any)
+        .from("favorites")
+        .insert(favoriteData);
 
       if (error) throw error;
     } catch (error) {

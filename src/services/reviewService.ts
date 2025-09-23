@@ -488,9 +488,12 @@ class ReviewService {
       if (error) throw error;
 
       // 更新评价的回复计数
-      await supabase.rpc("increment_review_reply_count" as any, {
-        review_id: reviewId,
-      } as any);
+      await supabase.rpc(
+        "increment_review_reply_count" as any,
+        {
+          review_id: reviewId,
+        } as any,
+      );
 
       return data;
     } catch (error) {

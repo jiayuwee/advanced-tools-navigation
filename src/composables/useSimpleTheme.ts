@@ -1,4 +1,4 @@
-import { ref, computed, watch, onMounted } from "vue";
+import { computed, watch, onMounted } from "vue";
 import { usePreferredColorScheme, useStorage } from "@vueuse/core";
 
 export type SimpleThemeMode = "light" | "dark" | "auto";

@@ -74,7 +74,7 @@
           >
             <div
               class="pt-4 text-gray-700 prose prose-sm max-w-none"
-              v-html="faq.answer"
+              v-text="faq.answer"
             ></div>
 
             <!-- 有用性评价 -->

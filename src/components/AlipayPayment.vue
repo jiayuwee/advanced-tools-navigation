@@ -5,27 +5,27 @@
       <div class="spinner"></div>
       <p>正在跳转到支付宝...</p>
     </div>
-    
+
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <button @click="retryPayment" class="retry-btn">重试</button>
+      <button class="retry-btn" @click="retryPayment">重试</button>
     </div>
-    
+
     <div v-else class="payment-form">
       <div class="alipay-logo">
         <div class="logo-placeholder">
-          <span style="font-size: 2rem; color: #1677ff;">💳</span>
+          <span style="font-size: 2rem; color: #1677ff">💳</span>
           <p>支付宝</p>
         </div>
       </div>
-      
+
       <h3>支付宝安全支付</h3>
-      
+
       <div class="payment-summary">
         <p>订单金额: ¥{{ amount }}</p>
         <p>订单号: {{ orderId }}</p>
       </div>
-      
+
       <div class="payment-info">
         <div class="info-item">
           <span class="icon">🔒</span>
@@ -40,16 +40,16 @@
           <span>支持多种付款方式</span>
         </div>
       </div>
-      
-      <button 
-        @click="handlePayment" 
+
+      <button
         :disabled="isProcessing"
         class="pay-button"
+        @click="handlePayment"
       >
         <span v-if="isProcessing">处理中...</span>
         <span v-else>确认支付 ¥{{ amount }}</span>
       </button>
-      
+
       <div class="payment-notice">
         <p>点击支付按钮后，将跳转到支付宝官方支付页面</p>
         <p>请在新页面中完成支付，支付完成后会自动返回</p>
@@ -59,54 +59,57 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { PaymentService } from '@/services/paymentService'
+import { ref } from "vue";
+import { PaymentService } from "@/services/paymentService";
 
 // Props
 interface Props {
-  amount: number
-  orderId: string
+  amount: number;
+  orderId: string;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
-  success: [paymentResult: any]
-  error: [error: string]
-}>()
+  success: [paymentResult: any];
+  error: [error: string];
+}>();
 
 // 响应式数据
-const isLoading = ref(false)
-const isProcessing = ref(false)
-const error = ref('')
+const isLoading = ref(false);
+const isProcessing = ref(false);
+const error = ref("");
 
 // 处理支付
 const handlePayment = async () => {
   try {
-    isProcessing.value = true
-    error.value = ''
+    isProcessing.value = true;
+    error.value = "";
 
-    console.log('开始处理支付宝支付', { orderId: props.orderId, amount: props.amount })
+    console.log("开始处理支付宝支付", {
+      orderId: props.orderId,
+      amount: props.amount,
+    });
 
     // 调用支付服务创建支付宝支付
     const paymentResult = await PaymentService.processAlipayPayment({
       order_id: props.orderId,
-      payment_method: 'alipay',
+      payment_method: "alipay",
       payment_id: `ALIPAY_${Date.now()}`,
-      amount: props.amount
-    })
+      amount: props.amount,
+    });
 
     if (paymentResult.success && paymentResult.redirectUrl) {
       // 跳转到支付宝支付页面
-      console.log('跳转到支付宝支付页面:', paymentResult.redirectUrl)
-      
+      console.log("跳转到支付宝支付页面:", paymentResult.redirectUrl);
+
       // 在实际应用中，这里会跳转到支付宝支付页面
       // window.open(paymentResult.redirectUrl, '_self')
-      
+
       // 模拟支付流程：显示跳转信息，然后模拟支付完成
-      isLoading.value = true
-      
+      isLoading.value = true;
+
       // 模拟跳转延迟
       setTimeout(() => {
         // 模拟支付成功
@@ -114,34 +117,33 @@ const handlePayment = async () => {
           paymentId: paymentResult.paymentId,
           orderId: props.orderId,
           amount: props.amount,
-          method: 'alipay',
-          status: 'success',
-          transactionId: `alipay_${Date.now()}`
-        }
-        
-        emit('success', mockSuccessResult)
-        isLoading.value = false
-      }, 3000) // 3秒后模拟支付完成
-      
+          method: "alipay",
+          status: "success",
+          transactionId: `alipay_${Date.now()}`,
+        };
+
+        emit("success", mockSuccessResult);
+        isLoading.value = false;
+      }, 3000); // 3秒后模拟支付完成
     } else {
-      throw new Error(paymentResult.message || '支付宝支付创建失败')
+      throw new Error(paymentResult.message || "支付宝支付创建失败");
     }
   } catch (err) {
-    console.error('支付宝支付失败:', err)
-    const errorMessage = err instanceof Error ? err.message : '支付处理失败'
-    error.value = errorMessage
-    emit('error', errorMessage)
-    isLoading.value = false
+    console.error("支付宝支付失败:", err);
+    const errorMessage = err instanceof Error ? err.message : "支付处理失败";
+    error.value = errorMessage;
+    emit("error", errorMessage);
+    isLoading.value = false;
   } finally {
-    isProcessing.value = false
+    isProcessing.value = false;
   }
-}
+};
 
 // 重试支付
 const retryPayment = () => {
-  error.value = ''
-  handlePayment()
-}
+  error.value = "";
+  handlePayment();
+};
 </script>
 
 <style scoped>
@@ -170,8 +172,12 @@ const retryPayment = () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error {

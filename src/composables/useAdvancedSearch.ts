@@ -1,5 +1,6 @@
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import { useToolsStore } from "@/stores/tools";
+import type { Tool } from "@/stores/tools";
 
 export interface SearchFilters {
   category: string;
@@ -12,7 +13,7 @@ export interface SearchFilters {
 }
 
 export interface SearchResult {
-  item: any;
+  item: Tool;
   score: number;
   matches: string[];
 }
@@ -79,10 +80,7 @@ export function useAdvancedSearch() {
         score += 1;
       }
 
-      // 高评分工具加分
-      if (item.average_rating && item.average_rating > 4) {
-        score += 1;
-      }
+      // 工具暂无评分系统，跳过评分加分
 
       if (score > 0) {
         results.push({ item, score, matches });
@@ -114,11 +112,7 @@ export function useAdvancedSearch() {
         if (!hasMatchingTag) return false;
       }
 
-      // 评分筛选
-      if (filters.value.rating > 0) {
-        const rating = item.average_rating || 0;
-        if (rating < filters.value.rating) return false;
-      }
+      // 工具暂无评分系统，跳过评分筛选
 
       // 特色工具筛选
       if (filters.value.isFeatured && !item.is_featured) {
@@ -145,8 +139,8 @@ export function useAdvancedSearch() {
           comparison = (a.item.name || "").localeCompare(b.item.name || "");
           break;
         case "rating":
-          comparison =
-            (a.item.average_rating || 0) - (b.item.average_rating || 0);
+          // 工具暂无评分系统，使用点击数作为替代排序
+          comparison = (a.item.click_count || 0) - (b.item.click_count || 0);
           break;
         case "clicks":
           comparison = (a.item.click_count || 0) - (b.item.click_count || 0);
@@ -287,12 +281,7 @@ export function useAdvancedSearch() {
     return patternIndex === patternLength;
   };
 
-  // 监听搜索查询变化
-  // watch(searchQuery, (newQuery) => {
-  //   if (toolsStore.setSearchQuery) {
-  //     toolsStore.setSearchQuery(newQuery);
-  //   }
-  // });
+  // 监听搜索查询变化已移除（未使用）
 
   return {
     searchQuery,

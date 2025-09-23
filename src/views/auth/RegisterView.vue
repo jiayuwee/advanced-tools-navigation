@@ -117,6 +117,7 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { EyeIcon, EyeOffIcon } from "lucide-vue-next";
+import { AuthService } from "@/services/authService";
 
 const router = useRouter();
 
@@ -167,11 +168,17 @@ const handleRegister = async () => {
     loading.value = true;
     error.value = null;
 
-    // TODO: 实现注册逻辑
-    // const result = await AuthService.register(form.value)
+    // 调用实际的注册服务
+    const registerData = {
+      email: form.value.email,
+      password: form.value.password,
+      confirm_password: form.value.confirmPassword,
+      full_name: form.value.fullName,
+      username: "", // 可选字段
+      agree_to_terms: form.value.agreeToTerms,
+    };
 
-    // 模拟注册
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const result = await AuthService.register(registerData);
 
     console.log("注册成功:", form.value.email);
     router.push("/auth/login");

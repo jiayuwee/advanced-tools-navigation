@@ -21,7 +21,7 @@ const convertBillingAddress = (address: BillingAddress) => {
     city: address.city || "",
     state: address.state || "",
     postal_code: address.postal_code || "",
-    country: address.country || ""
+    country: address.country || "",
   };
 };
 
@@ -117,7 +117,11 @@ export class OrderService {
         ],
         total_amount: totalAmount,
         currency: (order as any).currency,
-        status: (order as any).status as "pending" | "paid" | "cancelled" | "refunded",
+        status: (order as any).status as
+          | "pending"
+          | "paid"
+          | "cancelled"
+          | "refunded",
         payment_method: (order as any).payment_method || undefined,
         payment_id: (order as any).payment_id || undefined,
         billing_address: orderData.billing_address,
@@ -150,7 +154,7 @@ export class OrderService {
         .eq("status", "pending"); // 只能更新待支付的订单
 
       if (error) throw error;
-      
+
       // 创建支付记录
       const paymentInsertData: any = {
         order_id: paymentData.order_id,
@@ -228,48 +232,51 @@ export class OrderService {
       return (data || []).map((order: any) => ({
         id: order.id,
         user_id: order.user_id,
-        items: order.order_items?.map((item: any) => ({
-          id: item.id,
-          order_id: item.order_id,
-          product_id: item.product_id,
-          quantity: item.quantity,
-          unit_price: item.unit_price,
-          total_price: item.total_price,
-          created_at: item.created_at,
-          product: item.products
-            ? {
-                id: item.products.id,
-                name: item.products.name,
-                description: "",
-                short_description: item.products.short_description || "",
-                price: 0,
-                currency: "CNY",
-                category_id: "",
-                images: item.products.images || [],
-                features: [],
-                is_featured: false,
-                is_digital: false,
-                status: "active",
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              }
-            : undefined,
-        })) || [],
+        items:
+          order.order_items?.map((item: any) => ({
+            id: item.id,
+            order_id: item.order_id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            total_price: item.total_price,
+            created_at: item.created_at,
+            product: item.products
+              ? {
+                  id: item.products.id,
+                  name: item.products.name,
+                  description: "",
+                  short_description: item.products.short_description || "",
+                  price: 0,
+                  currency: "CNY",
+                  category_id: "",
+                  images: item.products.images || [],
+                  features: [],
+                  is_featured: false,
+                  is_digital: false,
+                  status: "active",
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                }
+              : undefined,
+          })) || [],
         total_amount: order.total_amount,
         currency: order.currency,
         status: order.status,
         payment_method: order.payment_method || undefined,
         payment_id: order.payment_id || undefined,
-        billing_address: order.billing_address ? {
-          full_name: "",
-          email: "",
-          phone: "",
-          country: order.billing_address.country,
-          state: order.billing_address.state,
-          city: order.billing_address.city,
-          address: order.billing_address.street,
-          postal_code: order.billing_address.postal_code,
-        } : undefined,
+        billing_address: order.billing_address
+          ? {
+              full_name: "",
+              email: "",
+              phone: "",
+              country: order.billing_address.country,
+              state: order.billing_address.state,
+              city: order.billing_address.city,
+              address: order.billing_address.street,
+              postal_code: order.billing_address.postal_code,
+            }
+          : undefined,
         created_at: order.created_at,
         updated_at: order.updated_at,
         completed_at: order.completed_at || undefined,
@@ -329,49 +336,52 @@ export class OrderService {
       return {
         id: data.id,
         user_id: data.user_id,
-        items: data.order_items?.map((item: any) => ({
-          id: item.id,
-          order_id: item.order_id,
-          product_id: item.product_id,
-          quantity: item.quantity,
-          unit_price: item.unit_price,
-          total_price: item.total_price,
-          created_at: item.created_at,
-          product: item.products
-            ? {
-                id: item.products.id,
-                name: item.products.name,
-                description: "",
-                short_description: item.products.short_description || "",
-                price: 0,
-                currency: "CNY",
-                category_id: "",
-                images: item.products.images || [],
-                features: [],
-                is_featured: false,
-                is_digital: false,
-                status: "active",
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-                download_url: item.products.download_url,
-              }
-            : undefined,
-        })) || [],
+        items:
+          data.order_items?.map((item: any) => ({
+            id: item.id,
+            order_id: item.order_id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            total_price: item.total_price,
+            created_at: item.created_at,
+            product: item.products
+              ? {
+                  id: item.products.id,
+                  name: item.products.name,
+                  description: "",
+                  short_description: item.products.short_description || "",
+                  price: 0,
+                  currency: "CNY",
+                  category_id: "",
+                  images: item.products.images || [],
+                  features: [],
+                  is_featured: false,
+                  is_digital: false,
+                  status: "active",
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                  download_url: item.products.download_url,
+                }
+              : undefined,
+          })) || [],
         total_amount: data.total_amount,
         currency: data.currency,
         status: data.status,
         payment_method: data.payment_method || undefined,
         payment_id: data.payment_id || undefined,
-        billing_address: data.billing_address ? {
-          full_name: "",
-          email: "",
-          phone: "",
-          country: data.billing_address.country,
-          state: data.billing_address.state,
-          city: data.billing_address.city,
-          address: data.billing_address.street,
-          postal_code: data.billing_address.postal_code,
-        } : undefined,
+        billing_address: data.billing_address
+          ? {
+              full_name: "",
+              email: "",
+              phone: "",
+              country: data.billing_address.country,
+              state: data.billing_address.state,
+              city: data.billing_address.city,
+              address: data.billing_address.street,
+              postal_code: data.billing_address.postal_code,
+            }
+          : undefined,
         created_at: data.created_at,
         updated_at: data.updated_at,
         completed_at: data.completed_at || undefined,
@@ -460,48 +470,51 @@ export class OrderService {
               avatar_url: order.user_profiles.avatar_url,
             }
           : undefined,
-        items: order.order_items?.map((item: any) => ({
-          id: item.id,
-          order_id: item.order_id,
-          product_id: item.product_id,
-          quantity: item.quantity,
-          unit_price: item.unit_price,
-          total_price: item.total_price,
-          created_at: item.created_at,
-          product: item.products
-            ? {
-                id: item.products.id,
-                name: item.products.name,
-                description: "",
-                short_description: item.products.short_description || "",
-                price: 0,
-                currency: "CNY",
-                category_id: "",
-                images: item.products.images || [],
-                features: [],
-                is_featured: false,
-                is_digital: false,
-                status: "active",
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              }
-            : undefined,
-        })) || [],
+        items:
+          order.order_items?.map((item: any) => ({
+            id: item.id,
+            order_id: item.order_id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            total_price: item.total_price,
+            created_at: item.created_at,
+            product: item.products
+              ? {
+                  id: item.products.id,
+                  name: item.products.name,
+                  description: "",
+                  short_description: item.products.short_description || "",
+                  price: 0,
+                  currency: "CNY",
+                  category_id: "",
+                  images: item.products.images || [],
+                  features: [],
+                  is_featured: false,
+                  is_digital: false,
+                  status: "active",
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                }
+              : undefined,
+          })) || [],
         total_amount: order.total_amount,
         currency: order.currency,
         status: order.status,
         payment_method: order.payment_method || undefined,
         payment_id: order.payment_id || undefined,
-        billing_address: order.billing_address ? {
-          full_name: "",
-          email: "",
-          phone: "",
-          country: order.billing_address.country,
-          state: order.billing_address.state,
-          city: order.billing_address.city,
-          address: order.billing_address.street,
-          postal_code: order.billing_address.postal_code,
-        } : undefined,
+        billing_address: order.billing_address
+          ? {
+              full_name: "",
+              email: "",
+              phone: "",
+              country: order.billing_address.country,
+              state: order.billing_address.state,
+              city: order.billing_address.city,
+              address: order.billing_address.street,
+              postal_code: order.billing_address.postal_code,
+            }
+          : undefined,
         created_at: order.created_at,
         updated_at: order.updated_at,
         completed_at: order.completed_at || undefined,

@@ -92,22 +92,34 @@
         <div class="footer-section contact-info">
           <h4>联系我们</h4>
           <div class="contact-card">
-            <div v-if="siteConfig.contact.phone" class="contact-item phone-item" @click="handleContactClick('phone', siteConfig.contact.phone)">
+            <div
+              v-if="siteConfig.contact.phone"
+              class="contact-item phone-item"
+              @click="handleContactClick('phone', siteConfig.contact.phone)"
+            >
               <div class="contact-icon-wrapper">
                 <PhoneIcon class="contact-icon" />
               </div>
               <div class="contact-content">
                 <span class="contact-label">电话咨询</span>
-                <span class="contact-value">{{ siteConfig.contact.phone }}</span>
+                <span class="contact-value">{{
+                  siteConfig.contact.phone
+                }}</span>
               </div>
             </div>
-            <div v-if="siteConfig.contact.email" class="contact-item email-item" @click="handleContactClick('email', siteConfig.contact.email)">
+            <div
+              v-if="siteConfig.contact.email"
+              class="contact-item email-item"
+              @click="handleContactClick('email', siteConfig.contact.email)"
+            >
               <div class="contact-icon-wrapper">
                 <MailIcon class="contact-icon" />
               </div>
               <div class="contact-content">
                 <span class="contact-label">邮箱联系</span>
-                <span class="contact-value">{{ siteConfig.contact.email }}</span>
+                <span class="contact-value">{{
+                  siteConfig.contact.email
+                }}</span>
               </div>
             </div>
             <div class="contact-item address-item">
@@ -210,10 +222,10 @@ const footerConfig = ref({
 // 处理联系方式点击
 const handleContactClick = (type: string, value: string) => {
   switch (type) {
-    case 'phone':
+    case "phone":
       window.location.href = `tel:${value}`;
       break;
-    case 'email':
+    case "email":
       window.location.href = `mailto:${value}`;
       break;
     default:

@@ -328,10 +328,10 @@ const loadUsers = async () => {
   try {
     loading.value = true;
     const { data, error } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
+      .from("user_profiles")
+      .select("*")
+      .order("created_at", { ascending: false });
+
     if (error) throw error;
     users.value = data || [];
   } catch (error) {

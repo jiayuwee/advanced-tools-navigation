@@ -42,18 +42,20 @@ export class ToolsService {
   static async getTools(filters?: SearchFilters): Promise<SearchResult<Tool>> {
     // 生成缓存键
     const cacheKey = `tools_${JSON.stringify(filters || {})}`;
-    
+
     // 使用缓存装饰器
     return withCache(
       this._getToolsFromAPI.bind(this),
       () => cacheKey,
       apiCache,
-      2 * 60 * 1000 // 2分钟缓存
+      2 * 60 * 1000, // 2分钟缓存
     )(filters);
   }
 
   // 内部方法，不使用缓存
-  private static async _getToolsFromAPI(filters?: SearchFilters): Promise<SearchResult<Tool>> {
+  private static async _getToolsFromAPI(
+    filters?: SearchFilters,
+  ): Promise<SearchResult<Tool>> {
     try {
       let query = supabase
         .from(TABLES.TOOLS)
@@ -113,12 +115,12 @@ export class ToolsService {
   // 获取单个工具（优化版本，带缓存）
   static async getTool(id: string): Promise<Tool> {
     const cacheKey = `tool_${id}`;
-    
+
     return withCache(
       this._getToolFromAPI.bind(this),
       () => cacheKey,
       apiCache,
-      5 * 60 * 1000 // 5分钟缓存
+      5 * 60 * 1000, // 5分钟缓存
     )(id);
   }
 
@@ -188,10 +190,10 @@ export class ToolsService {
       }
 
       const tool = this.transformToolRow(data);
-      
+
       // 清理相关缓存
       this.clearRelatedCache();
-      
+
       return tool;
     } catch (error) {
       const appError = ErrorHandler.handleApiError(error);
@@ -253,10 +255,10 @@ export class ToolsService {
       }
 
       const tool = this.transformToolRow(data);
-      
+
       // 清理相关缓存
       this.clearRelatedCache(id);
-      
+
       return tool;
     } catch (error) {
       console.error("Error updating tool:", error);
@@ -272,7 +274,7 @@ export class ToolsService {
       if (error) {
         throw new Error(handleSupabaseError(error));
       }
-      
+
       // 清理相关缓存
       this.clearRelatedCache(id);
     } catch (error) {
@@ -291,7 +293,7 @@ export class ToolsService {
       if (error) {
         throw new Error(handleSupabaseError(error));
       }
-      
+
       // 清理相关缓存
       this.clearRelatedCache(id);
     } catch (error) {
@@ -317,7 +319,7 @@ export class ToolsService {
       if (error) {
         throw new Error(handleSupabaseError(error));
       }
-      
+
       // 清理相关缓存
       this.clearRelatedCache(id);
     } catch (error) {
@@ -329,12 +331,12 @@ export class ToolsService {
   // 获取热门工具（优化版本，带缓存）
   static async getPopularTools(limit = 10): Promise<Tool[]> {
     const cacheKey = `popular_tools_${limit}`;
-    
+
     return withCache(
       this._getPopularToolsFromAPI.bind(this),
       () => cacheKey,
       apiCache,
-      5 * 60 * 1000 // 5分钟缓存
+      5 * 60 * 1000, // 5分钟缓存
     )(limit);
   }
 
@@ -367,12 +369,12 @@ export class ToolsService {
   // 获取推荐工具（优化版本，带缓存）
   static async getFeaturedTools(limit = 6): Promise<Tool[]> {
     const cacheKey = `featured_tools_${limit}`;
-    
+
     return withCache(
       this._getFeaturedToolsFromAPI.bind(this),
       () => cacheKey,
       apiCache,
-      10 * 60 * 1000 // 10分钟缓存（推荐工具变化较少）
+      10 * 60 * 1000, // 10分钟缓存（推荐工具变化较少）
     )(limit);
   }
 
@@ -434,7 +436,7 @@ export class ToolsService {
   private static clearRelatedCache(toolId?: string): void {
     // 清理列表缓存
     apiCache.clear(); // 简单粗暴的方式，实际中可以更精细化
-    
+
     // 如果有具体的 toolId，清理该工具的缓存
     if (toolId) {
       apiCache.delete(`tool_${toolId}`);

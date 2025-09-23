@@ -27,10 +27,7 @@ async function checkWeeTable() {
 
   try {
     // 尝试直接查询 wee 表
-    const { error: weeError } = await supabase
-      .from("wee")
-      .select("*")
-      .limit(1);
+    const { error: weeError } = await supabase.from("wee").select("*").limit(1);
 
     if (weeError) {
       if (

@@ -3,7 +3,7 @@
  * 用于优化数据加载和减少不必要的 API 调用
  */
 
-import { ref, reactive } from 'vue';
+import { ref, reactive } from "vue";
 
 export interface CacheItem<T = any> {
   data: T;
@@ -28,14 +28,14 @@ class CacheManager {
   private readonly defaultOptions: Required<CacheOptions> = {
     maxAge: 5 * 60 * 1000, // 5分钟
     maxSize: 100,
-    version: '1.0.0',
+    version: "1.0.0",
     serialize: false,
-    prefix: 'app_cache_',
+    prefix: "app_cache_",
   };
 
   constructor(options: CacheOptions = {}) {
     this.options = { ...this.defaultOptions, ...options };
-    
+
     if (this.options.serialize) {
       this.loadFromStorage();
     }
@@ -73,7 +73,7 @@ class CacheManager {
   // 获取缓存
   get<T>(key: string): T | null {
     const item = this.cache.get(key);
-    
+
     if (!item) {
       return null;
     }
@@ -102,7 +102,7 @@ class CacheManager {
   // 删除缓存
   delete(key: string): boolean {
     const deleted = this.cache.delete(key);
-    
+
     if (deleted && this.options.serialize) {
       this.removeFromStorage(key);
     }
@@ -118,7 +118,7 @@ class CacheManager {
   // 清空所有缓存
   clear(): void {
     this.cache.clear();
-    
+
     if (this.options.serialize) {
       this.clearStorage();
     }
@@ -133,7 +133,7 @@ class CacheManager {
 
     for (const [, item] of this.cache) {
       totalHits += item.hits;
-      
+
       if (now > item.expiry) {
         expiredCount++;
       } else {
@@ -146,7 +146,7 @@ class CacheManager {
       validItems: validCount,
       expiredItems: expiredCount,
       totalHits,
-      hitRate: totalHits > 0 ? (totalHits / this.cache.size) : 0,
+      hitRate: totalHits > 0 ? totalHits / this.cache.size : 0,
       memoryUsage: this.estimateMemoryUsage(),
     };
   }
@@ -159,7 +159,7 @@ class CacheManager {
 
   // 淘汰最少使用的缓存项
   private evictLeastRecentlyUsed(): void {
-    let lruKey = '';
+    let lruKey = "";
     let lruTime = Date.now();
 
     for (const [key, item] of this.cache) {
@@ -185,7 +185,7 @@ class CacheManager {
       }
     }
 
-    keysToDelete.forEach(key => this.delete(key));
+    keysToDelete.forEach((key) => this.delete(key));
   }
 
   // 启动清理定时器
@@ -198,7 +198,7 @@ class CacheManager {
   // 估算内存使用量
   private estimateMemoryUsage(): number {
     let totalSize = 0;
-    
+
     for (const [key, item] of this.cache) {
       totalSize += key.length * 2; // Unicode 字符串
       totalSize += JSON.stringify(item).length * 2;
@@ -213,7 +213,7 @@ class CacheManager {
       const storageKey = this.options.prefix + key;
       localStorage.setItem(storageKey, JSON.stringify(item));
     } catch (error) {
-      console.warn('保存缓存到 localStorage 失败:', error);
+      console.warn("保存缓存到 localStorage 失败:", error);
     }
   }
 
@@ -221,19 +221,22 @@ class CacheManager {
   private loadFromStorage(): void {
     try {
       const prefix = this.options.prefix;
-      
+
       for (let i = 0; i < localStorage.length; i++) {
         const storageKey = localStorage.key(i);
-        
+
         if (storageKey?.startsWith(prefix)) {
           const key = storageKey.slice(prefix.length);
           const itemStr = localStorage.getItem(storageKey);
-          
+
           if (itemStr) {
             const item: CacheItem = JSON.parse(itemStr);
-            
+
             // 检查是否过期
-            if (Date.now() <= item.expiry && item.version === this.options.version) {
+            if (
+              Date.now() <= item.expiry &&
+              item.version === this.options.version
+            ) {
               this.cache.set(key, item);
             } else {
               localStorage.removeItem(storageKey);
@@ -242,7 +245,7 @@ class CacheManager {
         }
       }
     } catch (error) {
-      console.warn('从 localStorage 加载缓存失败:', error);
+      console.warn("从 localStorage 加载缓存失败:", error);
     }
   }
 
@@ -252,7 +255,7 @@ class CacheManager {
       const storageKey = this.options.prefix + key;
       localStorage.removeItem(storageKey);
     } catch (error) {
-      console.warn('从 localStorage 删除缓存失败:', error);
+      console.warn("从 localStorage 删除缓存失败:", error);
     }
   }
 
@@ -261,17 +264,17 @@ class CacheManager {
     try {
       const prefix = this.options.prefix;
       const keysToRemove: string[] = [];
-      
+
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key?.startsWith(prefix)) {
           keysToRemove.push(key);
         }
       }
-      
-      keysToRemove.forEach(key => localStorage.removeItem(key));
+
+      keysToRemove.forEach((key) => localStorage.removeItem(key));
     } catch (error) {
-      console.warn('清空 localStorage 缓存失败:', error);
+      console.warn("清空 localStorage 缓存失败:", error);
     }
   }
 }
@@ -281,7 +284,7 @@ export const defaultCache = new CacheManager({
   maxAge: 5 * 60 * 1000, // 5分钟
   maxSize: 100,
   serialize: true,
-  prefix: 'advanced_tools_',
+  prefix: "advanced_tools_",
 });
 
 // 创建图片缓存实例
@@ -289,7 +292,7 @@ export const imageCache = new CacheManager({
   maxAge: 30 * 60 * 1000, // 30分钟
   maxSize: 50,
   serialize: false, // 图片数据不适合序列化
-  prefix: 'img_cache_',
+  prefix: "img_cache_",
 });
 
 // 创建 API 数据缓存实例
@@ -297,7 +300,7 @@ export const apiCache = new CacheManager({
   maxAge: 3 * 60 * 1000, // 3分钟
   maxSize: 200,
   serialize: true,
-  prefix: 'api_cache_',
+  prefix: "api_cache_",
 });
 
 // 缓存装饰器函数
@@ -305,11 +308,11 @@ export function withCache<T extends (...args: any[]) => Promise<any>>(
   fn: T,
   cacheKey: ((...args: Parameters<T>) => string) | string,
   cacheInstance: CacheManager = defaultCache,
-  maxAge?: number
+  maxAge?: number,
 ): T {
   return (async (...args: Parameters<T>) => {
-    const key = typeof cacheKey === 'function' ? cacheKey(...args) : cacheKey;
-    
+    const key = typeof cacheKey === "function" ? cacheKey(...args) : cacheKey;
+
     // 尝试从缓存获取
     const cachedResult = cacheInstance.get(key);
     if (cachedResult !== null) {
@@ -318,10 +321,10 @@ export function withCache<T extends (...args: any[]) => Promise<any>>(
 
     // 执行原函数
     const result = await fn(...args);
-    
+
     // 缓存结果
     cacheInstance.set(key, result, maxAge);
-    
+
     return result;
   }) as T;
 }
@@ -343,7 +346,7 @@ export function useCache(cacheInstance: CacheManager = defaultCache) {
     key: string,
     fetcher: () => Promise<T>,
     maxAge?: number,
-    forceRefresh = false
+    forceRefresh = false,
   ): Promise<T> => {
     try {
       isLoading.value = true;
@@ -359,13 +362,13 @@ export function useCache(cacheInstance: CacheManager = defaultCache) {
 
       // 从 fetcher 获取数据
       const data = await fetcher();
-      
+
       // 缓存数据
       setCachedData(key, data, maxAge);
-      
+
       return data;
     } catch (err) {
-      error.value = err instanceof Error ? err.message : '加载数据失败';
+      error.value = err instanceof Error ? err.message : "加载数据失败";
       throw err;
     } finally {
       isLoading.value = false;
