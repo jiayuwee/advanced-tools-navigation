@@ -29,7 +29,7 @@ function checkSecretsConfiguration() {
       name: "VITE_SUPABASE_URL",
       description: "项目 API URL",
       howToGet:
-        "从 Supabase Dashboard > Settings > API 获取，您的 URL: https://fytiwsutzgmygfxnqoft.supabase.co",
+  "从 Supabase Dashboard > Settings > API 获取，您的 URL: https://your-supabase-project.supabase.co",
     },
     {
       name: "VITE_SUPABASE_ANON_KEY",
