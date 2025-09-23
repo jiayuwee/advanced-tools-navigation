@@ -140,7 +140,7 @@ npm run monitor:watch   # 持续监控模式
 | ------------------------ | ----------------- | ------------------------------------------------------------ |
 | `SUPABASE_ACCESS_TOKEN`  | Supabase 访问令牌 | Supabase Dashboard > Settings > API > Personal access tokens |
 | `SUPABASE_PROJECT_REF`   | 项目引用 ID       | 您的项目 ID: ndmxwdejswybvbwrxsai                            |
-| `VITE_SUPABASE_URL`      | 项目 API URL      | 您的 URL: https://fytiwsutzgmygfxnqoft.supabase.co           |
+| `VITE_SUPABASE_URL`      | 项目 API URL      | 您的 URL: https://your-supabase-project.supabase.co           |
 | `VITE_SUPABASE_ANON_KEY` | 项目匿名密钥      | Supabase Dashboard > Settings > API                          |
 
 ## 🚀 部署流程
