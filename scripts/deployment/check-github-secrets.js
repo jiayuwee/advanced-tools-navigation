@@ -75,7 +75,7 @@ function checkSecretsConfiguration() {
     console.log("   请检查 .env.local 文件中的配置");
     console.log("");
     console.log("📝 .env.local 文件示例（使用您的实际配置）:");
-    console.log("VITE_SUPABASE_URL=https://fytiwsutzgmygfxnqoft.supabase.co");
+  console.log("VITE_SUPABASE_URL=https://your-supabase-project.supabase.co");
     console.log("VITE_SUPABASE_ANON_KEY=your-actual-anon-key");
   }
 }
