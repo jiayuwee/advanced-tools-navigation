@@ -17,12 +17,15 @@ interface NetworkError {
 }
 
 function isAxiosError(error: unknown): error is AxiosError {
-  return typeof error === 'object' && error !== null && 
-    ('response' in error || 'request' in error);
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    ("response" in error || "request" in error)
+  );
 }
 
 function isNetworkError(error: unknown): error is NetworkError {
-  return typeof error === 'object' && error !== null && 'request' in error;
+  return typeof error === "object" && error !== null && "request" in error;
 }
 
 export interface AppError {
@@ -34,7 +37,11 @@ export interface AppError {
 
 export class ErrorHandler {
   // 创建应用错误
-  static createError(code: string, message: string, details?: unknown): AppError {
+  static createError(
+    code: string,
+    message: string,
+    details?: unknown,
+  ): AppError {
     return {
       code,
       message,
@@ -51,11 +58,7 @@ export class ErrorHandler {
       const data = error.response?.data;
 
       if (!status) {
-        return this.createError(
-          "UNKNOWN_ERROR", 
-          "未知API错误",
-          error
-        );
+        return this.createError("UNKNOWN_ERROR", "未知API错误", error);
       }
       switch (status) {
         case 400:
@@ -104,25 +107,19 @@ export class ErrorHandler {
       );
     } else if (error instanceof Error) {
       // 标准错误对象
-      return this.createError(
-        "UNKNOWN_ERROR",
-        error.message,
-        error
-      );
+      return this.createError("UNKNOWN_ERROR", error.message, error);
     } else {
       // 其他未知类型错误
-      return this.createError(
-        "UNKNOWN_ERROR",
-        "发生未知错误",
-        String(error)
-      );
+      return this.createError("UNKNOWN_ERROR", "发生未知错误", String(error));
     }
   }
 
   // 处理数据库错误
-  static handleDatabaseError(error: any): AppError {
-    if (error.code) {
-      switch (error.code) {
+  static handleDatabaseError(error: unknown): AppError {
+    const dbError = error as { code?: string; message?: string };
+
+    if (dbError.code) {
+      switch (dbError.code) {
         case "PGRST116":
           return this.createError("NOT_FOUND", "数据不存在", error);
         case "PGRST301":
@@ -140,7 +137,7 @@ export class ErrorHandler {
         default:
           return this.createError(
             "DATABASE_ERROR",
-            error.message || "数据库操作失败",
+            dbError.message || "数据库操作失败",
             error,
           );
       }
@@ -148,7 +145,7 @@ export class ErrorHandler {
 
     return this.createError(
       "DATABASE_ERROR",
-      error.message || "数据库操作失败",
+      dbError.message || "数据库操作失败",
       error,
     );
   }
@@ -205,7 +202,7 @@ export class ErrorHandler {
 
   // 发送错误到监控服务
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private static async sendToMonitoring(_errorData: any): Promise<void> {
+  private static async sendToMonitoring(_errorData: unknown): Promise<void> {
     try {
       // TODO: 实现错误监控服务集成
       // await fetch('/api/errors', {
@@ -273,7 +270,7 @@ export class RetryHandler {
     maxRetries: number = 3,
     delay: number = 1000,
   ): Promise<T> {
-    let lastError: any;
+    let lastError: unknown;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -300,7 +297,7 @@ export class RetryHandler {
     baseDelay: number = 1000,
     maxDelay: number = 10000,
   ): Promise<T> {
-    let lastError: any;
+    let lastError: unknown;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {

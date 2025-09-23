@@ -311,7 +311,7 @@ const filteredTools = computed(() => {
   if (showFavoritesOnly.value) {
     // TODO: 实际应用中需要从收藏服务获取用户收藏的工具ID列表
     // 这里作为示例，显示所有工具
-    console.warn('收藏功能尚未完全实现');
+    console.warn("收藏功能尚未完全实现");
     // tools = tools.filter((tool) => tool.is_favorite);
   }
 

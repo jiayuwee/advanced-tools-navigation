@@ -9,13 +9,13 @@
           'lazy-image--loading': isLoading,
           'lazy-image--loaded': isLoaded,
           'lazy-image--error': error,
-        }
+        },
       ]"
       :style="imageStyle"
       @load="handleLoad"
       @error="handleError"
     />
-    
+
     <!-- 加载占位符 -->
     <div
       v-if="showPlaceholder && !isLoaded && !error"
@@ -26,7 +26,7 @@
         <div class="placeholder-skeleton"></div>
       </slot>
     </div>
-    
+
     <!-- 错误占位符 -->
     <div
       v-if="error && showErrorPlaceholder"
@@ -35,13 +35,18 @@
     >
       <slot name="error" :error="error" :retry="retry">
         <div class="error-content">
-          <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          <svg
+            class="error-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
           <p class="error-text">图片加载失败</p>
-          <button v-if="enableRetry" @click="retry" class="retry-button">
+          <button v-if="enableRetry" class="retry-button" @click="retry">
             重试
           </button>
         </div>
@@ -51,8 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import { useLazyImage } from '@/composables/useLazyLoading';
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { useLazyImage } from "@/composables/useLazyLoading";
 
 interface Props {
   // 图片源
@@ -75,7 +80,7 @@ interface Props {
   // 懒加载阈值
   threshold?: number;
   // 图片质量优化
-  quality?: 'low' | 'medium' | 'high';
+  quality?: "low" | "medium" | "high";
   // 响应式图片源
   srcset?: string;
   // 图片尺寸描述
@@ -83,13 +88,13 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  alt: '',
+  alt: "",
   showPlaceholder: true,
   showErrorPlaceholder: true,
   enableRetry: true,
-  rootMargin: '50px',
+  rootMargin: "50px",
   threshold: 0.1,
-  quality: 'medium',
+  quality: "medium",
 });
 
 const emit = defineEmits<{
@@ -114,15 +119,17 @@ const maxRetries = 3;
 // 计算图片样式
 const imageStyle = computed(() => {
   const style: Record<string, string> = {};
-  
+
   if (props.width) {
-    style.width = typeof props.width === 'number' ? `${props.width}px` : props.width;
+    style.width =
+      typeof props.width === "number" ? `${props.width}px` : props.width;
   }
-  
+
   if (props.height) {
-    style.height = typeof props.height === 'number' ? `${props.height}px` : props.height;
+    style.height =
+      typeof props.height === "number" ? `${props.height}px` : props.height;
   }
-  
+
   return style;
 });
 
@@ -130,51 +137,51 @@ const imageStyle = computed(() => {
 const placeholderStyle = computed(() => {
   return {
     ...imageStyle.value,
-    minHeight: props.height ? undefined : '200px',
+    minHeight: props.height ? undefined : "200px",
   };
 });
 
 // 获取优化后的图片 URL
 const getOptimizedSrc = (src: string): string => {
   if (!src) return src;
-  
+
   // 如果是外部 URL，直接返回
-  if (src.startsWith('http')) {
+  if (src.startsWith("http")) {
     return src;
   }
-  
+
   // 根据质量设置添加参数（这里是示例，实际需要根据 CDN 支持的参数调整）
   const qualityParams = {
-    low: 'q_30,f_auto',
-    medium: 'q_70,f_auto',
-    high: 'q_90,f_auto',
+    low: "q_30,f_auto",
+    medium: "q_70,f_auto",
+    high: "q_90,f_auto",
   };
-  
+
   const quality = qualityParams[props.quality];
-  
+
   // 如果支持 WebP，优先使用
   const supportsWebP = checkWebPSupport();
-  const format = supportsWebP ? 'f_webp' : 'f_auto';
-  
+  const format = supportsWebP ? "f_webp" : "f_auto";
+
   return `${src}?${quality},${format}`;
 };
 
 // 检查 WebP 支持
 const checkWebPSupport = (): boolean => {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = 1;
   canvas.height = 1;
-  return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  return canvas.toDataURL("image/webp").indexOf("data:image/webp") === 0;
 };
 
 // 处理图片加载成功
 const handleLoad = (event: Event) => {
-  emit('load', event);
+  emit("load", event);
 };
 
 // 处理图片加载错误
 const handleError = () => {
-  emit('error', error.value || '图片加载失败');
+  emit("error", error.value || "图片加载失败");
 };
 
 // 重试加载
@@ -182,22 +189,25 @@ const retry = () => {
   if (retryCount.value >= maxRetries) {
     return;
   }
-  
+
   retryCount.value++;
   error.value = null;
-  
+
   const optimizedSrc = getOptimizedSrc(props.src);
   loadImage(optimizedSrc, props.placeholder);
 };
 
 // 监听 src 变化
-watch(() => props.src, (newSrc) => {
-  if (newSrc && imageContainer.value) {
-    retryCount.value = 0;
-    const optimizedSrc = getOptimizedSrc(newSrc);
-    setupIntersectionObserver(optimizedSrc, props.placeholder);
-  }
-});
+watch(
+  () => props.src,
+  (newSrc) => {
+    if (newSrc && imageContainer.value) {
+      retryCount.value = 0;
+      const optimizedSrc = getOptimizedSrc(newSrc);
+      setupIntersectionObserver(optimizedSrc, props.placeholder);
+    }
+  },
+);
 
 onMounted(() => {
   if (props.src && imageContainer.value) {

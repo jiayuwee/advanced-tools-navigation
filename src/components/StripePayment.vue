@@ -5,26 +5,26 @@
       <div class="spinner"></div>
       <p>正在初始化支付...</p>
     </div>
-    
+
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <button @click="retryPayment" class="retry-btn">重试</button>
+      <button class="retry-btn" @click="retryPayment">重试</button>
     </div>
-    
+
     <div v-else class="payment-form">
       <h3>Stripe 信用卡支付</h3>
       <div class="payment-summary">
         <p>订单金额: ¥{{ amount }}</p>
         <p>订单号: {{ orderId }}</p>
       </div>
-      
+
       <!-- Stripe Elements 容器 -->
       <div ref="cardElement" class="card-element"></div>
-      
-      <button 
-        @click="handlePayment" 
+
+      <button
         :disabled="isProcessing || !isCardComplete"
         class="pay-button"
+        @click="handlePayment"
       >
         <span v-if="isProcessing">处理中...</span>
         <span v-else>确认支付 ¥{{ amount }}</span>
@@ -34,158 +34,160 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { loadStripe } from '@stripe/stripe-js'
-import type { Stripe, StripeElements, StripeCardElement } from '@stripe/stripe-js'
+import { ref, onMounted, onUnmounted } from "vue";
+import { loadStripe } from "@stripe/stripe-js";
+import type {
+  Stripe,
+  StripeElements,
+  StripeCardElement,
+} from "@stripe/stripe-js";
 
 // Props
 interface Props {
-  clientSecret: string
-  amount: number
-  orderId: string
+  clientSecret: string;
+  amount: number;
+  orderId: string;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
-  success: [paymentResult: any]
-  error: [error: string]
-}>()
+  success: [paymentResult: any];
+  error: [error: string];
+}>();
 
 // 响应式数据
-const isLoading = ref(true)
-const isProcessing = ref(false)
-const isCardComplete = ref(false)
-const error = ref('')
-const cardElement = ref<HTMLElement>()
+const isLoading = ref(true);
+const isProcessing = ref(false);
+const isCardComplete = ref(false);
+const error = ref("");
+const cardElement = ref<HTMLElement>();
 
 // Stripe 实例
-let stripe: Stripe | null = null
-let elements: StripeElements | null = null
-let card: StripeCardElement | null = null
+let stripe: Stripe | null = null;
+let elements: StripeElements | null = null;
+let card: StripeCardElement | null = null;
 
 // 初始化 Stripe
 const initializeStripe = async () => {
   try {
-    const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+    const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
     if (!stripePublicKey) {
-      throw new Error('Stripe 公钥未配置')
+      throw new Error("Stripe 公钥未配置");
     }
 
-    stripe = await loadStripe(stripePublicKey)
+    stripe = await loadStripe(stripePublicKey);
     if (!stripe) {
-      throw new Error('Stripe 加载失败')
+      throw new Error("Stripe 加载失败");
     }
 
     // 创建 Elements
-    elements = stripe.elements()
-    
+    elements = stripe.elements();
+
     // 创建卡片元素
-    card = elements.create('card', {
+    card = elements.create("card", {
       style: {
         base: {
-          fontSize: '16px',
-          color: '#424770',
-          '::placeholder': {
-            color: '#aab7c4',
+          fontSize: "16px",
+          color: "#424770",
+          "::placeholder": {
+            color: "#aab7c4",
           },
         },
         invalid: {
-          color: '#9e2146',
+          color: "#9e2146",
         },
       },
-    })
+    });
 
     // 挂载卡片元素
     if (cardElement.value) {
-      card.mount(cardElement.value)
+      card.mount(cardElement.value);
     }
 
     // 监听卡片变化
-    card.on('change', (event) => {
+    card.on("change", (event) => {
       if (event.error) {
-        error.value = event.error.message || '卡片信息有误'
+        error.value = event.error.message || "卡片信息有误";
       } else {
-        error.value = ''
+        error.value = "";
       }
-      isCardComplete.value = event.complete
-    })
+      isCardComplete.value = event.complete;
+    });
 
-    isLoading.value = false
+    isLoading.value = false;
   } catch (err) {
-    console.error('Stripe 初始化失败:', err)
-    error.value = err instanceof Error ? err.message : 'Stripe 初始化失败'
-    isLoading.value = false
+    console.error("Stripe 初始化失败:", err);
+    error.value = err instanceof Error ? err.message : "Stripe 初始化失败";
+    isLoading.value = false;
   }
-}
+};
 
 // 处理支付
 const handlePayment = async () => {
   if (!stripe || !card) {
-    error.value = 'Stripe 未正确初始化'
-    return
+    error.value = "Stripe 未正确初始化";
+    return;
   }
 
-  isProcessing.value = true
-  error.value = ''
+  isProcessing.value = true;
+  error.value = "";
 
   try {
-    const { error: paymentError, paymentIntent } = await stripe.confirmCardPayment(
-      props.clientSecret,
-      {
+    const { error: paymentError, paymentIntent } =
+      await stripe.confirmCardPayment(props.clientSecret, {
         payment_method: {
           card: card,
           billing_details: {
             // 可以添加账单详情
           },
-        }
-      }
-    )
+        },
+      });
 
     if (paymentError) {
-      throw new Error(paymentError.message)
+      throw new Error(paymentError.message);
     }
 
-    if (paymentIntent.status === 'succeeded') {
-      emit('success', {
+    if (paymentIntent.status === "succeeded") {
+      emit("success", {
         paymentId: paymentIntent.id,
         orderId: props.orderId,
         amount: props.amount,
-        method: 'stripe',
-        status: 'succeeded'
-      })
+        method: "stripe",
+        status: "succeeded",
+      });
     } else {
-      throw new Error(`支付状态异常: ${paymentIntent.status}`)
+      throw new Error(`支付状态异常: ${paymentIntent.status}`);
     }
   } catch (err) {
-    console.error('支付失败:', err)
-    const errorMessage = err instanceof Error ? err.message : '支付处理失败'
-    error.value = errorMessage
-    emit('error', errorMessage)
+    console.error("支付失败:", err);
+    const errorMessage = err instanceof Error ? err.message : "支付处理失败";
+    error.value = errorMessage;
+    emit("error", errorMessage);
   } finally {
-    isProcessing.value = false
+    isProcessing.value = false;
   }
-}
+};
 
 // 重试支付
 const retryPayment = () => {
-  error.value = ''
-  isLoading.value = true
-  initializeStripe()
-}
+  error.value = "";
+  isLoading.value = true;
+  initializeStripe();
+};
 
 // 组件挂载时初始化
 onMounted(() => {
-  initializeStripe()
-})
+  initializeStripe();
+});
 
 // 组件卸载时清理
 onUnmounted(() => {
   if (card) {
-    card.destroy()
+    card.destroy();
   }
-})
+});
 </script>
 
 <style scoped>
@@ -214,8 +216,12 @@ onUnmounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error {

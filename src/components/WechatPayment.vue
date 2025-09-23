@@ -5,27 +5,27 @@
       <div class="spinner"></div>
       <p>正在生成支付二维码...</p>
     </div>
-    
+
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <button @click="retryPayment" class="retry-btn">重试</button>
+      <button class="retry-btn" @click="retryPayment">重试</button>
     </div>
-    
+
     <div v-else class="payment-form">
       <div class="wechat-logo">
         <div class="logo-placeholder">
-          <span style="font-size: 2rem; color: #07c160;">💬</span>
+          <span style="font-size: 2rem; color: #07c160">💬</span>
           <p>微信支付</p>
         </div>
       </div>
-      
+
       <h3>微信扫码支付</h3>
-      
+
       <div class="payment-summary">
         <p>订单金额: ¥{{ amount }}</p>
         <p>订单号: {{ orderId }}</p>
       </div>
-      
+
       <div v-if="qrCodeUrl" class="qr-code-section">
         <div class="qr-code">
           <div class="qr-placeholder">
@@ -34,7 +34,7 @@
             <small>{{ qrCodeUrl }}</small>
           </div>
         </div>
-        
+
         <div class="scan-instructions">
           <div class="instruction-step">
             <span class="step-number">1</span>
@@ -54,18 +54,18 @@
           </div>
         </div>
       </div>
-      
+
       <div v-else class="generate-qr">
-        <button 
-          @click="generateQRCode" 
+        <button
           :disabled="isProcessing"
           class="generate-btn"
+          @click="generateQRCode"
         >
           <span v-if="isProcessing">生成中...</span>
           <span v-else>生成支付二维码</span>
         </button>
       </div>
-      
+
       <div class="payment-status">
         <div class="status-item">
           <span class="status-icon">⏱️</span>
@@ -76,178 +76,179 @@
           <span>正在等待支付...</span>
         </div>
       </div>
-      
+
       <div class="payment-actions">
-        <button @click="checkPaymentStatus" class="check-btn">
+        <button class="check-btn" @click="checkPaymentStatus">
           检查支付状态
         </button>
-        <button @click="cancelPayment" class="cancel-btn">
-          取消支付
-        </button>
+        <button class="cancel-btn" @click="cancelPayment">取消支付</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { PaymentService } from '@/services/paymentService'
+import { ref, onMounted, onUnmounted } from "vue";
+import { PaymentService } from "@/services/paymentService";
 
 // Props
 interface Props {
-  amount: number
-  orderId: string
+  amount: number;
+  orderId: string;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
-  success: [paymentResult: any]
-  error: [error: string]
-  cancel: []
-}>()
+  success: [paymentResult: any];
+  error: [error: string];
+  cancel: [];
+}>();
 
 // 响应式数据
-const isLoading = ref(false)
-const isProcessing = ref(false)
-const error = ref('')
-const qrCodeUrl = ref('')
-const remainingTime = ref(30 * 60) // 30分钟倒计时
-const paymentCheckInterval = ref<NodeJS.Timeout>()
-const countdownInterval = ref<NodeJS.Timeout>()
+const isLoading = ref(false);
+const isProcessing = ref(false);
+const error = ref("");
+const qrCodeUrl = ref("");
+const remainingTime = ref(30 * 60); // 30分钟倒计时
+const paymentCheckInterval = ref<NodeJS.Timeout>();
+const countdownInterval = ref<NodeJS.Timeout>();
 
 // 生成二维码
 const generateQRCode = async () => {
   try {
-    isProcessing.value = true
-    error.value = ''
+    isProcessing.value = true;
+    error.value = "";
 
-    console.log('开始生成微信支付二维码', { orderId: props.orderId, amount: props.amount })
+    console.log("开始生成微信支付二维码", {
+      orderId: props.orderId,
+      amount: props.amount,
+    });
 
     // 调用支付服务创建微信支付
     const paymentResult = await PaymentService.processWechatPayment({
       order_id: props.orderId,
-      payment_method: 'wechat',
+      payment_method: "wechat",
       payment_id: `WECHAT_${Date.now()}`,
-      amount: props.amount
-    })
+      amount: props.amount,
+    });
 
     if (paymentResult.success && paymentResult.redirectUrl) {
-      qrCodeUrl.value = paymentResult.redirectUrl
-      
+      qrCodeUrl.value = paymentResult.redirectUrl;
+
       // 开始检查支付状态
-      startPaymentStatusCheck()
-      
+      startPaymentStatusCheck();
+
       // 开始倒计时
-      startCountdown()
-      
-      console.log('微信支付二维码已生成:', paymentResult.redirectUrl)
+      startCountdown();
+
+      console.log("微信支付二维码已生成:", paymentResult.redirectUrl);
     } else {
-      throw new Error(paymentResult.message || '微信支付二维码生成失败')
+      throw new Error(paymentResult.message || "微信支付二维码生成失败");
     }
   } catch (err) {
-    console.error('微信支付二维码生成失败:', err)
-    const errorMessage = err instanceof Error ? err.message : '二维码生成失败'
-    error.value = errorMessage
-    emit('error', errorMessage)
+    console.error("微信支付二维码生成失败:", err);
+    const errorMessage = err instanceof Error ? err.message : "二维码生成失败";
+    error.value = errorMessage;
+    emit("error", errorMessage);
   } finally {
-    isProcessing.value = false
+    isProcessing.value = false;
   }
-}
+};
 
 // 开始检查支付状态
 const startPaymentStatusCheck = () => {
   paymentCheckInterval.value = setInterval(async () => {
-    await checkPaymentStatus()
-  }, 3000) // 每3秒检查一次
-}
+    await checkPaymentStatus();
+  }, 3000); // 每3秒检查一次
+};
 
 // 检查支付状态
 const checkPaymentStatus = async () => {
   try {
     // 在实际应用中，这里会调用后端API检查支付状态
     // 这里我们模拟支付状态检查
-    console.log('检查支付状态...')
-    
+    console.log("检查支付状态...");
+
     // 模拟随机支付成功（实际应用中不应该这样做）
-    const shouldSimulateSuccess = Math.random() < 0.1 // 10% 概率模拟支付成功
-    
+    const shouldSimulateSuccess = Math.random() < 0.1; // 10% 概率模拟支付成功
+
     if (shouldSimulateSuccess) {
       const successResult = {
         paymentId: `wechat_${Date.now()}`,
         orderId: props.orderId,
         amount: props.amount,
-        method: 'wechat',
-        status: 'success',
-        transactionId: `wx_${Date.now()}`
-      }
-      
+        method: "wechat",
+        status: "success",
+        transactionId: `wx_${Date.now()}`,
+      };
+
       // 清理定时器
-      clearIntervals()
-      
-      emit('success', successResult)
+      clearIntervals();
+
+      emit("success", successResult);
     }
   } catch (err) {
-    console.error('检查支付状态失败:', err)
+    console.error("检查支付状态失败:", err);
   }
-}
+};
 
 // 开始倒计时
 const startCountdown = () => {
   countdownInterval.value = setInterval(() => {
-    remainingTime.value--
-    
+    remainingTime.value--;
+
     if (remainingTime.value <= 0) {
-      clearIntervals()
-      error.value = '支付超时，请重新生成二维码'
-      qrCodeUrl.value = ''
+      clearIntervals();
+      error.value = "支付超时，请重新生成二维码";
+      qrCodeUrl.value = "";
     }
-  }, 1000)
-}
+  }, 1000);
+};
 
 // 格式化时间
 const formatTime = (seconds: number): string => {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
-}
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+};
 
 // 取消支付
 const cancelPayment = () => {
-  clearIntervals()
-  emit('cancel')
-}
+  clearIntervals();
+  emit("cancel");
+};
 
 // 重试支付
 const retryPayment = () => {
-  error.value = ''
-  qrCodeUrl.value = ''
-  remainingTime.value = 30 * 60
-  generateQRCode()
-}
+  error.value = "";
+  qrCodeUrl.value = "";
+  remainingTime.value = 30 * 60;
+  generateQRCode();
+};
 
 // 清理定时器
 const clearIntervals = () => {
   if (paymentCheckInterval.value) {
-    clearInterval(paymentCheckInterval.value)
-    paymentCheckInterval.value = undefined
+    clearInterval(paymentCheckInterval.value);
+    paymentCheckInterval.value = undefined;
   }
   if (countdownInterval.value) {
-    clearInterval(countdownInterval.value)
-    countdownInterval.value = undefined
+    clearInterval(countdownInterval.value);
+    countdownInterval.value = undefined;
   }
-}
+};
 
 // 组件挂载时自动生成二维码
 onMounted(() => {
-  generateQRCode()
-})
+  generateQRCode();
+});
 
 // 组件卸载时清理定时器
 onUnmounted(() => {
-  clearIntervals()
-})
+  clearIntervals();
+});
 </script>
 
 <style scoped>
@@ -276,8 +277,12 @@ onUnmounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error {

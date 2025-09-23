@@ -314,15 +314,15 @@ const loadLogStats = async () => {
 const loadPerformanceStats = async () => {
   try {
     if ("memory" in performance) {
-      const memory = (performance as unknown as { memory: { usedJSHeapSize: number } }).memory;
+      const memory = (
+        performance as unknown as { memory: { usedJSHeapSize: number } }
+      ).memory;
       performanceStats.memory = formatBytes(memory.usedJSHeapSize);
     } else {
       performanceStats.memory = "未知";
     }
 
-    const navigation = performance.getEntriesByType(
-      "navigation",
-    )[0] as any;
+    const navigation = performance.getEntriesByType("navigation")[0] as any;
     if (navigation) {
       const loadTime = navigation.loadEventEnd - navigation.fetchStart;
       performanceStats.loadTime = `${Math.round(loadTime)} ms`;

@@ -36,7 +36,7 @@
       <slot name="error" :error="error" :retry="retry">
         <div class="error-content">
           <p>{{ error }}</p>
-          <button @click="retry" class="retry-button">重试</button>
+          <button class="retry-button" @click="retry">重试</button>
         </div>
       </slot>
     </div>
@@ -44,8 +44,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
-import { useLazyComponent } from '@/composables/useLazyLoading';
+import {
+  ref,
+  computed,
+  onMounted,
+  onUnmounted,
+  defineAsyncComponent,
+} from "vue";
+import { useLazyComponent } from "@/composables/useLazyLoading";
 
 interface Props {
   // 组件导入函数
@@ -68,8 +74,8 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   showPlaceholder: true,
-  placeholderText: '正在加载...',
-  placeholderStyle: () => ({ minHeight: '200px' }),
+  placeholderText: "正在加载...",
+  placeholderStyle: () => ({ minHeight: "200px" }),
   preloadDistance: 100,
   enableRetry: true,
   maxRetries: 3,
@@ -111,8 +117,8 @@ const loadComponent = async () => {
 
     component.value = createAsyncComponent();
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '组件加载失败';
-    emit('error', error.value);
+    error.value = err instanceof Error ? err.message : "组件加载失败";
+    emit("error", error.value);
   } finally {
     isLoading.value = false;
   }
@@ -121,14 +127,14 @@ const loadComponent = async () => {
 // 处理组件加载完成
 const handleLoaded = () => {
   isLoading.value = false;
-  emit('loaded');
+  emit("loaded");
 };
 
 // 处理加载错误
 const handleError = (err: any) => {
-  error.value = err instanceof Error ? err.message : '组件运行错误';
+  error.value = err instanceof Error ? err.message : "组件运行错误";
   isLoading.value = false;
-  emit('error', error.value);
+  emit("error", error.value);
 };
 
 // 重试加载
@@ -144,18 +150,24 @@ const retry = () => {
 };
 
 // 监听组件是否应该加载
-watch(() => shouldLoad.value, (should) => {
-  if (should) {
-    loadComponent();
-  }
-});
+watch(
+  () => shouldLoad.value,
+  (should) => {
+    if (should) {
+      loadComponent();
+    }
+  },
+);
 
 // 监听可见性变化
-watch(() => isVisible.value, (visible) => {
-  if (visible) {
-    emit('visible');
-  }
-});
+watch(
+  () => isVisible.value,
+  (visible) => {
+    if (visible) {
+      emit("visible");
+    }
+  },
+);
 
 onMounted(() => {
   // 设置自定义的观察器选项
@@ -229,8 +241,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .lazy-error {

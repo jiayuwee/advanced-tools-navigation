@@ -166,7 +166,7 @@ export class ProductsService {
   // 创建产品
   static async createProduct(productData: ProductInsert): Promise<Product> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("products")
         .insert(productData)
         .select(
@@ -266,7 +266,7 @@ export class ProductsService {
   }
 
   // 转换数据库行为业务对象
-  private static transformProduct(row: any): Product {
+  private static transformProduct(row: Record<string, unknown>): Product {
     return {
       id: row.id,
       name: row.name,

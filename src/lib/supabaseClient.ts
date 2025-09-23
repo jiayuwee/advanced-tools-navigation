@@ -10,7 +10,7 @@ const { supabase: supabaseConfig } = envConfig;
 export const supabase = createClient<Database>(
   supabaseConfig.url,
   supabaseConfig.anonKey,
-  supabaseConfig.options
+  supabaseConfig.options,
 );
 
 // 数据库表名常量
@@ -175,7 +175,10 @@ export const updateRecord = async (
 };
 
 export const deleteRecord = async (table: string, id: string) => {
-  const { error } = await supabase.from(table as any).delete().eq("id", id);
+  const { error } = await supabase
+    .from(table as any)
+    .delete()
+    .eq("id", id);
 
   if (error) {
     throw new Error(handleSupabaseError(error));

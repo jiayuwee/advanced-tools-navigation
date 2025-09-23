@@ -54,10 +54,7 @@
         <!-- 使用教程 -->
         <div v-if="tool.tutorial_content" class="tutorial-section">
           <h2>使用教程</h2>
-          <div
-            class="tutorial-content"
-            v-html="formatMarkdown(tool.tutorial_content)"
-          ></div>
+          <div class="tutorial-content" v-text="tool.tutorial_content"></div>
         </div>
 
         <!-- 视频教程 -->

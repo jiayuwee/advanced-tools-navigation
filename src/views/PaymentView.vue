@@ -147,7 +147,7 @@
             @success="onPaymentSuccess"
             @error="onPaymentError"
           />
-          
+
           <!-- 支付宝支付 -->
           <AlipayPayment
             v-else-if="selectedMethod === 'alipay'"
@@ -156,7 +156,7 @@
             @success="onPaymentSuccess"
             @error="onPaymentError"
           />
-          
+
           <!-- 微信支付 -->
           <WechatPayment
             v-else-if="selectedMethod === 'wechat'"
@@ -335,7 +335,7 @@ const handlePayment = async () => {
     currentOrderId.value = orderId;
 
     // 如果选择的是 Stripe，创建 PaymentIntent
-    if (selectedMethod.value === 'stripe') {
+    if (selectedMethod.value === "stripe") {
       const paymentResult = await PaymentService.processStripePayment({
         order_id: orderId,
         payment_method: selectedMethod.value,
@@ -349,17 +349,23 @@ const handlePayment = async () => {
       } else {
         throw new Error(paymentResult.message || "Stripe 支付初始化失败");
       }
-    } else if (selectedMethod.value === 'alipay' || selectedMethod.value === 'wechat') {
+    } else if (
+      selectedMethod.value === "alipay" ||
+      selectedMethod.value === "wechat"
+    ) {
       // 支付宝和微信支付直接显示支付组件
       showPaymentComponent.value = true;
     } else {
       // 其他支付方式
-      const paymentResult = await PaymentService.processPayment({
-        order_id: orderId,
-        payment_method: selectedMethod.value,
-        payment_id: `PAY_${Date.now()}`,
-        amount: finalAmount.value,
-      }, selectedMethod.value);
+      const paymentResult = await PaymentService.processPayment(
+        {
+          order_id: orderId,
+          payment_method: selectedMethod.value,
+          payment_id: `PAY_${Date.now()}`,
+          amount: finalAmount.value,
+        },
+        selectedMethod.value,
+      );
 
       if (paymentResult.success) {
         await processPaymentSuccess(orderId);
@@ -375,7 +381,7 @@ const handlePayment = async () => {
 };
 
 // Stripe 支付成功回调
-const onPaymentSuccess = async (paymentResult: any) => {
+const onPaymentSuccess = async (paymentResult: { orderId: string }) => {
   try {
     await processPaymentSuccess(paymentResult.orderId);
   } catch (err) {
@@ -392,14 +398,14 @@ const onPaymentError = (errorMessage: string) => {
 // 支付取消回调
 const onPaymentCancel = () => {
   showPaymentComponent.value = false;
-  selectedMethod.value = '';
+  selectedMethod.value = "";
 };
 
 // 支付处理方法 (已移至PaymentService)
 
 const processPaymentSuccess = async (orderId: string) => {
   const { OrderService } = await import("@/services/orderService");
-  
+
   // 处理支付成功
   await OrderService.processPayment({
     order_id: orderId,

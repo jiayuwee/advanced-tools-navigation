@@ -3,7 +3,7 @@
  * 用于优化图片加载、组件懒加载等
  */
 
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from "vue";
 
 // 图片懒加载
 export function useLazyImage() {
@@ -21,7 +21,7 @@ export function useLazyImage() {
     error.value = null;
 
     const img = new Image();
-    
+
     img.onload = () => {
       if (imageRef.value) {
         imageRef.value.src = src;
@@ -31,9 +31,9 @@ export function useLazyImage() {
     };
 
     img.onerror = () => {
-      error.value = '图片加载失败';
+      error.value = "图片加载失败";
       isLoading.value = false;
-      
+
       // 设置占位图片
       if (placeholder && imageRef.value) {
         imageRef.value.src = placeholder;
@@ -44,7 +44,7 @@ export function useLazyImage() {
   };
 
   const setupIntersectionObserver = (src: string, placeholder?: string) => {
-    if (!imageRef.value || !('IntersectionObserver' in window)) {
+    if (!imageRef.value || !("IntersectionObserver" in window)) {
       // 不支持 IntersectionObserver，直接加载
       loadImage(src, placeholder);
       return;
@@ -61,8 +61,8 @@ export function useLazyImage() {
       },
       {
         threshold: 0.1,
-        rootMargin: '50px',
-      }
+        rootMargin: "50px",
+      },
     );
 
     observer.observe(imageRef.value);
@@ -93,7 +93,7 @@ export function useLazyComponent() {
   let observer: IntersectionObserver | null = null;
 
   const setupObserver = (options?: IntersectionObserverInit) => {
-    if (!componentRef.value || !('IntersectionObserver' in window)) {
+    if (!componentRef.value || !("IntersectionObserver" in window)) {
       shouldLoad.value = true;
       return;
     }
@@ -102,7 +102,7 @@ export function useLazyComponent() {
       (entries) => {
         entries.forEach((entry) => {
           isVisible.value = entry.isIntersecting;
-          
+
           if (entry.isIntersecting && !shouldLoad.value) {
             shouldLoad.value = true;
             observer?.unobserve(entry.target);
@@ -111,9 +111,9 @@ export function useLazyComponent() {
       },
       {
         threshold: 0.1,
-        rootMargin: '100px',
+        rootMargin: "100px",
         ...options,
-      }
+      },
     );
 
     observer.observe(componentRef.value);
@@ -145,7 +145,7 @@ export function usePreloader() {
   const preloadData = async (
     key: string,
     fetcher: () => Promise<any>,
-    priority: 'high' | 'normal' | 'low' = 'normal'
+    priority: "high" | "normal" | "low" = "normal",
   ) => {
     if (preloadedData.value.has(key)) {
       return preloadedData.value.get(key);
@@ -169,11 +169,11 @@ export function usePreloader() {
 
     try {
       let data;
-      
-      if (priority === 'low') {
+
+      if (priority === "low") {
         // 低优先级在 requestIdleCallback 中执行
         data = await new Promise((resolve, reject) => {
-          if ('requestIdleCallback' in window) {
+          if ("requestIdleCallback" in window) {
             window.requestIdleCallback(async () => {
               try {
                 const result = await fetcher();
@@ -233,35 +233,35 @@ export function usePreloader() {
 
 // 资源预载
 export function useResourcePreloader() {
-  const preloadLink = (href: string, as: string = 'script') => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
+  const preloadLink = (href: string, as: string = "script") => {
+    const link = document.createElement("link");
+    link.rel = "preload";
     link.href = href;
     link.as = as;
     document.head.appendChild(link);
   };
 
   const preloadImage = (src: string) => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
+    const link = document.createElement("link");
+    link.rel = "preload";
     link.href = src;
-    link.as = 'image';
+    link.as = "image";
     document.head.appendChild(link);
   };
 
   const preloadFont = (href: string) => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
+    const link = document.createElement("link");
+    link.rel = "preload";
     link.href = href;
-    link.as = 'font';
-    link.type = 'font/woff2';
-    link.crossOrigin = 'anonymous';
+    link.as = "font";
+    link.type = "font/woff2";
+    link.crossOrigin = "anonymous";
     document.head.appendChild(link);
   };
 
   const prefetchResource = (href: string) => {
-    const link = document.createElement('link');
-    link.rel = 'prefetch';
+    const link = document.createElement("link");
+    link.rel = "prefetch";
     link.href = href;
     document.head.appendChild(link);
   };
@@ -278,7 +278,7 @@ export function useResourcePreloader() {
 export function useVirtualScroll<T>(
   items: T[],
   itemHeight: number,
-  containerHeight: number
+  containerHeight: number,
 ) {
   const scrollTop = ref(0);
   const containerRef = ref<HTMLElement | null>(null);

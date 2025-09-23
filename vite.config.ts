@@ -40,7 +40,7 @@ export default defineConfig({
         console.warn('Vue 应用可能未正确加载');
       }
     }, 3000);
-  </script>`
+  </script>`,
           )
           .replace(
             "min-height: 100vh;\n    }",
@@ -56,7 +56,7 @@ export default defineConfig({
       min-height: 100vh;
       color: white;
       font-size: 18px;
-    }`
+    }`,
           );
       },
     },

@@ -42,7 +42,7 @@ async function initializeCoreStores() {
     return true;
   } catch (error) {
     console.error("❌ Failed to initialize one or more stores:", error);
-    
+
     // 显示用户友好的错误信息
     const app = document.getElementById("app");
     if (app) {
@@ -104,7 +104,7 @@ async function initializeCoreStores() {
         </div>
       `;
     }
-    
+
     return false;
   }
 }
@@ -117,13 +117,15 @@ app.use(pinia);
 app.use(router);
 
 // 先执行异步初始化，成功后才挂载 Vue 应用
-initializeCoreStores().then((success) => {
-  if (success) {
-    app.mount("#app");
-    console.log("✅ Vue 应用挂载成功");
-  } else {
-    console.error("❌ Vue 应用挂载失败 - Store 初始化错误");
-  }
-}).catch((error) => {
-  console.error("❌ Vue 应用启动失败:", error);
-});
+initializeCoreStores()
+  .then((success) => {
+    if (success) {
+      app.mount("#app");
+      console.log("✅ Vue 应用挂载成功");
+    } else {
+      console.error("❌ Vue 应用挂载失败 - Store 初始化错误");
+    }
+  })
+  .catch((error) => {
+    console.error("❌ Vue 应用启动失败:", error);
+  });

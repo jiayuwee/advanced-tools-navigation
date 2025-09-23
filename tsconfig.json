@@ -7,6 +7,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "moduleResolution": "Node",
+    "ignoreDeprecations": "5.0",
     "strict": false,
     "jsx": "preserve",
     "resolveJsonModule": true,

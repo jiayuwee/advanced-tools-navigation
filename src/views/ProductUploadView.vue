@@ -47,115 +47,112 @@
                 ]"
               />
             </button>
-            <div
-              v-if="expandedSections.basic"
-              class="section-content"
-            >
+            <div v-if="expandedSections.basic" class="section-content">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- 产品名称 -->
-              <div class="md:col-span-2">
-                <label
-                  for="name"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  产品名称 <span class="text-red-500">*</span>
-                </label>
-                <input
-                  id="name"
-                  v-model="form.name"
-                  type="text"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="请输入产品名称"
-                />
-              </div>
-
-              <!-- 产品分类 -->
-              <div>
-                <label
-                  for="category"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  产品分类 <span class="text-red-500">*</span>
-                </label>
-                <select
-                  id="category"
-                  v-model="form.category_id"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">请选择分类</option>
-                  <option
-                    v-for="category in categories"
-                    :key="category.id"
-                    :value="category.id"
+                <!-- 产品名称 -->
+                <div class="md:col-span-2">
+                  <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    {{ category.name }}
-                  </option>
-                </select>
-              </div>
-
-              <!-- 是否数字产品 -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  产品类型
-                </label>
-                <div class="flex items-center space-x-4">
-                  <label class="flex items-center">
-                    <input
-                      v-model="form.is_digital"
-                      type="checkbox"
-                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span class="ml-2 text-sm text-gray-700">数字产品</span>
+                    产品名称 <span class="text-red-500">*</span>
                   </label>
-                  <label class="flex items-center">
-                    <input
-                      v-model="form.is_featured"
-                      type="checkbox"
-                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span class="ml-2 text-sm text-gray-700">推荐产品</span>
-                  </label>
+                  <input
+                    id="name"
+                    v-model="form.name"
+                    type="text"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="请输入产品名称"
+                  />
                 </div>
-              </div>
 
-              <!-- 价格设置 -->
-              <div>
-                <label
-                  for="price"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  价格（元） <span class="text-red-500">*</span>
-                </label>
-                <input
-                  id="price"
-                  v-model.number="form.price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="0.00（免费请输入0）"
-                />
-              </div>
+                <!-- 产品分类 -->
+                <div>
+                  <label
+                    for="category"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    产品分类 <span class="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="category"
+                    v-model="form.category_id"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">请选择分类</option>
+                    <option
+                      v-for="category in categories"
+                      :key="category.id"
+                      :value="category.id"
+                    >
+                      {{ category.name }}
+                    </option>
+                  </select>
+                </div>
 
-              <!-- 产品链接 -->
-              <div>
-                <label
-                  for="url"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  产品链接
-                </label>
-                <input
-                  id="url"
-                  v-model="form.url"
-                  type="url"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="https://example.com"
-                />
-              </div>
+                <!-- 是否数字产品 -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    产品类型
+                  </label>
+                  <div class="flex items-center space-x-4">
+                    <label class="flex items-center">
+                      <input
+                        v-model="form.is_digital"
+                        type="checkbox"
+                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span class="ml-2 text-sm text-gray-700">数字产品</span>
+                    </label>
+                    <label class="flex items-center">
+                      <input
+                        v-model="form.is_featured"
+                        type="checkbox"
+                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span class="ml-2 text-sm text-gray-700">推荐产品</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- 价格设置 -->
+                <div>
+                  <label
+                    for="price"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    价格（元） <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="price"
+                    v-model.number="form.price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="0.00（免费请输入0）"
+                  />
+                </div>
+
+                <!-- 产品链接 -->
+                <div>
+                  <label
+                    for="url"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    产品链接
+                  </label>
+                  <input
+                    id="url"
+                    v-model="form.url"
+                    type="url"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://example.com"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -175,51 +172,47 @@
                 ]"
               />
             </button>
-            <div
-              v-if="expandedSections.description"
-              class="section-content"
-            >
-
-            <!-- 简短描述 -->
-            <div class="mb-6">
-              <label
-                for="description"
-                class="block text-sm font-medium text-gray-700 mb-2"
-              >
-                简短描述 <span class="text-red-500">*</span>
-              </label>
-              <textarea
-                id="description"
-                v-model="form.description"
-                rows="3"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                placeholder="请简要描述您的产品特点和用途..."
-              ></textarea>
-              <div class="mt-1 text-sm text-gray-500">
-                {{ form.description.length }}/200 字符
+            <div v-if="expandedSections.description" class="section-content">
+              <!-- 简短描述 -->
+              <div class="mb-6">
+                <label
+                  for="description"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  简短描述 <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="description"
+                  v-model="form.description"
+                  rows="3"
+                  required
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="请简要描述您的产品特点和用途..."
+                ></textarea>
+                <div class="mt-1 text-sm text-gray-500">
+                  {{ form.description.length }}/200 字符
+                </div>
               </div>
-            </div>
 
-            <!-- 详细介绍 -->
-            <div>
-              <label
-                for="content"
-                class="block text-sm font-medium text-gray-700 mb-2"
-              >
-                详细介绍
-              </label>
-              <textarea
-                id="content"
-                v-model="form.content"
-                rows="8"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                placeholder="请详细介绍产品功能、使用方法、适用场景等..."
-              ></textarea>
-              <div class="mt-1 text-sm text-gray-500">
-                {{ form.content.length }}/2000 字符
+              <!-- 详细介绍 -->
+              <div>
+                <label
+                  for="content"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  详细介绍
+                </label>
+                <textarea
+                  id="content"
+                  v-model="form.content"
+                  rows="8"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="请详细介绍产品功能、使用方法、适用场景等..."
+                ></textarea>
+                <div class="mt-1 text-sm text-gray-500">
+                  {{ form.content.length }}/2000 字符
+                </div>
               </div>
-            </div>
             </div>
           </div>
 
@@ -238,93 +231,89 @@
                 ]"
               />
             </button>
-            <div
-              v-if="expandedSections.images"
-              class="section-content"
-            >
-
-            <!-- 主图上传 -->
-            <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                产品主图 <span class="text-red-500">*</span>
-              </label>
-              <div
-                class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
-              >
-                <div v-if="!form.main_image" class="space-y-2">
-                  <Upload class="w-12 h-12 text-gray-400 mx-auto" />
-                  <p class="text-sm text-gray-600">点击上传产品主图</p>
-                  <p class="text-xs text-gray-500">
-                    支持 JPG、PNG 格式，建议尺寸 800x600
-                  </p>
-                </div>
-                <div v-else class="space-y-2">
-                  <img
-                    :src="form.main_image"
-                    alt="产品主图"
-                    class="w-32 h-24 object-cover mx-auto rounded"
+            <div v-if="expandedSections.images" class="section-content">
+              <!-- 主图上传 -->
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  产品主图 <span class="text-red-500">*</span>
+                </label>
+                <div
+                  class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
+                >
+                  <div v-if="!form.main_image" class="space-y-2">
+                    <Upload class="w-12 h-12 text-gray-400 mx-auto" />
+                    <p class="text-sm text-gray-600">点击上传产品主图</p>
+                    <p class="text-xs text-gray-500">
+                      支持 JPG、PNG 格式，建议尺寸 800x600
+                    </p>
+                  </div>
+                  <div v-else class="space-y-2">
+                    <img
+                      :src="form.main_image"
+                      alt="产品主图"
+                      class="w-32 h-24 object-cover mx-auto rounded"
+                    />
+                  </div>
+                  <input
+                    ref="mainImageInput"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    @change="handleMainImageUpload"
                   />
+                  <button
+                    class="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    type="button"
+                    @click="handleMainImageClick"
+                  >
+                    {{ form.main_image ? "更换图片" : "选择图片" }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- 附加图片 -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  附加图片（可选）
+                </label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <template
+                    v-for="(image, index) in form.additional_images"
+                    :key="index"
+                  >
+                    <div class="relative">
+                      <img
+                        :src="image"
+                        alt="附加图片"
+                        class="w-full h-20 object-cover rounded"
+                      />
+                      <button
+                        class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                        type="button"
+                        @click="removeAdditionalImage(index)"
+                      >
+                        <X class="w-3 h-3" />
+                      </button>
+                    </div>
+                  </template>
+                  <div
+                    v-if="form.additional_images.length < 4"
+                    class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400"
+                    @click="handleAdditionalImagesClick"
+                  >
+                    <Plus class="w-6 h-6 text-gray-400 mb-1" />
+                    <span class="text-xs text-gray-500">添加图片</span>
+                  </div>
                 </div>
                 <input
-                  ref="mainImageInput"
+                  ref="additionalImageInput"
                   type="file"
                   accept="image/*"
+                  multiple
                   class="hidden"
-                  @change="handleMainImageUpload"
+                  @change="handleAdditionalImagesUpload"
                 />
-                <button
-                  class="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
-                  type="button"
-                  @click="handleMainImageClick"
-                >
-                  {{ form.main_image ? "更换图片" : "选择图片" }}
-                </button>
               </div>
-            </div>
-
-            <!-- 附加图片 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                附加图片（可选）
-              </label>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <template
-                  v-for="(image, index) in form.additional_images"
-                  :key="index"
-                >
-                  <div class="relative">
-                    <img
-                      :src="image"
-                      alt="附加图片"
-                      class="w-full h-20 object-cover rounded"
-                    />
-                    <button
-                      class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
-                      type="button"
-                      @click="removeAdditionalImage(index)"
-                    >
-                      <X class="w-3 h-3" />
-                    </button>
-                  </div>
-                </template>
-                <div
-                  v-if="form.additional_images.length < 4"
-                  class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400"
-                  @click="handleAdditionalImagesClick"
-                >
-                  <Plus class="w-6 h-6 text-gray-400 mb-1" />
-                  <span class="text-xs text-gray-500">添加图片</span>
-                </div>
-              </div>
-              <input
-                ref="additionalImageInput"
-                type="file"
-                accept="image/*"
-                multiple
-                class="hidden"
-                @change="handleAdditionalImagesUpload"
-              />
-            </div>
             </div>
           </div>
 
@@ -343,10 +332,7 @@
                 ]"
               />
             </button>
-            <div
-              v-if="expandedSections.tags"
-              class="section-content"
-            >
+            <div v-if="expandedSections.tags" class="section-content">
               <div class="space-y-4">
                 <div>
                   <label
@@ -470,7 +456,15 @@ import type { Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useProductsStore } from "@/stores/products";
 import { supabase } from "@/lib/supabase";
-import { Info, Upload, X, Plus, Clock, Loader2, ChevronDown } from "lucide-vue-next";
+import {
+  Info,
+  Upload,
+  X,
+  Plus,
+  Clock,
+  Loader2,
+  ChevronDown,
+} from "lucide-vue-next";
 
 const router = useRouter();
 const productsStore = useProductsStore();
@@ -573,7 +567,9 @@ const handleAdditionalImagesUpload = (event: Event) => {
           const imageUrl = e.target?.result as string;
           form.additional_images.push(imageUrl);
           // 重新构建images数组
-          form.images = [form.main_image, ...form.additional_images].filter(Boolean);
+          form.images = [form.main_image, ...form.additional_images].filter(
+            Boolean,
+          );
         };
         reader.readAsDataURL(file);
       }

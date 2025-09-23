@@ -402,14 +402,14 @@ describe("组件集成测试", () => {
       const wrapper = mount(NotificationCenter);
 
       // 模拟接收新通知
-      const newNotification = {
-        id: "notif-123",
-        title: "新通知",
-        message: "测试通知",
-        type: "info",
-        is_read: false,
-        created_at: new Date().toISOString(),
-      };
+      // const newNotification = {
+      //   id: "notif-123",
+      //   title: "新通知",
+      //   message: "测试通知",
+      //   type: "info",
+      //   is_read: false,
+      //   created_at: new Date().toISOString(),
+      // };
 
       // 触发通知更新
       await wrapper.vm.$nextTick();

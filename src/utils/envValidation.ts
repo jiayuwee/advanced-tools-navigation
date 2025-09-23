@@ -6,7 +6,7 @@
 interface EnvConfig {
   supabaseUrl: string;
   supabaseAnonKey: string;
-  appEnv: 'development' | 'production' | 'test';
+  appEnv: "development" | "production" | "test";
   appVersion: string;
   debugMode: boolean;
   enableAnalytics: boolean;
@@ -45,7 +45,7 @@ export function validateEnvironment(): ValidationResult {
 
   // 获取环境变量
   const env = import.meta.env;
-  
+
   // 必需的环境变量
   const requiredVars = {
     VITE_SUPABASE_URL: env.VITE_SUPABASE_URL,
@@ -54,8 +54,8 @@ export function validateEnvironment(): ValidationResult {
 
   // 可选的环境变量
   const optionalVars = {
-    VITE_APP_ENV: env.VITE_APP_ENV || 'development',
-    VITE_APP_VERSION: env.VITE_APP_VERSION || 'unknown',
+    VITE_APP_ENV: env.VITE_APP_ENV || "development",
+    VITE_APP_VERSION: env.VITE_APP_VERSION || "unknown",
     VITE_DEBUG_MODE: env.VITE_DEBUG_MODE,
     VITE_ENABLE_ANALYTICS: env.VITE_ENABLE_ANALYTICS,
   };
@@ -68,16 +68,16 @@ export function validateEnvironment(): ValidationResult {
     }
 
     // 检查是否使用了默认值
-    if (value.includes('your-project') || value.includes('your-anon-key')) {
+    if (value.includes("your-project") || value.includes("your-anon-key")) {
       errors.push(`环境变量 ${key} 仍使用默认值，请设置实际值`);
       continue;
     }
 
     // 检查 URL 格式
-    if (key === 'VITE_SUPABASE_URL') {
+    if (key === "VITE_SUPABASE_URL") {
       try {
         const url = new URL(value);
-        if (!url.hostname.includes('supabase.co')) {
+        if (!url.hostname.includes("supabase.co")) {
           warnings.push(`${key} 可能不是有效的 Supabase URL`);
         }
       } catch {
@@ -86,7 +86,7 @@ export function validateEnvironment(): ValidationResult {
     }
 
     // 检查密钥格式
-    if (key === 'VITE_SUPABASE_ANON_KEY') {
+    if (key === "VITE_SUPABASE_ANON_KEY") {
       if (value.length < 100) {
         warnings.push(`${key} 长度似乎不正确，请确认是否为有效密钥`);
       }
@@ -94,17 +94,20 @@ export function validateEnvironment(): ValidationResult {
   }
 
   // 检查可选变量
-  if (optionalVars.VITE_APP_ENV && !['development', 'production', 'test'].includes(optionalVars.VITE_APP_ENV)) {
-    warnings.push('VITE_APP_ENV 应该是 development、production 或 test 之一');
+  if (
+    optionalVars.VITE_APP_ENV &&
+    !["development", "production", "test"].includes(optionalVars.VITE_APP_ENV)
+  ) {
+    warnings.push("VITE_APP_ENV 应该是 development、production 或 test 之一");
   }
 
   // 检查开发环境配置
-  if (optionalVars.VITE_APP_ENV === 'production') {
-    if (optionalVars.VITE_DEBUG_MODE === 'true') {
-      warnings.push('生产环境建议关闭调试模式 (VITE_DEBUG_MODE=false)');
+  if (optionalVars.VITE_APP_ENV === "production") {
+    if (optionalVars.VITE_DEBUG_MODE === "true") {
+      warnings.push("生产环境建议关闭调试模式 (VITE_DEBUG_MODE=false)");
     }
-    if (optionalVars.VITE_ENABLE_ANALYTICS !== 'true') {
-      warnings.push('生产环境建议启用分析 (VITE_ENABLE_ANALYTICS=true)');
+    if (optionalVars.VITE_ENABLE_ANALYTICS !== "true") {
+      warnings.push("生产环境建议启用分析 (VITE_ENABLE_ANALYTICS=true)");
     }
   }
 
@@ -121,10 +124,10 @@ export function validateEnvironment(): ValidationResult {
   const config: EnvConfig = {
     supabaseUrl: requiredVars.VITE_SUPABASE_URL,
     supabaseAnonKey: requiredVars.VITE_SUPABASE_ANON_KEY,
-    appEnv: optionalVars.VITE_APP_ENV as EnvConfig['appEnv'],
+    appEnv: optionalVars.VITE_APP_ENV as EnvConfig["appEnv"],
     appVersion: optionalVars.VITE_APP_VERSION,
-    debugMode: optionalVars.VITE_DEBUG_MODE === 'true',
-    enableAnalytics: optionalVars.VITE_ENABLE_ANALYTICS === 'true',
+    debugMode: optionalVars.VITE_DEBUG_MODE === "true",
+    enableAnalytics: optionalVars.VITE_ENABLE_ANALYTICS === "true",
     payment: {
       stripe: {
         publicKey: env.VITE_STRIPE_PUBLIC_KEY,
@@ -155,39 +158,43 @@ export function validateEnvironment(): ValidationResult {
  * 打印环境验证结果
  */
 export function printValidationResult(result: ValidationResult): void {
-  console.log('🔍 环境变量验证结果:');
-  console.log('='.repeat(40));
+  console.log("🔍 环境变量验证结果:");
+  console.log("=".repeat(40));
 
   if (result.isValid) {
-    console.log('✅ 环境变量验证通过');
-    
+    console.log("✅ 环境变量验证通过");
+
     if (result.config) {
-      console.log('\n📋 当前配置:');
+      console.log("\n📋 当前配置:");
       console.log(`  - 环境: ${result.config.appEnv}`);
       console.log(`  - 版本: ${result.config.appVersion}`);
-      console.log(`  - 调试模式: ${result.config.debugMode ? '开启' : '关闭'}`);
-      console.log(`  - 分析统计: ${result.config.enableAnalytics ? '开启' : '关闭'}`);
-      console.log(`  - Supabase URL: ${result.config.supabaseUrl.substring(0, 30)}...`);
+      console.log(`  - 调试模式: ${result.config.debugMode ? "开启" : "关闭"}`);
+      console.log(
+        `  - 分析统计: ${result.config.enableAnalytics ? "开启" : "关闭"}`,
+      );
+      console.log(
+        `  - Supabase URL: ${result.config.supabaseUrl.substring(0, 30)}...`,
+      );
     }
   } else {
-    console.log('❌ 环境变量验证失败');
+    console.log("❌ 环境变量验证失败");
   }
 
   if (result.errors.length > 0) {
-    console.log('\n❌ 错误:');
+    console.log("\n❌ 错误:");
     result.errors.forEach((error, index) => {
       console.log(`  ${index + 1}. ${error}`);
     });
   }
 
   if (result.warnings.length > 0) {
-    console.log('\n⚠️  警告:');
+    console.log("\n⚠️  警告:");
     result.warnings.forEach((warning, index) => {
       console.log(`  ${index + 1}. ${warning}`);
     });
   }
 
-  console.log('='.repeat(40));
+  console.log("=".repeat(40));
 }
 
 /**
@@ -195,9 +202,9 @@ export function printValidationResult(result: ValidationResult): void {
  */
 export function initializeEnvironment(): EnvConfig {
   const result = validateEnvironment();
-  
+
   // 在开发环境下打印验证结果
-  if (import.meta.env.DEV || import.meta.env.VITE_DEBUG_MODE === 'true') {
+  if (import.meta.env.DEV || import.meta.env.VITE_DEBUG_MODE === "true") {
     printValidationResult(result);
   }
 
@@ -205,7 +212,7 @@ export function initializeEnvironment(): EnvConfig {
     const errorMessage = `
 🚨 环境配置错误
 
-${result.errors.join('\n')}
+${result.errors.join("\n")}
 
 请检查以下文件中的环境变量配置:
 - 开发环境: .env.local
@@ -219,18 +226,22 @@ ${result.errors.join('\n')}
       throw new Error(errorMessage);
     } else {
       console.error(errorMessage);
-      
+
       // 返回默认配置以便开发继续进行
       return {
-        supabaseUrl: 'https://placeholder.supabase.co',
-        supabaseAnonKey: 'placeholder-key',
-        appEnv: 'development',
-        appVersion: 'dev',
+        supabaseUrl: "https://placeholder.supabase.co",
+        supabaseAnonKey: "placeholder-key",
+        appEnv: "development",
+        appVersion: "dev",
         debugMode: true,
         enableAnalytics: false,
         payment: {
           stripe: { publicKey: undefined, secretKey: undefined },
-          alipay: { appId: undefined, privateKey: undefined, publicKey: undefined },
+          alipay: {
+            appId: undefined,
+            privateKey: undefined,
+            publicKey: undefined,
+          },
           wechat: { appId: undefined, mchId: undefined, apiKey: undefined },
         },
       };
@@ -249,17 +260,17 @@ export function getEnvironmentConfig() {
   return {
     // 基础配置
     ...config,
-    
+
     // 派生配置
-    isProduction: config.appEnv === 'production',
-    isDevelopment: config.appEnv === 'development',
-    isTest: config.appEnv === 'test',
-    
+    isProduction: config.appEnv === "production",
+    isDevelopment: config.appEnv === "development",
+    isTest: config.appEnv === "test",
+
     // 功能开关
-    enableLogs: config.debugMode || config.appEnv !== 'production',
-    enableErrorReporting: config.appEnv === 'production',
+    enableLogs: config.debugMode || config.appEnv !== "production",
+    enableErrorReporting: config.appEnv === "production",
     enablePerformanceMonitoring: config.enableAnalytics,
-    
+
     // Supabase 配置
     supabase: {
       url: config.supabaseUrl,
@@ -272,7 +283,7 @@ export function getEnvironmentConfig() {
         },
         realtime: {
           params: {
-            eventsPerSecond: config.appEnv === 'production' ? 10 : 2,
+            eventsPerSecond: config.appEnv === "production" ? 10 : 2,
           },
         },
       },
