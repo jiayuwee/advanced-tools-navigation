@@ -16,7 +16,7 @@ const expectedConfig = {
   },
   supabase: {
     projectRef: "ndmxwdejswybvbwrxsai",
-    url: "https://fytiwsutzgmygfxnqoft.supabase.co",
+  url: "https://your-supabase-project.supabase.co",
   },
 };
 
