@@ -25,7 +25,7 @@
 VITE_SUPABASE_ANON_KEY=sb_publishable_ldLDhQu2qPEppQcIabkYSQ_UDiVVHoV
 
 # 确保URL正确
-VITE_SUPABASE_URL=https://fytiwsutzgmygfxnqoft.supabase.co
+VITE_SUPABASE_URL=https://your-supabase-project.supabase.co
 ```
 
 ### 3. 测试连接
