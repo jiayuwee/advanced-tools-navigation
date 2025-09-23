@@ -123,7 +123,7 @@ function checkScriptFiles() {
       file: "scripts/deployment/check-github-secrets.js",
       expectedValues: [
         "ndmxwdejswybvbwrxsai",
-        "fytiwsutzgmygfxnqoft.supabase.co",
+  "your-supabase-project.supabase.co",
       ],
     },
     {
