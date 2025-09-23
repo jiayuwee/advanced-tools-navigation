@@ -8,7 +8,7 @@
 ### 1. 获取新的API密钥
 
 1. **访问Supabase控制台**
-   - 打开：https://supabase.com/dashboard/project/fytiwsutzgmygfxnqoft/settings/api
+   - 打开：https://supabase.com/dashboard/project/your-supabase-project/settings/api
    - 登录您的账户
 
 2. **获取新密钥**
