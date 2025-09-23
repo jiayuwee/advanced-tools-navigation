@@ -163,6 +163,9 @@ jobs:
             echo "⚠️ Supabase 环境变量未完全配置"
             echo "VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:+已设置}"
             echo "VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:+已设置}"
+            echo "❌ 检测到缺失的 Supabase secrets。在继续构建之前请在仓库 Settings -> Secrets 中设置 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY。"
+            # 在 CI 中尽早失败，避免在后续构建中产生难以排查的错误
+            exit 1
           else
             echo "✅ 环境变量配置正常"
           fi
