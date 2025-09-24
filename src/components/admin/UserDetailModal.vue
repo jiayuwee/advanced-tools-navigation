@@ -286,20 +286,26 @@ const editUser = () => {
 const loadUserStats = async (userId: string) => {
   try {
     // 这里应该调用实际的API来获取用户统计信息
-    // 暂时使用模拟数据
+    // 开发环境仍然使用模拟数据以方便本地调试
     userStats.favorites = Math.floor(Math.random() * 50);
     userStats.orders = Math.floor(Math.random() * 20);
     userStats.totalSpent = Math.floor(Math.random() * 10000);
     userStats.loginCount = Math.floor(Math.random() * 100);
-  } catch (error) {
-    console.error("加载用户统计失败:", error);
+  } catch (err: unknown) {
+    const msg = safeErrorMessage(err);
+    // 生产环境需要显式报错以便尽早发现配置/运行时问题
+    if (import.meta.env.PROD) {
+      throw new Error(`加载用户统计失败: ${msg}`);
+    }
+    // 开发环境打印警告并保持模拟数据回退
+    console.warn("加载用户统计失败，使用模拟数据:", msg);
   }
 };
 
 const loadUserActivities = async (userId: string) => {
   try {
     // 这里应该调用实际的API来获取用户活动记录
-    // 暂时使用模拟数据
+    // 开发环境仍然使用模拟数据以方便本地调试
     userActivities.value = [
       {
         id: "1",
@@ -320,8 +326,12 @@ const loadUserActivities = async (userId: string) => {
         created_at: new Date(Date.now() - 172800000).toISOString(),
       },
     ];
-  } catch (error) {
-    console.error("加载用户活动失败:", error);
+  } catch (err: unknown) {
+    const msg = safeErrorMessage(err);
+    if (import.meta.env.PROD) {
+      throw new Error(`加载用户活动失败: ${msg}`);
+    }
+    console.warn("加载用户活动失败，使用模拟数据:", msg);
   }
 };
 
@@ -376,6 +386,17 @@ const getActivityIcon = (type: string) => {
     default: ActivityIcon,
   };
   return iconMap[type] || iconMap.default;
+};
+
+// 从 unknown 中安全提取错误信息，避免使用 any
+const safeErrorMessage = (err: unknown) => {
+  if (!err) return "Unknown error";
+  if (err instanceof Error) return err.message;
+  try {
+    return JSON.stringify(err as object);
+  } catch {
+    return String(err);
+  }
 };
 </script>
 

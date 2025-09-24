@@ -36,7 +36,7 @@ jobs:
           npm cache clean --force || true
           
           # 尝试标准安装
-          if npm ci --prefer-offline --no-audit --ignore-scripts; then
+          if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts; then
             echo "✅ 标准安装成功"
           else
             echo "⚠️ 标准安装失败，尝试替代方案..."
@@ -86,7 +86,7 @@ jobs:
           npm cache clean --force || true
           
           # 尝试标准安装
-          if npm ci --prefer-offline --no-audit --ignore-scripts; then
+          if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts; then
             echo "✅ 标准安装成功"
           else
             echo "⚠️ 标准安装失败，尝试替代方案..."
@@ -140,7 +140,7 @@ jobs:
           npm cache clean --force || true
           
           # 尝试标准安装
-          if npm ci --prefer-offline --no-audit --ignore-scripts; then
+            npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --silent
             echo "✅ 标准安装成功"
           else
             echo "⚠️ 标准安装失败，尝试替代方案..."

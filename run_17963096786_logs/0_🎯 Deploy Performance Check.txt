@@ -1,0 +1,206 @@
+﻿2025-09-24T00:58:59.9639462Z Current runner version: '2.328.0'
+2025-09-24T00:58:59.9663861Z ##[group]Runner Image Provisioner
+2025-09-24T00:58:59.9664657Z Hosted Compute Agent
+2025-09-24T00:58:59.9665270Z Version: 20250829.383
+2025-09-24T00:58:59.9665871Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+2025-09-24T00:58:59.9666556Z Build Date: 2025-08-29T13:48:48Z
+2025-09-24T00:58:59.9667200Z ##[endgroup]
+2025-09-24T00:58:59.9667694Z ##[group]Operating System
+2025-09-24T00:58:59.9668296Z Ubuntu
+2025-09-24T00:58:59.9668776Z 24.04.3
+2025-09-24T00:58:59.9669255Z LTS
+2025-09-24T00:58:59.9669751Z ##[endgroup]
+2025-09-24T00:58:59.9670239Z ##[group]Runner Image
+2025-09-24T00:58:59.9670785Z Image: ubuntu-24.04
+2025-09-24T00:58:59.9671250Z Version: 20250907.24.1
+2025-09-24T00:58:59.9672265Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+2025-09-24T00:58:59.9674150Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+2025-09-24T00:58:59.9675258Z ##[endgroup]
+2025-09-24T00:58:59.9677597Z ##[group]GITHUB_TOKEN Permissions
+2025-09-24T00:58:59.9679963Z Actions: write
+2025-09-24T00:58:59.9680515Z Attestations: write
+2025-09-24T00:58:59.9681031Z Checks: write
+2025-09-24T00:58:59.9681464Z Contents: write
+2025-09-24T00:58:59.9682034Z Deployments: write
+2025-09-24T00:58:59.9682503Z Discussions: write
+2025-09-24T00:58:59.9683182Z Issues: write
+2025-09-24T00:58:59.9683700Z Metadata: read
+2025-09-24T00:58:59.9684186Z Models: read
+2025-09-24T00:58:59.9684632Z Packages: write
+2025-09-24T00:58:59.9685176Z Pages: write
+2025-09-24T00:58:59.9685663Z PullRequests: write
+2025-09-24T00:58:59.9686192Z RepositoryProjects: write
+2025-09-24T00:58:59.9686793Z SecurityEvents: write
+2025-09-24T00:58:59.9687379Z Statuses: write
+2025-09-24T00:58:59.9687882Z ##[endgroup]
+2025-09-24T00:58:59.9690295Z Secret source: Actions
+2025-09-24T00:58:59.9691327Z Prepare workflow directory
+2025-09-24T00:59:00.0081312Z Prepare all required actions
+2025-09-24T00:59:00.0120553Z Getting action download info
+2025-09-24T00:59:01.0033694Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+2025-09-24T00:59:01.2120443Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2025-09-24T00:59:01.3486328Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2025-09-24T00:59:01.5323045Z Complete job name: 🎯 Deploy Performance Check
+2025-09-24T00:59:01.6150720Z ##[group]Run actions/checkout@v4
+2025-09-24T00:59:01.6151719Z with:
+2025-09-24T00:59:01.6152187Z   repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:01.6153292Z   token: ***
+2025-09-24T00:59:01.6153744Z   ssh-strict: true
+2025-09-24T00:59:01.6154202Z   ssh-user: git
+2025-09-24T00:59:01.6154671Z   persist-credentials: true
+2025-09-24T00:59:01.6155216Z   clean: true
+2025-09-24T00:59:01.6155682Z   sparse-checkout-cone-mode: true
+2025-09-24T00:59:01.6156307Z   fetch-depth: 1
+2025-09-24T00:59:01.6156789Z   fetch-tags: false
+2025-09-24T00:59:01.6157103Z   show-progress: true
+2025-09-24T00:59:01.6157397Z   lfs: false
+2025-09-24T00:59:01.6157857Z   submodules: false
+2025-09-24T00:59:01.6158350Z   set-safe-directory: true
+2025-09-24T00:59:01.6159241Z env:
+2025-09-24T00:59:01.6159727Z   WEBSITE_URL: https://ramusi.cn
+2025-09-24T00:59:01.6160269Z   NODE_VERSION: 20.x
+2025-09-24T00:59:01.6160731Z ##[endgroup]
+2025-09-24T00:59:01.7251166Z Syncing repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:01.7253260Z ##[group]Getting Git version info
+2025-09-24T00:59:01.7253933Z Working directory is '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:59:01.7254779Z [command]/usr/bin/git version
+2025-09-24T00:59:01.7331499Z git version 2.51.0
+2025-09-24T00:59:01.7358297Z ##[endgroup]
+2025-09-24T00:59:01.7372543Z Temporarily overriding HOME='/home/runner/work/_temp/f37e8fea-9681-4725-aba1-7dd45288e94f' before making global git config changes
+2025-09-24T00:59:01.7373844Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:59:01.7386308Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:59:01.7423865Z Deleting the contents of '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:59:01.7428141Z ##[group]Initializing the repository
+2025-09-24T00:59:01.7433074Z [command]/usr/bin/git init /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:59:01.7534110Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-09-24T00:59:01.7535308Z hint: is subject to change. To configure the initial branch name to use in all
+2025-09-24T00:59:01.7536026Z hint: of your new repositories, which will suppress this warning, call:
+2025-09-24T00:59:01.7536665Z hint:
+2025-09-24T00:59:01.7537334Z hint: 	git config --global init.defaultBranch <name>
+2025-09-24T00:59:01.7537887Z hint:
+2025-09-24T00:59:01.7538325Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-09-24T00:59:01.7539389Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-09-24T00:59:01.7540292Z hint:
+2025-09-24T00:59:01.7540831Z hint: 	git branch -m <name>
+2025-09-24T00:59:01.7541429Z hint:
+2025-09-24T00:59:01.7542190Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2025-09-24T00:59:01.7543937Z Initialized empty Git repository in /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/.git/
+2025-09-24T00:59:01.7550768Z [command]/usr/bin/git remote add origin https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:01.7585466Z ##[endgroup]
+2025-09-24T00:59:01.7586340Z ##[group]Disabling automatic garbage collection
+2025-09-24T00:59:01.7590586Z [command]/usr/bin/git config --local gc.auto 0
+2025-09-24T00:59:01.7618562Z ##[endgroup]
+2025-09-24T00:59:01.7619485Z ##[group]Setting up auth
+2025-09-24T00:59:01.7626227Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:59:01.7656519Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:59:01.7967923Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:59:01.7997801Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:59:01.8218675Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-09-24T00:59:01.8261488Z ##[endgroup]
+2025-09-24T00:59:01.8262478Z ##[group]Fetching the repository
+2025-09-24T00:59:01.8270933Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b638fe4d3c3ba5445fe43e4d88e23d0704babe06:refs/remotes/origin/main
+2025-09-24T00:59:02.3436334Z From https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:02.3437432Z  * [new ref]         b638fe4d3c3ba5445fe43e4d88e23d0704babe06 -> origin/main
+2025-09-24T00:59:02.3470474Z ##[endgroup]
+2025-09-24T00:59:02.3471267Z ##[group]Determining the checkout info
+2025-09-24T00:59:02.3472674Z ##[endgroup]
+2025-09-24T00:59:02.3478444Z [command]/usr/bin/git sparse-checkout disable
+2025-09-24T00:59:02.3518299Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2025-09-24T00:59:02.3545127Z ##[group]Checking out the ref
+2025-09-24T00:59:02.3548807Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-09-24T00:59:02.3961947Z Switched to a new branch 'main'
+2025-09-24T00:59:02.3964720Z branch 'main' set up to track 'origin/main'.
+2025-09-24T00:59:02.3971764Z ##[endgroup]
+2025-09-24T00:59:02.4006157Z [command]/usr/bin/git log -1 --format=%H
+2025-09-24T00:59:02.4026953Z b638fe4d3c3ba5445fe43e4d88e23d0704babe06
+2025-09-24T00:59:02.4241544Z ##[group]Run actions/setup-node@v4
+2025-09-24T00:59:02.4241925Z with:
+2025-09-24T00:59:02.4242189Z   node-version: 20.x
+2025-09-24T00:59:02.4242463Z   cache: npm
+2025-09-24T00:59:02.4243002Z   always-auth: false
+2025-09-24T00:59:02.4243336Z   check-latest: false
+2025-09-24T00:59:02.4243774Z   token: ***
+2025-09-24T00:59:02.4244031Z env:
+2025-09-24T00:59:02.4244304Z   WEBSITE_URL: https://ramusi.cn
+2025-09-24T00:59:02.4244628Z   NODE_VERSION: 20.x
+2025-09-24T00:59:02.4244898Z ##[endgroup]
+2025-09-24T00:59:02.6536711Z Found in cache @ /opt/hostedtoolcache/node/20.19.5/x64
+2025-09-24T00:59:02.6543482Z ##[group]Environment details
+2025-09-24T00:59:05.2026426Z node: v20.19.5
+2025-09-24T00:59:05.2027119Z npm: 10.8.2
+2025-09-24T00:59:05.2027515Z yarn: 1.22.22
+2025-09-24T00:59:05.2028668Z ##[endgroup]
+2025-09-24T00:59:05.2051285Z [command]/opt/hostedtoolcache/node/20.19.5/x64/bin/npm config get cache
+2025-09-24T00:59:05.5220063Z /home/runner/.npm
+2025-09-24T00:59:05.6889207Z Cache hit for: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef
+2025-09-24T00:59:06.7510371Z Received 41633190 of 41633190 (100.0%), 43.9 MBs/sec
+2025-09-24T00:59:06.7511145Z Cache Size: ~40 MB (41633190 B)
+2025-09-24T00:59:06.7539573Z [command]/usr/bin/tar -xf /home/runner/work/_temp/13ad0abf-1dfe-4c21-a8b5-ae3c20ac0c1f/cache.tzst -P -C /home/runner/work/advanced-tools-navigation/advanced-tools-navigation --use-compress-program unzstd
+2025-09-24T00:59:06.9356310Z Cache restored successfully
+2025-09-24T00:59:06.9441802Z Cache restored from key: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef
+2025-09-24T00:59:06.9598135Z ##[group]Run echo "📦 安装依赖..."
+2025-09-24T00:59:06.9598478Z [36;1mecho "📦 安装依赖..."[0m
+2025-09-24T00:59:06.9598785Z [36;1mnpm ci --prefer-offline --no-audit[0m
+2025-09-24T00:59:06.9736538Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:59:06.9736829Z env:
+2025-09-24T00:59:06.9737053Z   WEBSITE_URL: https://ramusi.cn
+2025-09-24T00:59:06.9737325Z   NODE_VERSION: 20.x
+2025-09-24T00:59:06.9737532Z ##[endgroup]
+2025-09-24T00:59:06.9814558Z 📦 安装依赖...
+2025-09-24T00:59:12.4628619Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2025-09-24T00:59:12.5611725Z npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+2025-09-24T00:59:12.5799992Z npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+2025-09-24T00:59:12.5858412Z npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+2025-09-24T00:59:12.6381059Z npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+2025-09-24T00:59:12.6394327Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+2025-09-24T00:59:12.6776951Z npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+2025-09-24T00:59:13.9313064Z npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+2025-09-24T00:59:14.9539782Z 
+2025-09-24T00:59:14.9540554Z > advanced-tools-navigation@1.0.0 postinstall
+2025-09-24T00:59:14.9541260Z > echo 'Postinstall checks disabled'
+2025-09-24T00:59:14.9541589Z 
+2025-09-24T00:59:14.9636998Z Postinstall checks disabled
+2025-09-24T00:59:14.9736432Z 
+2025-09-24T00:59:14.9736852Z added 544 packages in 8s
+2025-09-24T00:59:14.9737200Z 
+2025-09-24T00:59:14.9737532Z 126 packages are looking for funding
+2025-09-24T00:59:14.9738080Z   run `npm fund` for details
+2025-09-24T00:59:15.0112884Z ##[group]Run echo "🔨 构建项目..."
+2025-09-24T00:59:15.0113255Z [36;1mecho "🔨 构建项目..."[0m
+2025-09-24T00:59:15.0113508Z [36;1mnpm run build[0m
+2025-09-24T00:59:15.0144772Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:59:15.0145269Z env:
+2025-09-24T00:59:15.0145473Z   WEBSITE_URL: https://ramusi.cn
+2025-09-24T00:59:15.0145721Z   NODE_VERSION: 20.x
+2025-09-24T00:59:15.0145922Z ##[endgroup]
+2025-09-24T00:59:15.0195999Z 🔨 构建项目...
+2025-09-24T00:59:15.1292191Z 
+2025-09-24T00:59:15.1293122Z > advanced-tools-navigation@1.0.0 build
+2025-09-24T00:59:15.1293602Z > vite build
+2025-09-24T00:59:15.1293757Z 
+2025-09-24T00:59:15.6963605Z [36mvite v5.4.20 [32mbuilding for production...[36m[39m
+2025-09-24T00:59:15.8059269Z transforming...
+2025-09-24T00:59:16.5775826Z [32m✓[39m 39 modules transformed.
+2025-09-24T00:59:16.5792149Z [31mx[39m Build failed in 853ms
+2025-09-24T00:59:16.5793390Z [31merror during build:
+2025-09-24T00:59:16.5794281Z [31mCould not resolve "../views/TestSettingsView.vue" from "src/router/index.ts"[31m
+2025-09-24T00:59:16.5795170Z file: [36m/home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/router/index.ts[31m
+2025-09-24T00:59:16.5796706Z     at getRollupError (file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+2025-09-24T00:59:16.5798609Z     at error (file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+2025-09-24T00:59:16.5800743Z     at ModuleLoader.handleInvalidResolvedId (file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/node-entry.js:21584:24)
+2025-09-24T00:59:16.5803095Z     at ModuleLoader.resolveDynamicImport (file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/node-entry.js:21644:58)
+2025-09-24T00:59:16.5805351Z     at async file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/node-entry.js:21528:32[39m
+2025-09-24T00:59:16.6021580Z ##[error]Process completed with exit code 1.
+2025-09-24T00:59:16.6157099Z Post job cleanup.
+2025-09-24T00:59:16.7088933Z [command]/usr/bin/git version
+2025-09-24T00:59:16.7125494Z git version 2.51.0
+2025-09-24T00:59:16.7169208Z Temporarily overriding HOME='/home/runner/work/_temp/344456cb-514c-403c-8e40-382f3b148a8a' before making global git config changes
+2025-09-24T00:59:16.7170123Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:59:16.7174674Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:59:16.7209197Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:59:16.7240962Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:59:16.7469432Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:59:16.7489480Z http.https://github.com/.extraheader
+2025-09-24T00:59:16.7501945Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2025-09-24T00:59:16.7531775Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:59:16.7853345Z Cleaning up orphan processes

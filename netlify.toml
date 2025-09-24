@@ -1,0 +1,11 @@
+[build]
+  # 使用 --no-optional 在 Linux 构建环境中跳过平台专用的 optional 依赖，避免 EBADPLATFORM 错误
+  # Allow optional dependencies to be installed (some Rollup native binaries are platform-specific)
+  command = "npm ci --prefer-offline --no-audit --ignore-scripts && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_ENV = "production"
+
+[context.production.environment]
+  VITE_APP_ENV = "production"

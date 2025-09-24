@@ -257,8 +257,17 @@ const loadDashboardData = async () => {
       newUsersThisMonth: 0,
       revenueGrowth: 0,
     };
-  } catch (error) {
-    console.error("加载仪表盘数据失败:", error);
+  } catch (err: unknown) {
+    const msg = safeErrorMessage(err);
+    if (import.meta.env.PROD) {
+      console.error(
+        "加载仪表盘数据失败（生产），请检查 Supabase/后端 服务:",
+        msg,
+      );
+      return;
+    }
+
+    console.error("加载仪表盘数据失败，使用模拟数据:", msg);
     // 如果API调用失败，使用模拟数据作为fallback
     stats.value = {
       totalTools: 156,
@@ -291,6 +300,18 @@ const getStatusText = (status: string): string => {
 onMounted(() => {
   loadDashboardData();
 });
+
+// 从 unknown 错误对象安全提取字符串信息
+function safeErrorMessage(err: unknown): string {
+  if (!err) return "未知错误";
+  if (typeof err === "string") return err;
+  if (err instanceof Error) return err.message;
+  try {
+    return JSON.stringify(err as Record<string, unknown>);
+  } catch {
+    return String(err);
+  }
+}
 </script>
 
 <style scoped>

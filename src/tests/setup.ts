@@ -6,6 +6,10 @@ global.IntersectionObserver = vi.fn(() => ({
   disconnect: vi.fn(),
   observe: vi.fn(),
   unobserve: vi.fn(),
+  takeRecords: vi.fn(() => []),
+  root: null,
+  rootMargin: '',
+  thresholds: [] as number[],
 }));
 
 // Mock ResizeObserver

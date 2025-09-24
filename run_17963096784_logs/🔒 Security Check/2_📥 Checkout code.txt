@@ -1,0 +1,72 @@
+﻿2025-09-24T00:59:01.1549894Z ##[group]Run actions/checkout@v4
+2025-09-24T00:59:01.1550732Z with:
+2025-09-24T00:59:01.1551180Z   repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:01.1551898Z   token: ***
+2025-09-24T00:59:01.1552264Z   ssh-strict: true
+2025-09-24T00:59:01.1552641Z   ssh-user: git
+2025-09-24T00:59:01.1553031Z   persist-credentials: true
+2025-09-24T00:59:01.1553453Z   clean: true
+2025-09-24T00:59:01.1553841Z   sparse-checkout-cone-mode: true
+2025-09-24T00:59:01.1554305Z   fetch-depth: 1
+2025-09-24T00:59:01.1554681Z   fetch-tags: false
+2025-09-24T00:59:01.1555076Z   show-progress: true
+2025-09-24T00:59:01.1555463Z   lfs: false
+2025-09-24T00:59:01.1555845Z   submodules: false
+2025-09-24T00:59:01.1556230Z   set-safe-directory: true
+2025-09-24T00:59:01.1557002Z env:
+2025-09-24T00:59:01.1557382Z   NODE_VERSION: 20.x
+2025-09-24T00:59:01.1557971Z   CACHE_VERSION: v3
+2025-09-24T00:59:01.1558340Z ##[endgroup]
+2025-09-24T00:59:01.2676238Z Syncing repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:01.2678384Z ##[group]Getting Git version info
+2025-09-24T00:59:01.2679294Z Working directory is '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:59:01.2680634Z [command]/usr/bin/git version
+2025-09-24T00:59:01.2756847Z git version 2.51.0
+2025-09-24T00:59:01.2783896Z ##[endgroup]
+2025-09-24T00:59:01.2798611Z Temporarily overriding HOME='/home/runner/work/_temp/2c6e571a-4d92-497d-bb4e-756eeb6877b3' before making global git config changes
+2025-09-24T00:59:01.2799979Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:59:01.2812015Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:59:01.2849285Z Deleting the contents of '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:59:01.2852685Z ##[group]Initializing the repository
+2025-09-24T00:59:01.2856990Z [command]/usr/bin/git init /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:59:01.2956349Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-09-24T00:59:01.2958359Z hint: is subject to change. To configure the initial branch name to use in all
+2025-09-24T00:59:01.2959840Z hint: of your new repositories, which will suppress this warning, call:
+2025-09-24T00:59:01.2960942Z hint:
+2025-09-24T00:59:01.2961675Z hint: 	git config --global init.defaultBranch <name>
+2025-09-24T00:59:01.2962589Z hint:
+2025-09-24T00:59:01.2963205Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-09-24T00:59:01.2964070Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-09-24T00:59:01.2964780Z hint:
+2025-09-24T00:59:01.2965155Z hint: 	git branch -m <name>
+2025-09-24T00:59:01.2965583Z hint:
+2025-09-24T00:59:01.2966140Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2025-09-24T00:59:01.2967967Z Initialized empty Git repository in /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/.git/
+2025-09-24T00:59:01.2973341Z [command]/usr/bin/git remote add origin https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:01.3009434Z ##[endgroup]
+2025-09-24T00:59:01.3010135Z ##[group]Disabling automatic garbage collection
+2025-09-24T00:59:01.3013634Z [command]/usr/bin/git config --local gc.auto 0
+2025-09-24T00:59:01.3043176Z ##[endgroup]
+2025-09-24T00:59:01.3043845Z ##[group]Setting up auth
+2025-09-24T00:59:01.3049747Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:59:01.3080545Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:59:01.3523621Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:59:01.3559550Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:59:01.3819112Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-09-24T00:59:01.3872782Z ##[endgroup]
+2025-09-24T00:59:01.3873536Z ##[group]Fetching the repository
+2025-09-24T00:59:01.3885341Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b638fe4d3c3ba5445fe43e4d88e23d0704babe06:refs/remotes/origin/main
+2025-09-24T00:59:01.9706247Z From https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:01.9708205Z  * [new ref]         b638fe4d3c3ba5445fe43e4d88e23d0704babe06 -> origin/main
+2025-09-24T00:59:01.9738182Z ##[endgroup]
+2025-09-24T00:59:01.9739258Z ##[group]Determining the checkout info
+2025-09-24T00:59:01.9740443Z ##[endgroup]
+2025-09-24T00:59:01.9745300Z [command]/usr/bin/git sparse-checkout disable
+2025-09-24T00:59:01.9789126Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2025-09-24T00:59:01.9816585Z ##[group]Checking out the ref
+2025-09-24T00:59:01.9820377Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-09-24T00:59:02.0240161Z Switched to a new branch 'main'
+2025-09-24T00:59:02.0242092Z branch 'main' set up to track 'origin/main'.
+2025-09-24T00:59:02.0249810Z ##[endgroup]
+2025-09-24T00:59:02.0284378Z [command]/usr/bin/git log -1 --format=%H
+2025-09-24T00:59:02.0306202Z b638fe4d3c3ba5445fe43e4d88e23d0704babe06

@@ -86,6 +86,9 @@ export default defineConfig({
       },
     },
     rollupOptions: {
+      // Avoid resolving Rollup native binaries (platform-specific packages) during the Vite build.
+      // These packages are only relevant to Rollup's native runtime and should not be bundled by Vite.
+      external: (id: string) => id.startsWith('@rollup/rollup-'),
       output: {
         manualChunks: {
           vendor: ["vue", "pinia"],

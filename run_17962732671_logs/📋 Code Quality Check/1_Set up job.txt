@@ -1,0 +1,42 @@
+﻿2025-09-24T00:35:29.8890053Z Current runner version: '2.328.0'
+2025-09-24T00:35:29.8913969Z ##[group]Runner Image Provisioner
+2025-09-24T00:35:29.8914748Z Hosted Compute Agent
+2025-09-24T00:35:29.8915355Z Version: 20250829.383
+2025-09-24T00:35:29.8916211Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+2025-09-24T00:35:29.8916961Z Build Date: 2025-08-29T13:48:48Z
+2025-09-24T00:35:29.8917618Z ##[endgroup]
+2025-09-24T00:35:29.8918139Z ##[group]Operating System
+2025-09-24T00:35:29.8918663Z Ubuntu
+2025-09-24T00:35:29.8919181Z 24.04.3
+2025-09-24T00:35:29.8919611Z LTS
+2025-09-24T00:35:29.8920085Z ##[endgroup]
+2025-09-24T00:35:29.8920603Z ##[group]Runner Image
+2025-09-24T00:35:29.8921146Z Image: ubuntu-24.04
+2025-09-24T00:35:29.8921614Z Version: 20250907.24.1
+2025-09-24T00:35:29.8922668Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+2025-09-24T00:35:29.8924017Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+2025-09-24T00:35:29.8925227Z ##[endgroup]
+2025-09-24T00:35:29.8927867Z ##[group]GITHUB_TOKEN Permissions
+2025-09-24T00:35:29.8929914Z Actions: write
+2025-09-24T00:35:29.8930441Z Attestations: write
+2025-09-24T00:35:29.8930984Z Checks: write
+2025-09-24T00:35:29.8931530Z Contents: write
+2025-09-24T00:35:29.8932047Z Deployments: write
+2025-09-24T00:35:29.8932506Z Discussions: write
+2025-09-24T00:35:29.8933067Z Issues: write
+2025-09-24T00:35:29.8933542Z Metadata: read
+2025-09-24T00:35:29.8934016Z Models: read
+2025-09-24T00:35:29.8934549Z Packages: write
+2025-09-24T00:35:29.8935008Z Pages: write
+2025-09-24T00:35:29.8935494Z PullRequests: write
+2025-09-24T00:35:29.8936182Z RepositoryProjects: write
+2025-09-24T00:35:29.8936784Z SecurityEvents: write
+2025-09-24T00:35:29.8937433Z Statuses: write
+2025-09-24T00:35:29.8937937Z ##[endgroup]
+2025-09-24T00:35:29.8940289Z Secret source: Actions
+2025-09-24T00:35:29.8941320Z Prepare workflow directory
+2025-09-24T00:35:29.9314204Z Prepare all required actions
+2025-09-24T00:35:29.9351407Z Getting action download info
+2025-09-24T00:35:30.2315751Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+2025-09-24T00:35:30.4451494Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2025-09-24T00:35:30.6469196Z Complete job name: 📋 Code Quality Check

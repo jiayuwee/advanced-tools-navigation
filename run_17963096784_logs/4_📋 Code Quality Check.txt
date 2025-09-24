@@ -1,0 +1,723 @@
+﻿2025-09-24T00:58:59.5005018Z Current runner version: '2.328.0'
+2025-09-24T00:58:59.5028755Z ##[group]Runner Image Provisioner
+2025-09-24T00:58:59.5029803Z Hosted Compute Agent
+2025-09-24T00:58:59.5030322Z Version: 20250829.383
+2025-09-24T00:58:59.5030919Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+2025-09-24T00:58:59.5031596Z Build Date: 2025-08-29T13:48:48Z
+2025-09-24T00:58:59.5032219Z ##[endgroup]
+2025-09-24T00:58:59.5032741Z ##[group]Operating System
+2025-09-24T00:58:59.5033332Z Ubuntu
+2025-09-24T00:58:59.5033832Z 24.04.3
+2025-09-24T00:58:59.5034255Z LTS
+2025-09-24T00:58:59.5034740Z ##[endgroup]
+2025-09-24T00:58:59.5035207Z ##[group]Runner Image
+2025-09-24T00:58:59.5035776Z Image: ubuntu-24.04
+2025-09-24T00:58:59.5036233Z Version: 20250907.24.1
+2025-09-24T00:58:59.5037301Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+2025-09-24T00:58:59.5038943Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+2025-09-24T00:58:59.5039944Z ##[endgroup]
+2025-09-24T00:58:59.5042332Z ##[group]GITHUB_TOKEN Permissions
+2025-09-24T00:58:59.5044349Z Actions: write
+2025-09-24T00:58:59.5044870Z Attestations: write
+2025-09-24T00:58:59.5045372Z Checks: write
+2025-09-24T00:58:59.5045928Z Contents: write
+2025-09-24T00:58:59.5046524Z Deployments: write
+2025-09-24T00:58:59.5047001Z Discussions: write
+2025-09-24T00:58:59.5047560Z Issues: write
+2025-09-24T00:58:59.5048000Z Metadata: read
+2025-09-24T00:58:59.5048470Z Models: read
+2025-09-24T00:58:59.5049390Z Packages: write
+2025-09-24T00:58:59.5049912Z Pages: write
+2025-09-24T00:58:59.5050410Z PullRequests: write
+2025-09-24T00:58:59.5050935Z RepositoryProjects: write
+2025-09-24T00:58:59.5051510Z SecurityEvents: write
+2025-09-24T00:58:59.5052098Z Statuses: write
+2025-09-24T00:58:59.5052621Z ##[endgroup]
+2025-09-24T00:58:59.5054692Z Secret source: Actions
+2025-09-24T00:58:59.5055359Z Prepare workflow directory
+2025-09-24T00:58:59.5448026Z Prepare all required actions
+2025-09-24T00:58:59.5485772Z Getting action download info
+2025-09-24T00:58:59.8413217Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+2025-09-24T00:58:59.9142559Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2025-09-24T00:59:00.0752737Z Complete job name: 📋 Code Quality Check
+2025-09-24T00:59:00.1411796Z ##[group]Run actions/checkout@v4
+2025-09-24T00:59:00.1412639Z with:
+2025-09-24T00:59:00.1413016Z   fetch-depth: 0
+2025-09-24T00:59:00.1413471Z   repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:00.1414174Z   token: ***
+2025-09-24T00:59:00.1414548Z   ssh-strict: true
+2025-09-24T00:59:00.1414942Z   ssh-user: git
+2025-09-24T00:59:00.1415348Z   persist-credentials: true
+2025-09-24T00:59:00.1415791Z   clean: true
+2025-09-24T00:59:00.1416183Z   sparse-checkout-cone-mode: true
+2025-09-24T00:59:00.1416655Z   fetch-tags: false
+2025-09-24T00:59:00.1417156Z   show-progress: true
+2025-09-24T00:59:00.1417563Z   lfs: false
+2025-09-24T00:59:00.1417950Z   submodules: false
+2025-09-24T00:59:00.1418339Z   set-safe-directory: true
+2025-09-24T00:59:00.1419173Z env:
+2025-09-24T00:59:00.1419557Z   NODE_VERSION: 20.x
+2025-09-24T00:59:00.1420006Z   CACHE_VERSION: v3
+2025-09-24T00:59:00.1420380Z ##[endgroup]
+2025-09-24T00:59:00.2504993Z Syncing repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:00.2507736Z ##[group]Getting Git version info
+2025-09-24T00:59:00.2509467Z Working directory is '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:59:00.2511488Z [command]/usr/bin/git version
+2025-09-24T00:59:00.2563229Z git version 2.51.0
+2025-09-24T00:59:00.2589889Z ##[endgroup]
+2025-09-24T00:59:00.2605613Z Temporarily overriding HOME='/home/runner/work/_temp/de6fe78c-f997-4b9c-8480-62b478046c0d' before making global git config changes
+2025-09-24T00:59:00.2607958Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:59:00.2619632Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:59:00.2655033Z Deleting the contents of '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:59:00.2658243Z ##[group]Initializing the repository
+2025-09-24T00:59:00.2663619Z [command]/usr/bin/git init /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:59:00.2730436Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-09-24T00:59:00.2731837Z hint: is subject to change. To configure the initial branch name to use in all
+2025-09-24T00:59:00.2732911Z hint: of your new repositories, which will suppress this warning, call:
+2025-09-24T00:59:00.2734021Z hint:
+2025-09-24T00:59:00.2734523Z hint: 	git config --global init.defaultBranch <name>
+2025-09-24T00:59:00.2735413Z hint:
+2025-09-24T00:59:00.2736402Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-09-24T00:59:00.2737980Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-09-24T00:59:00.2739466Z hint:
+2025-09-24T00:59:00.2740188Z hint: 	git branch -m <name>
+2025-09-24T00:59:00.2740998Z hint:
+2025-09-24T00:59:00.2741995Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2025-09-24T00:59:00.2744040Z Initialized empty Git repository in /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/.git/
+2025-09-24T00:59:00.2747430Z [command]/usr/bin/git remote add origin https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:00.2782453Z ##[endgroup]
+2025-09-24T00:59:00.2783640Z ##[group]Disabling automatic garbage collection
+2025-09-24T00:59:00.2787319Z [command]/usr/bin/git config --local gc.auto 0
+2025-09-24T00:59:00.2815472Z ##[endgroup]
+2025-09-24T00:59:00.2816654Z ##[group]Setting up auth
+2025-09-24T00:59:00.2823022Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:59:00.2853096Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:59:00.3137844Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:59:00.3166976Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:59:00.3385435Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-09-24T00:59:00.3419184Z ##[endgroup]
+2025-09-24T00:59:00.3420006Z ##[group]Fetching the repository
+2025-09-24T00:59:00.3436206Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2025-09-24T00:59:00.8597082Z From https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:59:00.8600058Z  * [new branch]      gh-pages   -> origin/gh-pages
+2025-09-24T00:59:00.8601567Z  * [new branch]      main       -> origin/main
+2025-09-24T00:59:00.8603509Z  * [new branch]      main-backup-before-filter -> origin/main-backup-before-filter
+2025-09-24T00:59:00.8636916Z [command]/usr/bin/git branch --list --remote origin/main
+2025-09-24T00:59:00.8659020Z   origin/main
+2025-09-24T00:59:00.8669642Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2025-09-24T00:59:00.8690000Z b638fe4d3c3ba5445fe43e4d88e23d0704babe06
+2025-09-24T00:59:00.8696239Z ##[endgroup]
+2025-09-24T00:59:00.8697630Z ##[group]Determining the checkout info
+2025-09-24T00:59:00.8699244Z ##[endgroup]
+2025-09-24T00:59:00.8701797Z [command]/usr/bin/git sparse-checkout disable
+2025-09-24T00:59:00.8739428Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2025-09-24T00:59:00.8765765Z ##[group]Checking out the ref
+2025-09-24T00:59:00.8769033Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-09-24T00:59:00.9207518Z Switched to a new branch 'main'
+2025-09-24T00:59:00.9209646Z branch 'main' set up to track 'origin/main'.
+2025-09-24T00:59:00.9219865Z ##[endgroup]
+2025-09-24T00:59:00.9255992Z [command]/usr/bin/git log -1 --format=%H
+2025-09-24T00:59:00.9277959Z b638fe4d3c3ba5445fe43e4d88e23d0704babe06
+2025-09-24T00:59:00.9576820Z ##[group]Run actions/setup-node@v4
+2025-09-24T00:59:00.9577964Z with:
+2025-09-24T00:59:00.9578948Z   node-version: 20.x
+2025-09-24T00:59:00.9579858Z   cache: npm
+2025-09-24T00:59:00.9580796Z   cache-dependency-path: package-lock.json
+2025-09-24T00:59:00.9582014Z   always-auth: false
+2025-09-24T00:59:00.9582927Z   check-latest: false
+2025-09-24T00:59:00.9584100Z   token: ***
+2025-09-24T00:59:00.9584908Z env:
+2025-09-24T00:59:00.9585688Z   NODE_VERSION: 20.x
+2025-09-24T00:59:00.9586612Z   CACHE_VERSION: v3
+2025-09-24T00:59:00.9587475Z ##[endgroup]
+2025-09-24T00:59:01.1362330Z Found in cache @ /opt/hostedtoolcache/node/20.19.5/x64
+2025-09-24T00:59:01.1369074Z ##[group]Environment details
+2025-09-24T00:59:01.4689402Z node: v20.19.5
+2025-09-24T00:59:01.4690065Z npm: 10.8.2
+2025-09-24T00:59:01.4690372Z yarn: 1.22.22
+2025-09-24T00:59:01.4691101Z ##[endgroup]
+2025-09-24T00:59:01.4713022Z [command]/opt/hostedtoolcache/node/20.19.5/x64/bin/npm config get cache
+2025-09-24T00:59:01.5784124Z /home/runner/.npm
+2025-09-24T00:59:01.6740614Z Cache hit for: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef
+2025-09-24T00:59:02.0188377Z Received 41633190 of 41633190 (100.0%), 127.3 MBs/sec
+2025-09-24T00:59:02.0189706Z Cache Size: ~40 MB (41633190 B)
+2025-09-24T00:59:02.0218921Z [command]/usr/bin/tar -xf /home/runner/work/_temp/e1d157ab-2e2f-4afc-9bd2-38f540000062/cache.tzst -P -C /home/runner/work/advanced-tools-navigation/advanced-tools-navigation --use-compress-program unzstd
+2025-09-24T00:59:02.1927697Z Cache restored successfully
+2025-09-24T00:59:02.2012197Z Cache restored from key: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef
+2025-09-24T00:59:02.2164813Z ##[group]Run echo "📦 安装依赖..."
+2025-09-24T00:59:02.2165153Z [36;1mecho "📦 安装依赖..."[0m
+2025-09-24T00:59:02.2165412Z [36;1m# 设置npm配置以提高稳定性[0m
+2025-09-24T00:59:02.2165685Z [36;1mnpm config set prefer-offline true[0m
+2025-09-24T00:59:02.2165991Z [36;1mnpm config set audit-level moderate[0m
+2025-09-24T00:59:02.2166268Z [36;1mnpm config set fund false[0m
+2025-09-24T00:59:02.2166529Z [36;1mnpm config set update-notifier false[0m
+2025-09-24T00:59:02.2166781Z [36;1m[0m
+2025-09-24T00:59:02.2166950Z [36;1m# 清理缓存以避免平台兼容性问题[0m
+2025-09-24T00:59:02.2167204Z [36;1mnpm cache clean --force 2>/dev/null || true[0m
+2025-09-24T00:59:02.2167468Z [36;1m[0m
+2025-09-24T00:59:02.2167651Z [36;1m# 优先使用 npm ci 进行快速安装[0m
+2025-09-24T00:59:02.2167892Z [36;1mif [ -f "package-lock.json" ]; then[0m
+2025-09-24T00:59:02.2168168Z [36;1m  echo "使用 npm ci 进行快速安装..."[0m
+2025-09-24T00:59:02.2168769Z [36;1m  npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --silent[0m
+2025-09-24T00:59:02.2169262Z [36;1melse[0m
+2025-09-24T00:59:02.2169508Z [36;1m  echo "package-lock.json 不存在，使用 npm install..."[0m
+2025-09-24T00:59:02.2169898Z [36;1m  npm install --prefer-offline --no-audit --ignore-scripts --silent[0m
+2025-09-24T00:59:02.2170238Z [36;1mfi[0m
+2025-09-24T00:59:02.2170403Z [36;1m[0m
+2025-09-24T00:59:02.2170683Z [36;1mecho "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"[0m
+2025-09-24T00:59:02.2171042Z [36;1mecho "✅ 依赖安装完成"[0m
+2025-09-24T00:59:02.2228987Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:59:02.2229267Z env:
+2025-09-24T00:59:02.2229488Z   NODE_VERSION: 20.x
+2025-09-24T00:59:02.2229726Z   CACHE_VERSION: v3
+2025-09-24T00:59:02.2229919Z ##[endgroup]
+2025-09-24T00:59:02.2312051Z 📦 安装依赖...
+2025-09-24T00:59:03.1297073Z 使用 npm ci 进行快速安装...
+2025-09-24T00:59:16.1835534Z 📋 已安装的包数量: 41
+2025-09-24T00:59:16.1836065Z ✅ 依赖安装完成
+2025-09-24T00:59:16.1868082Z ##[group]Run echo "🔍 运行 ESLint 检查..."
+2025-09-24T00:59:16.1868886Z [36;1mecho "🔍 运行 ESLint 检查..."[0m
+2025-09-24T00:59:16.1869290Z [36;1mnpm run lint[0m
+2025-09-24T00:59:16.1869511Z [36;1mecho "✅ ESLint 检查通过"[0m
+2025-09-24T00:59:16.1900775Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:59:16.1900996Z env:
+2025-09-24T00:59:16.1901167Z   NODE_VERSION: 20.x
+2025-09-24T00:59:16.1901360Z   CACHE_VERSION: v3
+2025-09-24T00:59:16.1901536Z ##[endgroup]
+2025-09-24T00:59:16.1955440Z 🔍 运行 ESLint 检查...
+2025-09-24T00:59:16.3054030Z 
+2025-09-24T00:59:16.3054713Z > advanced-tools-navigation@1.0.0 lint
+2025-09-24T00:59:16.3055378Z > eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore
+2025-09-24T00:59:16.3055733Z 
+2025-09-24T00:59:24.9304415Z 
+2025-09-24T00:59:24.9305662Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/admin/ToolForm.vue
+2025-09-24T00:59:24.9337243Z ##[warning]  159:3  warning  Prop 'tool' requires default value to be set  vue/require-default-prop
+2025-09-24T00:59:24.9346623Z 
+2025-09-24T00:59:24.9347546Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/admin/UserDetailModal.vue
+2025-09-24T00:59:24.9349582Z ##[warning]  372:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9350862Z 
+2025-09-24T00:59:24.9351726Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/common/LazyComponent.vue
+2025-09-24T00:59:24.9353592Z ##[warning]   58:34  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9356010Z ##[warning]   60:3   warning  Prop 'componentProps' requires default value to be set  vue/require-default-prop
+2025-09-24T00:59:24.9358302Z ##[warning]   60:35  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9360792Z ##[warning]   94:23  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9363099Z ##[warning]  134:27  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9364384Z 
+2025-09-24T00:59:24.9365196Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/common/LazyImage.vue
+2025-09-24T00:59:24.9366811Z ##[warning]  66:3  warning  Prop 'placeholder' requires default value to be set  vue/require-default-prop
+2025-09-24T00:59:24.9369136Z ##[warning]  70:3  warning  Prop 'width' requires default value to be set        vue/require-default-prop
+2025-09-24T00:59:24.9371337Z ##[warning]  71:3  warning  Prop 'height' requires default value to be set       vue/require-default-prop
+2025-09-24T00:59:24.9373456Z ##[warning]  85:3  warning  Prop 'srcset' requires default value to be set       vue/require-default-prop
+2025-09-24T00:59:24.9375567Z ##[warning]  87:3  warning  Prop 'sizes' requires default value to be set        vue/require-default-prop
+2025-09-24T00:59:24.9376878Z 
+2025-09-24T00:59:24.9377835Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/notifications/NotificationCenter.vue
+2025-09-24T00:59:24.9379813Z ##[warning]  189:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9381135Z 
+2025-09-24T00:59:24.9382007Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/search/EnhancedSearchBox.vue
+2025-09-24T00:59:24.9383724Z ##[warning]  285:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9385882Z ##[warning]  336:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9388019Z ##[warning]  430:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9390678Z ##[warning]  440:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9393075Z ##[warning]  441:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9394341Z 
+2025-09-24T00:59:24.9395157Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/composables/useAdvancedSearch.ts
+2025-09-24T00:59:24.9396791Z ##[warning]   39:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9399196Z ##[warning]  250:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9401409Z ##[warning]  250:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9403550Z ##[warning]  254:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9404883Z 
+2025-09-24T00:59:24.9405678Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/composables/useLazyLoading.ts
+2025-09-24T00:59:24.9407262Z ##[warning]  142:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9409728Z ##[warning]  147:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9411037Z 
+2025-09-24T00:59:24.9411769Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/lib/supabaseClient.ts
+2025-09-24T00:59:24.9413346Z ##[warning]   51:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9415500Z ##[warning]  144:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9417654Z ##[warning]  144:71  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9420027Z ##[warning]  145:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9422180Z ##[warning]  161:9   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9424320Z ##[warning]  162:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9426527Z ##[warning]  163:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9428862Z ##[warning]  179:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9431091Z ##[warning]  190:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9433242Z ##[warning]  206:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9435380Z ##[warning]  212:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9436653Z 
+2025-09-24T00:59:24.9437406Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/authService.ts
+2025-09-24T00:59:24.9439384Z ##[warning]   10:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9441073Z ##[warning]   41:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9442441Z ##[warning]  172:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9443740Z ##[warning]  203:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9445039Z ##[warning]  216:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9446332Z ##[warning]  240:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9447127Z 
+2025-09-24T00:59:24.9447836Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/categoriesService.ts
+2025-09-24T00:59:24.9449016Z ##[warning]  87:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9450010Z 
+2025-09-24T00:59:24.9450494Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/favoritesService.ts
+2025-09-24T00:59:24.9451507Z ##[warning]   83:77  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9452817Z ##[warning]   95:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9454103Z ##[warning]   97:75  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9455355Z ##[warning]  110:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9456578Z ##[warning]  172:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9457807Z ##[warning]  209:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9459407Z ##[warning]  349:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9460709Z ##[warning]  361:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9461462Z 
+2025-09-24T00:59:24.9461893Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/feedbackService.ts
+2025-09-24T00:59:24.9462785Z ##[warning]   26:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9463997Z ##[warning]  224:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9465219Z ##[warning]  261:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9465998Z 
+2025-09-24T00:59:24.9466455Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/localStorageService.ts
+2025-09-24T00:59:24.9467368Z ##[warning]  47:9  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9468102Z 
+2025-09-24T00:59:24.9468697Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/notificationService.ts
+2025-09-24T00:59:24.9469628Z ##[warning]  21:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9470849Z ##[warning]  51:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9471571Z 
+2025-09-24T00:59:24.9471986Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/orderService.ts
+2025-09-24T00:59:24.9473737Z ##[warning]   36:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:59:24.9476624Z ##[warning]   48:39  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9479468Z ##[warning]   51:30  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9482486Z ##[warning]   59:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:59:24.9485357Z ##[warning]   70:34  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9488196Z ##[warning]   71:29  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9491202Z ##[warning]   74:33  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9494200Z ##[warning]   78:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:59:24.9497059Z ##[warning]   89:23  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9499944Z ##[warning]   90:28  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9502635Z ##[warning]   93:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9505297Z ##[warning]   94:33  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9507933Z ##[warning]   97:37  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9510773Z ##[warning]   99:39  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9513405Z ##[warning]  101:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9516063Z ##[warning]  102:33  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9518931Z ##[warning]  105:34  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9521637Z ##[warning]  111:39  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9524286Z ##[warning]  119:29  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9526907Z ##[warning]  120:27  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9529807Z ##[warning]  125:35  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9532472Z ##[warning]  126:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9535104Z ##[warning]  128:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9537737Z ##[warning]  129:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9540600Z ##[warning]  130:33  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9543485Z ##[warning]  141:30  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9546708Z ##[warning]  149:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:59:24.9549755Z ##[warning]  159:32  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9552701Z ##[warning]  170:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:59:24.9555494Z ##[warning]  232:39  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9558136Z ##[warning]  236:41  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9561125Z ##[warning]  340:40  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9563793Z ##[warning]  462:47  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9566486Z ##[warning]  474:41  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9569386Z ##[warning]  542:25  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9572102Z ##[warning]  688:29  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9574763Z ##[warning]  689:43  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9576183Z 
+2025-09-24T00:59:24.9576979Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/productsService.ts
+2025-09-24T00:59:24.9578760Z ##[warning]  169:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9581020Z ##[warning]  306:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9582334Z 
+2025-09-24T00:59:24.9583123Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/reviewService.ts
+2025-09-24T00:59:24.9584915Z ##[warning]    2:1   warning  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+2025-09-24T00:59:24.9587382Z ##[warning]  492:43  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9589997Z ##[warning]  495:14  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9592437Z ##[warning]  544:14  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9593803Z 
+2025-09-24T00:59:24.9594560Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/toolsService.ts
+2025-09-24T00:59:24.9596160Z ##[warning]  447:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9597451Z 
+2025-09-24T00:59:24.9598301Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/stores/auth.ts
+2025-09-24T00:59:24.9600285Z ##[warning]  119:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9601620Z 
+2025-09-24T00:59:24.9602333Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/stores/categories.ts
+2025-09-24T00:59:24.9603879Z ##[warning]  144:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9605171Z 
+2025-09-24T00:59:24.9605877Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/stores/products.ts
+2025-09-24T00:59:24.9607410Z ##[warning]  170:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9609774Z ##[warning]  191:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9611082Z 
+2025-09-24T00:59:24.9611775Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/stores/tools.ts
+2025-09-24T00:59:24.9613286Z ##[warning]  216:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9615473Z ##[warning]  381:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9616782Z 
+2025-09-24T00:59:24.9617448Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/tests/setup.ts
+2025-09-24T00:59:24.9619201Z ##[warning]   28:8   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9621456Z ##[warning]   47:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9623664Z ##[warning]   56:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9625832Z ##[warning]  127:6   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9627999Z ##[warning]  140:8   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9630355Z ##[warning]  149:8   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9632494Z ##[warning]  155:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9634651Z ##[warning]  165:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9635929Z 
+2025-09-24T00:59:24.9636629Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/types/global.d.ts
+2025-09-24T00:59:24.9638190Z ##[warning]  3:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9639746Z 
+2025-09-24T00:59:24.9640477Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/cacheManager.ts
+2025-09-24T00:59:24.9642115Z ##[warning]    8:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9644298Z ##[warning]  307:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9646478Z ##[warning]  307:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9647769Z 
+2025-09-24T00:59:24.9648529Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/connectionTest.ts
+2025-09-24T00:59:24.9650113Z ##[warning]   11:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9651649Z ##[warning]   76:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9653074Z ##[warning]  130:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9653927Z 
+2025-09-24T00:59:24.9654597Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/dataTransform.ts
+2025-09-24T00:59:24.9655648Z ##[warning]   11:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9657196Z ##[warning]   37:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9658812Z ##[warning]   53:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9660642Z ##[warning]   79:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9662053Z ##[warning]   96:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9663447Z ##[warning]   97:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9664872Z ##[warning]   97:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9666163Z ##[warning]   98:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9667394Z ##[warning]   99:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9668749Z ##[warning]  128:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9670005Z ##[warning]  129:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9671442Z ##[warning]  129:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9672755Z ##[warning]  130:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9673963Z ##[warning]  131:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9675176Z ##[warning]  160:9   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9676364Z ##[warning]  184:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9677565Z ##[warning]  184:70  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9678923Z ##[warning]  185:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9680169Z ##[warning]  202:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9681380Z ##[warning]  202:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9682572Z ##[warning]  202:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9683768Z ##[warning]  228:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9684978Z ##[warning]  252:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9685715Z 
+2025-09-24T00:59:24.9686126Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/errorHandler.ts
+2025-09-24T00:59:24.9686999Z ##[warning]    9:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9688221Z ##[warning]   11:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9689612Z ##[warning]   16:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9690820Z ##[warning]  222:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9691547Z 
+2025-09-24T00:59:24.9691933Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/validation.ts
+2025-09-24T00:59:24.9692948Z ##[warning]   10:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9694295Z ##[warning]   32:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9695509Z ##[warning]   59:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9696702Z ##[warning]  182:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9697922Z ##[warning]  201:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9699542Z ##[warning]  276:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9700323Z 
+2025-09-24T00:59:24.9700718Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/HomeView.vue
+2025-09-24T00:59:24.9701652Z ##[warning]  144:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9702902Z ##[warning]  161:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9704131Z ##[warning]  174:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9705358Z ##[warning]  193:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9706084Z 
+2025-09-24T00:59:24.9706510Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/ProductDetailView.vue
+2025-09-24T00:59:24.9707402Z ##[warning]  93:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9708132Z 
+2025-09-24T00:59:24.9708685Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/ProductUploadView.vue
+2025-09-24T00:59:24.9709598Z ##[warning]  473:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9710368Z 
+2025-09-24T00:59:24.9710774Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/ProductsView.vue
+2025-09-24T00:59:24.9711638Z ##[warning]  246:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9712838Z ##[warning]  251:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9713755Z 
+2025-09-24T00:59:24.9714461Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/SearchResultsView.vue
+2025-09-24T00:59:24.9716033Z ##[warning]  159:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9718183Z ##[warning]  197:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9720454Z ##[warning]  210:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9722521Z ##[warning]  230:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9724586Z ##[warning]  239:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9725833Z 
+2025-09-24T00:59:24.9726500Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/ToolsView.vue
+2025-09-24T00:59:24.9727955Z ##[warning]  354:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9729435Z 
+2025-09-24T00:59:24.9730255Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/admin/LocalManagementView.vue
+2025-09-24T00:59:24.9731900Z ##[warning]  325:73  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:59:24.9733181Z 
+2025-09-24T00:59:24.9733724Z ✖ 169 problems (0 errors, 169 warnings)
+2025-09-24T00:59:24.9734031Z 
+2025-09-24T00:59:24.9936508Z ✅ ESLint 检查通过
+2025-09-24T00:59:24.9975754Z ##[group]Run echo "🔧 运行 TypeScript 类型检查 (非阻塞)..."
+2025-09-24T00:59:24.9976281Z [36;1mecho "🔧 运行 TypeScript 类型检查 (非阻塞)..."[0m
+2025-09-24T00:59:24.9976609Z [36;1m# 将类型检查设置为非阻塞，避免临时类型错误阻断 CI；以后应当修复类型错误或逐步恢复为严格检查[0m
+2025-09-24T00:59:24.9976903Z [36;1mnpm run type-check || true[0m
+2025-09-24T00:59:24.9977158Z [36;1mecho "✅ TypeScript 类型检查完成（非阻塞）"[0m
+2025-09-24T00:59:25.0008295Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:59:25.0008529Z env:
+2025-09-24T00:59:25.0008971Z   NODE_VERSION: 20.x
+2025-09-24T00:59:25.0009174Z   CACHE_VERSION: v3
+2025-09-24T00:59:25.0009359Z ##[endgroup]
+2025-09-24T00:59:25.0061214Z 🔧 运行 TypeScript 类型检查 (非阻塞)...
+2025-09-24T00:59:25.1085684Z 
+2025-09-24T00:59:25.1086300Z > advanced-tools-navigation@1.0.0 type-check
+2025-09-24T00:59:25.1086729Z > vue-tsc --noEmit
+2025-09-24T00:59:25.1086880Z 
+2025-09-24T00:59:37.3417005Z ##[error]src/components/admin/ToolForm.vue(185,3): error TS2322: Type 'string' is not assignable to type 'File'.
+2025-09-24T00:59:37.3420701Z ##[error]src/components/admin/ToolForm.vue(289,46): error TS2339: Property 'name' does not exist on type 'string'.
+2025-09-24T00:59:37.3423190Z ##[error]src/components/admin/UserDetailModal.vue(39,70): error TS2339: Property 'status' does not exist on type 'User'.
+2025-09-24T00:59:37.3425570Z ##[error]src/components/admin/UserDetailModal.vue(40,41): error TS2339: Property 'status' does not exist on type 'User'.
+2025-09-24T00:59:37.3428367Z ##[error]src/components/admin/UserDetailModal.vue(52,35): error TS2551: Property 'last_sign_in_at' does not exist on type 'User'. Did you mean 'last_login_at'?
+2025-09-24T00:59:37.3431357Z ##[error]src/components/admin/UserDetailModal.vue(60,26): error TS2339: Property 'email_confirmed_at' does not exist on type 'User'.
+2025-09-24T00:59:37.3433952Z ##[error]src/components/admin/UserDetailModal.vue(63,27): error TS2339: Property 'email_confirmed_at' does not exist on type 'User'.
+2025-09-24T00:59:37.3436451Z ##[error]src/components/admin/UserDetailModal.vue(70,27): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3439192Z ##[error]src/components/admin/UserDetailModal.vue(76,24): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3441746Z ##[error]src/components/admin/UserDetailModal.vue(83,32): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3444200Z ##[error]src/components/admin/UserDetailModal.vue(84,32): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3446637Z ##[error]src/components/admin/UserDetailModal.vue(85,32): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3449278Z ##[error]src/components/admin/UserDetailModal.vue(96,24): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3451766Z ##[error]src/components/admin/UserDetailModal.vue(103,32): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3454334Z ##[error]src/components/admin/UserDetailModal.vue(104,33): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3456822Z ##[error]src/components/admin/UserDetailModal.vue(108,29): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3459401Z ##[error]src/components/admin/UserDetailModal.vue(116,24): error TS2339: Property 'user_profiles' does not exist on type 'User'.
+2025-09-24T00:59:37.3462205Z ##[error]src/components/admin/UserDetailModal.vue(221,3): error TS2724: '"lucide-vue-next"' has no exported member named 'EditIcon'. Did you mean 'BedIcon'?
+2025-09-24T00:59:37.3464542Z ##[error]src/components/common/LazyComponent.vue(153,1): error TS2304: Cannot find name 'watch'.
+2025-09-24T00:59:37.3466493Z ##[error]src/components/common/LazyComponent.vue(163,1): error TS2304: Cannot find name 'watch'.
+2025-09-24T00:59:37.3472824Z ##[error]src/components/reviews/EditReviewModal.vue(12,12): error TS2345: Argument of type '{ rating: number; readonly: false; }' is not assignable to parameter of type 'Partial<{ readonly: boolean; }> & Omit<{ readonly modelValue: number; readonly readonly: boolean; readonly "onUpdate:modelValue"?: (...args: any[]) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "readonly"> & Record<...>'.
+2025-09-24T00:59:37.3477416Z   Property 'modelValue' is missing in type '{ rating: number; readonly: false; }' but required in type 'Omit<{ readonly modelValue: number; readonly readonly: boolean; readonly "onUpdate:modelValue"?: (...args: any[]) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "readonly">'.
+2025-09-24T00:59:37.3480099Z ##[error]src/components/reviews/EditReviewModal.vue(82,25): error TS2554: Expected 3 arguments, but got 2.
+2025-09-24T00:59:37.3485689Z ##[error]src/components/reviews/ProductReviews.vue(9,14): error TS2345: Argument of type '{ rating: number; readonly: true; }' is not assignable to parameter of type 'Partial<{ readonly: boolean; }> & Omit<{ readonly modelValue: number; readonly readonly: boolean; readonly "onUpdate:modelValue"?: (...args: any[]) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "readonly"> & Record<...>'.
+2025-09-24T00:59:37.3490201Z   Property 'modelValue' is missing in type '{ rating: number; readonly: true; }' but required in type 'Omit<{ readonly modelValue: number; readonly readonly: boolean; readonly "onUpdate:modelValue"?: (...args: any[]) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "readonly">'.
+2025-09-24T00:59:37.3493431Z ##[error]src/components/reviews/ProductReviews.vue(46,14): error TS2322: Type '(reset?: boolean) => Promise<void>' is not assignable to type '(payload: Event) => void'.
+2025-09-24T00:59:37.3495270Z   Types of parameters 'reset' and 'payload' are incompatible.
+2025-09-24T00:59:37.3495941Z     Type 'Event' is not assignable to type 'boolean'.
+2025-09-24T00:59:37.3497827Z ##[error]src/components/reviews/ProductReviews.vue(59,16): error TS2322: Type '(reset?: boolean) => Promise<void>' is not assignable to type '(payload: Event) => void'.
+2025-09-24T00:59:37.3501026Z ##[error]src/components/reviews/ProductReviews.vue(68,16): error TS2322: Type '(reset?: boolean) => Promise<void>' is not assignable to type '(payload: Event) => void'.
+2025-09-24T00:59:37.3506829Z ##[error]src/components/reviews/ReplyModal.vue(12,12): error TS2345: Argument of type '{ rating: number; readonly: true; }' is not assignable to parameter of type 'Partial<{ readonly: boolean; }> & Omit<{ readonly modelValue: number; readonly readonly: boolean; readonly "onUpdate:modelValue"?: (...args: any[]) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "readonly"> & Record<...>'.
+2025-09-24T00:59:37.3511341Z   Property 'modelValue' is missing in type '{ rating: number; readonly: true; }' but required in type 'Omit<{ readonly modelValue: number; readonly readonly: boolean; readonly "onUpdate:modelValue"?: (...args: any[]) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "readonly">'.
+2025-09-24T00:59:37.3513397Z ##[error]src/components/reviews/ReplyModal.vue(65,25): error TS2339: Property 'replyToReview' does not exist on type 'ReviewService'.
+2025-09-24T00:59:37.3515061Z ##[error]src/components/reviews/ReviewItem.vue(111,20): error TS2305: Module '"@heroicons/vue/24/solid"' has no exported member 'ThumbUpIcon'.
+2025-09-24T00:59:37.3517412Z ##[error]src/components/reviews/ReviewItem.vue(111,33): error TS2724: '"@heroicons/vue/24/solid"' has no exported member named 'ThumbDownIcon'. Did you mean 'HandThumbDownIcon'?
+2025-09-24T00:59:37.3519587Z ##[error]src/components/reviews/ReviewItem.vue(112,15): error TS2305: Module '"@/types"' has no exported member 'ProductReview'.
+2025-09-24T00:59:37.3523138Z ##[error]src/components/reviews/WriteReviewModal.vue(12,12): error TS2345: Argument of type '{ rating: number; readonly: false; }' is not assignable to parameter of type 'Partial<{ readonly: boolean; }> & Omit<{ readonly modelValue: number; readonly readonly: boolean; readonly "onUpdate:modelValue"?: (...args: any[]) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "readonly"> & Record<...>'.
+2025-09-24T00:59:37.3525810Z   Property 'modelValue' is missing in type '{ rating: number; readonly: false; }' but required in type 'Omit<{ readonly modelValue: number; readonly readonly: boolean; readonly "onUpdate:modelValue"?: (...args: any[]) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "readonly">'.
+2025-09-24T00:59:37.3547630Z ##[error]src/components/reviews/WriteReviewModal.vue(75,25): error TS2554: Expected 2 arguments, but got 1.
+2025-09-24T00:59:37.3549368Z ##[error]src/components/ToolRating.vue(178,43): error TS2339: Property 'review' does not exist on type 'never'.
+2025-09-24T00:59:37.3550740Z ##[error]src/components/ToolRating.vue(197,34): error TS2339: Property 'rating' does not exist on type 'never'.
+2025-09-24T00:59:37.3552077Z ##[error]src/components/ToolRating.vue(198,31): error TS2339: Property 'review' does not exist on type 'never'.
+2025-09-24T00:59:37.3553417Z ##[error]src/components/ToolRating.vue(199,32): error TS2339: Property 'is_anonymous' does not exist on type 'never'.
+2025-09-24T00:59:37.3555384Z ##[error]src/components/ToolRating.vue(238,17): error TS2345: Argument of type '{ tool_id: string; user_id: string; rating: number; review: string; is_anonymous: boolean; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3556857Z ##[error]src/components/ToolRating.vue(244,68): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3558215Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "tool_ratings", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3559649Z     Argument of type '{ tool_id: string; user_id: string; rating: number; review: string; is_anonymous: boolean; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3560915Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "tool_ratings", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3562124Z     Argument of type '{ tool_id: string; user_id: string; rating: number; review: string; is_anonymous: boolean; }' is not assignable to parameter of type 'never[]'.
+2025-09-24T00:59:37.3563203Z       Type '{ tool_id: string; user_id: string; rating: number; review: string; is_anonymous: boolean; }' is missing the following properties from type 'never[]': length, pop, push, concat, and 35 more.
+2025-09-24T00:59:37.3564315Z ##[error]src/components/UserFeedback.vue(123,29): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3565705Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "user_feedback", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3566858Z     Argument of type '{ user_id: string; feedback_type: string; subject: string; content: string; priority: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3568124Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "user_feedback", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3569298Z     Object literal may only specify known properties, and 'user_id' does not exist in type 'never[]'.
+2025-09-24T00:59:37.3570150Z ##[error]src/lib/supabaseClient.ts(94,10): error TS18047: 'data' is possibly 'null'.
+2025-09-24T00:59:37.3571335Z ##[error]src/services/categoriesService.ts(56,37): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3572900Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "categories", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3574271Z     Argument of type '{ name: string; description: string; icon: string; color: string; parent_id: string; sort_order: number; is_active: boolean; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3575607Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "categories", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3576623Z     Object literal may only specify known properties, and 'name' does not exist in type 'never[]'.
+2025-09-24T00:59:37.3577700Z ##[error]src/services/categoriesService.ts(105,17): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3579272Z ##[error]src/services/categoriesService.ts(183,38): error TS2339: Property 'category_id' does not exist on type 'never'.
+2025-09-24T00:59:37.3580655Z ##[error]src/services/categoriesService.ts(184,24): error TS2339: Property 'category_id' does not exist on type 'never'.
+2025-09-24T00:59:37.3582566Z ##[error]src/services/categoriesService.ts(269,7): error TS2561: Object literal may only specify known properties, but 'parentId' does not exist in type 'Category'. Did you mean to write 'parent_id'?
+2025-09-24T00:59:37.3584501Z ##[error]src/services/databaseService.ts(58,9): error TS2740: Type '{}' is missing the following properties from type 'QueryResult<T>': data, count, page, limit, and 2 more.
+2025-09-24T00:59:37.3585867Z ##[error]src/services/databaseService.ts(122,17): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3587201Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, string, never, "POST">', gave the following error.
+2025-09-24T00:59:37.3588076Z     Argument of type 'Partial<T>' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3589242Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, string, never, "POST">', gave the following error.
+2025-09-24T00:59:37.3590184Z     Argument of type 'Partial<T>' is not assignable to parameter of type 'never[]'.
+2025-09-24T00:59:37.3590819Z       Type 'Partial<T>' is missing the following properties from type 'never[]': length, pop, push, concat, and 35 more.
+2025-09-24T00:59:37.3591965Z ##[error]src/services/databaseService.ts(143,17): error TS2345: Argument of type 'Partial<T>' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3593247Z ##[error]src/services/databaseService.ts(180,17): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3594573Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, string, never, "POST">', gave the following error.
+2025-09-24T00:59:37.3595437Z     Argument of type 'Partial<T>[]' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3596452Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, string, never, "POST">', gave the following error.
+2025-09-24T00:59:37.3597384Z     Argument of type 'Partial<T>[]' is not assignable to parameter of type 'never[]'.
+2025-09-24T00:59:37.3597833Z       Type 'Partial<T>' is not assignable to type 'never'.
+2025-09-24T00:59:37.3598544Z ##[error]src/services/databaseService.ts(393,22): error TS18047: 'lastRecord' is possibly 'null'.
+2025-09-24T00:59:37.3600103Z ##[error]src/services/favoritesService.ts(24,23): error TS2339: Property 'tool_id' does not exist on type 'never'.
+2025-09-24T00:59:37.3601489Z ##[error]src/services/feedbackService.ts(70,47): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3602975Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "user_feedback", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3604801Z     Argument of type '{ type: "other" | "bug" | "feature" | "improvement" | "question"; title: string; content: string; priority: "medium" | "high" | "urgent" | "low"; user_id: string; system_info: { userAgent: string; platform: string; language: string; screenResolution: string; timestamp: string; }; status: string; is_read: boolean; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3606628Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "user_feedback", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3607662Z     Object literal may only specify known properties, and 'type' does not exist in type 'never[]'.
+2025-09-24T00:59:37.3608857Z ##[error]src/services/feedbackService.ts(237,17): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3610376Z ##[error]src/services/feedbackService.ts(272,17): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3611950Z ##[error]src/services/feedbackService.ts(291,17): error TS2345: Argument of type '{ is_read: boolean; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3613546Z ##[error]src/services/feedbackService.ts(306,17): error TS2345: Argument of type '{ is_read: boolean; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3614934Z ##[error]src/services/feedbackService.ts(364,24): error TS2339: Property 'status' does not exist on type 'never'.
+2025-09-24T00:59:37.3616222Z ##[error]src/services/feedbackService.ts(367,32): error TS2339: Property 'type' does not exist on type 'never'.
+2025-09-24T00:59:37.3617506Z ##[error]src/services/feedbackService.ts(367,64): error TS2339: Property 'type' does not exist on type 'never'.
+2025-09-24T00:59:37.3618930Z ##[error]src/services/feedbackService.ts(370,36): error TS2339: Property 'priority' does not exist on type 'never'.
+2025-09-24T00:59:37.3620307Z ##[error]src/services/feedbackService.ts(371,39): error TS2339: Property 'priority' does not exist on type 'never'.
+2025-09-24T00:59:37.3621627Z ##[error]src/services/feedbackService.ts(375,56): error TS2339: Property 'response' does not exist on type 'never'.
+2025-09-24T00:59:37.3622964Z ##[error]src/services/feedbackService.ts(381,26): error TS2339: Property 'response_at' does not exist on type 'never'.
+2025-09-24T00:59:37.3624300Z ##[error]src/services/feedbackService.ts(381,43): error TS2339: Property 'created_at' does not exist on type 'never'.
+2025-09-24T00:59:37.3625611Z ##[error]src/services/feedbackService.ts(383,38): error TS2339: Property 'created_at' does not exist on type 'never'.
+2025-09-24T00:59:37.3626946Z ##[error]src/services/feedbackService.ts(384,40): error TS2339: Property 'response_at' does not exist on type 'never'.
+2025-09-24T00:59:37.3628273Z ##[error]src/services/feedbackService.ts(399,27): error TS2339: Property 'created_at' does not exist on type 'never'.
+2025-09-24T00:59:37.3629852Z ##[error]src/services/notificationService.ts(154,27): error TS2339: Property 'is_read' does not exist on type 'never'.
+2025-09-24T00:59:37.3631222Z ##[error]src/services/notificationService.ts(157,26): error TS2339: Property 'is_important' does not exist on type 'never'.
+2025-09-24T00:59:37.3632555Z ##[error]src/services/notificationService.ts(161,35): error TS2339: Property 'type' does not exist on type 'never'.
+2025-09-24T00:59:37.3633784Z ##[error]src/services/notificationService.ts(177,37): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3635340Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "notifications", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3636962Z     Argument of type '{ is_read: boolean; created_at: string; updated_at: string; user_id: string; type: "error" | "order" | "info" | "success" | "warning" | "system" | "product"; title: string; message: string; ... 4 more ...; metadata?: Record<...>; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3638515Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "notifications", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3639780Z     Object literal may only specify known properties, and 'is_read' does not exist in type 'never[]'.
+2025-09-24T00:59:37.3640675Z ##[error]src/services/notificationService.ts(215,17): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3642087Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "notifications", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3643597Z     Argument of type '{ is_read: boolean; created_at: string; updated_at: string; user_id: string; type: "error" | "order" | "info" | "success" | "warning" | "system" | "product"; title: string; message: string; ... 4 more ...; metadata?: Record<...>; }[]' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3645155Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "notifications", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3646731Z     Argument of type '{ is_read: boolean; created_at: string; updated_at: string; user_id: string; type: "error" | "order" | "info" | "success" | "warning" | "system" | "product"; title: string; message: string; ... 4 more ...; metadata?: Record<...>; }[]' is not assignable to parameter of type 'never[]'.
+2025-09-24T00:59:37.3648281Z       Type '{ is_read: boolean; created_at: string; updated_at: string; user_id: string; type: "error" | "order" | "info" | "success" | "warning" | "system" | "product"; title: string; message: string; ... 4 more ...; metadata?: Record<...>; }' is not assignable to type 'never'.
+2025-09-24T00:59:37.3650087Z ##[error]src/services/notificationService.ts(237,17): error TS2345: Argument of type '{ is_read: boolean; updated_at: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3651938Z ##[error]src/services/notificationService.ts(256,17): error TS2345: Argument of type '{ is_read: boolean; updated_at: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3653342Z ##[error]src/services/notificationService.ts(358,17): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3654766Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "notification_preferences", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3656634Z     Argument of type '{ user_id: string; email_notifications: boolean; push_notifications: boolean; system_notifications: boolean; product_notifications: boolean; order_notifications: boolean; marketing_notifications: boolean; notification_frequency: "immediate"; created_at: string; updated_at: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3658521Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "notification_preferences", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3660736Z     Argument of type '{ user_id: string; email_notifications: boolean; push_notifications: boolean; system_notifications: boolean; product_notifications: boolean; order_notifications: boolean; marketing_notifications: boolean; notification_frequency: "immediate"; created_at: string; updated_at: string; }' is not assignable to parameter of type 'never[]'.
+2025-09-24T00:59:37.3663229Z       Type '{ user_id: string; email_notifications: boolean; push_notifications: boolean; system_notifications: boolean; product_notifications: boolean; order_notifications: boolean; marketing_notifications: boolean; notification_frequency: "immediate"; created_at: string; updated_at: string; }' is missing the following properties from type 'never[]': length, pop, push, concat, and 35 more.
+2025-09-24T00:59:37.3666747Z ##[error]src/services/notificationService.ts(382,17): error TS2345: Argument of type '{ updated_at: string; id?: string; user_id?: string; email_notifications?: boolean; push_notifications?: boolean; system_notifications?: boolean; product_notifications?: boolean; order_notifications?: boolean; ... 4 more ...; created_at?: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3669080Z ##[error]src/services/orderService.ts(152,17): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3670791Z ##[error]src/services/orderService.ts(300,17): error TS2345: Argument of type '{ status: string; updated_at: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3672201Z ##[error]src/services/orderService.ts(337,18): error TS2339: Property 'id' does not exist on type 'never'.
+2025-09-24T00:59:37.3673476Z ##[error]src/services/orderService.ts(338,23): error TS2339: Property 'user_id' does not exist on type 'never'.
+2025-09-24T00:59:37.3674778Z ##[error]src/services/orderService.ts(340,16): error TS2339: Property 'order_items' does not exist on type 'never'.
+2025-09-24T00:59:37.3676087Z ##[error]src/services/orderService.ts(368,28): error TS2339: Property 'total_amount' does not exist on type 'never'.
+2025-09-24T00:59:37.3677383Z ##[error]src/services/orderService.ts(369,24): error TS2339: Property 'currency' does not exist on type 'never'.
+2025-09-24T00:59:37.3678847Z ##[error]src/services/orderService.ts(370,22): error TS2339: Property 'status' does not exist on type 'never'.
+2025-09-24T00:59:37.3680239Z ##[error]src/services/orderService.ts(371,30): error TS2339: Property 'payment_method' does not exist on type 'never'.
+2025-09-24T00:59:37.3681567Z ##[error]src/services/orderService.ts(372,26): error TS2339: Property 'payment_id' does not exist on type 'never'.
+2025-09-24T00:59:37.3682932Z ##[error]src/services/orderService.ts(373,31): error TS2339: Property 'billing_address' does not exist on type 'never'.
+2025-09-24T00:59:37.3684289Z ##[error]src/services/orderService.ts(378,29): error TS2339: Property 'billing_address' does not exist on type 'never'.
+2025-09-24T00:59:37.3685630Z ##[error]src/services/orderService.ts(379,27): error TS2339: Property 'billing_address' does not exist on type 'never'.
+2025-09-24T00:59:37.3686984Z ##[error]src/services/orderService.ts(380,26): error TS2339: Property 'billing_address' does not exist on type 'never'.
+2025-09-24T00:59:37.3688327Z ##[error]src/services/orderService.ts(381,29): error TS2339: Property 'billing_address' does not exist on type 'never'.
+2025-09-24T00:59:37.3689805Z ##[error]src/services/orderService.ts(382,33): error TS2339: Property 'billing_address' does not exist on type 'never'.
+2025-09-24T00:59:37.3691111Z ##[error]src/services/orderService.ts(385,26): error TS2339: Property 'created_at' does not exist on type 'never'.
+2025-09-24T00:59:37.3692410Z ##[error]src/services/orderService.ts(386,26): error TS2339: Property 'updated_at' does not exist on type 'never'.
+2025-09-24T00:59:37.3693719Z ##[error]src/services/orderService.ts(387,28): error TS2339: Property 'completed_at' does not exist on type 'never'.
+2025-09-24T00:59:37.3696655Z ##[error]src/services/orderService.ts(524,9): error TS2322: Type '{ id: any; user_id: any; user: { id: any; email: any; full_name: any; avatar_url: any; }; items: any; total_amount: any; currency: any; status: any; payment_method: any; payment_id: any; billing_address: { ...; }; created_at: any; updated_at: any; completed_at: any; }[]' is not assignable to type 'Order[]'.
+2025-09-24T00:59:37.3699117Z   Type '{ id: any; user_id: any; user: { id: any; email: any; full_name: any; avatar_url: any; }; items: any; total_amount: any; currency: any; status: any; payment_method: any; payment_id: any; billing_address: { ...; }; created_at: any; updated_at: any; completed_at: any; }' is not assignable to type 'Order'.
+2025-09-24T00:59:37.3700069Z     Types of property 'user' are incompatible.
+2025-09-24T00:59:37.3700789Z       Type '{ id: any; email: any; full_name: any; avatar_url: any; }' is missing the following properties from type 'User': role, is_active, email_verified, created_at, updated_at
+2025-09-24T00:59:37.3702008Z ##[error]src/services/orderService.ts(554,17): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3703362Z ##[error]src/services/orderService.ts(601,36): error TS2339: Property 'status' does not exist on type 'never'.
+2025-09-24T00:59:37.3704632Z ##[error]src/services/orderService.ts(603,36): error TS2339: Property 'status' does not exist on type 'never'.
+2025-09-24T00:59:37.3705888Z ##[error]src/services/orderService.ts(605,36): error TS2339: Property 'status' does not exist on type 'never'.
+2025-09-24T00:59:37.3707137Z ##[error]src/services/orderService.ts(608,29): error TS2339: Property 'status' does not exist on type 'never'.
+2025-09-24T00:59:37.3708444Z ##[error]src/services/orderService.ts(609,39): error TS2339: Property 'total_amount' does not exist on type 'never'.
+2025-09-24T00:59:37.3709999Z ##[error]src/services/orderService.ts(614,29): error TS2339: Property 'status' does not exist on type 'never'.
+2025-09-24T00:59:37.3711318Z ##[error]src/services/orderService.ts(615,39): error TS2339: Property 'total_amount' does not exist on type 'never'.
+2025-09-24T00:59:37.3712715Z ##[error]src/services/paymentService.ts(150,34): error TS2339: Property 'metadata' does not exist on type 'PaymentIntent'.
+2025-09-24T00:59:37.3715747Z ##[error]src/services/productsService.ts(198,17): error TS2345: Argument of type '{ updated_at: string; id?: string; name?: string; description?: string; short_description?: string; price?: number; original_price?: number; currency?: string; category_id?: string; images?: string[]; features?: string[]; ... 10 more ...; sort_order?: number; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3717770Z ##[error]src/services/productsService.ts(271,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+2025-09-24T00:59:37.3719300Z ##[error]src/services/productsService.ts(272,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+2025-09-24T00:59:37.3720653Z ##[error]src/services/productsService.ts(273,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+2025-09-24T00:59:37.3721956Z ##[error]src/services/productsService.ts(275,7): error TS2322: Type 'unknown' is not assignable to type 'number'.
+2025-09-24T00:59:37.3723249Z ##[error]src/services/productsService.ts(277,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+2025-09-24T00:59:37.3724532Z ##[error]src/services/productsService.ts(279,26): error TS2339: Property 'id' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3725813Z ##[error]src/services/productsService.ts(280,28): error TS2339: Property 'name' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3727156Z ##[error]src/services/productsService.ts(281,35): error TS2339: Property 'description' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3728462Z ##[error]src/services/productsService.ts(282,28): error TS2339: Property 'icon' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3730083Z ##[error]src/services/productsService.ts(283,29): error TS2339: Property 'color' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3732010Z ##[error]src/services/productsService.ts(284,9): error TS2561: Object literal may only specify known properties, but 'parentId' does not exist in type 'Category'. Did you mean to write 'parent_id'?
+2025-09-24T00:59:37.3733724Z ##[error]src/services/productsService.ts(284,32): error TS2339: Property 'parent_id' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3735079Z ##[error]src/services/productsService.ts(286,33): error TS2339: Property 'sort_order' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3736646Z ##[error]src/services/productsService.ts(287,32): error TS2339: Property 'is_active' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3738050Z ##[error]src/services/productsService.ts(288,33): error TS2339: Property 'created_at' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3739553Z ##[error]src/services/productsService.ts(289,33): error TS2339: Property 'updated_at' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3741249Z ##[error]src/services/productsService.ts(291,7): error TS2740: Type '{}' is missing the following properties from type 'string[]': length, pop, push, concat, and 35 more.
+2025-09-24T00:59:37.3742729Z ##[error]src/services/productsService.ts(292,7): error TS2322: Type 'unknown' is not assignable to type 'string[]'.
+2025-09-24T00:59:37.3744195Z ##[error]src/services/productsService.ts(298,7): error TS2322: Type 'unknown' is not assignable to type '"active" | "inactive" | "draft"'.
+2025-09-24T00:59:37.3745560Z ##[error]src/services/productsService.ts(306,22): error TS2339: Property 'map' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3746765Z ##[error]src/services/searchService.ts(189,58): error TS2554: Expected 0-1 arguments, but got 3.
+2025-09-24T00:59:37.3748291Z ##[error]src/services/searchService.ts(267,7): error TS2554: Expected 0-1 arguments, but got 3.
+2025-09-24T00:59:37.3751446Z ##[error]src/services/searchService.ts(346,14): error TS2322: Type '({ _type: string; id: string; name: string; description: string; url: string; icon: string; category_id: string; tags: string[]; is_favorite?: boolean; click_count: number; is_featured: boolean; status: "active" | ... 1 more ... | "pending"; ... 6 more ...; category?: Category; } | { ...; } | { ...; })[]' is not assignable to type 'SearchAllItem[]'.
+2025-09-24T00:59:37.3753886Z   Type '{ _type: string; id: string; name: string; description: string; url: string; icon: string; category_id: string; tags: string[]; is_favorite?: boolean; click_count: number; is_featured: boolean; status: "active" | ... 1 more ... | "pending"; ... 6 more ...; category?: Category; } | { ...; } | { ...; }' is not assignable to type 'SearchAllItem'.
+2025-09-24T00:59:37.3755742Z     Type '{ _type: string; id: string; name: string; description: string; url: string; icon: string; category_id: string; tags: string[]; is_favorite?: boolean; click_count: number; is_featured: boolean; status: "active" | ... 1 more ... | "pending"; ... 6 more ...; category?: Category; }' is not assignable to type 'SearchAllItem'.
+2025-09-24T00:59:37.3757616Z       Type '{ _type: string; id: string; name: string; description: string; url: string; icon: string; category_id: string; tags: string[]; is_favorite?: boolean; click_count: number; is_featured: boolean; status: "active" | ... 1 more ... | "pending"; ... 6 more ...; category?: Category; }' is not assignable to type 'Tool & { _type: "tool"; }'.
+2025-09-24T00:59:37.3759721Z         Type '{ _type: string; id: string; name: string; description: string; url: string; icon: string; category_id: string; tags: string[]; is_favorite?: boolean; click_count: number; is_featured: boolean; status: "active" | ... 1 more ... | "pending"; ... 6 more ...; category?: Category; }' is not assignable to type '{ _type: "tool"; }'.
+2025-09-24T00:59:37.3760765Z           Types of property '_type' are incompatible.
+2025-09-24T00:59:37.3761130Z             Type 'string' is not assignable to type '"tool"'.
+2025-09-24T00:59:37.3762077Z ##[error]src/services/searchService.ts(465,40): error TS2339: Property 'name' does not exist on type 'never'.
+2025-09-24T00:59:37.3763399Z ##[error]src/services/searchService.ts(466,33): error TS2339: Property 'name' does not exist on type 'never'.
+2025-09-24T00:59:37.3764799Z ##[error]src/services/searchService.ts(479,43): error TS2339: Property 'name' does not exist on type 'never'.
+2025-09-24T00:59:37.3766060Z ##[error]src/services/searchService.ts(480,36): error TS2339: Property 'name' does not exist on type 'never'.
+2025-09-24T00:59:37.3767303Z ##[error]src/services/searchService.ts(493,44): error TS2339: Property 'name' does not exist on type 'never'.
+2025-09-24T00:59:37.3768675Z ##[error]src/services/searchService.ts(494,37): error TS2339: Property 'name' does not exist on type 'never'.
+2025-09-24T00:59:37.3769991Z ##[error]src/services/searchService.ts(546,11): error TS2698: Spread types may only be created from object types.
+2025-09-24T00:59:37.3771204Z ##[error]src/services/searchService.ts(599,70): error TS2554: Expected 1 arguments, but got 2.
+2025-09-24T00:59:37.3772423Z ##[error]src/services/searchService.ts(617,26): error TS2339: Property 'name' does not exist on type 'never'.
+2025-09-24T00:59:37.3773684Z ##[error]src/services/searchService.ts(631,21): error TS2339: Property 'name' does not exist on type 'never'.
+2025-09-24T00:59:37.3774864Z ##[error]src/services/toolsService.ts(166,37): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3776195Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "tools", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3777634Z     Argument of type '{ name: string; description: string; url: string; category_id: string; icon: string; is_featured: boolean; status: string; meta_title: string; meta_description: string; sort_order: number; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3779239Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "tools", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3780254Z     Object literal may only specify known properties, and 'name' does not exist in type 'never[]'.
+2025-09-24T00:59:37.3781408Z ##[error]src/services/toolsService.ts(243,17): error TS2345: Argument of type 'Partial<ToolInput>' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3783005Z ##[error]src/services/toolsService.ts(289,69): error TS2345: Argument of type '{ tool_id: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3784742Z ##[error]src/services/toolsService.ts(313,17): error TS2345: Argument of type '{ is_favorite: boolean; updated_at: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3788034Z ##[error]src/services/userService.ts(84,17): error TS2345: Argument of type '{ id?: string; email?: string; username?: string; full_name?: string; avatar_url?: string; bio?: string; website?: string; location?: string; role?: "user" | "admin" | "super_admin"; is_active?: boolean; email_verified?: boolean; created_at?: string; updated_at?: string; last_login_at?: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3790242Z ##[error]src/services/userService.ts(112,17): error TS2769: No overload matches this call.
+2025-09-24T00:59:37.3791584Z   Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated"; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "user_profiles", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3793459Z     Argument of type '{ id: string; email: string; username?: string; full_name?: string; avatar_url?: string; bio?: string; website?: string; location?: string; role?: "user" | "admin" | "super_admin"; is_active?: boolean; email_verified?: boolean; created_at?: string; updated_at?: string; last_login_at?: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3795218Z   Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated"; defaultToNull?: boolean; }): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "user_profiles", never, "POST">', gave the following error.
+2025-09-24T00:59:37.3797138Z     Argument of type '{ id: string; email: string; username?: string; full_name?: string; avatar_url?: string; bio?: string; website?: string; location?: string; role?: "user" | "admin" | "super_admin"; is_active?: boolean; email_verified?: boolean; created_at?: string; updated_at?: string; last_login_at?: string; }' is not assignable to parameter of type 'never[]'.
+2025-09-24T00:59:37.3799566Z       Type '{ id: string; email: string; username?: string; full_name?: string; avatar_url?: string; bio?: string; website?: string; location?: string; role?: "user" | "admin" | "super_admin"; is_active?: boolean; email_verified?: boolean; created_at?: string; updated_at?: string; last_login_at?: string; }' is missing the following properties from type 'never[]': length, pop, push, concat, and 35 more.
+2025-09-24T00:59:37.3801549Z ##[error]src/services/userService.ts(166,17): error TS2345: Argument of type '{ last_login_at: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3803668Z ##[error]src/stores/localManagement.ts(89,58): error TS2345: Argument of type 'Omit<Tool, "id" | "createdAt" | "updatedAt">' is not assignable to parameter of type 'Omit<LocalTool, "lastModified" | "localId">'.
+2025-09-24T00:59:37.3805077Z   Property 'id' is missing in type 'Omit<Tool, "id" | "createdAt" | "updatedAt">' but required in type 'Omit<LocalTool, "lastModified" | "localId">'.
+2025-09-24T00:59:37.3808028Z ##[error]src/stores/products.ts(56,22): error TS2551: Property 'createdAt' does not exist on type '{ id: string; name: string; description: string; short_description?: string; price: number; original_price?: number; currency: string; category_id: string; category?: { id: string; name: string; description?: string; ... 8 more ...; updated_at: string; }; ... 16 more ...; total_reviews?: number; }'. Did you mean 'created_at'?
+2025-09-24T00:59:37.3812167Z ##[error]src/stores/products.ts(56,56): error TS2551: Property 'createdAt' does not exist on type '{ id: string; name: string; description: string; short_description?: string; price: number; original_price?: number; currency: string; category_id: string; category?: { id: string; name: string; description?: string; ... 8 more ...; updated_at: string; }; ... 16 more ...; total_reviews?: number; }'. Did you mean 'created_at'?
+2025-09-24T00:59:37.3814514Z ##[error]src/stores/products.ts(149,9): error TS2322: Type 'string' is not assignable to type '"name" | "click_count" | "created_at" | "rating" | "price"'.
+2025-09-24T00:59:37.3816103Z ##[error]src/stores/tools.ts(5,33): error TS2307: Cannot find module '@/data/additional-tools' or its corresponding type declarations.
+2025-09-24T00:59:37.3819372Z ##[error]src/stores/tools.ts(13,18): error TS2339: Property 'tags' does not exist on type '{ tools: { Row: { id: string; name: string; description: string; url: string; icon: string; category_id: string; is_featured: boolean; click_count: number; created_at: string; updated_at: string; created_by: string; status: "active" | ... 1 more ... | "pending"; meta_title: string; meta_description: string; sort_ord...'.
+2025-09-24T00:59:37.3821632Z ##[error]src/stores/tools.ts(323,69): error TS2345: Argument of type '{ tool_id: string; }' is not assignable to parameter of type 'never'.
+2025-09-24T00:59:37.3823165Z ##[error]src/tests/integration/components.test.ts(177,28): error TS2339: Property 'value' does not exist on type 'VueNode<Element>'.
+2025-09-24T00:59:37.3824640Z ##[error]src/tests/integration/components.test.ts(190,29): error TS2339: Property 'value' does not exist on type 'VueNode<Element>'.
+2025-09-24T00:59:37.3826240Z ##[error]src/tests/integration/components.test.ts(208,30): error TS2339: Property 'value' does not exist on type 'VueNode<Element>'.
+2025-09-24T00:59:37.3827734Z ##[error]src/tests/integration/components.test.ts(328,35): error TS2339: Property 'value' does not exist on type 'VueNode<Element>'.
+2025-09-24T00:59:37.3829481Z ##[error]src/tests/integration/components.test.ts(369,35): error TS2339: Property 'value' does not exist on type 'VueNode<Element>'.
+2025-09-24T00:59:37.3831174Z ##[error]src/tests/integration/components.test.ts(453,30): error TS2341: Property 'setChecked' is private and only accessible within class 'DOMWrapper<NodeType>'.
+2025-09-24T00:59:37.3832958Z ##[error]src/tests/integration/services.test.ts(5,36): error TS2307: Cannot find module '@/services/performanceService' or its corresponding type declarations.
+2025-09-24T00:59:37.3836002Z ##[error]src/tests/setup.ts(5,1): error TS2322: Type 'Mock<[], { disconnect: Mock<[], void>; observe: Mock<[target: Element], void>; unobserve: Mock<[target: Element], void>; }>' is not assignable to type '{ new (callback: IntersectionObserverCallback, options?: IntersectionObserverInit): IntersectionObserver; prototype: IntersectionObserver; }'.
+2025-09-24T00:59:37.3838137Z   Type '{ disconnect: Mock<[], void>; observe: Mock<[target: Element], void>; unobserve: Mock<[target: Element], void>; }' is missing the following properties from type 'IntersectionObserver': root, rootMargin, thresholds, takeRecords
+2025-09-24T00:59:37.3841428Z ##[error]src/tests/setup.ts(19,1): error TS2741: Property 'supportedEntryTypes' is missing in type 'Mock<[], { disconnect: Mock<any, any>; observe: Mock<any, any>; unobserve: Mock<any, any>; }>' but required in type '{ new (callback: PerformanceObserverCallback): PerformanceObserver; prototype: PerformanceObserver; readonly supportedEntryTypes: readonly string[]; }'.
+2025-09-24T00:59:37.3843330Z ##[error]src/tests/setup.ts(202,1): error TS2304: Cannot find name 'beforeEach'.
+2025-09-24T00:59:37.3844364Z ##[error]src/tests/setup.ts(208,1): error TS2304: Cannot find name 'afterEach'.
+2025-09-24T00:59:37.3845566Z ##[error]src/views/admin/SettingsView.vue(239,29): error TS2304: Cannot find name 'supabase'.
+2025-09-24T00:59:37.3850394Z ##[error]src/views/admin/UserManagementView.vue(193,6): error TS2345: Argument of type '{ user: { id: string; email: string; username?: string; full_name?: string; avatar_url?: string; bio?: string; website?: string; location?: string; role: "user" | "admin" | "super_admin"; is_active: boolean; email_verified: boolean; created_at: string; updated_at: string; last_login_at?: string; }; onClose: any; onU...' is not assignable to parameter of type 'Partial<{}> & Omit<{ readonly user: User; readonly isVisible: boolean; readonly onClose?: () => any; readonly onEdit?: (user: User) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, never> & Record<...>'.
+2025-09-24T00:59:37.3854412Z   Property 'isVisible' is missing in type '{ user: { id: string; email: string; username?: string; full_name?: string; avatar_url?: string; bio?: string; website?: string; location?: string; role: "user" | "admin" | "super_admin"; is_active: boolean; email_verified: boolean; created_at: string; updated_at: string; last_login_at?: string; }; onClose: any; onU...' but required in type 'Omit<{ readonly user: User; readonly isVisible: boolean; readonly onClose?: () => any; readonly onEdit?: (user: User) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps, never>'.
+2025-09-24T00:59:37.3856529Z ##[error]src/views/admin/UserManagementView.vue(330,35): error TS2304: Cannot find name 'supabase'.
+2025-09-24T00:59:37.3859853Z ##[error]src/views/AdminToolsView.vue(98,15): error TS2339: Property 'getCategoryName' does not exist on type '{ $: ComponentInternalInstance; $data: {}; $props: Partial<{}> & Omit<{} & VNodeProps & AllowedComponentProps & ComponentCustomProps, never>; ... 11 more ...; $watch<T extends string | ((...args: any) => any)>(source: T, cb: T extends (...args: any) => infer R ? (args_0: R, args_1: R, args_2: OnCleanup) => any : (ar...'.
+2025-09-24T00:59:37.3863618Z ##[error]src/views/AdminToolsView.vue(114,32): error TS2345: Argument of type '{ id: string; name: string; description: string; url: string; icon: string; category_id: string; is_featured: boolean; click_count: number; created_at: string; updated_at: string; created_by: string; ... 6 more ...; tags?: string[]; }' is not assignable to parameter of type 'Tool'.
+2025-09-24T00:59:37.3866016Z   Property 'tags' is optional in type '{ id: string; name: string; description: string; url: string; icon: string; category_id: string; is_featured: boolean; click_count: number; created_at: string; updated_at: string; created_by: string; ... 6 more ...; tags?: string[]; }' but required in type 'Tool'.
+2025-09-24T00:59:37.3869150Z ##[error]src/views/AdminToolsView.vue(121,34): error TS2345: Argument of type '{ id: string; name: string; description: string; url: string; icon: string; category_id: string; is_featured: boolean; click_count: number; created_at: string; updated_at: string; created_by: string; ... 6 more ...; tags?: string[]; }' is not assignable to parameter of type 'Tool'.
+2025-09-24T00:59:37.3872636Z ##[error]src/views/AdminToolsView.vue(128,40): error TS2345: Argument of type '{ id: string; name: string; description: string; url: string; icon: string; category_id: string; is_featured: boolean; click_count: number; created_at: string; updated_at: string; created_by: string; ... 6 more ...; tags?: string[]; }' is not assignable to parameter of type 'Tool'.
+2025-09-24T00:59:37.3874667Z ##[error]src/views/auth/ForgotPasswordView.vue(122,3): error TS2322: Type 'Timeout' is not assignable to type 'number'.
+2025-09-24T00:59:37.3876000Z ##[error]src/views/FeedbackView.vue(161,41): error TS2339: Property 'click' does not exist on type 'unknown'.
+2025-09-24T00:59:37.3877583Z ##[error]src/views/ToolsView.vue(41,16): error TS2322: Type '(newFilters: typeof filters) => void' is not assignable to type '(filters: SearchFilters) => any'.
+2025-09-24T00:59:37.3878830Z   Types of parameters 'newFilters' and 'filters' are incompatible.
+2025-09-24T00:59:37.3880016Z     Type 'SearchFilters' is missing the following properties from type 'Ref<{ category: string; tags: string[]; rating: number; isFeatured: boolean; hasUrl: boolean; sortBy: "name" | "created_at" | "rating" | "clicks"; sortOrder: "desc" | "asc"; }, SearchFilters | { ...; }>': value, [RefSymbol]
+2025-09-24T00:59:37.3881457Z ##[error]src/views/ToolsView.vue(120,38): error TS2339: Property 'isFavorite' does not exist on type 'Tool'.
+2025-09-24T00:59:37.3882721Z ##[error]src/views/ToolsView.vue(193,48): error TS2339: Property 'category' does not exist on type 'Tool'.
+2025-09-24T00:59:37.3884160Z ##[error]src/views/ToolsView.vue(195,46): error TS2551: Property 'clickCount' does not exist on type 'Tool'. Did you mean 'click_count'?
+2025-09-24T00:59:37.3885508Z ##[error]src/views/ToolsView.vue(213,40): error TS2339: Property 'isFavorite' does not exist on type 'Tool'.
+2025-09-24T00:59:37.3888942Z ##[error]src/views/user/OrdersView.vue(196,13): error TS2322: Type '{ id: string; name: string; short_description: string; images: string[]; }' is not assignable to type 'Product | { id: string; name: string; description: string; short_description?: string; price: number; original_price?: number; currency: string; category_id: string; category?: { id: string; ... 10 more ...; updated_at: string; }; ... 16 more ...; total_reviews?: number; }'.
+2025-09-24T00:59:37.3892021Z   Type '{ id: string; name: string; short_description: string; images: string[]; }' is missing the following properties from type '{ id: string; name: string; description: string; short_description?: string; price: number; original_price?: number; currency: string; category_id: string; category?: { id: string; name: string; description?: string; ... 8 more ...; updated_at: string; }; ... 16 more ...; total_reviews?: number; }': description, price, currency, category_id, and 8 more.
+2025-09-24T00:59:37.3896063Z ##[error]src/views/user/OrdersView.vue(224,13): error TS2322: Type '{ id: string; name: string; short_description: string; images: string[]; }' is not assignable to type 'Product | { id: string; name: string; description: string; short_description?: string; price: number; original_price?: number; currency: string; category_id: string; category?: { id: string; ... 10 more ...; updated_at: string; }; ... 16 more ...; total_reviews?: number; }'.
+2025-09-24T00:59:37.3899372Z   Type '{ id: string; name: string; short_description: string; images: string[]; }' is missing the following properties from type '{ id: string; name: string; description: string; short_description?: string; price: number; original_price?: number; currency: string; category_id: string; category?: { id: string; name: string; description?: string; ... 8 more ...; updated_at: string; }; ... 16 more ...; total_reviews?: number; }': description, price, currency, category_id, and 8 more.
+2025-09-24T00:59:37.4141084Z ✅ TypeScript 类型检查完成（非阻塞）
+2025-09-24T00:59:37.4203692Z Post job cleanup.
+2025-09-24T00:59:37.5768893Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef, not saving cache.
+2025-09-24T00:59:37.5888323Z Post job cleanup.
+2025-09-24T00:59:37.6813147Z [command]/usr/bin/git version
+2025-09-24T00:59:37.6848162Z git version 2.51.0
+2025-09-24T00:59:37.6892131Z Temporarily overriding HOME='/home/runner/work/_temp/04d9d800-b316-46f7-b1ff-b037ddcc5121' before making global git config changes
+2025-09-24T00:59:37.6893587Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:59:37.6899090Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:59:37.6937474Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:59:37.6968977Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:59:37.7188946Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:59:37.7208838Z http.https://github.com/.extraheader
+2025-09-24T00:59:37.7222101Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2025-09-24T00:59:37.7252892Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:59:37.7570925Z Cleaning up orphan processes

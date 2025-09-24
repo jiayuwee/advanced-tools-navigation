@@ -9,8 +9,10 @@ type Tables = Database["public"]["Tables"];
 // 这使得在组件中直接访问 tool.category.name 和 tool.tags 成为可能
 export type Tool = Tables["tools"]["Row"] & {
   categories: Tables["categories"]["Row"] | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mapping generated relation which may not match types exactly
   tool_tags: Array<{
-    tags: Tables["tags"]["Row"];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- passthrough from generated relation
+    tags: any;
   }> | null;
   tags?: string[]; // 计算属性，从 tool_tags 中提取标签名称
 };
@@ -71,7 +73,18 @@ export const useToolsStore = defineStore("tools", () => {
         supabaseUrl.includes("your-project-ref") ||
         supabaseAnonKey.includes("your-anon-key")
       ) {
-        // 使用模拟数据
+        // 生产环境中不应悄悄回退到模拟数据——应当显式报错以便快速定位配置问题
+        if (import.meta.env.PROD) {
+          console.error(
+            "Supabase 环境变量未配置（生产），请在 CI/部署环境中设置 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY",
+          );
+          error.value = new Error("Supabase 未配置（生产环境）");
+          initialized.value = true;
+          loading.value = false;
+          return;
+        }
+
+        // 开发环境仍然允许使用模拟数据，便于本地调试
         console.warn("Supabase 环境变量未配置，使用模拟工具数据");
         const mockTools = [
           {
@@ -170,7 +183,10 @@ export const useToolsStore = defineStore("tools", () => {
         ];
 
         // 添加额外的工具数据，并为它们分配正确的分类
-        const extendedTools = additionalTools.map((tool) => ({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- read-only static data from optional file
+        const extendedTools = (additionalTools || []) as any[];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- static additional tools data
+        const mappedExtendedTools = extendedTools.map((tool: any) => ({
           ...tool,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -182,7 +198,7 @@ export const useToolsStore = defineStore("tools", () => {
           tags: getTagsForTool(tool.id),
         }));
 
-        tools.value = [...mockTools, ...extendedTools];
+  tools.value = [...mockTools, ...mappedExtendedTools];
         initialized.value = true;
         return;
       }
@@ -205,17 +221,26 @@ export const useToolsStore = defineStore("tools", () => {
 
       // Supabase 的类型生成器可能将单关系定义为对象而非数组
       // 处理标签数据，将 tool_tags 转换为简单的 tags 数组
-      const processedTools =
-        (data as unknown as Tool[])?.map((tool) => ({
-          ...tool,
-          tags: tool.tool_tags?.map((tt) => tt.tags.name) || [],
-        })) || [];
+      const processedTools = (data as unknown as Tool[])
+        ?.map((tool) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mapping generated rpc result
+          const tags = tool.tool_tags?.map((tt: any) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generated relation shape
+            return (tt?.tags && (tt.tags as any).name) || "";
+          }) || [];
+
+          return {
+            ...tool,
+            tags,
+          };
+        }) || [];
 
       tools.value = processedTools;
       initialized.value = true;
-    } catch (e: any) {
-      console.error("获取工具列表失败:", e);
-      error.value = e;
+    } catch (err: unknown) {
+      const message = safeErrorMessage(err);
+      console.error("获取工具列表失败:", message);
+      error.value = new Error(message);
 
       // 如果Supabase调用失败，回退到模拟数据
       if (tools.value.length === 0) {
@@ -320,9 +345,12 @@ export const useToolsStore = defineStore("tools", () => {
    */
   async function incrementClickCount(toolId: string) {
     try {
-      const { error } = await supabase.rpc("increment_click_count", {
-        tool_id: toolId,
-      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- minimal, narrow escape for generated supabase client typings
+      const { error } = await (supabase as any).rpc(
+        "increment_click_count",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the RPC param typing is incompatible with generated types
+        { tool_id: toolId } as any,
+      );
 
       if (error) {
         console.error("增加点击次数失败:", error);
@@ -335,7 +363,7 @@ export const useToolsStore = defineStore("tools", () => {
         tool.click_count = (tool.click_count || 0) + 1;
       }
     } catch (error) {
-      console.error("增加点击次数失败:", error);
+      console.error("增加点击次数失败:", safeErrorMessage(error));
     }
   }
 
@@ -347,7 +375,7 @@ export const useToolsStore = defineStore("tools", () => {
       // TODO: 实现收藏功能
       console.log("切换收藏:", toolId);
     } catch (error) {
-      console.error("切换收藏失败:", error);
+      console.error("切换收藏失败:", safeErrorMessage(error));
     }
   }
 
@@ -378,7 +406,7 @@ export const useToolsStore = defineStore("tools", () => {
 
 // 辅助函数：根据分类ID获取分类信息
 function getCategoryById(categoryId: string) {
-  const categories: Record<string, any> = {
+  const categories: Record<string, unknown> = {
     "550e8400-e29b-41d4-a716-446655440001": {
       id: "550e8400-e29b-41d4-a716-446655440001",
       name: "开发工具",
@@ -496,4 +524,16 @@ function getTagsForTool(toolId: string): string[] {
   };
 
   return toolTags[toolId] || ["工具"];
+}
+
+// 从 unknown 错误对象安全提取字符串信息
+function safeErrorMessage(err: unknown): string {
+  if (!err) return "未知错误";
+  if (typeof err === "string") return err;
+  if (err instanceof Error) return err.message;
+  try {
+    return JSON.stringify(err as Record<string, unknown>);
+  } catch {
+    return String(err);
+  }
 }
