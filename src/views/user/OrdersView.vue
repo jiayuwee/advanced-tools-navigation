@@ -131,6 +131,7 @@ const router = useRouter();
 const loading = ref(true);
 const activeFilter = ref("all");
 const orders = ref<Order[]>([]);
+const error = ref<Error | null>(null);
 
 const statusFilters = [
   { key: "all", label: "全部订单" },
@@ -173,14 +174,22 @@ const loadOrders = async () => {
       const userOrders = await OrderService.getUserOrders(authStore.user.id);
       orders.value = userOrders;
       return; // 成功加载真实数据，直接返回
-    } catch (apiError) {
-      console.warn("加载真实订单数据失败，使用模拟数据:", apiError);
+    } catch (apiError: unknown) {
+      const msg = safeErrorMessage(apiError);
+      if (import.meta.env.PROD) {
+        console.error("加载真实订单数据失败（生产），请检查后端连接:", msg);
+        error.value = new Error(msg);
+        loading.value = false;
+        return;
+      }
+
+      console.warn("加载真实订单数据失败，使用模拟数据:", msg);
     }
 
     // 如果API失败，使用模拟数据作为后备
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    orders.value = [
+  orders.value = [
       {
         id: "order-1",
         userId: "user-1",
@@ -194,10 +203,14 @@ const loadOrders = async () => {
             totalPrice: 299,
             createdAt: new Date().toISOString(),
             product: {
-              id: "product-1",
-              name: "高效办公套件",
-              short_description: "提升办公效率的完整解决方案",
-              images: ["/placeholder.jpg"],
+          id: "product-1",
+          name: "高效办公套件",
+          description: "一套提升办公效率的完整工具组合",
+          short_description: "提升办公效率的完整解决方案",
+          price: 299,
+          currency: "CNY",
+          category_id: "550e8400-e29b-41d4-a716-446655440001",
+          images: ["/placeholder.jpg"],
             },
           },
         ],
@@ -222,10 +235,14 @@ const loadOrders = async () => {
             totalPrice: 199,
             createdAt: new Date().toISOString(),
             product: {
-              id: "product-2",
-              name: "设计师工具包",
-              short_description: "专业设计师必备工具集合",
-              images: ["/placeholder.jpg"],
+          id: "product-2",
+          name: "设计师工具包",
+          description: "专业设计师的工具集合，包含设计和原型所需资源",
+          short_description: "专业设计师必备工具集合",
+          price: 199,
+          currency: "CNY",
+          category_id: "550e8400-e29b-41d4-a716-446655440002",
+          images: ["/placeholder.jpg"],
             },
           },
         ],
@@ -235,9 +252,11 @@ const loadOrders = async () => {
         createdAt: new Date(Date.now() - 3600000).toISOString(),
         updatedAt: new Date().toISOString(),
       },
-    ];
-  } catch (error) {
-    console.error("加载订单失败:", error);
+  ] as unknown as Order[];
+  } catch (err: unknown) {
+    const msg = safeErrorMessage(err);
+    console.error("加载订单失败:", msg);
+    error.value = new Error(msg);
   } finally {
     loading.value = false;
   }
@@ -294,8 +313,8 @@ const cancelOrder = async (order: Order) => {
     if (orderIndex !== -1) {
       orders.value[orderIndex].status = "cancelled";
     }
-  } catch (error) {
-    console.error("取消订单失败:", error);
+  } catch (err: unknown) {
+    console.error("取消订单失败:", safeErrorMessage(err));
   }
 };
 
@@ -352,8 +371,8 @@ const downloadOrder = async (order: Order) => {
     } else {
       console.log(`成功启动 ${downloadCount} 个产品的下载`);
     }
-  } catch (error) {
-    console.error("下载失败:", error);
+  } catch (err: unknown) {
+    console.error("下载失败:", safeErrorMessage(err));
     alert("下载失败，请稍后重试");
   }
 };
@@ -367,6 +386,18 @@ const viewOrderDetail = (order: Order) => {
 onMounted(() => {
   loadOrders();
 });
+
+// 从 unknown 错误对象安全提取字符串信息
+function safeErrorMessage(err: unknown): string {
+  if (!err) return "未知错误";
+  if (typeof err === "string") return err;
+  if (err instanceof Error) return err.message;
+  try {
+    return JSON.stringify(err as Record<string, unknown>);
+  } catch {
+    return String(err);
+  }
+}
 </script>
 
 <style scoped>

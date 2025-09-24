@@ -1,0 +1,8 @@
+﻿2025-09-24T00:59:04.9260085Z ##[group]Run npm config set audit-level moderate
+2025-09-24T00:59:04.9260543Z [36;1mnpm config set audit-level moderate[0m
+2025-09-24T00:59:04.9260958Z [36;1mnpm ci --prefer-offline --no-audit --ignore-scripts --silent[0m
+2025-09-24T00:59:04.9323379Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:59:04.9323681Z env:
+2025-09-24T00:59:04.9323857Z   NODE_VERSION: 20.x
+2025-09-24T00:59:04.9324052Z   CACHE_VERSION: v3
+2025-09-24T00:59:04.9324233Z ##[endgroup]

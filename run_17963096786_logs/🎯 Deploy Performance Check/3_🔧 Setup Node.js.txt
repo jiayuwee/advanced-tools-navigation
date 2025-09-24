@@ -1,0 +1,25 @@
+﻿2025-09-24T00:59:02.4241521Z ##[group]Run actions/setup-node@v4
+2025-09-24T00:59:02.4241921Z with:
+2025-09-24T00:59:02.4242186Z   node-version: 20.x
+2025-09-24T00:59:02.4242459Z   cache: npm
+2025-09-24T00:59:02.4242991Z   always-auth: false
+2025-09-24T00:59:02.4243332Z   check-latest: false
+2025-09-24T00:59:02.4243770Z   token: ***
+2025-09-24T00:59:02.4244022Z env:
+2025-09-24T00:59:02.4244300Z   WEBSITE_URL: https://ramusi.cn
+2025-09-24T00:59:02.4244625Z   NODE_VERSION: 20.x
+2025-09-24T00:59:02.4244895Z ##[endgroup]
+2025-09-24T00:59:02.6536665Z Found in cache @ /opt/hostedtoolcache/node/20.19.5/x64
+2025-09-24T00:59:02.6543457Z ##[group]Environment details
+2025-09-24T00:59:05.2026331Z node: v20.19.5
+2025-09-24T00:59:05.2027101Z npm: 10.8.2
+2025-09-24T00:59:05.2027503Z yarn: 1.22.22
+2025-09-24T00:59:05.2028651Z ##[endgroup]
+2025-09-24T00:59:05.2051265Z [command]/opt/hostedtoolcache/node/20.19.5/x64/bin/npm config get cache
+2025-09-24T00:59:05.5220014Z /home/runner/.npm
+2025-09-24T00:59:05.6889094Z Cache hit for: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef
+2025-09-24T00:59:06.7510299Z Received 41633190 of 41633190 (100.0%), 43.9 MBs/sec
+2025-09-24T00:59:06.7511133Z Cache Size: ~40 MB (41633190 B)
+2025-09-24T00:59:06.7539547Z [command]/usr/bin/tar -xf /home/runner/work/_temp/13ad0abf-1dfe-4c21-a8b5-ae3c20ac0c1f/cache.tzst -P -C /home/runner/work/advanced-tools-navigation/advanced-tools-navigation --use-compress-program unzstd
+2025-09-24T00:59:06.9356256Z Cache restored successfully
+2025-09-24T00:59:06.9441772Z Cache restored from key: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef

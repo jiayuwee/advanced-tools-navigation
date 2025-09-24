@@ -1,0 +1,237 @@
+﻿2025-09-24T00:53:44.6747802Z Current runner version: '2.328.0'
+2025-09-24T00:53:44.6780764Z ##[group]Runner Image Provisioner
+2025-09-24T00:53:44.6782024Z Hosted Compute Agent
+2025-09-24T00:53:44.6782949Z Version: 20250829.383
+2025-09-24T00:53:44.6783953Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+2025-09-24T00:53:44.6785355Z Build Date: 2025-08-29T13:48:48Z
+2025-09-24T00:53:44.6786428Z ##[endgroup]
+2025-09-24T00:53:44.6787337Z ##[group]Operating System
+2025-09-24T00:53:44.6788246Z Ubuntu
+2025-09-24T00:53:44.6789235Z 24.04.3
+2025-09-24T00:53:44.6790029Z LTS
+2025-09-24T00:53:44.6790863Z ##[endgroup]
+2025-09-24T00:53:44.6791775Z ##[group]Runner Image
+2025-09-24T00:53:44.6792678Z Image: ubuntu-24.04
+2025-09-24T00:53:44.6793478Z Version: 20250907.24.1
+2025-09-24T00:53:44.6795469Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+2025-09-24T00:53:44.6798409Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+2025-09-24T00:53:44.6800183Z ##[endgroup]
+2025-09-24T00:53:44.6804946Z ##[group]GITHUB_TOKEN Permissions
+2025-09-24T00:53:44.6807739Z Actions: write
+2025-09-24T00:53:44.6808572Z Attestations: write
+2025-09-24T00:53:44.6809567Z Checks: write
+2025-09-24T00:53:44.6810371Z Contents: write
+2025-09-24T00:53:44.6811163Z Deployments: write
+2025-09-24T00:53:44.6812133Z Discussions: write
+2025-09-24T00:53:44.6812932Z Issues: write
+2025-09-24T00:53:44.6813720Z Metadata: read
+2025-09-24T00:53:44.6814840Z Models: read
+2025-09-24T00:53:44.6815730Z Packages: write
+2025-09-24T00:53:44.6817298Z Pages: write
+2025-09-24T00:53:44.6818149Z PullRequests: write
+2025-09-24T00:53:44.6819122Z RepositoryProjects: write
+2025-09-24T00:53:44.6820278Z SecurityEvents: write
+2025-09-24T00:53:44.6821355Z Statuses: write
+2025-09-24T00:53:44.6822400Z ##[endgroup]
+2025-09-24T00:53:44.6825834Z Secret source: Actions
+2025-09-24T00:53:44.6827351Z Prepare workflow directory
+2025-09-24T00:53:44.7340295Z Prepare all required actions
+2025-09-24T00:53:44.7377584Z Getting action download info
+2025-09-24T00:53:44.9498134Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+2025-09-24T00:53:45.1368139Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2025-09-24T00:53:45.3496377Z Complete job name: 🔒 Security Check
+2025-09-24T00:53:45.4191623Z ##[group]Run actions/checkout@v4
+2025-09-24T00:53:45.4192512Z with:
+2025-09-24T00:53:45.4192991Z   repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:53:45.4193739Z   token: ***
+2025-09-24T00:53:45.4194136Z   ssh-strict: true
+2025-09-24T00:53:45.4194868Z   ssh-user: git
+2025-09-24T00:53:45.4195308Z   persist-credentials: true
+2025-09-24T00:53:45.4195779Z   clean: true
+2025-09-24T00:53:45.4196191Z   sparse-checkout-cone-mode: true
+2025-09-24T00:53:45.4196695Z   fetch-depth: 1
+2025-09-24T00:53:45.4197106Z   fetch-tags: false
+2025-09-24T00:53:45.4197524Z   show-progress: true
+2025-09-24T00:53:45.4197977Z   lfs: false
+2025-09-24T00:53:45.4198395Z   submodules: false
+2025-09-24T00:53:45.4198824Z   set-safe-directory: true
+2025-09-24T00:53:45.4199568Z env:
+2025-09-24T00:53:45.4199970Z   NODE_VERSION: 20.x
+2025-09-24T00:53:45.4200400Z   CACHE_VERSION: v3
+2025-09-24T00:53:45.4200805Z ##[endgroup]
+2025-09-24T00:53:45.5259714Z Syncing repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:53:45.5261577Z ##[group]Getting Git version info
+2025-09-24T00:53:45.5262555Z Working directory is '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:53:45.5263830Z [command]/usr/bin/git version
+2025-09-24T00:53:45.5333702Z git version 2.51.0
+2025-09-24T00:53:45.5359650Z ##[endgroup]
+2025-09-24T00:53:45.5373480Z Temporarily overriding HOME='/home/runner/work/_temp/713ff9af-fc20-4a2c-810a-4ad6d1f612cb' before making global git config changes
+2025-09-24T00:53:45.5375456Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:53:45.5386053Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:53:45.5421409Z Deleting the contents of '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:53:45.5424676Z ##[group]Initializing the repository
+2025-09-24T00:53:45.5428924Z [command]/usr/bin/git init /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:53:45.5528686Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-09-24T00:53:45.5530154Z hint: is subject to change. To configure the initial branch name to use in all
+2025-09-24T00:53:45.5531409Z hint: of your new repositories, which will suppress this warning, call:
+2025-09-24T00:53:45.5532367Z hint:
+2025-09-24T00:53:45.5533031Z hint: 	git config --global init.defaultBranch <name>
+2025-09-24T00:53:45.5534317Z hint:
+2025-09-24T00:53:45.5535428Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-09-24T00:53:45.5536697Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-09-24T00:53:45.5537606Z hint:
+2025-09-24T00:53:45.5538041Z hint: 	git branch -m <name>
+2025-09-24T00:53:45.5538560Z hint:
+2025-09-24T00:53:45.5539441Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2025-09-24T00:53:45.5540957Z Initialized empty Git repository in /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/.git/
+2025-09-24T00:53:45.5545880Z [command]/usr/bin/git remote add origin https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:53:45.5582057Z ##[endgroup]
+2025-09-24T00:53:45.5582808Z ##[group]Disabling automatic garbage collection
+2025-09-24T00:53:45.5586260Z [command]/usr/bin/git config --local gc.auto 0
+2025-09-24T00:53:45.5613162Z ##[endgroup]
+2025-09-24T00:53:45.5613875Z ##[group]Setting up auth
+2025-09-24T00:53:45.5620295Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:53:45.5649057Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:53:45.5981585Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:53:45.6012253Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:53:45.6229635Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-09-24T00:53:45.6271075Z ##[endgroup]
+2025-09-24T00:53:45.6272486Z ##[group]Fetching the repository
+2025-09-24T00:53:45.6280892Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d5978a8ad38590e36535b7c529028d545516fc0a:refs/remotes/origin/main
+2025-09-24T00:53:45.9529801Z From https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:53:45.9531969Z  * [new ref]         d5978a8ad38590e36535b7c529028d545516fc0a -> origin/main
+2025-09-24T00:53:45.9561261Z ##[endgroup]
+2025-09-24T00:53:45.9562335Z ##[group]Determining the checkout info
+2025-09-24T00:53:45.9563881Z ##[endgroup]
+2025-09-24T00:53:45.9568349Z [command]/usr/bin/git sparse-checkout disable
+2025-09-24T00:53:45.9607649Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2025-09-24T00:53:45.9635150Z ##[group]Checking out the ref
+2025-09-24T00:53:45.9638196Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-09-24T00:53:46.0049764Z Switched to a new branch 'main'
+2025-09-24T00:53:46.0051631Z branch 'main' set up to track 'origin/main'.
+2025-09-24T00:53:46.0059990Z ##[endgroup]
+2025-09-24T00:53:46.0093162Z [command]/usr/bin/git log -1 --format=%H
+2025-09-24T00:53:46.0115004Z d5978a8ad38590e36535b7c529028d545516fc0a
+2025-09-24T00:53:46.0407523Z ##[group]Run actions/setup-node@v4
+2025-09-24T00:53:46.0408841Z with:
+2025-09-24T00:53:46.0409640Z   node-version: 20.x
+2025-09-24T00:53:46.0410535Z   cache: npm
+2025-09-24T00:53:46.0411464Z   cache-dependency-path: package-lock.json
+2025-09-24T00:53:46.0412675Z   always-auth: false
+2025-09-24T00:53:46.0413581Z   check-latest: false
+2025-09-24T00:53:46.0415004Z   token: ***
+2025-09-24T00:53:46.0415831Z env:
+2025-09-24T00:53:46.0416594Z   NODE_VERSION: 20.x
+2025-09-24T00:53:46.0417489Z   CACHE_VERSION: v3
+2025-09-24T00:53:46.0418338Z ##[endgroup]
+2025-09-24T00:53:46.2683400Z Found in cache @ /opt/hostedtoolcache/node/20.19.5/x64
+2025-09-24T00:53:46.2690170Z ##[group]Environment details
+2025-09-24T00:53:48.9331425Z node: v20.19.5
+2025-09-24T00:53:48.9331971Z npm: 10.8.2
+2025-09-24T00:53:48.9332331Z yarn: 1.22.22
+2025-09-24T00:53:48.9333891Z ##[endgroup]
+2025-09-24T00:53:48.9357858Z [command]/opt/hostedtoolcache/node/20.19.5/x64/bin/npm config get cache
+2025-09-24T00:53:49.3222058Z /home/runner/.npm
+2025-09-24T00:53:49.4439457Z Cache hit for: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef
+2025-09-24T00:53:49.8821199Z Received 41633190 of 41633190 (100.0%), 107.3 MBs/sec
+2025-09-24T00:53:49.8821843Z Cache Size: ~40 MB (41633190 B)
+2025-09-24T00:53:49.8859252Z [command]/usr/bin/tar -xf /home/runner/work/_temp/fd355fa1-9801-4614-a08f-9aebb04a159a/cache.tzst -P -C /home/runner/work/advanced-tools-navigation/advanced-tools-navigation --use-compress-program unzstd
+2025-09-24T00:53:50.0714735Z Cache restored successfully
+2025-09-24T00:53:50.0804472Z Cache restored from key: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef
+2025-09-24T00:53:50.0969352Z ##[group]Run npm config set audit-level moderate
+2025-09-24T00:53:50.0969771Z [36;1mnpm config set audit-level moderate[0m
+2025-09-24T00:53:50.0970173Z [36;1mnpm ci --prefer-offline --no-audit --ignore-scripts --silent[0m
+2025-09-24T00:53:50.1119992Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:53:50.1120271Z env:
+2025-09-24T00:53:50.1120489Z   NODE_VERSION: 20.x
+2025-09-24T00:53:50.1120697Z   CACHE_VERSION: v3
+2025-09-24T00:53:50.1120898Z ##[endgroup]
+2025-09-24T00:53:58.6072437Z ##[group]Run echo "🔒 运行安全审计..."
+2025-09-24T00:53:58.6072778Z [36;1mecho "🔒 运行安全审计..."[0m
+2025-09-24T00:53:58.6073008Z [36;1m[0m
+2025-09-24T00:53:58.6073174Z [36;1m# 运行安全审计[0m
+2025-09-24T00:53:58.6073407Z [36;1mif npm audit --audit-level high; then[0m
+2025-09-24T00:53:58.6073691Z [36;1m  echo "✅ 安全审计通过"[0m
+2025-09-24T00:53:58.6073895Z [36;1melse[0m
+2025-09-24T00:53:58.6074085Z [36;1m  echo "⚠️ 发现安全问题，请查看详细信息"[0m
+2025-09-24T00:53:58.6074361Z [36;1m  npm audit --audit-level high || true[0m
+2025-09-24T00:53:58.6074955Z [36;1mfi[0m
+2025-09-24T00:53:58.6110651Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:53:58.6110880Z env:
+2025-09-24T00:53:58.6111051Z   NODE_VERSION: 20.x
+2025-09-24T00:53:58.6111245Z   CACHE_VERSION: v3
+2025-09-24T00:53:58.6111433Z ##[endgroup]
+2025-09-24T00:53:58.6166220Z 🔒 运行安全审计...
+2025-09-24T00:53:59.4295583Z # npm audit report
+2025-09-24T00:53:59.4295966Z 
+2025-09-24T00:53:59.4296128Z esbuild  <=0.24.2
+2025-09-24T00:53:59.4296431Z Severity: moderate
+2025-09-24T00:53:59.4297194Z esbuild enables any website to send any requests to the development server and read the response - https://github.com/advisories/GHSA-67mh-4wv8-2f99
+2025-09-24T00:53:59.4297886Z fix available via `npm audit fix --force`
+2025-09-24T00:53:59.4298260Z Will install vite@7.1.7, which is a breaking change
+2025-09-24T00:53:59.4298559Z node_modules/esbuild
+2025-09-24T00:53:59.4298768Z   vite  0.11.0 - 6.1.6
+2025-09-24T00:53:59.4299022Z   Depends on vulnerable versions of esbuild
+2025-09-24T00:53:59.4299276Z   node_modules/vite
+2025-09-24T00:53:59.4299476Z     vite-node  <=2.2.0-beta.2
+2025-09-24T00:53:59.4299752Z     Depends on vulnerable versions of vite
+2025-09-24T00:53:59.4300011Z     node_modules/vite-node
+2025-09-24T00:53:59.4300330Z       vitest  0.0.1 - 0.0.12 || 0.0.29 - 0.0.122 || 0.3.3 - 2.2.0-beta.2
+2025-09-24T00:53:59.4300683Z       Depends on vulnerable versions of vite
+2025-09-24T00:53:59.4301408Z       Depends on vulnerable versions of vite-node
+2025-09-24T00:53:59.4301694Z       node_modules/vitest
+2025-09-24T00:53:59.4301963Z         @vitest/ui  <=0.0.122 || 0.31.0 - 2.2.0-beta.2
+2025-09-24T00:53:59.4302279Z         Depends on vulnerable versions of vitest
+2025-09-24T00:53:59.4302560Z         node_modules/@vitest/ui
+2025-09-24T00:53:59.4302709Z 
+2025-09-24T00:53:59.4302849Z vue-template-compiler  >=2.0.0
+2025-09-24T00:53:59.4303092Z Severity: moderate
+2025-09-24T00:53:59.4303719Z vue-template-compiler vulnerable to client-side Cross-Site Scripting (XSS) - https://github.com/advisories/GHSA-g3ch-rx76-35fx
+2025-09-24T00:53:59.4304307Z fix available via `npm audit fix --force`
+2025-09-24T00:53:59.4304913Z Will install vue-tsc@3.0.8, which is a breaking change
+2025-09-24T00:53:59.4305292Z node_modules/vue-template-compiler
+2025-09-24T00:53:59.4305568Z   @vue/language-core  <=2.0.28
+2025-09-24T00:53:59.4305914Z   Depends on vulnerable versions of vue-template-compiler
+2025-09-24T00:53:59.4372563Z   node_modules/@vue/language-core
+2025-09-24T00:53:59.4372961Z     vue-tsc  1.7.0-alpha.0 - 2.0.28
+2025-09-24T00:53:59.4373338Z     Depends on vulnerable versions of @vue/language-core
+2025-09-24T00:53:59.4373676Z     node_modules/vue-tsc
+2025-09-24T00:53:59.4373833Z 
+2025-09-24T00:53:59.4374000Z 8 moderate severity vulnerabilities
+2025-09-24T00:53:59.4374194Z 
+2025-09-24T00:53:59.4374435Z To address all issues (including breaking changes), run:
+2025-09-24T00:53:59.4374932Z   npm audit fix --force
+2025-09-24T00:53:59.4396940Z ✅ 安全审计通过
+2025-09-24T00:53:59.4423799Z ##[group]Run echo "🛡️ 检查依赖包许可证..."
+2025-09-24T00:53:59.4424097Z [36;1mecho "🛡️ 检查依赖包许可证..."[0m
+2025-09-24T00:53:59.4424312Z [36;1m[0m
+2025-09-24T00:53:59.4424475Z [36;1m# 安装许可证检查工具[0m
+2025-09-24T00:53:59.4425062Z [36;1mnpm install -g license-checker --silent[0m
+2025-09-24T00:53:59.4425334Z [36;1m[0m
+2025-09-24T00:53:59.4425500Z [36;1m# 检查许可证[0m
+2025-09-24T00:53:59.4425928Z [36;1mlicense-checker --summary --onlyAllow 'MIT;ISC;Apache-2.0;BSD-2-Clause;BSD-3-Clause;LGPL-2.1;LGPL-3.0' || true[0m
+2025-09-24T00:53:59.4426417Z [36;1m[0m
+2025-09-24T00:53:59.4426590Z [36;1mecho "✅ 许可证检查完成"[0m
+2025-09-24T00:53:59.4455960Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:53:59.4456191Z env:
+2025-09-24T00:53:59.4456356Z   NODE_VERSION: 20.x
+2025-09-24T00:53:59.4456545Z   CACHE_VERSION: v3
+2025-09-24T00:53:59.4456723Z ##[endgroup]
+2025-09-24T00:53:59.4506815Z 🛡️ 检查依赖包许可证...
+2025-09-24T00:54:01.8092940Z Package "argparse@2.0.1" is licensed under "Python-2.0" which is not permitted by the --onlyAllow flag. Exiting.
+2025-09-24T00:54:01.8196349Z ✅ 许可证检查完成
+2025-09-24T00:54:01.8276486Z Post job cleanup.
+2025-09-24T00:54:01.9774180Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef, not saving cache.
+2025-09-24T00:54:01.9889578Z Post job cleanup.
+2025-09-24T00:54:02.0833747Z [command]/usr/bin/git version
+2025-09-24T00:54:02.0869554Z git version 2.51.0
+2025-09-24T00:54:02.0914795Z Temporarily overriding HOME='/home/runner/work/_temp/9a8bc510-3a08-4a1e-a01c-047e8ce207fb' before making global git config changes
+2025-09-24T00:54:02.0915834Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:54:02.0920403Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:54:02.0956844Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:54:02.0989386Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:54:02.1215144Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:54:02.1235289Z http.https://github.com/.extraheader
+2025-09-24T00:54:02.1247350Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2025-09-24T00:54:02.1277558Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:54:02.1593793Z Cleaning up orphan processes

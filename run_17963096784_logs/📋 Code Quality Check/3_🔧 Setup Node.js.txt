@@ -1,0 +1,26 @@
+﻿2025-09-24T00:59:00.9576794Z ##[group]Run actions/setup-node@v4
+2025-09-24T00:59:00.9577958Z with:
+2025-09-24T00:59:00.9578940Z   node-version: 20.x
+2025-09-24T00:59:00.9579854Z   cache: npm
+2025-09-24T00:59:00.9580791Z   cache-dependency-path: package-lock.json
+2025-09-24T00:59:00.9582009Z   always-auth: false
+2025-09-24T00:59:00.9582923Z   check-latest: false
+2025-09-24T00:59:00.9584095Z   token: ***
+2025-09-24T00:59:00.9584904Z env:
+2025-09-24T00:59:00.9585684Z   NODE_VERSION: 20.x
+2025-09-24T00:59:00.9586608Z   CACHE_VERSION: v3
+2025-09-24T00:59:00.9587471Z ##[endgroup]
+2025-09-24T00:59:01.1362245Z Found in cache @ /opt/hostedtoolcache/node/20.19.5/x64
+2025-09-24T00:59:01.1369031Z ##[group]Environment details
+2025-09-24T00:59:01.4689321Z node: v20.19.5
+2025-09-24T00:59:01.4690058Z npm: 10.8.2
+2025-09-24T00:59:01.4690359Z yarn: 1.22.22
+2025-09-24T00:59:01.4691093Z ##[endgroup]
+2025-09-24T00:59:01.4713003Z [command]/opt/hostedtoolcache/node/20.19.5/x64/bin/npm config get cache
+2025-09-24T00:59:01.5783932Z /home/runner/.npm
+2025-09-24T00:59:01.6740578Z Cache hit for: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef
+2025-09-24T00:59:02.0188308Z Received 41633190 of 41633190 (100.0%), 127.3 MBs/sec
+2025-09-24T00:59:02.0189688Z Cache Size: ~40 MB (41633190 B)
+2025-09-24T00:59:02.0218896Z [command]/usr/bin/tar -xf /home/runner/work/_temp/e1d157ab-2e2f-4afc-9bd2-38f540000062/cache.tzst -P -C /home/runner/work/advanced-tools-navigation/advanced-tools-navigation --use-compress-program unzstd
+2025-09-24T00:59:02.1927634Z Cache restored successfully
+2025-09-24T00:59:02.2012154Z Cache restored from key: node-cache-Linux-x64-npm-3286e3e9d3da300b733282ad1052d9b8ad8f04c17477e7b8b39e333cd703d1ef

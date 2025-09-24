@@ -37,7 +37,18 @@ export const useCategoriesStore = defineStore("categories", () => {
         supabaseUrl.includes("your-project-ref") ||
         supabaseAnonKey.includes("your-anon-key")
       ) {
-        // 使用模拟数据
+        // 如果是生产环境，不要静默回退到模拟数据，尽早报错以便运维修复
+        if (import.meta.env.PROD) {
+          console.error(
+            "Supabase 环境变量未配置（生产），请在 CI/部署环境中设置 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY",
+          );
+          error.value = new Error("Supabase 未配置（生产环境）");
+          initialized.value = true;
+          loading.value = false;
+          return;
+        }
+
+        // 开发环境下仍然使用模拟数据以方便本地调试
         console.warn("Supabase 环境变量未配置，使用模拟分类数据");
         categories.value = [
           {
@@ -141,9 +152,10 @@ export const useCategoriesStore = defineStore("categories", () => {
 
       categories.value = data || [];
       initialized.value = true; // 成功获取后，标记为已初始化
-    } catch (e: any) {
-      console.error("获取分类失败:", e);
-      error.value = e;
+    } catch (err: unknown) {
+      const message = safeErrorMessage(err);
+      console.error("获取分类失败:", message);
+      error.value = new Error(message);
 
       // 如果Supabase调用失败，回退到模拟数据
       if (categories.value.length === 0) {
@@ -249,3 +261,15 @@ export const useCategoriesStore = defineStore("categories", () => {
     clearError,
   };
 });
+
+// 从 unknown 错误对象安全提取字符串信息（与 tools.ts 中的实现一致）
+function safeErrorMessage(err: unknown): string {
+  if (!err) return "未知错误";
+  if (typeof err === "string") return err;
+  if (err instanceof Error) return err.message;
+  try {
+    return JSON.stringify(err as Record<string, unknown>);
+  } catch {
+    return String(err);
+  }
+}

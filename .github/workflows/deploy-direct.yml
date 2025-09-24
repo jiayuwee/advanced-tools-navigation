@@ -41,7 +41,7 @@ jobs:
           npm cache clean --force 2>/dev/null || true
           
           if [ -f "package-lock.json" ]; then
-            npm ci --prefer-offline --no-audit --ignore-scripts --silent
+            npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --silent
           else
             npm install --prefer-offline --no-audit --ignore-scripts --silent
           fi

@@ -1,0 +1,450 @@
+﻿2025-09-24T00:35:29.8890714Z Current runner version: '2.328.0'
+2025-09-24T00:35:29.8913993Z ##[group]Runner Image Provisioner
+2025-09-24T00:35:29.8914753Z Hosted Compute Agent
+2025-09-24T00:35:29.8915359Z Version: 20250829.383
+2025-09-24T00:35:29.8916223Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+2025-09-24T00:35:29.8916965Z Build Date: 2025-08-29T13:48:48Z
+2025-09-24T00:35:29.8917621Z ##[endgroup]
+2025-09-24T00:35:29.8918142Z ##[group]Operating System
+2025-09-24T00:35:29.8918666Z Ubuntu
+2025-09-24T00:35:29.8919185Z 24.04.3
+2025-09-24T00:35:29.8919614Z LTS
+2025-09-24T00:35:29.8920088Z ##[endgroup]
+2025-09-24T00:35:29.8920606Z ##[group]Runner Image
+2025-09-24T00:35:29.8921149Z Image: ubuntu-24.04
+2025-09-24T00:35:29.8921617Z Version: 20250907.24.1
+2025-09-24T00:35:29.8922673Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+2025-09-24T00:35:29.8924208Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+2025-09-24T00:35:29.8925231Z ##[endgroup]
+2025-09-24T00:35:29.8927879Z ##[group]GITHUB_TOKEN Permissions
+2025-09-24T00:35:29.8929933Z Actions: write
+2025-09-24T00:35:29.8930445Z Attestations: write
+2025-09-24T00:35:29.8930987Z Checks: write
+2025-09-24T00:35:29.8931533Z Contents: write
+2025-09-24T00:35:29.8932050Z Deployments: write
+2025-09-24T00:35:29.8932508Z Discussions: write
+2025-09-24T00:35:29.8933070Z Issues: write
+2025-09-24T00:35:29.8933545Z Metadata: read
+2025-09-24T00:35:29.8934018Z Models: read
+2025-09-24T00:35:29.8934552Z Packages: write
+2025-09-24T00:35:29.8935011Z Pages: write
+2025-09-24T00:35:29.8935497Z PullRequests: write
+2025-09-24T00:35:29.8936189Z RepositoryProjects: write
+2025-09-24T00:35:29.8936788Z SecurityEvents: write
+2025-09-24T00:35:29.8937437Z Statuses: write
+2025-09-24T00:35:29.8937941Z ##[endgroup]
+2025-09-24T00:35:29.8940309Z Secret source: Actions
+2025-09-24T00:35:29.8941328Z Prepare workflow directory
+2025-09-24T00:35:29.9314237Z Prepare all required actions
+2025-09-24T00:35:29.9351453Z Getting action download info
+2025-09-24T00:35:30.2315785Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+2025-09-24T00:35:30.4451526Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2025-09-24T00:35:30.6469221Z Complete job name: 📋 Code Quality Check
+2025-09-24T00:35:30.7138485Z ##[group]Run actions/checkout@v4
+2025-09-24T00:35:30.7139323Z with:
+2025-09-24T00:35:30.7139706Z   fetch-depth: 0
+2025-09-24T00:35:30.7140167Z   repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:35:30.7140885Z   token: ***
+2025-09-24T00:35:30.7141267Z   ssh-strict: true
+2025-09-24T00:35:30.7141655Z   ssh-user: git
+2025-09-24T00:35:30.7142063Z   persist-credentials: true
+2025-09-24T00:35:30.7142508Z   clean: true
+2025-09-24T00:35:30.7142904Z   sparse-checkout-cone-mode: true
+2025-09-24T00:35:30.7143381Z   fetch-tags: false
+2025-09-24T00:35:30.7143779Z   show-progress: true
+2025-09-24T00:35:30.7144184Z   lfs: false
+2025-09-24T00:35:30.7144574Z   submodules: false
+2025-09-24T00:35:30.7144975Z   set-safe-directory: true
+2025-09-24T00:35:30.7145612Z env:
+2025-09-24T00:35:30.7146190Z   NODE_VERSION: 20.x
+2025-09-24T00:35:30.7146611Z   CACHE_VERSION: v3
+2025-09-24T00:35:30.7146998Z ##[endgroup]
+2025-09-24T00:35:30.8203689Z Syncing repository: jiayuwee/advanced-tools-navigation
+2025-09-24T00:35:30.8205432Z ##[group]Getting Git version info
+2025-09-24T00:35:30.8206613Z Working directory is '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:35:30.8207779Z [command]/usr/bin/git version
+2025-09-24T00:35:30.8299711Z git version 2.51.0
+2025-09-24T00:35:30.8325661Z ##[endgroup]
+2025-09-24T00:35:30.8341971Z Temporarily overriding HOME='/home/runner/work/_temp/f28b8a1b-7490-49f3-ad7f-cf3edf5989eb' before making global git config changes
+2025-09-24T00:35:30.8343335Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:35:30.8353156Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:35:30.8391165Z Deleting the contents of '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation'
+2025-09-24T00:35:30.8395387Z ##[group]Initializing the repository
+2025-09-24T00:35:30.8400544Z [command]/usr/bin/git init /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:35:30.8514135Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-09-24T00:35:30.8515488Z hint: is subject to change. To configure the initial branch name to use in all
+2025-09-24T00:35:30.8516707Z hint: of your new repositories, which will suppress this warning, call:
+2025-09-24T00:35:30.8517359Z hint:
+2025-09-24T00:35:30.8517842Z hint: 	git config --global init.defaultBranch <name>
+2025-09-24T00:35:30.8518691Z hint:
+2025-09-24T00:35:30.8519607Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-09-24T00:35:30.8520765Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-09-24T00:35:30.8522048Z hint:
+2025-09-24T00:35:30.8522758Z hint: 	git branch -m <name>
+2025-09-24T00:35:30.8523542Z hint:
+2025-09-24T00:35:30.8524588Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2025-09-24T00:35:30.8526955Z Initialized empty Git repository in /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/.git/
+2025-09-24T00:35:30.8533221Z [command]/usr/bin/git remote add origin https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:35:30.8571675Z ##[endgroup]
+2025-09-24T00:35:30.8572853Z ##[group]Disabling automatic garbage collection
+2025-09-24T00:35:30.8576693Z [command]/usr/bin/git config --local gc.auto 0
+2025-09-24T00:35:30.8610059Z ##[endgroup]
+2025-09-24T00:35:30.8611255Z ##[group]Setting up auth
+2025-09-24T00:35:30.8616851Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:35:30.8648534Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:35:30.9032323Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:35:30.9065176Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:35:30.9313863Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-09-24T00:35:30.9357722Z ##[endgroup]
+2025-09-24T00:35:30.9358783Z ##[group]Fetching the repository
+2025-09-24T00:35:30.9367167Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2025-09-24T00:35:31.5776125Z From https://github.com/jiayuwee/advanced-tools-navigation
+2025-09-24T00:35:31.5777786Z  * [new branch]      gh-pages   -> origin/gh-pages
+2025-09-24T00:35:31.5778928Z  * [new branch]      main       -> origin/main
+2025-09-24T00:35:31.5780299Z  * [new branch]      main-backup-before-filter -> origin/main-backup-before-filter
+2025-09-24T00:35:31.5861344Z [command]/usr/bin/git branch --list --remote origin/main
+2025-09-24T00:35:31.5885407Z   origin/main
+2025-09-24T00:35:31.5896706Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2025-09-24T00:35:31.5918486Z fe1f960b88047ed6df28d400c6fdc1f6beb15cbf
+2025-09-24T00:35:31.5925413Z ##[endgroup]
+2025-09-24T00:35:31.5927020Z ##[group]Determining the checkout info
+2025-09-24T00:35:31.5928521Z ##[endgroup]
+2025-09-24T00:35:31.5931648Z [command]/usr/bin/git sparse-checkout disable
+2025-09-24T00:35:31.5973939Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2025-09-24T00:35:31.6000466Z ##[group]Checking out the ref
+2025-09-24T00:35:31.6004736Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-09-24T00:35:31.6451854Z Switched to a new branch 'main'
+2025-09-24T00:35:31.6453136Z branch 'main' set up to track 'origin/main'.
+2025-09-24T00:35:31.6463748Z ##[endgroup]
+2025-09-24T00:35:31.6501025Z [command]/usr/bin/git log -1 --format=%H
+2025-09-24T00:35:31.6522380Z fe1f960b88047ed6df28d400c6fdc1f6beb15cbf
+2025-09-24T00:35:31.6797928Z ##[group]Run actions/setup-node@v4
+2025-09-24T00:35:31.6798782Z with:
+2025-09-24T00:35:31.6799235Z   node-version: 20.x
+2025-09-24T00:35:31.6799836Z   cache: npm
+2025-09-24T00:35:31.6800425Z   cache-dependency-path: package-lock.json
+2025-09-24T00:35:31.6801291Z   always-auth: false
+2025-09-24T00:35:31.6801876Z   check-latest: false
+2025-09-24T00:35:31.6802718Z   token: ***
+2025-09-24T00:35:31.6803206Z env:
+2025-09-24T00:35:31.6803671Z   NODE_VERSION: 20.x
+2025-09-24T00:35:31.6804265Z   CACHE_VERSION: v3
+2025-09-24T00:35:31.6804796Z ##[endgroup]
+2025-09-24T00:35:31.8979991Z Found in cache @ /opt/hostedtoolcache/node/20.19.5/x64
+2025-09-24T00:35:31.8987405Z ##[group]Environment details
+2025-09-24T00:35:34.6646820Z node: v20.19.5
+2025-09-24T00:35:34.6647869Z npm: 10.8.2
+2025-09-24T00:35:34.6648054Z yarn: 1.22.22
+2025-09-24T00:35:34.6648777Z ##[endgroup]
+2025-09-24T00:35:34.6666946Z [command]/opt/hostedtoolcache/node/20.19.5/x64/bin/npm config get cache
+2025-09-24T00:35:35.0035843Z /home/runner/.npm
+2025-09-24T00:35:35.1200489Z npm cache is not found
+2025-09-24T00:35:35.1345025Z ##[group]Run echo "📦 安装依赖..."
+2025-09-24T00:35:35.1345371Z [36;1mecho "📦 安装依赖..."[0m
+2025-09-24T00:35:35.1345615Z [36;1m# 设置npm配置以提高稳定性[0m
+2025-09-24T00:35:35.1345887Z [36;1mnpm config set prefer-offline true[0m
+2025-09-24T00:35:35.1346432Z [36;1mnpm config set audit-level moderate[0m
+2025-09-24T00:35:35.1346715Z [36;1mnpm config set fund false[0m
+2025-09-24T00:35:35.1346980Z [36;1mnpm config set update-notifier false[0m
+2025-09-24T00:35:35.1347234Z [36;1m[0m
+2025-09-24T00:35:35.1347415Z [36;1m# 清理缓存以避免平台兼容性问题[0m
+2025-09-24T00:35:35.1347666Z [36;1mnpm cache clean --force 2>/dev/null || true[0m
+2025-09-24T00:35:35.1347967Z [36;1m[0m
+2025-09-24T00:35:35.1348132Z [36;1m# 优先使用 npm ci 进行快速安装[0m
+2025-09-24T00:35:35.1348374Z [36;1mif [ -f "package-lock.json" ]; then[0m
+2025-09-24T00:35:35.1348629Z [36;1m  echo "使用 npm ci 进行快速安装..."[0m
+2025-09-24T00:35:35.1348957Z [36;1m  npm ci --prefer-offline --no-audit --ignore-scripts --silent[0m
+2025-09-24T00:35:35.1349324Z [36;1melse[0m
+2025-09-24T00:35:35.1349556Z [36;1m  echo "package-lock.json 不存在，使用 npm install..."[0m
+2025-09-24T00:35:35.1349935Z [36;1m  npm install --prefer-offline --no-audit --ignore-scripts --silent[0m
+2025-09-24T00:35:35.1350259Z [36;1mfi[0m
+2025-09-24T00:35:35.1350426Z [36;1m[0m
+2025-09-24T00:35:35.1350730Z [36;1mecho "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"[0m
+2025-09-24T00:35:35.1351082Z [36;1mecho "✅ 依赖安装完成"[0m
+2025-09-24T00:35:35.1482365Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:35:35.1482681Z env:
+2025-09-24T00:35:35.1482916Z   NODE_VERSION: 20.x
+2025-09-24T00:35:35.1483115Z   CACHE_VERSION: v3
+2025-09-24T00:35:35.1483299Z ##[endgroup]
+2025-09-24T00:35:35.1563428Z 📦 安装依赖...
+2025-09-24T00:35:38.9530921Z 使用 npm ci 进行快速安装...
+2025-09-24T00:35:54.1670499Z 📋 已安装的包数量: 41
+2025-09-24T00:35:54.1670971Z ✅ 依赖安装完成
+2025-09-24T00:35:54.1701589Z ##[group]Run echo "🔍 运行 ESLint 检查..."
+2025-09-24T00:35:54.1701897Z [36;1mecho "🔍 运行 ESLint 检查..."[0m
+2025-09-24T00:35:54.1702125Z [36;1mnpm run lint[0m
+2025-09-24T00:35:54.1702316Z [36;1mecho "✅ ESLint 检查通过"[0m
+2025-09-24T00:35:54.1733747Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:35:54.1733967Z env:
+2025-09-24T00:35:54.1734124Z   NODE_VERSION: 20.x
+2025-09-24T00:35:54.1734308Z   CACHE_VERSION: v3
+2025-09-24T00:35:54.1734481Z ##[endgroup]
+2025-09-24T00:35:54.1787501Z 🔍 运行 ESLint 检查...
+2025-09-24T00:35:54.2902245Z 
+2025-09-24T00:35:54.2902945Z > advanced-tools-navigation@1.0.0 lint
+2025-09-24T00:35:54.2903780Z > eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore
+2025-09-24T00:35:54.2904639Z 
+2025-09-24T00:36:03.1078912Z 
+2025-09-24T00:36:03.1080419Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/scripts/deployment/update-github-secrets.js
+2025-09-24T00:36:03.1115712Z ##[error]  57:17  error  'secret' is defined but never used     @typescript-eslint/no-unused-vars
+2025-09-24T00:36:03.1128025Z ##[error]  57:25  error  'publicKey' is defined but never used  @typescript-eslint/no-unused-vars
+2025-09-24T00:36:03.1129390Z 
+2025-09-24T00:36:03.1130229Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/admin/ToolForm.vue
+2025-09-24T00:36:03.1133040Z ##[warning]  159:3  warning  Prop 'tool' requires default value to be set  vue/require-default-prop
+2025-09-24T00:36:03.1134394Z 
+2025-09-24T00:36:03.1135304Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/admin/UserDetailModal.vue
+2025-09-24T00:36:03.1137273Z ##[warning]  372:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1138634Z 
+2025-09-24T00:36:03.1139460Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/common/LazyComponent.vue
+2025-09-24T00:36:03.1203260Z ##[warning]   58:34  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1206074Z ##[warning]   60:3   warning  Prop 'componentProps' requires default value to be set  vue/require-default-prop
+2025-09-24T00:36:03.1208566Z ##[warning]   60:35  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1210820Z ##[warning]   94:23  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1213126Z ##[warning]  134:27  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1214431Z 
+2025-09-24T00:36:03.1215221Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/common/LazyImage.vue
+2025-09-24T00:36:03.1217039Z ##[warning]  66:3  warning  Prop 'placeholder' requires default value to be set  vue/require-default-prop
+2025-09-24T00:36:03.1219478Z ##[warning]  70:3  warning  Prop 'width' requires default value to be set        vue/require-default-prop
+2025-09-24T00:36:03.1221611Z ##[warning]  71:3  warning  Prop 'height' requires default value to be set       vue/require-default-prop
+2025-09-24T00:36:03.1223727Z ##[warning]  85:3  warning  Prop 'srcset' requires default value to be set       vue/require-default-prop
+2025-09-24T00:36:03.1226167Z ##[warning]  87:3  warning  Prop 'sizes' requires default value to be set        vue/require-default-prop
+2025-09-24T00:36:03.1227602Z 
+2025-09-24T00:36:03.1228612Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/notifications/NotificationCenter.vue
+2025-09-24T00:36:03.1230541Z ##[warning]  189:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1231982Z 
+2025-09-24T00:36:03.1232864Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/components/search/EnhancedSearchBox.vue
+2025-09-24T00:36:03.1235046Z ##[warning]  285:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1237626Z ##[warning]  336:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1239798Z ##[warning]  430:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1241835Z ##[warning]  440:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1243970Z ##[warning]  441:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1245295Z 
+2025-09-24T00:36:03.1246334Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/composables/useAdvancedSearch.ts
+2025-09-24T00:36:03.1248262Z ##[warning]   39:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1250475Z ##[warning]  250:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1252755Z ##[warning]  250:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1254908Z ##[warning]  254:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1256384Z 
+2025-09-24T00:36:03.1257166Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/composables/useLazyLoading.ts
+2025-09-24T00:36:03.1258751Z ##[warning]  142:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1261037Z ##[warning]  147:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1262382Z 
+2025-09-24T00:36:03.1263101Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/lib/supabaseClient.ts
+2025-09-24T00:36:03.1264707Z ##[warning]   51:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1267103Z ##[warning]  144:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1269234Z ##[warning]  144:71  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1271449Z ##[warning]  145:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1273869Z ##[warning]  161:9   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1276283Z ##[warning]  162:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1278669Z ##[warning]  163:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1281189Z ##[warning]  179:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1283391Z ##[warning]  190:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1285577Z ##[warning]  206:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1288010Z ##[warning]  212:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1289348Z 
+2025-09-24T00:36:03.1290109Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/authService.ts
+2025-09-24T00:36:03.1291754Z ##[warning]   10:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1294040Z ##[warning]   41:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1296480Z ##[warning]  172:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1298918Z ##[warning]  203:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1300742Z ##[warning]  216:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1302015Z ##[warning]  240:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1302768Z 
+2025-09-24T00:36:03.1303222Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/categoriesService.ts
+2025-09-24T00:36:03.1304125Z ##[warning]  87:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1304880Z 
+2025-09-24T00:36:03.1305317Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/favoritesService.ts
+2025-09-24T00:36:03.1306686Z ##[warning]   83:77  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1307964Z ##[warning]   95:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1309173Z ##[warning]   97:75  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1310364Z ##[warning]  110:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1311589Z ##[warning]  172:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1312795Z ##[warning]  209:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1314083Z ##[warning]  349:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1315289Z ##[warning]  361:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1316243Z 
+2025-09-24T00:36:03.1316688Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/feedbackService.ts
+2025-09-24T00:36:03.1317670Z ##[warning]   26:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1318895Z ##[warning]  224:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1320126Z ##[warning]  261:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1320871Z 
+2025-09-24T00:36:03.1321327Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/localStorageService.ts
+2025-09-24T00:36:03.1322216Z ##[warning]  47:9  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1322959Z 
+2025-09-24T00:36:03.1323389Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/notificationService.ts
+2025-09-24T00:36:03.1324264Z ##[warning]  21:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1325470Z ##[warning]  51:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1326428Z 
+2025-09-24T00:36:03.1326852Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/orderService.ts
+2025-09-24T00:36:03.1328136Z ##[warning]   36:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:36:03.1329761Z ##[warning]   48:39  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1331223Z ##[warning]   51:30  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1333041Z ##[warning]   59:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:36:03.1334667Z ##[warning]   70:34  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1336321Z ##[warning]   71:29  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1337826Z ##[warning]   74:33  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1339462Z ##[warning]   78:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:36:03.1341227Z ##[warning]   89:23  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1342664Z ##[warning]   90:28  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1344105Z ##[warning]   93:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1345530Z ##[warning]   94:33  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1347236Z ##[warning]   97:37  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1348686Z ##[warning]   99:39  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1350120Z ##[warning]  101:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1351550Z ##[warning]  102:33  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1353012Z ##[warning]  105:34  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1354471Z ##[warning]  111:39  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1356078Z ##[warning]  119:29  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1357580Z ##[warning]  120:27  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1359018Z ##[warning]  125:35  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1360455Z ##[warning]  126:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1361898Z ##[warning]  128:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1363485Z ##[warning]  129:31  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1364948Z ##[warning]  130:33  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1366578Z ##[warning]  141:30  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1368283Z ##[warning]  149:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:36:03.1370026Z ##[warning]  159:32  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1371663Z ##[warning]  170:7   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+2025-09-24T00:36:03.1373234Z ##[warning]  232:39  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1374685Z ##[warning]  236:41  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1376316Z ##[warning]  340:40  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1377846Z ##[warning]  462:47  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1379305Z ##[warning]  474:41  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1380741Z ##[warning]  542:25  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1382184Z ##[warning]  688:29  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1383618Z ##[warning]  689:43  warning  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1384403Z 
+2025-09-24T00:36:03.1384830Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/productsService.ts
+2025-09-24T00:36:03.1385718Z ##[warning]  169:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1387205Z ##[warning]  306:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1387955Z 
+2025-09-24T00:36:03.1388367Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/reviewService.ts
+2025-09-24T00:36:03.1389342Z ##[warning]    2:1   warning  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+2025-09-24T00:36:03.1390707Z ##[warning]  492:43  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1392046Z ##[warning]  495:14  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1393532Z ##[warning]  544:14  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1394316Z 
+2025-09-24T00:36:03.1394724Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/services/toolsService.ts
+2025-09-24T00:36:03.1395600Z ##[warning]  447:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1396549Z 
+2025-09-24T00:36:03.1396913Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/stores/auth.ts
+2025-09-24T00:36:03.1397812Z ##[warning]  119:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1398559Z 
+2025-09-24T00:36:03.1398953Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/stores/categories.ts
+2025-09-24T00:36:03.1400018Z ##[warning]  144:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1400782Z 
+2025-09-24T00:36:03.1401171Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/stores/products.ts
+2025-09-24T00:36:03.1402021Z ##[warning]  170:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1403238Z ##[warning]  191:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1403973Z 
+2025-09-24T00:36:03.1404340Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/stores/tools.ts
+2025-09-24T00:36:03.1405156Z ##[warning]  216:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1406618Z ##[warning]  381:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1407394Z 
+2025-09-24T00:36:03.1407747Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/tests/setup.ts
+2025-09-24T00:36:03.1408610Z ##[warning]   28:8   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1409820Z ##[warning]   47:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1411020Z ##[warning]   56:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1412210Z ##[warning]  127:6   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1413412Z ##[warning]  140:8   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1414594Z ##[warning]  149:8   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1415791Z ##[warning]  155:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1417240Z ##[warning]  165:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1417976Z 
+2025-09-24T00:36:03.1418355Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/types/global.d.ts
+2025-09-24T00:36:03.1419223Z ##[warning]  3:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1419964Z 
+2025-09-24T00:36:03.1420355Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/cacheManager.ts
+2025-09-24T00:36:03.1421229Z ##[warning]    8:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1422437Z ##[warning]  307:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1423643Z ##[warning]  307:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1424383Z 
+2025-09-24T00:36:03.1424784Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/connectionTest.ts
+2025-09-24T00:36:03.1425777Z ##[warning]   11:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1427354Z ##[warning]   76:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1428573Z ##[warning]  130:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1429317Z 
+2025-09-24T00:36:03.1429708Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/dataTransform.ts
+2025-09-24T00:36:03.1430550Z ##[warning]   11:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1431753Z ##[warning]   37:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1433140Z ##[warning]   53:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1434343Z ##[warning]   79:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1435551Z ##[warning]   96:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1437002Z ##[warning]   97:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1438228Z ##[warning]   97:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1439421Z ##[warning]   98:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1440623Z ##[warning]   99:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1441829Z ##[warning]  128:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1443055Z ##[warning]  129:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1444288Z ##[warning]  129:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1445528Z ##[warning]  130:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1447475Z ##[warning]  131:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1448717Z ##[warning]  160:9   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1449935Z ##[warning]  184:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1451160Z ##[warning]  184:70  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1452385Z ##[warning]  185:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1453601Z ##[warning]  202:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1454817Z ##[warning]  202:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1456206Z ##[warning]  202:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1457504Z ##[warning]  228:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1458727Z ##[warning]  252:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1459471Z 
+2025-09-24T00:36:03.1459866Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/errorHandler.ts
+2025-09-24T00:36:03.1460714Z ##[warning]    9:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1461925Z ##[warning]   11:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1463275Z ##[warning]   16:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1464532Z ##[warning]  222:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1465288Z 
+2025-09-24T00:36:03.1465675Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/utils/validation.ts
+2025-09-24T00:36:03.1466756Z ##[warning]   10:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1468009Z ##[warning]   32:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1469216Z ##[warning]   59:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1470606Z ##[warning]  182:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1471830Z ##[warning]  201:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1473040Z ##[warning]  276:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1473783Z 
+2025-09-24T00:36:03.1474158Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/HomeView.vue
+2025-09-24T00:36:03.1475036Z ##[warning]  144:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1476450Z ##[warning]  161:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1477723Z ##[warning]  174:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1478940Z ##[warning]  193:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1479683Z 
+2025-09-24T00:36:03.1480102Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/ProductDetailView.vue
+2025-09-24T00:36:03.1480993Z ##[warning]  93:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1482107Z 
+2025-09-24T00:36:03.1482792Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/ProductUploadView.vue
+2025-09-24T00:36:03.1484005Z ##[warning]  473:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1484806Z 
+2025-09-24T00:36:03.1485202Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/ProductsView.vue
+2025-09-24T00:36:03.1486321Z ##[warning]  246:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1487869Z ##[warning]  251:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1488786Z 
+2025-09-24T00:36:03.1489238Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/SearchResultsView.vue
+2025-09-24T00:36:03.1490212Z ##[warning]  159:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1491448Z ##[warning]  197:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1492692Z ##[warning]  210:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1493905Z ##[warning]  230:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1495110Z ##[warning]  239:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1495850Z 
+2025-09-24T00:36:03.1496459Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/ToolsView.vue
+2025-09-24T00:36:03.1497351Z ##[warning]  354:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1498128Z 
+2025-09-24T00:36:03.1498774Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/views/admin/LocalManagementView.vue
+2025-09-24T00:36:03.1499765Z ##[warning]  325:73  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+2025-09-24T00:36:03.1500533Z 
+2025-09-24T00:36:03.1500921Z ✖ 171 problems (2 errors, 169 warnings)
+2025-09-24T00:36:03.1501106Z 
+2025-09-24T00:36:03.1644867Z ##[error]Process completed with exit code 1.
+2025-09-24T00:36:03.1739907Z Post job cleanup.
+2025-09-24T00:36:03.2668461Z [command]/usr/bin/git version
+2025-09-24T00:36:03.2703885Z git version 2.51.0
+2025-09-24T00:36:03.2748256Z Temporarily overriding HOME='/home/runner/work/_temp/f87263a1-c0d1-4fea-87db-c3f917ced0d5' before making global git config changes
+2025-09-24T00:36:03.2750028Z Adding repository directory to the temporary git global config as a safe directory
+2025-09-24T00:36:03.2755011Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/advanced-tools-navigation/advanced-tools-navigation
+2025-09-24T00:36:03.2791397Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-09-24T00:36:03.2825295Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-09-24T00:36:03.3062931Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-09-24T00:36:03.3084919Z http.https://github.com/.extraheader
+2025-09-24T00:36:03.3097666Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2025-09-24T00:36:03.3127807Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-09-24T00:36:03.3449242Z Cleaning up orphan processes

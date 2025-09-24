@@ -44,7 +44,7 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
-          npm ci --prefer-offline --no-audit --ignore-scripts
+          npm ci --no-optional --prefer-offline --no-audit --ignore-scripts
           echo "✅ 依赖安装完成"
 
       - name: 📦 Install Netlify CLI

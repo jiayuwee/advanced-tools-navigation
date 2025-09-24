@@ -1,0 +1,26 @@
+﻿2025-09-24T00:59:15.0112868Z ##[group]Run echo "🔨 构建项目..."
+2025-09-24T00:59:15.0113252Z [36;1mecho "🔨 构建项目..."[0m
+2025-09-24T00:59:15.0113505Z [36;1mnpm run build[0m
+2025-09-24T00:59:15.0144765Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:59:15.0145265Z env:
+2025-09-24T00:59:15.0145471Z   WEBSITE_URL: https://ramusi.cn
+2025-09-24T00:59:15.0145719Z   NODE_VERSION: 20.x
+2025-09-24T00:59:15.0145920Z ##[endgroup]
+2025-09-24T00:59:15.0195986Z 🔨 构建项目...
+2025-09-24T00:59:15.1292150Z 
+2025-09-24T00:59:15.1293115Z > advanced-tools-navigation@1.0.0 build
+2025-09-24T00:59:15.1293598Z > vite build
+2025-09-24T00:59:15.1293754Z 
+2025-09-24T00:59:15.6963564Z [36mvite v5.4.20 [32mbuilding for production...[36m[39m
+2025-09-24T00:59:15.8059237Z transforming...
+2025-09-24T00:59:16.5775787Z [32m✓[39m 39 modules transformed.
+2025-09-24T00:59:16.5792141Z [31mx[39m Build failed in 853ms
+2025-09-24T00:59:16.5793373Z [31merror during build:
+2025-09-24T00:59:16.5794167Z [31mCould not resolve "../views/TestSettingsView.vue" from "src/router/index.ts"[31m
+2025-09-24T00:59:16.5795166Z file: [36m/home/runner/work/advanced-tools-navigation/advanced-tools-navigation/src/router/index.ts[31m
+2025-09-24T00:59:16.5796698Z     at getRollupError (file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+2025-09-24T00:59:16.5798601Z     at error (file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+2025-09-24T00:59:16.5800733Z     at ModuleLoader.handleInvalidResolvedId (file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/node-entry.js:21584:24)
+2025-09-24T00:59:16.5803089Z     at ModuleLoader.resolveDynamicImport (file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/node-entry.js:21644:58)
+2025-09-24T00:59:16.5805335Z     at async file:///home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/es/shared/node-entry.js:21528:32[39m
+2025-09-24T00:59:16.6021522Z ##[error]Process completed with exit code 1.

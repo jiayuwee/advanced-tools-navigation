@@ -1,0 +1,56 @@
+﻿2025-09-24T00:53:58.6072419Z ##[group]Run echo "🔒 运行安全审计..."
+2025-09-24T00:53:58.6072775Z [36;1mecho "🔒 运行安全审计..."[0m
+2025-09-24T00:53:58.6073005Z [36;1m[0m
+2025-09-24T00:53:58.6073172Z [36;1m# 运行安全审计[0m
+2025-09-24T00:53:58.6073404Z [36;1mif npm audit --audit-level high; then[0m
+2025-09-24T00:53:58.6073688Z [36;1m  echo "✅ 安全审计通过"[0m
+2025-09-24T00:53:58.6073892Z [36;1melse[0m
+2025-09-24T00:53:58.6074082Z [36;1m  echo "⚠️ 发现安全问题，请查看详细信息"[0m
+2025-09-24T00:53:58.6074358Z [36;1m  npm audit --audit-level high || true[0m
+2025-09-24T00:53:58.6074951Z [36;1mfi[0m
+2025-09-24T00:53:58.6110645Z shell: /usr/bin/bash -e {0}
+2025-09-24T00:53:58.6110877Z env:
+2025-09-24T00:53:58.6111049Z   NODE_VERSION: 20.x
+2025-09-24T00:53:58.6111243Z   CACHE_VERSION: v3
+2025-09-24T00:53:58.6111430Z ##[endgroup]
+2025-09-24T00:53:58.6166206Z 🔒 运行安全审计...
+2025-09-24T00:53:59.4295543Z # npm audit report
+2025-09-24T00:53:59.4295959Z 
+2025-09-24T00:53:59.4296125Z esbuild  <=0.24.2
+2025-09-24T00:53:59.4296366Z Severity: moderate
+2025-09-24T00:53:59.4297190Z esbuild enables any website to send any requests to the development server and read the response - https://github.com/advisories/GHSA-67mh-4wv8-2f99
+2025-09-24T00:53:59.4297883Z fix available via `npm audit fix --force`
+2025-09-24T00:53:59.4298257Z Will install vite@7.1.7, which is a breaking change
+2025-09-24T00:53:59.4298556Z node_modules/esbuild
+2025-09-24T00:53:59.4298766Z   vite  0.11.0 - 6.1.6
+2025-09-24T00:53:59.4299015Z   Depends on vulnerable versions of esbuild
+2025-09-24T00:53:59.4299274Z   node_modules/vite
+2025-09-24T00:53:59.4299474Z     vite-node  <=2.2.0-beta.2
+2025-09-24T00:53:59.4299750Z     Depends on vulnerable versions of vite
+2025-09-24T00:53:59.4300009Z     node_modules/vite-node
+2025-09-24T00:53:59.4300328Z       vitest  0.0.1 - 0.0.12 || 0.0.29 - 0.0.122 || 0.3.3 - 2.2.0-beta.2
+2025-09-24T00:53:59.4300680Z       Depends on vulnerable versions of vite
+2025-09-24T00:53:59.4301404Z       Depends on vulnerable versions of vite-node
+2025-09-24T00:53:59.4301685Z       node_modules/vitest
+2025-09-24T00:53:59.4301961Z         @vitest/ui  <=0.0.122 || 0.31.0 - 2.2.0-beta.2
+2025-09-24T00:53:59.4302276Z         Depends on vulnerable versions of vitest
+2025-09-24T00:53:59.4302557Z         node_modules/@vitest/ui
+2025-09-24T00:53:59.4302707Z 
+2025-09-24T00:53:59.4302847Z vue-template-compiler  >=2.0.0
+2025-09-24T00:53:59.4303090Z Severity: moderate
+2025-09-24T00:53:59.4303717Z vue-template-compiler vulnerable to client-side Cross-Site Scripting (XSS) - https://github.com/advisories/GHSA-g3ch-rx76-35fx
+2025-09-24T00:53:59.4304305Z fix available via `npm audit fix --force`
+2025-09-24T00:53:59.4304909Z Will install vue-tsc@3.0.8, which is a breaking change
+2025-09-24T00:53:59.4305290Z node_modules/vue-template-compiler
+2025-09-24T00:53:59.4305566Z   @vue/language-core  <=2.0.28
+2025-09-24T00:53:59.4305912Z   Depends on vulnerable versions of vue-template-compiler
+2025-09-24T00:53:59.4372545Z   node_modules/@vue/language-core
+2025-09-24T00:53:59.4372945Z     vue-tsc  1.7.0-alpha.0 - 2.0.28
+2025-09-24T00:53:59.4373336Z     Depends on vulnerable versions of @vue/language-core
+2025-09-24T00:53:59.4373673Z     node_modules/vue-tsc
+2025-09-24T00:53:59.4373831Z 
+2025-09-24T00:53:59.4373997Z 8 moderate severity vulnerabilities
+2025-09-24T00:53:59.4374192Z 
+2025-09-24T00:53:59.4374432Z To address all issues (including breaking changes), run:
+2025-09-24T00:53:59.4374929Z   npm audit fix --force
+2025-09-24T00:53:59.4396929Z ✅ 安全审计通过

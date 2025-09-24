@@ -1,0 +1,10 @@
+[build]
+  # 使用 --no-optional 在 Linux 构建环境中跳过平台专用的 optional 依赖，避免 EBADPLATFORM 错误
+  command = "npm ci --no-optional && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_ENV = "production"
+
+[context.production.environment]
+  VITE_APP_ENV = "production"

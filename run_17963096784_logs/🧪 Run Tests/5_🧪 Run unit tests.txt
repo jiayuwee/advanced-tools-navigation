@@ -1,0 +1,49 @@
+﻿2025-09-24T01:00:00.6254316Z ##[group]Run echo "🧪 运行单元测试..."
+2025-09-24T01:00:00.6254798Z [36;1mecho "🧪 运行单元测试..."[0m
+2025-09-24T01:00:00.6255196Z [36;1mnpm run test:run[0m
+2025-09-24T01:00:00.6255545Z [36;1mecho "✅ 单元测试通过"[0m
+2025-09-24T01:00:00.6289384Z shell: /usr/bin/bash -e {0}
+2025-09-24T01:00:00.6289616Z env:
+2025-09-24T01:00:00.6289788Z   NODE_VERSION: 20.x
+2025-09-24T01:00:00.6289985Z   CACHE_VERSION: v3
+2025-09-24T01:00:00.6290160Z ##[endgroup]
+2025-09-24T01:00:00.6342637Z 🧪 运行单元测试...
+2025-09-24T01:00:00.7541034Z 
+2025-09-24T01:00:00.7542033Z > advanced-tools-navigation@1.0.0 test:run
+2025-09-24T01:00:00.7542617Z > vitest run
+2025-09-24T01:00:00.7542826Z 
+2025-09-24T01:00:01.0284043Z /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/native.js:71
+2025-09-24T01:00:01.0285038Z 		throw new Error(
+2025-09-24T01:00:01.0285359Z 		      ^
+2025-09-24T01:00:01.0285525Z 
+2025-09-24T01:00:01.0287201Z Error: Cannot find module @rollup/rollup-linux-x64-gnu. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+2025-09-24T01:00:01.0290003Z     at requireWithFriendlyError (/home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/native.js:71:9)
+2025-09-24T01:00:01.0291133Z     at Object.<anonymous> (/home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/native.js:80:76)
+2025-09-24T01:00:01.0292048Z     ... 3 lines matching cause stack trace ...
+2025-09-24T01:00:01.0292475Z     at Module._load (node:internal/modules/cjs/loader:1091:12)
+2025-09-24T01:00:01.0292890Z     at cjsLoader (node:internal/modules/esm/translators:298:15)
+2025-09-24T01:00:01.0293347Z     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+2025-09-24T01:00:01.0293808Z     at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+2025-09-24T01:00:01.0294280Z     at async ModuleLoader.import (node:internal/modules/esm/loader:606:24) {
+2025-09-24T01:00:01.0294764Z   [cause]: Error: Cannot find module '@rollup/rollup-linux-x64-gnu'
+2025-09-24T01:00:01.0295466Z   Require stack:
+2025-09-24T01:00:01.0296320Z   - /home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/native.js
+2025-09-24T01:00:01.0297404Z       at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2025-09-24T01:00:01.0298128Z       at Module._load (node:internal/modules/cjs/loader:1038:27)
+2025-09-24T01:00:01.0298809Z       at Module.require (node:internal/modules/cjs/loader:1289:19)
+2025-09-24T01:00:01.0299448Z       at require (node:internal/modules/helpers:182:18)
+2025-09-24T01:00:01.0300708Z       at requireWithFriendlyError (/home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/native.js:53:10)
+2025-09-24T01:00:01.0302659Z       at Object.<anonymous> (/home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/native.js:80:76)
+2025-09-24T01:00:01.0303882Z       at Module._compile (node:internal/modules/cjs/loader:1521:14)
+2025-09-24T01:00:01.0304630Z       at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+2025-09-24T01:00:01.0305351Z       at Module.load (node:internal/modules/cjs/loader:1266:32)
+2025-09-24T01:00:01.0306020Z       at Module._load (node:internal/modules/cjs/loader:1091:12) {
+2025-09-24T01:00:01.0306594Z     code: 'MODULE_NOT_FOUND',
+2025-09-24T01:00:01.0306971Z     requireStack: [
+2025-09-24T01:00:01.0307833Z       '/home/runner/work/advanced-tools-navigation/advanced-tools-navigation/node_modules/rollup/dist/native.js'
+2025-09-24T01:00:01.0308670Z     ]
+2025-09-24T01:00:01.0308937Z   }
+2025-09-24T01:00:01.0309190Z }
+2025-09-24T01:00:01.0309343Z 
+2025-09-24T01:00:01.0309473Z Node.js v20.19.5
+2025-09-24T01:00:01.0423323Z ##[error]Process completed with exit code 1.
