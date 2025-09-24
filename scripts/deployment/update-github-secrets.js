@@ -58,6 +58,12 @@ class GitHubSecretsUpdater {
     // 使用 libsodium 加密（这里简化处理）
     // 注意：这里需要使用 libsodium 的 sealed box 加密
     // 由于环境限制，这里只是示例代码
+    // 参数未在此示例中使用；显式地标记以避免 ESLint 的 no-unused-vars 报错
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    void secret;
+    void publicKey;
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+
     console.log("⚠️ 需要使用 libsodium 进行加密");
     return null;
   }
