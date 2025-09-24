@@ -43,8 +43,8 @@ jobs:
           
           # 优先使用 npm ci 进行快速安装
           if [ -f "package-lock.json" ]; then
-            echo "使用 npm ci 进行快速安装..."
-            npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --silent
+            echo "使用 npm ci 进行快速安装... (allow optional deps)"
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent
           else
             echo "package-lock.json 不存在，使用 npm install..."
             npm install --prefer-offline --no-audit --ignore-scripts --silent
@@ -92,7 +92,7 @@ jobs:
           npm cache clean --force 2>/dev/null || true
           
           if [ -f "package-lock.json" ]; then
-            npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --silent
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent
           else
             npm install --prefer-offline --no-audit --ignore-scripts --silent
           fi
@@ -148,7 +148,7 @@ jobs:
           npm cache clean --force 2>/dev/null || true
           
           if [ -f "package-lock.json" ]; then
-            npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --silent
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent
           else
             npm install --prefer-offline --no-audit --ignore-scripts --silent
           fi
