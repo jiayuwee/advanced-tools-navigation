@@ -99,8 +99,5 @@
   },
   "engines": {
     "node": ">=18.19.0"
-  },
-  "overrides": {
-    "esbuild": "^0.24.2"
   }
 }
