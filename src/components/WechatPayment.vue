@@ -2,7 +2,7 @@
   <div class="wechat-payment">
     <div class="payment-card">
       <div class="header">
-        <img class="logo" src="/payment-wechat.png" alt="微信支付" />
+        <img class="logo" src="/placeholder-logo.png" alt="微信支付" />
         <h3>微信支付</h3>
       </div>
 
