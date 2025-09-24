@@ -1,6 +1,6 @@
 [build]
-  # 使用 npm install 以避免 npm ci 对 lockfile 的严格一致性校验导致失败
-  command = "npm install --prefer-offline --no-audit --ignore-scripts --no-optional && npm run build"
+  # 使用 npm install，并允许可选依赖安装（需要安装 Rollup 的平台二进制）
+  command = "npm install --prefer-offline --no-audit --ignore-scripts && npm run build"
   publish = "dist"
 
 [build.environment]
