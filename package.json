@@ -94,9 +94,6 @@
     "ts-node": "10.9.2",
     "vitest": "^0.34.3"
   },
-  "optionalDependencies": {
-    "@rollup/rollup-win32-x64-msvc": "^4.52.0"
-  },
   "engines": {
     "node": ">=18.19.0"
   }
