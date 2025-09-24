@@ -235,19 +235,19 @@ const paymentMethods = [
     id: "alipay",
     name: "支付宝",
     description: "使用支付宝安全快捷支付",
-    icon: "/payment-alipay.png",
+    icon: "/placeholder-logo.png",
   },
   {
     id: "wechat",
     name: "微信支付",
     description: "使用微信支付便捷支付",
-    icon: "/payment-wechat.png",
+    icon: "/placeholder.png",
   },
   {
     id: "stripe",
     name: "信用卡",
     description: "支持 Visa、MasterCard 等",
-    icon: "/payment-stripe.png",
+    icon: "/placeholder-logo.png",
   },
 ];
 
