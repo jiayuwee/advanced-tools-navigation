@@ -329,15 +329,6 @@ const routes: RouteRecordRaw[] = [
       description: "更新网站内容和配置",
     },
   },
-  {
-    path: "/test-settings",
-    name: "TestSettings",
-    component: () => import("../views/TestSettingsView.vue"),
-    meta: {
-      title: "测试设置",
-      description: "测试设置页面",
-    },
-  },
 
   {
     path: "/:pathMatch(.*)*",
