@@ -10,7 +10,7 @@ export interface CreateOrderData {
 export interface PaymentData {
   order_id: string;
   payment_method: string;
-  payment_id: string;
+  payment_id?: string; // 改为可选属性
   amount: number;
 }
 

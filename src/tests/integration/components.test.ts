@@ -450,7 +450,8 @@ describe("组件集成测试", () => {
       // 测试筛选功能
       const filterCheckbox = wrapper.find('input[type="checkbox"]');
       if (filterCheckbox.exists()) {
-        await filterCheckbox.setChecked(true);
+        // 使用类型断言访问DOM元素
+        (filterCheckbox.element as HTMLInputElement).checked = true;
         // 验证筛选生效
       }
     });

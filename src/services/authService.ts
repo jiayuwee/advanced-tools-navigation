@@ -1,13 +1,26 @@
 import { supabase } from "../lib/supabaseClient";
 import { UserService } from "./userService";
 import { ErrorHandler } from "../utils/errorHandler";
-import type { User, LoginForm, RegisterForm } from "../types";
+import type { 
+  User, 
+  LoginForm, 
+  RegisterForm,
+  AuthSession,
+  AuthEvent
+} from "../types";
+
+interface PerformanceService {
+  trackMetric(metricName: string, value: number): void;
+  trackCustomMetric(metricName: string, properties: Record<string, unknown>): void;
+}
 
 export class AuthService {
+  private static performance: PerformanceService;
+  
   // 登录
   static async login(
     credentials: LoginForm,
-  ): Promise<{ user: User; session: any }> {
+  ): Promise<{ user: User; session: AuthSession }> {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: credentials.email,
@@ -38,7 +51,7 @@ export class AuthService {
   // 注册
   static async register(
     userData: RegisterForm,
-  ): Promise<{ user: User; session: any }> {
+  ): Promise<{ user: User; session: AuthSession }> {
     try {
       // 检查用户名是否可用
       if (userData.username) {
@@ -165,11 +178,11 @@ export class AuthService {
   }
 
   // 验证邮箱
-  static async verifyEmail(token: string, type: string): Promise<void> {
+  static async verifyEmail(token: string, type: 'signup'|'recovery'|'invite'|'magiclink'): Promise<void> {
     try {
       const { error } = await supabase.auth.verifyOtp({
         token_hash: token,
-        type: type as any,
+        type: type,
       });
 
       if (error) throw error;
@@ -200,7 +213,7 @@ export class AuthService {
   }
 
   // 获取当前会话
-  static async getSession(): Promise<any> {
+  static async getSession(): Promise<AuthSession | null> {
     try {
       const {
         data: { session },
@@ -236,8 +249,8 @@ export class AuthService {
     }
   }
 
-  // 监听认证状态变化
-  static onAuthStateChange(callback: (event: string, session: any) => void) {
+  // 监听认证状态变化  
+  static onAuthStateChange(callback: (event: AuthEvent, session: AuthSession | null) => void) {
     return supabase.auth.onAuthStateChange(callback);
   }
 

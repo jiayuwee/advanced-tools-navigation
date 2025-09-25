@@ -1,570 +1,101 @@
-import { ref, computed } from "vue";
-import { defineStore } from "pinia";
-import { supabase } from "@/lib/supabaseClient";
-import { additionalTools } from "@/data/additional-tools";
-
-// 最小 Tool 相关类型，避免依赖空的 Database 类型
-type CategoryRow = {
-  id: string;
-  name: string;
-  description: string | null;
-  icon: string | null;
-  color: string | null;
-  parent_id: string | null;
-  sort_order: number | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-};
-
-type TagRow = { id: string; name: string };
-
-export type Tool = {
+// 工具类型定义
+interface ToolBase {
   id: string;
   name: string;
   description: string;
   url: string | null;
   icon: string | null;
   category_id: string | null;
-  is_featured: boolean | null;
-  click_count: number | null;
-  status: "active" | "inactive" | string;
+  is_featured: boolean;
+  click_count: number;
+  status: 'active' | 'inactive';
   created_at: string;
   updated_at: string;
+}
+
+interface ToolExtended extends ToolBase {
   created_by: string | null;
   meta_title: string | null;
   meta_description: string | null;
   sort_order: number | null;
   categories: CategoryRow | null;
   tool_tags: Array<{ tags: TagRow | null }> | null;
-  tags?: string[];
-};
-
-// 定义 Tool 类型，并扩展以包含关联的 category 和 tags 数据
-// 这使得在组件中直接访问 tool.category.name 和 tool.tags 成为可能
-// 以上 Tool 类型已经包含 categories/tool_tags 关系和派生 tags
-
-export const useToolsStore = defineStore("tools", () => {
-  // --- State (状态) ---
-  const tools = ref<Tool[]>([]);
-  const loading = ref(false);
-  const error = ref<Error | null>(null);
-  const initialized = ref(false);
-
-  // 状态：搜索查询，由 AppHeader.vue 使用
-  const searchQuery = ref("");
-  // 状态：选中的分类
-  const selectedCategory = ref("all");
-  // 状态：侧边栏折叠状态，由 AppHeader.vue 使用
-  const sidebarCollapsed = ref(false);
-
-  // --- Getters (计算属性) ---
-
-  /**
-   * 根据搜索查询动态过滤工具列表。
-   * 这是响应式的，当 searchQuery 或 tools 变化时会自动重新计算。
-   */
-  const filteredTools = computed(() => {
-    if (!searchQuery.value) {
-      return tools.value;
-    }
-    const lowerCaseQuery = searchQuery.value.toLowerCase();
-    return tools.value.filter(
-      (tool) =>
-        tool.name.toLowerCase().includes(lowerCaseQuery) ||
-        tool.description.toLowerCase().includes(lowerCaseQuery) ||
-        (tool.categories &&
-          tool.categories.name.toLowerCase().includes(lowerCaseQuery)),
-    );
-  });
-
-  // --- Actions (操作) ---
-
-  /**
-   * 从 Supabase 数据库获取所有工具数据。
-   * 它会同时获取关联的分类信息。
-   */
-  async function fetchTools() {
-    if (loading.value) return;
-
-    loading.value = true;
-    error.value = null;
-    try {
-      // 检查环境变量是否已配置
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-      if (
-        !supabaseUrl ||
-        !supabaseAnonKey ||
-        supabaseUrl.includes("your-project-ref") ||
-        supabaseAnonKey.includes("your-anon-key")
-      ) {
-        // 生产环境中不应悄悄回退到模拟数据——应当显式报错以便快速定位配置问题
-        if (import.meta.env.PROD) {
-          console.error(
-            "Supabase 环境变量未配置（生产），请在 CI/部署环境中设置 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY",
-          );
-          error.value = new Error("Supabase 未配置（生产环境）");
-          initialized.value = true;
-          loading.value = false;
-          return;
-        }
-
-        // 开发环境仍然允许使用模拟数据，便于本地调试
-        console.warn("Supabase 环境变量未配置，使用模拟工具数据");
-        const mockTools = [
-          {
-            id: "1",
-            name: "Visual Studio Code",
-            description: "免费的代码编辑器，支持多种编程语言",
-            url: "https://code.visualstudio.com",
-            icon: "💻",
-            category_id: "1",
-            is_featured: true,
-            click_count: 150,
-            status: "active" as const,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            created_by: null,
-            meta_title: null,
-            meta_description: null,
-            sort_order: 1,
-            categories: {
-              id: "1",
-              name: "开发工具",
-              description: "编程开发相关工具",
-              icon: "💻",
-              color: "#3b82f6",
-              parent_id: null,
-              sort_order: 1,
-              is_active: true,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            },
-            tool_tags: null,
-            tags: ["编程", "开发", "编辑器"],
-          },
-          {
-            id: "2",
-            name: "Figma",
-            description: "协作式界面设计工具",
-            url: "https://figma.com",
-            icon: "🎨",
-            category_id: "2",
-            is_featured: true,
-            click_count: 120,
-            status: "active" as const,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            created_by: null,
-            meta_title: null,
-            meta_description: null,
-            sort_order: 2,
-            categories: {
-              id: "2",
-              name: "设计工具",
-              description: "UI/UX设计工具",
-              icon: "🎨",
-              color: "#ef4444",
-              parent_id: null,
-              sort_order: 2,
-              is_active: true,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            },
-            tool_tags: null,
-            tags: ["设计", "UI", "UX"],
-          },
-          {
-            id: "3",
-            name: "ChatGPT",
-            description: "AI助手，帮助编程、写作和解答问题",
-            url: "https://chat.openai.com",
-            icon: "🤖",
-            category_id: "3",
-            is_featured: true,
-            click_count: 200,
-            status: "active" as const,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            created_by: null,
-            meta_title: null,
-            meta_description: null,
-            sort_order: 3,
-            categories: {
-              id: "3",
-              name: "AI工具",
-              description: "人工智能相关工具",
-              icon: "🤖",
-              color: "#10b981",
-              parent_id: null,
-              sort_order: 3,
-              is_active: true,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            },
-            tool_tags: null,
-            tags: ["AI", "聊天", "助手"],
-          },
-        ];
-
-        // 添加额外的工具数据，并为它们分配正确的分类
-        type LooseTool = { id?: unknown; category_id?: unknown } & Record<
-          string,
-          unknown
-        >;
-        const extendedTools = (additionalTools || []) as LooseTool[];
-        const mappedExtendedTools = extendedTools.map((tool: LooseTool) => ({
-          ...tool,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          created_by: null,
-          meta_title: null,
-          meta_description: null,
-          categories: getCategoryById(String(tool.category_id || "")),
-          tool_tags: null,
-          tags: getTagsForTool(String(tool.id || "")),
-        }));
-
-        tools.value = [...mockTools, ...mappedExtendedTools];
-        initialized.value = true;
-        return;
-      }
-
-      const { data, error: queryError } = await supabase
-        .from("tools")
-        .select(
-          `
-          *,
-          categories ( * ),
-          tool_tags ( tags ( * ) )
-        `,
-        )
-        .eq("status", "active")
-        .order("sort_order", { ascending: true });
-
-      if (queryError) {
-        throw queryError;
-      }
-
-      // Supabase 的类型生成器可能将单关系定义为对象而非数组
-      // 处理标签数据，将 tool_tags 转换为简单的 tags 数组
-      const processedTools =
-        (data as unknown as Tool[])?.map((tool) => {
-          const tags =
-            tool.tool_tags?.map((tt) => {
-              const t = tt?.tags as unknown as { name?: string } | null;
-              return (t && t.name) || "";
-            }) || [];
-
-          return {
-            ...tool,
-            tags,
-          };
-        }) || [];
-
-      tools.value = processedTools;
-      initialized.value = true;
-    } catch (err: unknown) {
-      const message = safeErrorMessage(err);
-      console.error("获取工具列表失败:", message);
-      error.value = new Error(message);
-
-      // 如果Supabase调用失败，回退到模拟数据
-      if (tools.value.length === 0) {
-        console.warn("Supabase调用失败，使用模拟工具数据");
-        const fallbackTools = [
-          {
-            id: "1",
-            name: "Visual Studio Code",
-            description: "免费的代码编辑器，支持多种编程语言",
-            url: "https://code.visualstudio.com",
-            icon: "💻",
-            category_id: "1",
-            is_featured: true,
-            click_count: 150,
-            status: "active" as const,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            created_by: null,
-            meta_title: null,
-            meta_description: null,
-            sort_order: 1,
-            categories: {
-              id: "1",
-              name: "开发工具",
-              description: "编程开发相关工具",
-              icon: "💻",
-              color: "#3b82f6",
-              parent_id: null,
-              sort_order: 1,
-              is_active: true,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            },
-            tool_tags: null,
-            tags: ["编程", "开发", "编辑器"],
-          },
-        ];
-
-        // 添加额外的工具数据
-        const extendedFallbackTools = (
-          additionalTools as { id?: unknown; category_id?: unknown }[]
-        ).map((tool) => ({
-          ...tool,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          created_by: null,
-          meta_title: null,
-          meta_description: null,
-          categories: getCategoryById(String(tool.category_id || "")),
-          tool_tags: null,
-          tags: getTagsForTool(String(tool.id || "")),
-        })) as unknown as Tool[];
-
-        tools.value = [...fallbackTools, ...extendedFallbackTools];
-        initialized.value = true;
-        error.value = null; // 清除错误，因为我们有了后备数据
-      }
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  /**
-   * 初始化 Store，仅在未初始化时获取数据。
-   * 由 ErrorDisplay.vue 和应用主入口调用。
-   */
-  async function initialize() {
-    if (!initialized.value) {
-      await fetchTools();
-    }
-  }
-
-  /**
-   * 切换侧边栏的折叠状态。
-   * 由 AppHeader.vue 调用。
-   */
-  function toggleSidebar() {
-    sidebarCollapsed.value = !sidebarCollapsed.value;
-  }
-
-  /**
-   * 清除错误状态。
-   */
-  function clearError() {
-    error.value = null;
-  }
-
-  /**
-   * 设置搜索查询
-   */
-  function setSearchQuery(query: string) {
-    searchQuery.value = query;
-  }
-
-  /**
-   * 设置选中的分类
-   */
-  function setSelectedCategory(categoryId: string) {
-    selectedCategory.value = categoryId;
-  }
-
-  /**
-   * 增加工具点击次数
-   */
-  async function incrementClickCount(toolId: string) {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- minimal, narrow escape for generated supabase client typings
-      const { error } = await (supabase as any).rpc(
-        "increment_click_count",
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the RPC param typing is incompatible with generated types
-        { tool_id: toolId } as any,
-      );
-
-      if (error) {
-        console.error("增加点击次数失败:", error);
-        return;
-      }
-
-      // 更新本地状态
-      const tool = tools.value.find((t) => t.id === toolId);
-      if (tool) {
-        tool.click_count = (tool.click_count || 0) + 1;
-      }
-    } catch (error) {
-      console.error("增加点击次数失败:", safeErrorMessage(error));
-    }
-  }
-
-  /**
-   * 切换收藏状态
-   */
-  async function toggleFavorite(toolId: string) {
-    try {
-      // TODO: 实现收藏功能
-      console.log("切换收藏:", toolId);
-    } catch (error) {
-      console.error("切换收藏失败:", safeErrorMessage(error));
-    }
-  }
-
-  // --- Return (导出) ---
-  // 确保所有外部需要访问的状态、计算属性和方法都在此导出。
-  return {
-    // State
-    tools,
-    loading,
-    error,
-    initialized,
-    searchQuery,
-    selectedCategory,
-    sidebarCollapsed,
-    // Getters
-    filteredTools,
-    // Actions
-    fetchTools,
-    initialize,
-    toggleSidebar,
-    clearError,
-    setSearchQuery,
-    setSelectedCategory,
-    incrementClickCount,
-    toggleFavorite,
-  };
-});
-
-// 辅助函数：根据分类ID获取分类信息
-function getCategoryById(categoryId: string) {
-  const categories: Record<string, CategoryRow> = {
-    "550e8400-e29b-41d4-a716-446655440001": {
-      id: "550e8400-e29b-41d4-a716-446655440001",
-      name: "开发工具",
-      description: "编程和开发相关的工具",
-      icon: "💻",
-      color: "#0078d4",
-      parent_id: null,
-      sort_order: 1,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    "550e8400-e29b-41d4-a716-446655440002": {
-      id: "550e8400-e29b-41d4-a716-446655440002",
-      name: "设计工具",
-      description: "设计和创意相关的工具",
-      icon: "🎨",
-      color: "#7b1fa2",
-      parent_id: null,
-      sort_order: 2,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    "550e8400-e29b-41d4-a716-446655440003": {
-      id: "550e8400-e29b-41d4-a716-446655440003",
-      name: "办公工具",
-      description: "办公和生产力工具",
-      icon: "📊",
-      color: "#388e3c",
-      parent_id: null,
-      sort_order: 3,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    "550e8400-e29b-41d4-a716-446655440004": {
-      id: "550e8400-e29b-41d4-a716-446655440004",
-      name: "学习工具",
-      description: "学习和教育相关的工具",
-      icon: "📚",
-      color: "#f57c00",
-      parent_id: null,
-      sort_order: 4,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    "550e8400-e29b-41d4-a716-446655440005": {
-      id: "550e8400-e29b-41d4-a716-446655440005",
-      name: "网络工具",
-      description: "网络服务和云平台",
-      icon: "🌐",
-      color: "#2196f3",
-      parent_id: null,
-      sort_order: 5,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    "550e8400-e29b-41d4-a716-446655440006": {
-      id: "550e8400-e29b-41d4-a716-446655440006",
-      name: "娱乐工具",
-      description: "娱乐和休闲工具",
-      icon: "🎮",
-      color: "#e91e63",
-      parent_id: null,
-      sort_order: 6,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    "550e8400-e29b-41d4-a716-446655440007": {
-      id: "550e8400-e29b-41d4-a716-446655440007",
-      name: "实用工具",
-      description: "日常实用工具",
-      icon: "🔧",
-      color: "#607d8b",
-      parent_id: null,
-      sort_order: 7,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-  };
-
-  return (
-    categories[categoryId] || categories["550e8400-e29b-41d4-a716-446655440007"]
-  );
+  tags: string[];
+  category_name: string | null;
+  category_slug: string | null;
+  author_id: string | null;
+  author_name: string | null;
 }
 
-// 辅助函数：根据工具ID获取标签
-function getTagsForTool(toolId: string): string[] {
-  const toolTags: Record<string, string[]> = {
-    "850e8400-e29b-41d4-a716-446655440013": ["部署", "静态网站", "前端"],
-    "850e8400-e29b-41d4-a716-446655440014": ["部署", "静态网站", "CDN"],
-    "850e8400-e29b-41d4-a716-446655440015": ["容器", "DevOps", "部署"],
-    "850e8400-e29b-41d4-a716-446655440016": ["问答", "学习", "编程"],
-    "850e8400-e29b-41d4-a716-446655440017": ["设计", "UI", "Mac"],
-    "850e8400-e29b-41d4-a716-446655440018": ["设计", "UI", "Adobe"],
-    "850e8400-e29b-41d4-a716-446655440019": ["团队", "沟通", "协作"],
-    "850e8400-e29b-41d4-a716-446655440020": ["视频", "会议", "远程"],
-    "850e8400-e29b-41d4-a716-446655440021": ["云存储", "Google", "协作"],
-    "850e8400-e29b-41d4-a716-446655440022": ["云存储", "同步", "备份"],
-    "850e8400-e29b-41d4-a716-446655440023": ["AI", "助手", "写作"],
-    "850e8400-e29b-41d4-a716-446655440024": ["AI", "图像", "生成"],
-    "850e8400-e29b-41d4-a716-446655440025": ["AI", "编程", "代码"],
-    "850e8400-e29b-41d4-a716-446655440026": ["CDN", "安全", "网络"],
-    "850e8400-e29b-41d4-a716-446655440027": ["视频", "娱乐", "分享"],
-    "850e8400-e29b-41d4-a716-446655440028": ["短视频", "社交", "娱乐"],
-    "850e8400-e29b-41d4-a716-446655440029": ["音乐", "流媒体", "娱乐"],
-    "850e8400-e29b-41d4-a716-446655440030": ["翻译", "语言", "工具"],
-    "850e8400-e29b-41d4-a716-446655440031": ["密码", "安全", "管理"],
-    "850e8400-e29b-41d4-a716-446655440032": ["支付", "金融", "在线"],
-  };
+export type Tool = ToolBase & Partial<ToolExtended>;
 
-  return toolTags[toolId] || ["工具"];
+// 类型守卫
+export function isExtendedTool(tool: Tool): tool is ToolExtended {
+  return 'created_by' in tool;
 }
 
-// 从 unknown 错误对象安全提取字符串信息
-function safeErrorMessage(err: unknown): string {
-  if (!err) return "未知错误";
-  if (typeof err === "string") return err;
-  if (err instanceof Error) return err.message;
-  try {
-    return JSON.stringify(err as Record<string, unknown>);
-  } catch {
-    return String(err);
+// 严格的类型转换函数
+export function normalizeTool(data: unknown): Tool {
+  if (typeof data !== 'object' || data === null) {
+    throw new Error('Invalid tool data: expected object');
   }
+
+  const raw = data as Record<string, any>;
+
+  // 验证必填字段
+  if (typeof raw.id !== 'string') throw new Error('Invalid tool data: id must be string');
+  if (typeof raw.name !== 'string') throw new Error('Invalid tool data: name must be string');
+
+  // 创建基础工具对象
+  const baseTool: ToolBase = {
+    id: raw.id,
+    name: raw.name,
+    description: typeof raw.description === 'string' ? raw.description : '',
+    url: typeof raw.url === 'string' ? raw.url : null,
+    icon: typeof raw.icon === 'string' ? raw.icon : null,
+    category_id: typeof raw.category_id === 'string' ? raw.category_id : null,
+    is_featured: Boolean(raw.is_featured),
+    click_count: Number(raw.click_count) || 0,
+    status: raw.status === 'inactive' ? 'inactive' : 'active',
+    created_at: typeof raw.created_at === 'string' ? raw.created_at : new Date().toISOString(),
+    updated_at: typeof raw.updated_at === 'string' ? raw.updated_at : new Date().toISOString()
+  };
+
+  // 检查是否有扩展字段
+  const hasExtendedFields = [
+    'created_by', 'meta_title', 'meta_description', 'sort_order',
+    'categories', 'tool_tags', 'tags', 'category_name', 'category_slug',
+    'author_id', 'author_name'
+  ].some(field => field in raw);
+
+  if (!hasExtendedFields) {
+    return baseTool;
+  }
+
+  // 创建扩展工具对象
+  const extendedTool: ToolExtended = {
+    ...baseTool,
+    created_by: typeof raw.created_by === 'string' ? raw.created_by : null,
+    meta_title: typeof raw.meta_title === 'string' ? raw.meta_title : null,
+    meta_description: typeof raw.meta_description === 'string' ? raw.meta_description : null,
+    sort_order: typeof raw.sort_order === 'number' ? raw.sort_order : null,
+    categories: raw.categories || null,
+    tool_tags: raw.tool_tags || null,
+    tags: Array.isArray(raw.tags) ? raw.tags.map(String) : [],
+    category_name: typeof raw.category_name === 'string' ? raw.category_name : null,
+    category_slug: typeof raw.category_slug === 'string' ? raw.category_slug : null,
+    author_id: typeof raw.author_id === 'string' ? raw.author_id : null,
+    author_name: typeof raw.author_name === 'string' ? raw.author_name : null
+  };
+
+  return extendedTool;
+}
+
+// 安全访问工具属性
+export function getToolCategories(tool: Tool): CategoryRow | null {
+  return isExtendedTool(tool) ? tool.categories : null;
+}
+
+export function getToolTags(tool: Tool): Array<{ tags: TagRow | null }> | null {
+  return isExtendedTool(tool) ? tool.tool_tags : null;
 }

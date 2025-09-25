@@ -8,12 +8,35 @@ import type {
  * 用于收集和分析应用性能数据
  */
 class PerformanceService {
-  private metrics: TypePerformanceMetrics[] = [];
+  private metrics: (TypePerformanceMetrics & { metadata?: Record<string, unknown> })[] = [];
   private config: TypePerformanceConfig = {
     enableAutoTracking: true,
     sampleRate: 0.1,
     maxMetrics: 1000,
   };
+
+  /**
+   * 跟踪基础指标
+   * @param metricName 指标名称
+   * @param value 指标值
+   */
+  trackMetric(metricName: string, value: number): void {
+    this.recordMetric(metricName, value);
+  }
+
+  /**
+   * 跟踪自定义指标
+   * @param metricName 指标名称
+   * @param properties 自定义属性
+   */
+  trackCustomMetric(metricName: string, properties: Record<string, unknown>): void {
+    this.recordMetric(metricName, 0, 'counter');
+    // 将属性存储到metadata中
+    const metric = this.metrics[this.metrics.length - 1];
+    if (metric) {
+      metric.metadata = properties;
+    }
+  }
 
   /**
    * 初始化性能服务
@@ -153,8 +176,48 @@ class PerformanceService {
 }
 
 // 类型定义
+export type PerformanceServiceInterface = {
+  trackMetric(name: string, value: number): void;
+  trackCustomMetric(name: string, properties: Record<string, unknown>): void;
+  trackApiCall(name: string, duration: number): void;
+  trackUserAction(name: string, properties: Record<string, unknown>): void;
+  trackError(name: string, error: Error): void;
+  init(config?: Partial<TypePerformanceConfig>): void;
+  getMetrics(filter?: { name?: string; type?: string }): TypePerformanceMetrics[];
+  clear(): void;
+  exportReport(): {
+    timestamp: number;
+    config: TypePerformanceConfig;
+    metrics: TypePerformanceMetrics[];
+    summary: {
+      totalMetrics: number;
+      avgTiming: number;
+      totalCounts: number;
+      timeRange: { start: number; end: number };
+    };
+  };
+};
+
 export { TypePerformanceMetrics as PerformanceMetrics, TypePerformanceConfig as PerformanceConfig };
 
-// 导出单例实例
-export const performanceService = new PerformanceService();
+// 实现接口方法
+const performanceService = new PerformanceService() as PerformanceService & PerformanceServiceInterface;
+
+// 添加接口方法实现
+performanceService.trackApiCall = (name: string, duration: number) => {
+  performanceService.trackMetric(`api_${name}`, duration);
+};
+
+performanceService.trackUserAction = (name: string, properties: Record<string, unknown>) => {
+  performanceService.trackCustomMetric(`user_${name}`, properties);
+};
+
+performanceService.trackError = (name: string, error: Error) => {
+  performanceService.trackCustomMetric(`error_${name}`, {
+    message: error.message,
+    stack: error.stack
+  });
+};
+
+export { performanceService };
 export default performanceService;

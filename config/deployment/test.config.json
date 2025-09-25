@@ -1,0 +1,18 @@
+{
+  "environment": "test",
+  "apiEndpoint": "https://api-test.example.com",
+  "cdnUrl": "https://cdn-test.example.com",
+  "deployUser": "deploy_user",
+  "serverHost": "test.example.com",
+  "deployPath": "/var/www/test",
+  "sshPort": 22,
+  "healthCheckEndpoint": "/health",
+  "features": {
+    "analytics": true,
+    "logging": true
+  },
+  "supabase": {
+    "url": "https://fytiwsutzgmygfxnqoft.supabase.co",
+    "anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5dGl3c3V0emdteWdmeG5xb2Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MDM1ODcsImV4cCI6MjA2NjM3OTU4N30.LM9vazR9QCZ4vLC_Q1lJmtCj3pEVqM6vpW4TKzntAQA"
+  }
+}

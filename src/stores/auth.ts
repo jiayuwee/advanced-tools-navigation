@@ -72,33 +72,44 @@ export const useAuthStore = defineStore("auth", () => {
     if (initialized.value) return;
 
     loading.value = true;
+    console.log("🔐 初始化Supabase认证监听...");
 
-    supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log(`🔑 认证状态变更: ${event}`, session);
+      
       if (session?.user) {
+        console.log("🔄 获取用户资料...");
         const profile = await fetchUserProfile(session.user.id);
+        
         if (profile) {
-          // 组合 Supabase Auth User 和 user_profiles 数据
           user.value = {
             ...session.user,
             username: profile.username || "未设置用户名",
             avatar_url: profile.avatar_url || "",
             role: profile.role || "user",
           };
+          console.log("✅ 用户资料加载完成", user.value);
         } else {
-          // 如果没有 profile，也设置基础 user 信息，避免应用卡死
           user.value = {
             ...session.user,
             username: session.user.email || "新用户",
             avatar_url: "",
             role: "user",
           };
+          console.log("⚠️ 使用基础用户信息", user.value);
         }
       } else {
         user.value = null;
+        console.log("🚪 用户已登出");
       }
-      // 标记为已初始化，无论成功与否
+      
       initialized.value = true;
       loading.value = false;
+    });
+
+    // 添加卸载时清理
+    onScopeDispose(() => {
+      subscription?.unsubscribe();
     });
   }
 
@@ -130,6 +141,16 @@ export const useAuthStore = defineStore("auth", () => {
     error.value = null;
   }
 
+  /**
+   * 检查用户认证状态 - 用于路由守卫
+   */
+  async function checkAuth(): Promise<boolean> {
+    if (!initialized.value) {
+      await initialize();
+    }
+    return isAuthenticated.value;
+  }
+
   // --- Return (导出) ---
   return {
     // State
@@ -144,6 +165,7 @@ export const useAuthStore = defineStore("auth", () => {
     initialize,
     logout,
     clearError,
+    checkAuth,
     // 可以根据需要添加 login, register, etc.
   };
 });

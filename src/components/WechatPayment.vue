@@ -1,182 +1,241 @@
 <template>
-  <div class="wechat-payment">
-    <div class="payment-card">
-      <div class="header">
-        <div class="logo logo-text">¥</div>
+  <div class="wechat-payment" :class="{ 'payment-disabled': !enabled }">
+    <div v-if="enabled">
+      <div class="payment-header">
+        <div class="payment-logo">
+          <svg viewBox="0 0 1024 1024" class="wechat-logo">
+            <path fill="#07c160" d="M601.1 556.5c-31.5-12.2-65.3-19.1-100.6-19.1-35.3 0-69.1 6.9-100.6 19.1-9.9 3.8-16.9 13.1-16.9 23.6 0 10.5 7 19.8 16.9 23.6 31.5 12.2 65.3 19.1 100.6 19.1 35.3 0 69.1-6.9 100.6-19.1 9.9-3.8 16.9-13.1 16.9-23.6 0-10.5-7-19.8-16.9-23.6z"/>
+            <path fill="#07c160" d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"/>
+          </svg>
+        </div>
         <h3>微信支付</h3>
       </div>
 
-      <div class="content">
-        <p class="amount">
-          应付金额：<span>¥{{ amount }}</span>
-        </p>
-        <div class="qrcode-box">
-          <div class="qrcode-placeholder">二维码加载中</div>
+      <div class="payment-content">
+        <p class="amount">应付金额：<span>¥{{ amount }}</span></p>
+        <div class="qrcode-container">
+          <div class="qrcode-placeholder" v-if="!qrcodeUrl">
+            正在生成支付二维码...
+          </div>
+          <img v-else :src="qrcodeUrl" alt="微信支付二维码" class="qrcode-image">
         </div>
         <p class="tips">请使用微信扫一扫完成支付</p>
       </div>
 
-      <div class="actions">
-        <button class="btn cancel" @click="onCancel">取消</button>
-        <button class="btn primary" @click="mockPaySuccess">
-          我已完成支付
+      <div class="payment-actions">
+        <button class="action-button cancel" @click="onCancel">取消</button>
+        <button class="action-button confirm" @click="checkPaymentStatus">
+          我已支付
         </button>
       </div>
     </div>
-  </div>
 
-  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <div v-else class="payment-disabled-message">
+      <p>微信支付当前不可用</p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { defineProps, defineEmits, ref, onMounted } from "vue";
+import { PaymentService } from "@/services/paymentService";
 
-const props = defineProps<{
-  amount: number | string;
-  orderId: string;
-}>();
+const props = defineProps({
+  orderId: { type: String, required: true },
+  amount: { type: [Number, String], required: true },
+});
 
 const emit = defineEmits<{
-  (e: "success", payload: { orderId: string }): void;
+  (e: "success", payload: { orderId: string; paymentId: string }): void;
   (e: "error", message: string): void;
+  (e: "loading", isLoading: boolean): void;
   (e: "cancel"): void;
 }>();
 
+const enabled = ref(!!import.meta.env.VITE_WECHAT_APP_ID);
+const qrcodeUrl = ref("");
+const checking = ref(false);
 const errorMessage = ref("");
 
-onMounted(() => {
-  // 这里通常会请求后端生成微信支付二维码链接
-  // 当前为占位实现，确保构建通过
+onMounted(async () => {
+  if (!enabled.value) return;
+
+  try {
+    emit("loading", true);
+    const result = await PaymentService.processPayment(
+      {
+        order_id: props.orderId,
+        payment_method: "wechat",
+        amount: Number(props.amount),
+      },
+      "wechat"
+    );
+
+    if (result.success && result.redirectUrl) {
+      // 模拟生成二维码
+      qrcodeUrl.value = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='white'/><text x='100' y='100' font-family='Arial' font-size='14' text-anchor='middle' fill='black'>微信支付模拟二维码</text></svg>`;
+    } else {
+      throw new Error(result.message || "微信支付初始化失败");
+    }
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : "支付初始化失败";
+    emit("error", errorMessage.value);
+  } finally {
+    emit("loading", false);
+  }
 });
 
-const mockPaySuccess = () => {
-  try {
-    emit("success", { orderId: props.orderId });
-  } catch (err) {
-    emit("error", err instanceof Error ? err.message : "支付回调处理失败");
-  }
-};
+async function checkPaymentStatus() {
+  checking.value = true;
+  emit("loading", true);
 
-const onCancel = () => {
+  try {
+    // 模拟支付成功
+    setTimeout(() => {
+      emit("success", {
+        orderId: props.orderId,
+        paymentId: `wechat_${Date.now()}`,
+      });
+      checking.value = false;
+      emit("loading", false);
+    }, 1000);
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : "支付状态检查失败";
+    emit("error", errorMessage.value);
+    checking.value = false;
+    emit("loading", false);
+  }
+}
+
+function onCancel() {
   emit("cancel");
-};
+}
 </script>
 
 <style scoped>
 .wechat-payment {
-  display: flex;
-  justify-content: center;
-}
-
-.payment-card {
   width: 100%;
-  max-width: 420px;
-  background: #ffffff;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1.5rem;
   border-radius: 12px;
-  padding: 1.25rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.header {
+.payment-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.logo {
-  width: 28px;
-  height: 28px;
-  display: inline-flex;
+.payment-logo {
+  width: 40px;
+  height: 40px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
-  background: #16a34a15;
-  color: #16a34a;
-  font-weight: 800;
 }
 
-.logo-text {
-  font-size: 14px;
+.wechat-logo {
+  width: 100%;
+  height: 100%;
 }
 
-.content {
+.payment-content {
   text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 .amount {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #323130;
+  margin-bottom: 1rem;
 }
 
 .amount span {
   font-weight: 700;
-  color: #16a34a;
+  color: var(--wechat-DEFAULT);
 }
 
-.qrcode-box {
-  margin: 1rem 0;
-  display: flex;
-  justify-content: center;
-}
-
-.qrcode-placeholder {
+.qrcode-container {
+  margin: 1rem auto;
   width: 200px;
   height: 200px;
-  border-radius: 8px;
-  background: repeating-linear-gradient(
-    45deg,
-    #f3f4f6,
-    #f3f4f6 10px,
-    #e5e7eb 10px,
-    #e5e7eb 20px
-  );
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.qrcode-placeholder {
+  color: #64748b;
   font-size: 0.875rem;
 }
 
-.tips {
-  color: #6b7280;
-  font-size: 0.85rem;
+.qrcode-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.actions {
-  margin-top: 1rem;
+.tips {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.payment-actions {
   display: flex;
   gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
-.btn {
+.action-button {
   flex: 1;
-  padding: 0.625rem 0.75rem;
-  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  border: none;
   border-radius: 8px;
-  background: #fff;
-  cursor: pointer;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.btn.primary {
-  background: #22c55e;
-  border-color: #22c55e;
-  color: #fff;
-}
-
-.btn.cancel:hover {
+.action-button.cancel {
   background: #f3f4f6;
+  color: #64748b;
 }
 
-.btn.primary:hover {
-  background: #16a34a;
-  border-color: #16a34a;
+.action-button.cancel:hover {
+  background: #e5e7eb;
 }
 
-.error {
-  margin-top: 0.75rem;
+.action-button.confirm {
+  background: var(--wechat-DEFAULT);
+  color: white;
+}
+
+.action-button.confirm:hover {
+  background: var(--wechat-dark);
+}
+
+.action-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.payment-disabled-message {
+  padding: 1rem;
   text-align: center;
-  color: #dc2626;
+  color: #64748b;
+}
+
+.payment-disabled {
+  opacity: 0.6;
+  pointer-events: none;
 }
 </style>

@@ -3,12 +3,11 @@ import { loadStripe } from "@stripe/stripe-js";
 
 // 支付网关配置
 const PAYMENT_CONFIG = {
-  //           orderId: paymentIntent.metadata?.order_id || ""tripe配置
   stripe: {
     publicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY || "",
     secretKey: import.meta.env.VITE_STRIPE_SECRET_KEY || "",
+    enabled: !!import.meta.env.VITE_STRIPE_PUBLIC_KEY,
   },
-  // 支付宝配置
   alipay: {
     appId: import.meta.env.VITE_ALIPAY_APP_ID || "",
     privateKey: import.meta.env.VITE_ALIPAY_PRIVATE_KEY || "",
@@ -18,15 +17,25 @@ const PAYMENT_CONFIG = {
       "https://openapi.alipay.com/gateway.do",
     charset: import.meta.env.VITE_ALIPAY_CHARSET || "UTF-8",
     signType: import.meta.env.VITE_ALIPAY_SIGN_TYPE || "RSA2",
+    enabled: !!import.meta.env.VITE_ALIPAY_APP_ID,
   },
-  // 微信支付配置
   wechat: {
     appId: import.meta.env.VITE_WECHAT_APP_ID || "",
     mchId: import.meta.env.VITE_WECHAT_MCH_ID || "",
     apiKey: import.meta.env.VITE_WECHAT_API_KEY || "",
     apiVersion: import.meta.env.VITE_WECHAT_API_VERSION || "v3",
+    enabled: !!import.meta.env.VITE_WECHAT_APP_ID,
   },
 };
+
+// 检测可用支付平台
+export const AVAILABLE_PAYMENT_METHODS = Object.entries(PAYMENT_CONFIG)
+  .filter(([_, config]) => config.enabled)
+  .map(([method]) => method);
+
+if (AVAILABLE_PAYMENT_METHODS.length === 0) {
+  console.warn("⚠️ 没有配置任何支付平台，请设置至少一个支付平台的环境变量");
+}
 
 // 支付结果类型
 export interface PaymentResult {
@@ -332,22 +341,46 @@ export class PaymentService {
     paymentData: PaymentData,
     method: string,
   ): Promise<PaymentResult> {
-    switch (method) {
-      case "stripe":
-        return await this.processStripePayment(paymentData);
-      case "alipay":
-        return await this.processAlipayPayment(paymentData);
-      case "wechat":
-        return await this.processWechatPayment(paymentData);
-      default:
-        return {
-          success: false,
-          orderId: paymentData.order_id,
-          amount: paymentData.amount,
-          currency: "CNY",
-          method: method,
-          message: "不支持的支付方式",
-        };
+    // 检查支付方式是否可用
+    if (!PAYMENT_CONFIG[method as keyof typeof PAYMENT_CONFIG]?.enabled) {
+      return {
+        success: false,
+        orderId: paymentData.order_id,
+        amount: paymentData.amount,
+        currency: "CNY",
+        method: method,
+        message: `支付平台 ${method} 未配置或不可用`,
+      };
+    }
+
+    try {
+      switch (method) {
+        case "stripe":
+          return await this.processStripePayment(paymentData);
+        case "alipay":
+          return await this.processAlipayPayment(paymentData);
+        case "wechat":
+          return await this.processWechatPayment(paymentData);
+        default:
+          return {
+            success: false,
+            orderId: paymentData.order_id,
+            amount: paymentData.amount,
+            currency: "CNY",
+            method: method,
+            message: "不支持的支付方式",
+          };
+      }
+    } catch (error) {
+      console.error(`支付处理失败 (${method}):`, error);
+      return {
+        success: false,
+        orderId: paymentData.order_id,
+        amount: paymentData.amount,
+        currency: "CNY",
+        method: method,
+        message: error instanceof Error ? error.message : "支付处理失败",
+      };
     }
   }
 }

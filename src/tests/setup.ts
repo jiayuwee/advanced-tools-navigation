@@ -15,6 +15,7 @@ vi.mock("@/stores/categories", () => ({
     getCategoryById: vi.fn(),
     loading: false,
     error: null,
+    initialized: false,
   }),
 }));
 
@@ -64,7 +65,7 @@ global.PerformanceObserver = vi.fn(() => ({
   disconnect: vi.fn(),
   observe: vi.fn(),
   unobserve: vi.fn(),
-}));
+})) as any;
 
 // Mock Notification API
 global.Notification = vi.fn(() => ({

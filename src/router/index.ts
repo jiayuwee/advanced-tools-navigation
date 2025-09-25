@@ -3,6 +3,7 @@ import {
   createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 // 路由配置
 const routes: RouteRecordRaw[] = [
@@ -346,6 +347,53 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+// 路由守卫
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
+  
+  // 检查是否需要认证
+  if (to.meta.requiresAuth) {
+    try {
+      // 检查认证状态
+      const isAuthenticated = authStore.isAuthenticated;
+      
+      if (!isAuthenticated) {
+        // 尝试刷新认证状态
+        await authStore.refreshAuth();
+        
+        if (!authStore.isAuthenticated) {
+          // 未登录，重定向到登录页，并保存目标路由
+          return next({
+            name: 'Login',
+            query: { redirect: to.fullPath }
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Authentication check failed:', error);
+      return next({
+        name: 'Login',
+        query: { redirect: to.fullPath }
+      });
+    }
+  }
+
+  // 检查是否需要管理员权限
+  if (to.meta.requiresAdmin) {
+    const isAdmin = await authStore.isAdmin();
+    if (!isAdmin) {
+      return next({ name: 'NotFound' });
+    }
+  }
+
+  // 设置页面标题
+  if (to.meta.title) {
+    document.title = `${to.meta.title} | ${import.meta.env.VITE_APP_NAME || '应用'}`;
+  }
+
+  next();
 });
 
 export { router, routes };

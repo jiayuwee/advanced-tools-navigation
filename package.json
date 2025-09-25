@@ -13,6 +13,9 @@
     "clean": "rimraf ./node_modules ./dist",
     "type-check": "vue-tsc --noEmit",
     "deploy": "gh-pages -d dist",
+    "deploy:test": "vite build --mode test && node scripts/deployment/deploy-test.js",
+    "deploy:prod": "vite build --mode production && node scripts/deployment/deploy-prod.js",
+    "deploy:verify": "node scripts/deployment/verify-deployment.js",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
@@ -53,6 +56,7 @@
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
     "@octokit/rest": "22.0.0",
+    "@rollup/rollup-win32-x64-msvc": "^4.52.0",
     "@stripe/stripe-js": "^7.9.0",
     "@supabase/supabase-js": "^2.50.1",
     "@types/uuid": "^10.0.0",

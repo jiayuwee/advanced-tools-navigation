@@ -2,6 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  safelist: [
+    // 支付平台相关样式
+    { pattern: /bg-(stripe|alipay|wechat)-/ },
+    { pattern: /text-(stripe|alipay|wechat)-/ },
+    { pattern: /border-(stripe|alipay|wechat)-/ },
+  ],
   theme: {
     extend: {
       colors: {
@@ -54,6 +60,22 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        // 支付平台品牌色
+        stripe: {
+          DEFAULT: "#635bff",
+          light: "#7c73ff",
+          dark: "#4a42cc",
+        },
+        alipay: {
+          DEFAULT: "#1677ff",
+          light: "#3d8eff",
+          dark: "#0d5fcc",
+        },
+        wechat: {
+          DEFAULT: "#07c160",
+          light: "#2bd475",
+          dark: "#06ad56",
         },
       },
       borderRadius: {

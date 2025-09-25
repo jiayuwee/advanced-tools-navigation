@@ -263,6 +263,23 @@ export interface DashboardStats {
   revenueGrowth: Array<{ date: string; amount: number }>;
 }
 
+// 认证相关类型
+export type AuthEvent = 
+  | 'SIGNED_IN' 
+  | 'SIGNED_OUT' 
+  | 'TOKEN_REFRESHED' 
+  | 'USER_UPDATED' 
+  | 'PASSWORD_RECOVERY';
+
+export interface AuthSession {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  expires_at?: number;
+  token_type: string;
+  user: User;
+}
+
 // API 响应类型
 export interface ApiResponse<T = unknown> {
   success: boolean;
