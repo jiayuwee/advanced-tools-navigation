@@ -77,7 +77,7 @@ export class LocalStorageService {
    * 添加本地工具
    */
   static addLocalTool(
-    tool: Omit<LocalTool, "localId" | "lastModified">,
+    tool: Omit<LocalTool, "localId" | "lastModified" | "syncStatus" | "isLocal">,
   ): LocalTool {
     const localTool: LocalTool = {
       ...tool,

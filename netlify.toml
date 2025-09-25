@@ -1,6 +1,6 @@
 [build]
-  # 使用 npm 安装，包含可选依赖以确保平台特定二进制文件被正确安装
-  command = "npm install --prefer-offline --no-audit --ignore-scripts --include=optional && npm run build"
+  # 优化构建命令，使用 --legacy-peer-deps 解决依赖冲突
+  command = "npm install --legacy-peer-deps --prefer-offline --no-audit --include=optional && npm run build"
   publish = "dist"
 
 [build.environment]

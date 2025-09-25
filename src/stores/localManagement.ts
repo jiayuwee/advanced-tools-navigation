@@ -86,7 +86,16 @@ export const useLocalManagementStore = defineStore("localManagement", () => {
     toolData: Omit<Tool, "id" | "created_at" | "updated_at">,
   ) => {
     try {
-      const localTool = LocalStorageService.addLocalTool(toolData);
+      // 转换为 LocalTool 格式后传给 LocalStorageService
+      const localToolData = {
+        ...toolData,
+        // 添加缺失的必需字段
+        id: `temp_${Date.now()}`, // 临时 ID
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      } as Omit<LocalTool, "localId" | "lastModified" | "syncStatus" | "isLocal">;
+      
+      const localTool = LocalStorageService.addLocalTool(localToolData);
       localTools.value.push(localTool);
       offlineQueue.value = LocalStorageService.getOfflineQueue();
       return localTool;

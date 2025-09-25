@@ -20,6 +20,8 @@ export interface Tool {
   meta_description?: string; // 修改为 meta_description
   sort_order?: number; // 修改为可选字段
   category?: Category; // 关联的分类信息（查询时包含）
+  // 添加索引签名以支持动态属性访问
+  [key: string]: unknown;
 }
 // 评论相关类型
 export interface Category {
