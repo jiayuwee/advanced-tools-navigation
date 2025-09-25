@@ -1,6 +1,6 @@
 [build]
-  # 使用 npm 安装，允许安装平台匹配的可选依赖（如 @rollup/rollup-linux-x64-gnu）
-  command = "npm install --prefer-offline --no-audit --ignore-scripts && npm run build"
+  # 使用 npm 安装，包含可选依赖以确保平台特定二进制文件被正确安装
+  command = "npm install --prefer-offline --no-audit --ignore-scripts --include=optional && npm run build"
   publish = "dist"
 
 [build.environment]
