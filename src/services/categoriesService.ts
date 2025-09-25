@@ -25,7 +25,7 @@ export class CategoriesService {
     } catch (error) {
       console.error("获取分类失败:", error);
       console.log("Supabase调用失败，使用模拟分类数据");
-      
+
       // 返回模拟数据作为回退
       return this.getMockCategories();
     }
@@ -265,61 +265,61 @@ export class CategoriesService {
   private static getMockCategories(): Category[] {
     return [
       {
-        id: 'mock-cat-1',
-        name: '开发工具',
-        description: '编程开发相关工具',
-        icon: 'code',
-        color: '#0078d4',
+        id: "mock-cat-1",
+        name: "开发工具",
+        description: "编程开发相关工具",
+        icon: "code",
+        color: "#0078d4",
         parentId: undefined,
         count: 5,
         sortOrder: 1,
         isActive: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        children: []
+        children: [],
       },
       {
-        id: 'mock-cat-2',
-        name: '设计工具',
-        description: 'UI/UX设计相关工具',
-        icon: 'palette',
-        color: '#ff6b6b',
+        id: "mock-cat-2",
+        name: "设计工具",
+        description: "UI/UX设计相关工具",
+        icon: "palette",
+        color: "#ff6b6b",
         parentId: undefined,
         count: 3,
         sortOrder: 2,
         isActive: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        children: []
+        children: [],
       },
       {
-        id: 'mock-cat-3',
-        name: 'AI工具',
-        description: '人工智能相关工具',
-        icon: 'brain',
-        color: '#4ecdc4',
+        id: "mock-cat-3",
+        name: "AI工具",
+        description: "人工智能相关工具",
+        icon: "brain",
+        color: "#4ecdc4",
         parentId: undefined,
         count: 8,
         sortOrder: 3,
         isActive: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        children: []
+        children: [],
       },
       {
-        id: 'mock-cat-4',
-        name: '效率工具',
-        description: '提升工作效率的工具',
-        icon: 'zap',
-        color: '#45b7d1',
+        id: "mock-cat-4",
+        name: "效率工具",
+        description: "提升工作效率的工具",
+        icon: "zap",
+        color: "#45b7d1",
         parentId: undefined,
         count: 6,
         sortOrder: 4,
         isActive: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        children: []
-      }
+        children: [],
+      },
     ];
   }
 

@@ -7,7 +7,9 @@
       </div>
 
       <div class="content">
-        <p class="amount">应付金额：<span>¥{{ amount }}</span></p>
+        <p class="amount">
+          应付金额：<span>¥{{ amount }}</span>
+        </p>
         <div class="qrcode-box">
           <div class="qrcode-placeholder">二维码加载中</div>
         </div>
@@ -16,11 +18,13 @@
 
       <div class="actions">
         <button class="btn cancel" @click="onCancel">取消</button>
-        <button class="btn primary" @click="mockPaySuccess">我已完成支付</button>
+        <button class="btn primary" @click="mockPaySuccess">
+          我已完成支付
+        </button>
       </div>
     </div>
   </div>
-  
+
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 </template>
 
@@ -110,12 +114,12 @@ const onCancel = () => {
   height: 200px;
   border-radius: 8px;
   background: repeating-linear-gradient(
-      45deg,
-      #f3f4f6,
-      #f3f4f6 10px,
-      #e5e7eb 10px,
-      #e5e7eb 20px
-    );
+    45deg,
+    #f3f4f6,
+    #f3f4f6 10px,
+    #e5e7eb 10px,
+    #e5e7eb 20px
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,5 +169,3 @@ const onCancel = () => {
   color: #dc2626;
 }
 </style>
-
-

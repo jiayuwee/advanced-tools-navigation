@@ -198,7 +198,7 @@ export const useToolsStore = defineStore("tools", () => {
           tags: getTagsForTool(tool.id),
         }));
 
-  tools.value = [...mockTools, ...mappedExtendedTools];
+        tools.value = [...mockTools, ...mappedExtendedTools];
         initialized.value = true;
         return;
       }
@@ -221,13 +221,14 @@ export const useToolsStore = defineStore("tools", () => {
 
       // Supabase 的类型生成器可能将单关系定义为对象而非数组
       // 处理标签数据，将 tool_tags 转换为简单的 tags 数组
-      const processedTools = (data as unknown as Tool[])
-        ?.map((tool) => {
+      const processedTools =
+        (data as unknown as Tool[])?.map((tool) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mapping generated rpc result
-          const tags = tool.tool_tags?.map((tt: any) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generated relation shape
-            return (tt?.tags && (tt.tags as any).name) || "";
-          }) || [];
+          const tags =
+            tool.tool_tags?.map((tt: any) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generated relation shape
+              return (tt?.tags && (tt.tags as any).name) || "";
+            }) || [];
 
           return {
             ...tool,

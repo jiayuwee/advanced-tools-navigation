@@ -189,7 +189,7 @@ const loadOrders = async () => {
     // 如果API失败，使用模拟数据作为后备
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  orders.value = [
+    orders.value = [
       {
         id: "order-1",
         userId: "user-1",
@@ -203,14 +203,14 @@ const loadOrders = async () => {
             totalPrice: 299,
             createdAt: new Date().toISOString(),
             product: {
-          id: "product-1",
-          name: "高效办公套件",
-          description: "一套提升办公效率的完整工具组合",
-          short_description: "提升办公效率的完整解决方案",
-          price: 299,
-          currency: "CNY",
-          category_id: "550e8400-e29b-41d4-a716-446655440001",
-          images: ["/placeholder.jpg"],
+              id: "product-1",
+              name: "高效办公套件",
+              description: "一套提升办公效率的完整工具组合",
+              short_description: "提升办公效率的完整解决方案",
+              price: 299,
+              currency: "CNY",
+              category_id: "550e8400-e29b-41d4-a716-446655440001",
+              images: ["/placeholder.jpg"],
             },
           },
         ],
@@ -235,14 +235,14 @@ const loadOrders = async () => {
             totalPrice: 199,
             createdAt: new Date().toISOString(),
             product: {
-          id: "product-2",
-          name: "设计师工具包",
-          description: "专业设计师的工具集合，包含设计和原型所需资源",
-          short_description: "专业设计师必备工具集合",
-          price: 199,
-          currency: "CNY",
-          category_id: "550e8400-e29b-41d4-a716-446655440002",
-          images: ["/placeholder.jpg"],
+              id: "product-2",
+              name: "设计师工具包",
+              description: "专业设计师的工具集合，包含设计和原型所需资源",
+              short_description: "专业设计师必备工具集合",
+              price: 199,
+              currency: "CNY",
+              category_id: "550e8400-e29b-41d4-a716-446655440002",
+              images: ["/placeholder.jpg"],
             },
           },
         ],
@@ -252,7 +252,7 @@ const loadOrders = async () => {
         createdAt: new Date(Date.now() - 3600000).toISOString(),
         updatedAt: new Date().toISOString(),
       },
-  ] as unknown as Order[];
+    ] as unknown as Order[];
   } catch (err: unknown) {
     const msg = safeErrorMessage(err);
     console.error("加载订单失败:", msg);

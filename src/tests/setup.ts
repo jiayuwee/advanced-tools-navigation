@@ -1,5 +1,45 @@
 import { vi } from "vitest";
 import { config } from "@vue/test-utils";
+import { createPinia, setActivePinia } from "pinia";
+
+// Setup Pinia for tests
+const pinia = createPinia();
+setActivePinia(pinia);
+
+// Mock Pinia stores
+vi.mock("@/stores/categories", () => ({
+  useCategoriesStore: () => ({
+    categories: [],
+    initialize: vi.fn().mockResolvedValue([]),
+    fetchCategories: vi.fn().mockResolvedValue([]),
+    getCategoryById: vi.fn(),
+    loading: false,
+    error: null
+  })
+}));
+
+vi.mock("@/stores/tools", () => ({
+  useToolsStore: () => ({
+    tools: [],
+    initialize: vi.fn().mockResolvedValue([]),
+    fetchTools: vi.fn().mockResolvedValue([]),
+    getToolById: vi.fn(),
+    loading: false,
+    error: null
+  })
+}));
+
+vi.mock("@/stores/auth", () => ({
+  useAuthStore: () => ({
+    user: null,
+    isAuthenticated: false,
+    loading: false,
+    initialize: vi.fn().mockResolvedValue(null),
+    login: vi.fn(),
+    logout: vi.fn(),
+    error: null
+  })
+}));
 
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn(() => ({
@@ -78,19 +118,29 @@ Object.defineProperty(global.navigator, "clipboard", {
   writable: true,
 });
 
-// Mock window.matchMedia
+// Mock window.matchMedia with proper MediaQueryList interface
 Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(), // deprecated
-    removeListener: vi.fn(), // deprecated
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
+  value: vi.fn().mockImplementation((query) => {
+    const mql = {
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    };
+    // Ensure addEventListener exists and is callable
+    Object.defineProperty(mql, 'addEventListener', {
+      value: vi.fn(),
+      writable: true,
+      enumerable: true,
+      configurable: true
+    });
+    return mql;
+  }),
 });
 
 // Mock performance API
@@ -190,6 +240,9 @@ config.global.mocks = {
     forward: vi.fn(),
   },
 };
+
+// Add Pinia to global plugins
+config.global.plugins = [pinia];
 
 // Mock CSS modules
 vi.mock("*.module.css", () => ({}));

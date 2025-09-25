@@ -231,7 +231,7 @@ export interface UnifiedCategories {
   description?: string | null;
   icon?: string | null;
   color?: string;
-  category_type: 'tool' | 'product';
+  category_type: "tool" | "product";
   parent_id?: string | null;
   sort_order?: number;
   is_active?: boolean;

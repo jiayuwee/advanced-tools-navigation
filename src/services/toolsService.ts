@@ -108,7 +108,7 @@ export class ToolsService {
     } catch (error) {
       console.error("获取工具列表失败:", error);
       console.log("Supabase调用失败，使用模拟工具数据");
-      
+
       // 返回模拟数据作为回退
       return this.getMockTools(filters);
     }
@@ -473,148 +473,152 @@ export class ToolsService {
   private static getMockTools(filters?: SearchFilters): SearchResult<Tool> {
     const mockTools: Tool[] = [
       {
-        id: 'mock-1',
-        name: 'Vue.js',
-        description: '渐进式JavaScript框架，用于构建用户界面',
-        url: 'https://vuejs.org',
-        icon: 'https://vuejs.org/logo.svg',
-        category_id: 'mock-cat-1',
+        id: "mock-1",
+        name: "Vue.js",
+        description: "渐进式JavaScript框架，用于构建用户界面",
+        url: "https://vuejs.org",
+        icon: "https://vuejs.org/logo.svg",
+        category_id: "mock-cat-1",
         category: {
-          id: 'mock-cat-1',
-          name: '开发工具',
-          description: '编程开发相关工具',
-          icon: 'code',
-          color: '#0078d4',
+          id: "mock-cat-1",
+          name: "开发工具",
+          description: "编程开发相关工具",
+          icon: "code",
+          color: "#0078d4",
           parentId: undefined,
           count: 5,
           sortOrder: 1,
           isActive: true,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         },
-        tags: ['前端', '框架', 'JavaScript'],
+        tags: ["前端", "框架", "JavaScript"],
         is_favorite: false,
         click_count: 0,
         is_featured: true,
-        status: 'active',
+        status: "active",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        created_by: 'system',
-        meta_title: 'Vue.js - 渐进式JavaScript框架',
-        meta_description: 'Vue.js是一个用于构建用户界面的渐进式框架',
-        sort_order: 1
+        created_by: "system",
+        meta_title: "Vue.js - 渐进式JavaScript框架",
+        meta_description: "Vue.js是一个用于构建用户界面的渐进式框架",
+        sort_order: 1,
       },
       {
-        id: 'mock-2',
-        name: 'Figma',
-        description: '协作界面设计工具，让团队更好地协作',
-        url: 'https://figma.com',
-        icon: 'https://figma.com/favicon.ico',
-        category_id: 'mock-cat-2',
+        id: "mock-2",
+        name: "Figma",
+        description: "协作界面设计工具，让团队更好地协作",
+        url: "https://figma.com",
+        icon: "https://figma.com/favicon.ico",
+        category_id: "mock-cat-2",
         category: {
-          id: 'mock-cat-2',
-          name: '设计工具',
-          description: 'UI/UX设计相关工具',
-          icon: 'palette',
-          color: '#ff6b6b',
+          id: "mock-cat-2",
+          name: "设计工具",
+          description: "UI/UX设计相关工具",
+          icon: "palette",
+          color: "#ff6b6b",
           parentId: undefined,
           count: 3,
           sortOrder: 2,
           isActive: true,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         },
-        tags: ['设计', 'UI', '协作'],
+        tags: ["设计", "UI", "协作"],
         is_favorite: false,
         click_count: 0,
         is_featured: true,
-        status: 'active',
+        status: "active",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        created_by: 'system',
-        meta_title: 'Figma - 协作界面设计工具',
-        meta_description: 'Figma是一个基于浏览器的协作界面设计工具',
-        sort_order: 1
+        created_by: "system",
+        meta_title: "Figma - 协作界面设计工具",
+        meta_description: "Figma是一个基于浏览器的协作界面设计工具",
+        sort_order: 1,
       },
       {
-        id: 'mock-3',
-        name: 'ChatGPT',
-        description: 'AI对话助手，帮助解答问题和提供创意',
-        url: 'https://chat.openai.com',
-        icon: 'https://openai.com/favicon.ico',
-        category_id: 'mock-cat-3',
+        id: "mock-3",
+        name: "ChatGPT",
+        description: "AI对话助手，帮助解答问题和提供创意",
+        url: "https://chat.openai.com",
+        icon: "https://openai.com/favicon.ico",
+        category_id: "mock-cat-3",
         category: {
-          id: 'mock-cat-3',
-          name: 'AI工具',
-          description: '人工智能相关工具',
-          icon: 'brain',
-          color: '#4ecdc4',
+          id: "mock-cat-3",
+          name: "AI工具",
+          description: "人工智能相关工具",
+          icon: "brain",
+          color: "#4ecdc4",
           parentId: undefined,
           count: 8,
           sortOrder: 3,
           isActive: true,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         },
-        tags: ['AI', '对话', '助手'],
+        tags: ["AI", "对话", "助手"],
         is_favorite: false,
         click_count: 0,
         is_featured: true,
-        status: 'active',
+        status: "active",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        created_by: 'system',
-        meta_title: 'ChatGPT - AI对话助手',
-        meta_description: 'ChatGPT是OpenAI开发的AI对话助手',
-        sort_order: 1
+        created_by: "system",
+        meta_title: "ChatGPT - AI对话助手",
+        meta_description: "ChatGPT是OpenAI开发的AI对话助手",
+        sort_order: 1,
       },
       {
-        id: 'mock-4',
-        name: 'Notion',
-        description: '全能工作空间，整合笔记、任务和数据库',
-        url: 'https://notion.so',
-        icon: 'https://notion.so/favicon.ico',
-        category_id: 'mock-cat-4',
+        id: "mock-4",
+        name: "Notion",
+        description: "全能工作空间，整合笔记、任务和数据库",
+        url: "https://notion.so",
+        icon: "https://notion.so/favicon.ico",
+        category_id: "mock-cat-4",
         category: {
-          id: 'mock-cat-4',
-          name: '效率工具',
-          description: '提升工作效率的工具',
-          icon: 'zap',
-          color: '#45b7d1',
+          id: "mock-cat-4",
+          name: "效率工具",
+          description: "提升工作效率的工具",
+          icon: "zap",
+          color: "#45b7d1",
           parentId: undefined,
           count: 6,
           sortOrder: 4,
           isActive: true,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         },
-        tags: ['效率', '笔记', '协作'],
+        tags: ["效率", "笔记", "协作"],
         is_favorite: false,
         click_count: 0,
         is_featured: true,
-        status: 'active',
+        status: "active",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        created_by: 'system',
-        meta_title: 'Notion - 全能工作空间',
-        meta_description: 'Notion是一个集成了笔记、任务管理和数据库的全能工作空间',
-        sort_order: 1
-      }
+        created_by: "system",
+        meta_title: "Notion - 全能工作空间",
+        meta_description:
+          "Notion是一个集成了笔记、任务管理和数据库的全能工作空间",
+        sort_order: 1,
+      },
     ];
 
     // 应用搜索过滤器
     let filteredTools = mockTools;
-    
+
     if (filters?.query) {
       const query = filters.query.toLowerCase();
-      filteredTools = mockTools.filter(tool => 
-        tool.name.toLowerCase().includes(query) || 
-        tool.description.toLowerCase().includes(query)
+      filteredTools = mockTools.filter(
+        (tool) =>
+          tool.name.toLowerCase().includes(query) ||
+          tool.description.toLowerCase().includes(query),
       );
     }
 
     if (filters?.category && filters.category !== "all") {
-      filteredTools = filteredTools.filter(tool => tool.category_id === filters.category);
+      filteredTools = filteredTools.filter(
+        (tool) => tool.category_id === filters.category,
+      );
     }
 
     // 应用分页

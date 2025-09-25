@@ -16,7 +16,7 @@ const expectedConfig = {
   },
   supabase: {
     projectRef: "ndmxwdejswybvbwrxsai",
-  url: "https://your-supabase-project.supabase.co",
+    url: "https://your-supabase-project.supabase.co",
   },
 };
 
@@ -123,7 +123,7 @@ function checkScriptFiles() {
       file: "scripts/deployment/check-github-secrets.js",
       expectedValues: [
         "ndmxwdejswybvbwrxsai",
-  "your-supabase-project.supabase.co",
+        "your-supabase-project.supabase.co",
       ],
     },
     {
