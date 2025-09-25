@@ -74,7 +74,6 @@
     "vue-tsc": "^1.8.25"
   },
   "devDependencies": {
-    "@rollup/rollup-win32-x64-msvc": "^4.52.0",
     "@types/node": "^20.14.0",
     "@vitest/ui": "^0.34.3",
     "@vue/eslint-config-prettier": "^8.0.0",
@@ -98,7 +97,5 @@
   "engines": {
     "node": ">=18.19.0"
   },
-  "optionalDependencies": {
-    "@rollup/rollup-win32-x64-msvc": "^4.52.0"
-  }
+  "optionalDependencies": {}
 }
