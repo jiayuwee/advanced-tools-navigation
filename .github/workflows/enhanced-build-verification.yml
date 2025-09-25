@@ -37,19 +37,19 @@ jobs:
           npm config set audit-level moderate
           npm config set fund false
           npm config set update-notifier false
-          
+
           # 清理缓存以避免平台兼容性问题
           npm cache clean --force 2>/dev/null || true
-          
+
           # 优先使用 npm ci 进行快速安装
           if [ -f "package-lock.json" ]; then
-            echo "使用 npm ci 进行快速安装... (allow optional deps)"
-            npm ci --prefer-offline --no-audit --ignore-scripts --silent
+            echo "使用 npm ci 进行快速安装... (包含可选依赖)"
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent --include=optional
           else
             echo "package-lock.json 不存在，使用 npm install..."
-            npm install --prefer-offline --no-audit --ignore-scripts --silent
+            npm install --prefer-offline --no-audit --ignore-scripts --silent --include=optional
           fi
-          
+
           echo "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
           echo "✅ 依赖安装完成"
 
@@ -88,15 +88,15 @@ jobs:
           npm config set prefer-offline true
           npm config set audit-level moderate
           npm config set fund false
-          
+
           npm cache clean --force 2>/dev/null || true
-          
+
           if [ -f "package-lock.json" ]; then
-            npm ci --prefer-offline --no-audit --ignore-scripts --silent
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent --include=optional
           else
-            npm install --prefer-offline --no-audit --ignore-scripts --silent
+            npm install --prefer-offline --no-audit --ignore-scripts --silent --include=optional
           fi
-          
+
           echo "✅ 依赖安装完成"
 
       - name: 🧪 Run unit tests
@@ -144,15 +144,17 @@ jobs:
           npm config set prefer-offline true
           npm config set audit-level moderate
           npm config set fund false
-          
+
           npm cache clean --force 2>/dev/null || true
-          
+
           if [ -f "package-lock.json" ]; then
-            npm ci --prefer-offline --no-audit --ignore-scripts --silent
+            echo "使用 npm ci 安装依赖 (包含可选依赖)..."
+            npm ci --prefer-offline --no-audit --ignore-scripts --silent --include=optional
           else
-            npm install --prefer-offline --no-audit --ignore-scripts --silent
+            echo "package-lock.json 不存在，使用 npm install..."
+            npm install --prefer-offline --no-audit --ignore-scripts --silent --include=optional
           fi
-          
+
           echo "✅ 依赖安装完成"
 
       - name: 🔍 Pre-build validation
@@ -278,7 +280,7 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           npm config set audit-level moderate
-          npm ci --prefer-offline --no-audit --ignore-scripts --silent
+          npm ci --prefer-offline --no-audit --ignore-scripts --silent --include=optional
 
       - name: 🔒 Security audit
         run: |

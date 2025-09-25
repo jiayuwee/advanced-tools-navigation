@@ -2,7 +2,6 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { supabase } from "@/lib/supabaseClient";
 import type { User as SupabaseUser, AuthError } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
 
 /**
  * 扩展的用户信息类型，
@@ -42,9 +41,7 @@ export const useAuthStore = defineStore("auth", () => {
    * 从 user_profiles 表中获取用户的详细信息。
    * @param userId - Supabase 用户的 ID。
    */
-  async function fetchUserProfile(
-    userId: string,
-  ): Promise<{ id: string; username?: string | null; avatar_url?: string | null; role?: string | null } | null> {
+  async function fetchUserProfile(userId: string): Promise<{ id: string; username?: string | null; avatar_url?: string | null; role?: string | null } | null> {
     const { data, error: profileError } = await supabase
       .from("user_profiles")
       .select("*")
@@ -116,9 +113,10 @@ export const useAuthStore = defineStore("auth", () => {
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) throw signOutError;
       // onAuthStateChange 会自动将 user.value 设置为 null
-    } catch (e: any) {
-      error.value = e;
-      console.error("退出登录失败:", e);
+    } catch (e) {
+      const err = e as AuthError;
+      error.value = err;
+      console.error("退出登录失败:", err);
     } finally {
       loading.value = false;
     }

@@ -53,6 +53,7 @@
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
     "@octokit/rest": "22.0.0",
+    "@rollup/rollup-win32-x64-msvc": "^4.52.0",
     "@stripe/stripe-js": "^7.9.0",
     "@supabase/supabase-js": "^2.50.1",
     "@types/uuid": "^10.0.0",
@@ -96,6 +97,5 @@
   },
   "engines": {
     "node": ">=18.19.0"
-  },
-  "optionalDependencies": {}
+  }
 }
