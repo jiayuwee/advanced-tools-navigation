@@ -5,6 +5,7 @@
 
 [build.environment]
   NODE_ENV = "production"
+  NPM_CONFIG_INCLUDE_OPTIONAL = "true"
 
 [context.production.environment]
   VITE_APP_ENV = "production"
