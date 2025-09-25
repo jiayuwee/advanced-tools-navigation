@@ -382,7 +382,7 @@ router.beforeEach(async (to, from, next) => {
 
   // 检查是否需要管理员权限
   if (to.meta.requiresAdmin) {
-    const isAdmin = await authStore.isAdmin();
+    const isAdmin = await authStore.isAdminFunction();
     if (!isAdmin) {
       return next({ name: 'NotFound' });
     }

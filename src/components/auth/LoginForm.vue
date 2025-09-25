@@ -33,6 +33,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { AuthService } from '@/services/authService';
+import { useAuthStore } from '@/stores/auth';
 import type { LoginForm } from '@/types';
 
 const emit = defineEmits(['success']);

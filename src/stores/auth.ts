@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, onScopeDispose } from "vue";
 import { defineStore } from "pinia";
 import { supabase } from "@/lib/supabaseClient";
 import type { User as SupabaseUser, AuthError } from "@supabase/supabase-js";
@@ -142,6 +142,15 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   /**
+   * 刷新认证状态 - 用于路由守卫
+   */
+  async function refreshAuth(): Promise<void> {
+    if (!initialized.value) {
+      await initialize()
+    }
+  }
+
+  /**
    * 检查用户认证状态 - 用于路由守卫
    */
   async function checkAuth(): Promise<boolean> {
@@ -149,6 +158,13 @@ export const useAuthStore = defineStore("auth", () => {
       await initialize();
     }
     return isAuthenticated.value;
+  }
+
+  /**
+   * 检查用户是否为管理员 - 返回函数而非计算属性
+   */
+  async function isAdminFunction(): Promise<boolean> {
+    return isAdmin.value;
   }
 
   // --- Return (导出) ---
@@ -160,12 +176,14 @@ export const useAuthStore = defineStore("auth", () => {
     error,
     // Getters
     isAuthenticated,
-    isAdmin,
+    isAdmin, // 计算属性
     // Actions
     initialize,
     logout,
     clearError,
     checkAuth,
+    refreshAuth,
+    isAdminFunction, // 异步方法
     // 可以根据需要添加 login, register, etc.
   };
 });

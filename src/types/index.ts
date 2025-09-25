@@ -9,7 +9,7 @@ export interface Tool {
   icon: string;
   category_id: string; // 修改为 category_id
   tags?: string[]; // 简化为字符串数组，可选
-  is_favorite?: boolean; // 修改为 is_favorite
+  is_favorite?: boolean; // 修改为 is_favorite，保持可选
   click_count: number; // 修改为 click_count
   is_featured: boolean; // 修改为 is_featured
   status: "active" | "inactive" | "pending";
@@ -18,7 +18,7 @@ export interface Tool {
   created_by?: string;
   meta_title?: string; // 修改为 meta_title
   meta_description?: string; // 修改为 meta_description
-  sort_order: number;
+  sort_order?: number; // 修改为可选字段
   category?: Category; // 关联的分类信息（查询时包含）
 }
 // 评论相关类型

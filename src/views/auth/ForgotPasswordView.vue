@@ -73,7 +73,7 @@ const email = ref("");
 const emailSent = ref(false);
 const resendCooldown = ref(0);
 
-let cooldownTimer: number | null = null;
+let cooldownTimer: ReturnType<typeof setInterval> | null = null;
 
 // 方法
 const handleForgotPassword = async () => {

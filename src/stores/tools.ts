@@ -1,3 +1,21 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+
+// 添加缺失的类型定义
+interface CategoryRow {
+  id: string;
+  name: string;
+  description?: string;
+  icon: string;
+  color: string;
+}
+
+interface TagRow {
+  id: string;
+  name: string;
+  color: string;
+}
+
 // 工具类型定义
 interface ToolBase {
   id: string;
@@ -99,3 +117,125 @@ export function getToolCategories(tool: Tool): CategoryRow | null {
 export function getToolTags(tool: Tool): Array<{ tags: TagRow | null }> | null {
   return isExtendedTool(tool) ? tool.tool_tags : null;
 }
+
+export const useToolsStore = defineStore('tools', () => {
+  const tools = ref<Tool[]>([])
+  const featuredTools = computed(() => tools.value.filter(t => t.is_featured))
+  const activeTools = computed(() => tools.value.filter(t => t.status === 'active'))
+  const isLoading = ref(false)
+  const loading = computed(() => isLoading.value) // 兼容性别名
+  const error = ref<string | null>(null)
+  const initialized = ref(false)
+  
+  // UI 状态
+  const sidebarCollapsed = ref(false)
+  const searchQuery = ref('')
+  const selectedCategory = ref<string | null>(null)
+  
+  // 计算属性：过滤后的工具
+  const filteredTools = computed(() => {
+    let result = activeTools.value
+    
+    // 按搜索查询过滤
+    if (searchQuery.value.trim()) {
+      const query = searchQuery.value.toLowerCase()
+      result = result.filter(tool => 
+        tool.name.toLowerCase().includes(query) ||
+        tool.description.toLowerCase().includes(query)
+      )
+    }
+    
+    // 按分类过滤
+    if (selectedCategory.value) {
+      result = result.filter(tool => tool.category_id === selectedCategory.value)
+    }
+    
+    return result
+  })
+
+  function setTools(newTools: Tool[]) {
+    tools.value = newTools.map(normalizeTool)
+  }
+
+  function getToolById(id: string): Tool | undefined {
+    return tools.value.find(t => t.id === id)
+  }
+  
+  // UI 状态管理方法
+  function toggleSidebar() {
+    sidebarCollapsed.value = !sidebarCollapsed.value
+  }
+  
+  function setSearchQuery(query: string) {
+    searchQuery.value = query
+  }
+  
+  function setSelectedCategory(categoryId: string | null) {
+    selectedCategory.value = categoryId
+  }
+  
+  function clearError() {
+    error.value = null
+  }
+  
+  // 业务逻辑方法
+  async function incrementClickCount(toolId: string) {
+    const tool = getToolById(toolId)
+    if (tool) {
+      tool.click_count++
+      // TODO: 调用 API 更新服务器端数据
+    }
+  }
+  
+  async function toggleFavorite(toolId: string) {
+    // TODO: 实现收藏切换逻辑
+    console.log('Toggle favorite for tool:', toolId)
+  }
+
+  async function initialize() {
+    if (initialized.value) return true
+    
+    try {
+      isLoading.value = true
+      error.value = null
+      // 模拟异步加载工具数据
+      await new Promise(resolve => setTimeout(resolve, 500))
+      // 实际项目中这里应该是API调用
+      setTools([])
+      initialized.value = true
+      return true
+    } catch (err) {
+      error.value = 'Failed to load tools'
+      console.error('ToolsStore initialization error:', err)
+      return false
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  return {
+    // 状态
+    tools,
+    featuredTools,
+    activeTools,
+    isLoading,
+    loading, // 兼容性别名
+    error,
+    initialized,
+    sidebarCollapsed,
+    searchQuery,
+    selectedCategory,
+    filteredTools,
+    
+    // 方法
+    setTools,
+    getToolById,
+    toggleSidebar,
+    setSearchQuery,
+    setSelectedCategory,
+    clearError,
+    incrementClickCount,
+    toggleFavorite,
+    initialize
+  }
+})

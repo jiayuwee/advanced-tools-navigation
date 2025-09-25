@@ -117,7 +117,7 @@
             <div class="tool-icon">{{ tool.icon || "🔧" }}</div>
             <button
               class="favorite-button"
-              :class="{ active: tool.is_favorite }"
+              :class="{ active: (tool as any).is_favorite ?? false }"
               @click.stop="toolsStore.toggleFavorite(tool.id)"
             >
               <StarIcon class="icon" />
@@ -210,7 +210,7 @@
             <div class="tool-actions">
               <button
                 class="favorite-button"
-                :class="{ active: tool.is_favorite }"
+                :class="{ active: (tool as any).is_favorite ?? false }"
                 @click.stop="toolsStore.toggleFavorite(tool.id)"
               >
                 <StarIcon class="icon" />
