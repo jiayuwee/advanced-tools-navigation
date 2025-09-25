@@ -29,6 +29,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 
+      - name: 🌐 Configure DNS
+        run: |
+          echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
+          echo "nameserver 8.8.4.4" | sudo tee -a /etc/resolv.conf > /dev/null
+          echo "✅ DNS configured to Google Public DNS"
+
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
