@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:vercel": "vite build",
-    "build:netlify": "npm ci --no-optional --prefer-offline --no-audit --ignore-scripts && vite build",
+    "build:netlify": "npm ci --include=optional --prefer-offline --no-audit --ignore-scripts && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "clean": "rimraf ./node_modules ./dist",
@@ -53,7 +53,6 @@
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
     "@octokit/rest": "22.0.0",
-    "@rollup/rollup-win32-x64-msvc": "^4.52.0",
     "@stripe/stripe-js": "^7.9.0",
     "@supabase/supabase-js": "^2.50.1",
     "@types/uuid": "^10.0.0",
