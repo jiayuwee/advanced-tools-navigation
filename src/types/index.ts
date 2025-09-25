@@ -21,25 +21,6 @@ export interface Tool {
   sort_order: number;
   category?: Category; // 关联的分类信息（查询时包含）
 }
-
-}
-
-// 产品评论类型
-export interface ProductReview {
-  id: string;
-  product_id: string;
-  user_id: string;
-  user?: User; // 关联用户信息
-  rating: number;
-  content: string;
-  images?: string[];
-  is_verified_purchase: boolean;
-  helpful_count: number;
-  unhelpful_count: number;
-  created_at: string;
-  updated_at: string;
-}
-
 // 评论相关类型
 export interface Category {
   id: string;

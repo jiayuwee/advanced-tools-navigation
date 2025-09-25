@@ -34,8 +34,8 @@
             class="password-toggle"
             @click="showPassword = !showPassword"
           >
-            <EyeIcon v-if="!showPassword" class="icon" />
-            <EyeOffIcon v-else class="icon" />
+            <Eye v-if="!showPassword" class="icon" />
+            <EyeOff v-else class="icon" />
           </button>
         </div>
       </div>
@@ -75,7 +75,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { EyeIcon, EyeOffIcon } from "lucide-vue-next";
+import { Eye, EyeOff } from "lucide-vue-next";
 import { AuthService } from "@/services/authService";
 
 const router = useRouter();
