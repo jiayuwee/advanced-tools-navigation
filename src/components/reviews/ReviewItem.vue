@@ -84,7 +84,7 @@
             ]"
             @click="voteHelpful(true)"
           >
-            <ThumbUpIcon class="h-4 w-4" />
+            <HandThumbUpIcon class="h-4 w-4" />
             <span>有用 ({{ review.helpful_count || 0 }})</span>
           </button>
 
@@ -97,7 +97,7 @@
             ]"
             @click="voteHelpful(false)"
           >
-            <ThumbDownIcon class="h-4 w-4" />
+            <HandThumbDownIcon class="h-4 w-4" />
             <span>无用 ({{ review.unhelpful_count || 0 }})</span>
           </button>
         </div>
@@ -108,7 +108,11 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { StarIcon, ThumbUpIcon, ThumbDownIcon } from "@heroicons/vue/24/solid";
+import {
+  StarIcon,
+  HandThumbUpIcon,
+  HandThumbDownIcon,
+} from "@heroicons/vue/24/solid";
 import type { ProductReview } from "@/types";
 
 interface Props {

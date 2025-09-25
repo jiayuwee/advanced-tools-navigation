@@ -6,7 +6,7 @@
         <div class="overall-rating">
           <div class="rating-score">{{ stats.average_rating.toFixed(1) }}</div>
           <div class="rating-stars">
-            <StarRating :rating="stats.average_rating" :readonly="true" />
+            <StarRating :model-value="stats.average_rating" :readonly="true" />
           </div>
           <div class="rating-count">基于 {{ stats.total_reviews }} 条评价</div>
         </div>
@@ -43,7 +43,7 @@
           <select
             v-model="filters.sort_by"
             class="sort-select"
-            @change="loadReviews"
+            @change="() => loadReviews()"
           >
             <option value="newest">最新</option>
             <option value="oldest">最早</option>
@@ -56,7 +56,7 @@
             <input
               v-model="filters.verified_only"
               type="checkbox"
-              @change="loadReviews"
+              @change="() => loadReviews()"
             />
             只看验证购买
           </label>
@@ -65,7 +65,7 @@
             <input
               v-model="filters.with_content"
               type="checkbox"
-              @change="loadReviews"
+              @change="() => loadReviews()"
             />
             只看有内容的评价
           </label>

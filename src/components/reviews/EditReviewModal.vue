@@ -9,7 +9,7 @@
       <form class="review-form" @submit.prevent="updateReview">
         <div class="rating-input">
           <label>评分</label>
-          <StarRating v-model:rating="form.rating" :readonly="false" />
+          <StarRating v-model:model-value="form.rating" :readonly="false" />
         </div>
 
         <div class="form-group">
@@ -79,11 +79,15 @@ onMounted(() => {
 const updateReview = async () => {
   try {
     submitting.value = true;
-    await reviewService.updateReview(props.review.id, {
-      rating: form.rating,
-      title: form.title,
-      content: form.content,
-    });
+    await reviewService.updateReview(
+      props.review.id,
+      {
+        rating: form.rating,
+        title: form.title,
+        content: form.content,
+      },
+      "current-user-id",
+    );
     emit("success");
     emit("close");
   } catch (error) {

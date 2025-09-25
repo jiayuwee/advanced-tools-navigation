@@ -263,7 +263,7 @@ import {
   TagIcon,
   FolderIcon,
   PackageIcon,
-  TrendingUpIcon,
+  TrendingUp,
 } from "lucide-vue-next";
 import { searchService } from "@/services/searchService";
 import { useCategoriesStore } from "@/stores/categories";
@@ -282,7 +282,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: "search", result: SearchResult<any>): void;
+  (e: "search", result: SearchResult<Record<string, unknown>>): void;
   (e: "clear"): void;
   (e: "focus"): void;
   (e: "blur"): void;
@@ -333,7 +333,7 @@ const tagQuery = ref("");
 const availableTags = ref<Tag[]>([]);
 
 // 搜索结果
-const lastSearchResult = ref<SearchResult<any> | null>(null);
+const lastSearchResult = ref<SearchResult<Record<string, unknown>> | null>(null);
 
 // 计算属性
 const categories = computed(() => categoriesStore.categories);
@@ -427,7 +427,7 @@ const performSearch = async () => {
 
     const searchOptions = {
       query: query.value.trim(),
-      type: searchType.value as any,
+      type: searchType.value as "all" | "tools" | "products" | "categories",
       category: filters.value.category || undefined,
       tags: selectedTags.value.map((tag) => tag.id),
       priceRange:
@@ -437,14 +437,19 @@ const performSearch = async () => {
               number,
             ])
           : undefined,
-      sortBy: filters.value.sortBy as any,
-      sortOrder: filters.value.sortOrder as any,
+      sortBy: filters.value.sortBy as
+        | "name"
+        | "price"
+        | "created_at"
+        | "click_count"
+        | "relevance",
+      sortOrder: filters.value.sortOrder as "asc" | "desc",
       limit: 20,
     };
 
     const result = await searchService.search(searchOptions);
-    lastSearchResult.value = result;
-    emit("search", result);
+    lastSearchResult.value = result as SearchResult<Record<string, unknown>>;
+    emit("search", result as SearchResult<Record<string, unknown>>);
 
     // 导航到搜索结果页面
     router.push({
@@ -536,7 +541,7 @@ const getSuggestionIcon = (type: string) => {
     case "product":
       return PackageIcon;
     default:
-      return TrendingUpIcon;
+      return TrendingUp;
   }
 };
 

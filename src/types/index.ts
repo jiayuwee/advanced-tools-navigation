@@ -22,7 +22,25 @@ export interface Tool {
   category?: Category; // 关联的分类信息（查询时包含）
 }
 
-// 分类相关类型
+}
+
+// 产品评论类型
+export interface ProductReview {
+  id: string;
+  product_id: string;
+  user_id: string;
+  user?: User; // 关联用户信息
+  rating: number;
+  content: string;
+  images?: string[];
+  is_verified_purchase: boolean;
+  helpful_count: number;
+  unhelpful_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// 评论相关类型
 export interface Category {
   id: string;
   name: string;
@@ -111,6 +129,22 @@ export interface User {
   last_sign_in_at?: string; // 最后登录时间
   email_confirmed_at?: string; // 邮箱确认时间
   user_profiles?: UserProfile; // 用户资料
+}
+
+// 产品评论类型
+export interface ProductReview {
+  id: string;
+  product_id: string;
+  user_id: string;
+  user?: User; // 关联用户信息
+  rating: number;
+  content: string;
+  images?: string[];
+  is_verified_purchase: boolean;
+  helpful_count: number;
+  unhelpful_count: number;
+  created_at: string;
+  updated_at: string;
 }
 
 // 收藏类型

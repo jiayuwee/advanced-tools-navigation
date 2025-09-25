@@ -9,7 +9,7 @@
       <div class="original-review">
         <h4>原评价</h4>
         <div class="review-info">
-          <StarRating :rating="review.rating" :readonly="true" />
+          <StarRating :model-value="review.rating" :readonly="true" />
           <span class="review-title">{{ review.title }}</span>
         </div>
         <p class="review-content">{{ review.content }}</p>
@@ -62,7 +62,13 @@ const replyContent = ref("");
 const submitReply = async () => {
   try {
     submitting.value = true;
-    await reviewService.replyToReview(props.review.id, replyContent.value);
+    // 需要传入当前用户ID，这里使用临时值
+    await reviewService.addReviewReply(
+      props.review.id,
+      replyContent.value,
+      "current-user-id",
+      false,
+    );
     emit("success");
     emit("close");
   } catch (error) {

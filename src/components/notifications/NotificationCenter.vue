@@ -186,7 +186,7 @@ const loadNotifications = async (reset = true) => {
       loadingMore.value = true;
     }
 
-    const options: any = {
+    const options: Record<string, unknown> = {
       page: currentPage.value,
       limit: 20,
     };

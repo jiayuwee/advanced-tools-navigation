@@ -36,7 +36,7 @@ export function useAdvancedSearch() {
   const isSearching = ref(false);
 
   // 智能搜索算法
-  const performSearch = (query: string, items: any[]): SearchResult[] => {
+  const performSearch = (query: string, items: Record<string, unknown>[]): SearchResult[] => {
     if (!query.trim())
       return items.map((item) => ({ item, score: 1, matches: [] }));
 
@@ -70,7 +70,8 @@ export function useAdvancedSearch() {
         });
 
         // 模糊匹配
-        if (fuzzyMatch(item.name?.toLowerCase() || "", term)) {
+        const itemName = item.name as string | undefined;
+        if (fuzzyMatch(itemName?.toLowerCase() || "", term)) {
           score += 2;
         }
       });
@@ -247,11 +248,14 @@ export function useAdvancedSearch() {
   };
 
   // 辅助函数
-  const getNestedValue = (obj: any, path: string): any => {
+  const getNestedValue = (
+    obj: Record<string, unknown>,
+    path: string,
+  ): unknown => {
     return path.split(".").reduce((current, key) => current?.[key], obj);
   };
 
-  const searchInField = (value: any, term: string): boolean => {
+  const searchInField = (value: unknown, term: string): boolean => {
     if (Array.isArray(value)) {
       return value.some(
         (item) => typeof item === "string" && item.toLowerCase().includes(term),

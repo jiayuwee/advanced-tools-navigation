@@ -2,7 +2,7 @@
   <div class="wechat-payment">
     <div class="payment-card">
       <div class="header">
-        <img class="logo" src="/placeholder-logo.png" alt="微信支付" />
+        <CreditCard class="logo" />
         <h3>微信支付</h3>
       </div>
 
@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { CreditCard } from "lucide-vue-next";
 
 const props = defineProps<{
   amount: number | string;
