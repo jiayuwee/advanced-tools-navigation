@@ -193,7 +193,8 @@
     <UserDetailModal
       v-if="selectedUser"
       :user="selectedUser"
-      @close="selectedUser = null"
+      :is-visible="!!selectedUser"
+      @close="closeUserDetail"
       @updated="handleUserUpdated"
     />
   </div>
@@ -357,6 +358,12 @@ const viewUser = (user: User) => {
 const editUser = (user: User) => {
   selectedUser.value = user;
 };
+
+const closeUserDetail = () => {
+  selectedUser.value = null;
+};
+
+
 
 const toggleUserStatus = async (user: User) => {
   try {

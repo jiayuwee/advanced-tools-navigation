@@ -38,7 +38,7 @@
               :search-history="searchHistory"
               :popular-searches="popularSearches"
               @close="showAdvancedSearch = false"
-              @update:filters="updateFilters"
+              @update:filters="(newFilters: any) => updateFilters(newFilters)"
               @search="handleAdvancedSearch"
             />
           </div>
@@ -117,7 +117,7 @@
             <div class="tool-icon">{{ tool.icon || "🔧" }}</div>
             <button
               class="favorite-button"
-              :class="{ active: tool.isFavorite }"
+              :class="{ active: tool.is_favorite }"
               @click.stop="toolsStore.toggleFavorite(tool.id)"
             >
               <StarIcon class="icon" />
@@ -190,9 +190,9 @@
               <h3 class="tool-name">{{ tool.name }}</h3>
               <p class="tool-description">{{ tool.description }}</p>
               <div class="tool-meta">
-                <span class="category">{{ tool.category.name }}</span>
+                <span class="category">{{ tool.categories?.name || '未分类' }}</span>
                 <span class="separator">•</span>
-                <span class="clicks">{{ tool.clickCount }} 次访问</span>
+                <span class="clicks">{{ tool.click_count || 0 }} 次访问</span>
               </div>
             </div>
           </div>
@@ -210,7 +210,7 @@
             <div class="tool-actions">
               <button
                 class="favorite-button"
-                :class="{ active: tool.isFavorite }"
+                :class="{ active: tool.is_favorite }"
                 @click.stop="toolsStore.toggleFavorite(tool.id)"
               >
                 <StarIcon class="icon" />

@@ -9,7 +9,7 @@
       <form class="review-form" @submit.prevent="submitReview">
         <div class="rating-input">
           <label>评分</label>
-          <StarRating v-model:rating="form.rating" :readonly="false" />
+          <StarRating v-model:model-value="form.rating" :readonly="false" />
         </div>
 
         <div class="form-group">
@@ -50,6 +50,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { reviewService } from "@/services/reviewService";
+import { useAuthStore } from "@/stores/auth";
 import StarRating from "@/components/ui/StarRating.vue";
 
 interface Props {
@@ -63,6 +64,7 @@ const emit = defineEmits<{
 }>();
 
 const submitting = ref(false);
+const authStore = useAuthStore();
 const form = reactive({
   rating: 5,
   title: "",
@@ -72,12 +74,15 @@ const form = reactive({
 const submitReview = async () => {
   try {
     submitting.value = true;
-    await reviewService.createReview({
-      product_id: props.productId,
-      rating: form.rating,
-      title: form.title,
-      content: form.content,
-    });
+    await reviewService.createReview(
+      {
+        product_id: props.productId,
+        rating: form.rating,
+        title: form.title,
+        content: form.content,
+      },
+      authStore.user?.id || "",
+    );
     emit("success");
     emit("close");
   } catch (error) {

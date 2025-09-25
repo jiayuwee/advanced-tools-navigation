@@ -186,7 +186,7 @@ class SearchService {
     if (error) throw error;
 
     // 生成分面数据
-    const facets = await this.generateToolsFacets(query, category, tags);
+    const facets = await this.generateToolsFacets(query);
 
     return {
       items: data || [],
@@ -262,11 +262,7 @@ class SearchService {
     if (error) throw error;
 
     // 生成分面数据
-    const facets = await this.generateProductsFacets(
-      query,
-      category,
-      priceRange,
-    );
+    const facets = await this.generateProductsFacets(query);
 
     return {
       items: data || [],
@@ -324,10 +320,10 @@ class SearchService {
     ]);
 
     // 合并结果
-    const items = [
-      ...toolResults.items.map((item) => ({ ...item, _type: "tool" })),
-      ...productResults.items.map((item) => ({ ...item, _type: "product" })),
-      ...categoryResults.items.map((item) => ({ ...item, _type: "category" })),
+    const items: SearchAllItem[] = [
+      ...toolResults.items.map((item) => ({ ...item, _type: "tool" as const })),
+      ...productResults.items.map((item) => ({ ...item, _type: "product" as const })),
+      ...categoryResults.items.map((item) => ({ ...item, _type: "category" as const })),
     ];
 
     const total =
@@ -542,11 +538,10 @@ class SearchService {
       const stored = localStorage.getItem("search_history");
       if (stored) {
         const parsed = JSON.parse(stored);
-        this.searchHistory = parsed.map((item: unknown) => ({
+        this.searchHistory = parsed.map((item: Record<string, unknown>) => ({
           ...item,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          timestamp: new Date((item as any).timestamp),
-        }));
+          timestamp: new Date(item.timestamp as string),
+        }) as SearchHistory);
       }
     } catch (error) {
       console.error("加载搜索历史失败:", error);
@@ -596,7 +591,7 @@ class SearchService {
 
     try {
       // 查询建议
-      const querySuggestions = await this.generateSuggestions(query, "all");
+      const querySuggestions = await this.generateSuggestions(query);
       querySuggestions.forEach((suggestion) => {
         suggestions.push({
           text: suggestion,

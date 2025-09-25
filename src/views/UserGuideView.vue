@@ -83,7 +83,7 @@
           class="bg-white rounded-lg shadow-md p-8"
         >
           <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <User class="w-6 h-6 mr-3 text-green-600" />
+            <Users class="w-6 h-6 mr-3 text-green-600" />
             账户管理
           </h2>
           <div class="space-y-6">
@@ -296,7 +296,7 @@ import {
   Search,
   Heart,
   ShoppingCart,
-  User,
+  Users,
   Upload,
   HelpCircle,
   MessageCircle,

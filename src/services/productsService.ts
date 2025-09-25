@@ -1,9 +1,8 @@
 import { supabase } from "../lib/supabase";
-import type { Product, SearchFilters, SearchResult } from "../types";
-import type { Database } from "../types/database";
+import type { Product, SearchFilters, SearchResult, Review } from "../types";
 
-type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
-type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
+type ProductInsert = Record<string, unknown>;
+type ProductUpdate = Record<string, unknown>;
 
 export class ProductsService {
   // 获取所有产品
@@ -266,74 +265,82 @@ export class ProductsService {
   }
 
   // 转换数据库行为业务对象
-  private static transformProduct(row: Record<string, unknown>): Product {
+  private static transformProduct(row: Record<string, any>): Product {
+    const category = row.category
+      ? {
+          id: row.category.id,
+          name: row.category.name,
+          description: row.category.description ?? undefined,
+          icon: row.category.icon,
+          color: row.category.color,
+          parent_id: row.category.parent_id ?? undefined,
+          children: undefined,
+          count: 0,
+          sort_order: row.category.sort_order,
+          is_active: row.category.is_active,
+          created_at: row.category.created_at,
+          updated_at: row.category.updated_at,
+        }
+      : undefined;
+
+    const reviews: Review[] =
+      (row.reviews || []).map((review: any) => ({
+        id: review.id,
+        user_id: review.user_id,
+        user: review.user
+          ? {
+              id: review.user.id,
+              email: review.user.email,
+              username: review.user.username,
+              full_name: review.user.full_name,
+              avatar_url: review.user.avatar_url,
+              bio: review.user.bio,
+              website: review.user.website,
+              location: review.user.location,
+              role: review.user.role,
+              is_active: review.user.is_active,
+              email_verified: review.user.email_verified,
+              created_at: review.user.created_at,
+              updated_at: review.user.updated_at,
+              last_login_at: review.user.last_login_at,
+            }
+          : undefined,
+        product_id: review.product_id,
+        rating: review.rating,
+        title: review.title,
+        content: review.content,
+        is_verified_purchase: review.is_verified_purchase ?? false,
+        created_at: review.created_at,
+        updated_at: review.updated_at,
+      })) || [];
+
     return {
       id: row.id,
       name: row.name,
       description: row.description,
-      shortDescription: row.short_description,
+      short_description: row.short_description,
       price: row.price,
-      originalPrice: row.original_price,
+      original_price: row.original_price,
       currency: row.currency,
-      category: {
-        id: row.category.id,
-        name: row.category.name,
-        description: row.category.description,
-        icon: row.category.icon,
-        color: row.category.color,
-        parentId: row.category.parent_id,
-        count: 0, // 这里需要单独计算
-        sortOrder: row.category.sort_order,
-        isActive: row.category.is_active,
-        createdAt: row.category.created_at,
-        updatedAt: row.category.updated_at,
-      },
+      category_id: row.category_id,
+      category,
       images: row.images || [],
       features: row.features || [],
-      demoUrl: row.demo_url,
-      downloadUrl: row.download_url,
-      isFeatured: row.is_featured,
-      isDigital: row.is_digital,
-      stockQuantity: row.stock_quantity,
+      demo_url: row.demo_url,
+      download_url: row.download_url,
+      is_featured: row.is_featured,
+      is_digital: row.is_digital,
+      stock_quantity: row.stock_quantity,
       status: row.status,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at,
-      createdBy: row.created_by,
-      metaTitle: row.meta_title,
-      metaDescription: row.meta_description,
-      sortOrder: row.sort_order,
-      reviews:
-        row.reviews?.map((review: any) => ({
-          id: review.id,
-          userId: review.user_id,
-          user: review.user
-            ? {
-                id: review.user.id,
-                email: review.user.email,
-                username: review.user.username,
-                fullName: review.user.full_name,
-                avatarUrl: review.user.avatar_url,
-                bio: review.user.bio,
-                website: review.user.website,
-                location: review.user.location,
-                role: review.user.role,
-                isActive: review.user.is_active,
-                emailVerified: review.user.email_verified,
-                createdAt: review.user.created_at,
-                updatedAt: review.user.updated_at,
-                lastLoginAt: review.user.last_login_at,
-              }
-            : undefined,
-          productId: review.product_id,
-          rating: review.rating,
-          title: review.title,
-          content: review.content,
-          isVerified: review.is_verified,
-          createdAt: review.created_at,
-          updatedAt: review.updated_at,
-        })) || [],
-      averageRating: row.average_rating,
-      totalReviews: row.total_reviews,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      created_by: row.created_by,
+      meta_title: row.meta_title,
+      meta_description: row.meta_description,
+      sort_order: row.sort_order,
+      reviews,
+      average_rating: row.average_rating,
+      total_reviews: row.total_reviews,
     };
   }
 }

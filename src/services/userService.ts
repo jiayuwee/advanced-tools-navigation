@@ -1,12 +1,32 @@
 import { supabase } from "../lib/supabaseClient";
 import type { User, ProfileForm } from "../types";
-import type { Database } from "../types/database";
 
-type UserProfileRow = Database["public"]["Tables"]["user_profiles"]["Row"];
-type UserProfileInsert =
-  Database["public"]["Tables"]["user_profiles"]["Insert"];
-type UserProfileUpdate =
-  Database["public"]["Tables"]["user_profiles"]["Update"];
+type UserProfileRow = {
+  id: string;
+  email: string;
+  username?: string | null;
+  full_name?: string | null;
+  avatar_url?: string | null;
+  bio?: string | null;
+  website?: string | null;
+  location?: string | null;
+  role?: string | null;
+  is_active?: boolean;
+  email_verified?: boolean;
+  created_at?: string;
+  updated_at?: string;
+  last_login_at?: string | null;
+};
+
+type UserProfileInsert = Partial<UserProfileRow> & {
+  id: string;
+  email: string;
+  role?: string;
+  is_active?: boolean;
+  email_verified?: boolean;
+};
+
+type UserProfileUpdate = Partial<UserProfileRow>;
 
 export class UserService {
   // 获取当前用户信息
@@ -51,7 +71,7 @@ export class UserService {
       if (error) throw error;
       if (!data) return null;
 
-      return this.transformUser(data);
+  return this.transformUser(data);
     } catch (error) {
       console.error("获取用户资料失败:", error);
       return null;
@@ -89,7 +109,7 @@ export class UserService {
       if (error) throw error;
       if (!data) throw new Error("更新用户资料失败");
 
-      return this.transformUser(data);
+  return this.transformUser(data);
     } catch (error) {
       console.error("更新用户资料失败:", error);
       throw new Error("更新用户资料失败");
@@ -276,7 +296,7 @@ export class UserService {
       bio: row.bio,
       website: row.website,
       location: row.location,
-      role: row.role,
+  role: (row.role as "user" | "admin" | "super_admin") || "user",
       is_active: row.is_active,
       email_verified: row.email_verified,
       created_at: row.created_at,

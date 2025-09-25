@@ -1,10 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import { supabase } from "@/lib/supabaseClient"; // Supabase 客户端的路径
-import type { Database } from "@/types/database"; // Supabase 自动生成的类型路径
-
-// 从生成的类型中定义 Category 类型
-type Category = Database["public"]["Tables"]["categories"]["Row"];
+import type { Category } from "@/types";
 
 export const useCategoriesStore = defineStore("categories", () => {
   // --- State (状态) ---
@@ -58,6 +55,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "💻",
             color: "#3b82f6",
             parent_id: null,
+            count: 0,
             sort_order: 1,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -70,6 +68,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "🎨",
             color: "#ef4444",
             parent_id: null,
+            count: 0,
             sort_order: 2,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -82,6 +81,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "📊",
             color: "#388e3c",
             parent_id: null,
+            count: 0,
             sort_order: 3,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -94,6 +94,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "📚",
             color: "#f57c00",
             parent_id: null,
+            count: 0,
             sort_order: 4,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -106,6 +107,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "🌐",
             color: "#2196f3",
             parent_id: null,
+            count: 0,
             sort_order: 5,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -118,6 +120,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "🎮",
             color: "#e91e63",
             parent_id: null,
+            count: 0,
             sort_order: 6,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -130,6 +133,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "🔧",
             color: "#607d8b",
             parent_id: null,
+            count: 0,
             sort_order: 7,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -168,6 +172,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "💻",
             color: "#3b82f6",
             parent_id: null,
+            count: 0,
             sort_order: 1,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -180,6 +185,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "🎨",
             color: "#ef4444",
             parent_id: null,
+            count: 0,
             sort_order: 2,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -192,6 +198,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "📊",
             color: "#388e3c",
             parent_id: null,
+            count: 0,
             sort_order: 3,
             is_active: true,
             created_at: new Date().toISOString(),
@@ -204,6 +211,7 @@ export const useCategoriesStore = defineStore("categories", () => {
             icon: "📚",
             color: "#f57c00",
             parent_id: null,
+            count: 0,
             sort_order: 4,
             is_active: true,
             created_at: new Date().toISOString(),

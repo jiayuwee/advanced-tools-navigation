@@ -1,8 +1,11 @@
 import { supabase } from "../lib/supabase";
 import type { Favorite, Tool, Product } from "../types";
-import type { Database } from "../types/database";
 
-type FavoriteInsert = Database["public"]["Tables"]["favorites"]["Insert"];
+type FavoriteInsert = {
+  user_id: string;
+  tool_id?: string | null;
+  product_id?: string | null;
+};
 
 export class FavoritesService {
   // 获取用户收藏的工具

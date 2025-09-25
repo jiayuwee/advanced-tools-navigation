@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "../types/database";
 import { getEnvironmentConfig } from "../utils/envValidation";
 
 // 获取验证后的环境配置
@@ -7,7 +6,7 @@ const envConfig = getEnvironmentConfig();
 const { supabase: supabaseConfig } = envConfig;
 
 // 创建 Supabase 客户端
-export const supabase = createClient<Database>(
+export const supabase = createClient(
   supabaseConfig.url,
   supabaseConfig.anonKey,
   supabaseConfig.options,
@@ -48,17 +47,11 @@ export const REALTIME_CHANNELS = {
 } as const;
 
 // 错误处理工具函数
-export const handleSupabaseError = (error: any) => {
+export const handleSupabaseError = (error: unknown) => {
   console.error("Supabase Error:", error);
-
-  if (error?.message) {
-    return error.message;
-  }
-
-  if (error?.error_description) {
-    return error.error_description;
-  }
-
+  const err = error as { message?: string; error_description?: string } | null;
+  if (err?.message) return err.message;
+  if (err?.error_description) return err.error_description;
   return "操作失败，请稍后重试";
 };
 
@@ -141,7 +134,11 @@ export const deleteFile = async (bucket: string, path: string) => {
 };
 
 // 数据库查询工具函数
-export const createRecord = async (table: string, data: any): Promise<any> => {
+export const createRecord = async <T = unknown>(
+  table: string,
+  data: Record<string, unknown>,
+): Promise<T> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
   const { data: result, error } = await (supabase as any)
     .from(table)
     .insert(data)
@@ -152,14 +149,15 @@ export const createRecord = async (table: string, data: any): Promise<any> => {
     throw new Error(handleSupabaseError(error));
   }
 
-  return result;
+  return result as T;
 };
 
-export const updateRecord = async (
+export const updateRecord = async <T = unknown>(
   table: string,
   id: string,
-  data: any,
-): Promise<any> => {
+  data: Record<string, unknown>,
+): Promise<T> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
   const { data: result, error } = await (supabase as any)
     .from(table)
     .update(data)
@@ -171,23 +169,22 @@ export const updateRecord = async (
     throw new Error(handleSupabaseError(error));
   }
 
-  return result;
+  return result as T;
 };
 
 export const deleteRecord = async (table: string, id: string) => {
-  const { error } = await supabase
-    .from(table as any)
-    .delete()
-    .eq("id", id);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
+  const { error } = await (supabase as any).from(table).delete().eq("id", id);
 
   if (error) {
     throw new Error(handleSupabaseError(error));
   }
 };
 
-export const getRecord = async (table: string, id: string) => {
-  const { data, error } = await supabase
-    .from(table as any)
+export const getRecord = async <T = unknown>(table: string, id: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
+  const { data, error } = await (supabase as any)
+    .from(table)
     .select("*")
     .eq("id", id)
     .single();
@@ -196,25 +193,26 @@ export const getRecord = async (table: string, id: string) => {
     throw new Error(handleSupabaseError(error));
   }
 
-  return data;
+  return data as T;
 };
 
-export const getRecords = async (
+export const getRecords = async <T = unknown>(
   table: string,
   options?: {
     select?: string;
-    filter?: Record<string, any>;
+    filter?: Record<string, unknown>;
     orderBy?: { column: string; ascending?: boolean };
     limit?: number;
     offset?: number;
   },
 ) => {
-  let query = supabase.from(table as any).select(options?.select || "*");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
+  let query = (supabase as any).from(table).select(options?.select || "*");
 
   // 应用过滤条件
   if (options?.filter) {
     Object.entries(options.filter).forEach(([key, value]) => {
-      query = query.eq(key, value);
+      query = query.eq(key, value as never);
     });
   }
 
@@ -243,5 +241,5 @@ export const getRecords = async (
     throw new Error(handleSupabaseError(error));
   }
 
-  return data;
+  return (data as T[]) || [];
 };

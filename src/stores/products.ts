@@ -53,7 +53,7 @@ export const useProductsStore = defineStore("products", () => {
     [...products.value]
       .sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       )
       .slice(0, 6),
   );
@@ -146,7 +146,7 @@ export const useProductsStore = defineStore("products", () => {
         query: query.trim(),
         category: selectedCategory.value || undefined,
         priceRange: priceRange.value || undefined,
-        sortBy: sortBy.value,
+        sortBy: sortBy.value as "name" | "price" | "rating" | "created_at" | "click_count",
         sortOrder: sortOrder.value,
         limit: 20,
         ...filters,

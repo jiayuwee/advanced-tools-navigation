@@ -333,7 +333,9 @@ const tagQuery = ref("");
 const availableTags = ref<Tag[]>([]);
 
 // 搜索结果
-const lastSearchResult = ref<SearchResult<Record<string, unknown>> | null>(null);
+const lastSearchResult = ref<SearchResult<Record<string, unknown>> | null>(
+  null,
+);
 
 // 计算属性
 const categories = computed(() => categoriesStore.categories);

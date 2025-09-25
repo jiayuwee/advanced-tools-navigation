@@ -44,7 +44,7 @@ export const useAuthStore = defineStore("auth", () => {
    */
   async function fetchUserProfile(
     userId: string,
-  ): Promise<Database["public"]["Tables"]["user_profiles"]["Row"] | null> {
+  ): Promise<{ id: string; username?: string | null; avatar_url?: string | null; role?: string | null } | null> {
     const { data, error: profileError } = await supabase
       .from("user_profiles")
       .select("*")

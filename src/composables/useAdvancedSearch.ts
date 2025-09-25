@@ -36,7 +36,10 @@ export function useAdvancedSearch() {
   const isSearching = ref(false);
 
   // 智能搜索算法
-  const performSearch = (query: string, items: Record<string, unknown>[]): SearchResult[] => {
+  const performSearch = (
+    query: string,
+    items: Tool[],
+  ): SearchResult[] => {
     if (!query.trim())
       return items.map((item) => ({ item, score: 1, matches: [] }));
 
@@ -46,7 +49,7 @@ export function useAdvancedSearch() {
       .filter((term) => term.length > 0);
     const results: SearchResult[] = [];
 
-    items.forEach((item) => {
+  items.forEach((item) => {
       let score = 0;
       const matches: string[] = [];
 

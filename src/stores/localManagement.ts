@@ -83,7 +83,7 @@ export const useLocalManagementStore = defineStore("localManagement", () => {
 
   // 本地工具管理
   const addLocalTool = (
-    toolData: Omit<Tool, "id" | "createdAt" | "updatedAt">,
+    toolData: Omit<Tool, "id" | "created_at" | "updated_at">,
   ) => {
     try {
       const localTool = LocalStorageService.addLocalTool(toolData);

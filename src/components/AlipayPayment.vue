@@ -7,21 +7,21 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
-  orderId: { type: String, default: '' },
+  orderId: { type: String, default: "" },
   amount: { type: [Number, String], default: 0 },
-})
+});
 
-const emit = defineEmits(['success', 'error'])
+const emit = defineEmits(["success", "error"]);
 
 function simulateSuccess() {
-  emit('success', { orderId: props.orderId })
+  emit("success", { orderId: props.orderId });
 }
 
 function simulateError() {
-  emit('error', '模拟 Alipay 支付错误')
+  emit("error", "模拟 Alipay 支付错误");
 }
 </script>
 

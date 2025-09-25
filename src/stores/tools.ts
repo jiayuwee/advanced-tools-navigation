@@ -1,21 +1,48 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { supabase } from "@/lib/supabaseClient";
-import type { Database } from "@/types/database";
 import { additionalTools } from "@/data/additional-tools";
-type Tables = Database["public"]["Tables"];
+
+// 最小 Tool 相关类型，避免依赖空的 Database 类型
+type CategoryRow = {
+  id: string;
+  name: string;
+  description: string | null;
+  icon: string | null;
+  color: string | null;
+  parent_id: string | null;
+  sort_order: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+type TagRow = { id: string; name: string };
+
+export type Tool = {
+  id: string;
+  name: string;
+  description: string;
+  url: string | null;
+  icon: string | null;
+  category_id: string | null;
+  is_featured: boolean | null;
+  click_count: number | null;
+  status: "active" | "inactive" | string;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  sort_order: number | null;
+  categories: CategoryRow | null;
+  tool_tags: Array<{ tags: TagRow | null }> | null;
+  tags?: string[];
+};
 
 // 定义 Tool 类型，并扩展以包含关联的 category 和 tags 数据
 // 这使得在组件中直接访问 tool.category.name 和 tool.tags 成为可能
-export type Tool = Tables["tools"]["Row"] & {
-  categories: Tables["categories"]["Row"] | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mapping generated relation which may not match types exactly
-  tool_tags: Array<{
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- passthrough from generated relation
-    tags: any;
-  }> | null;
-  tags?: string[]; // 计算属性，从 tool_tags 中提取标签名称
-};
+// 以上 Tool 类型已经包含 categories/tool_tags 关系和派生 tags
 
 export const useToolsStore = defineStore("tools", () => {
   // --- State (状态) ---
@@ -183,19 +210,21 @@ export const useToolsStore = defineStore("tools", () => {
         ];
 
         // 添加额外的工具数据，并为它们分配正确的分类
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- read-only static data from optional file
-        const extendedTools = (additionalTools || []) as any[];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- static additional tools data
-        const mappedExtendedTools = extendedTools.map((tool: any) => ({
+        type LooseTool = { id?: unknown; category_id?: unknown } & Record<
+          string,
+          unknown
+        >;
+        const extendedTools = (additionalTools || []) as LooseTool[];
+        const mappedExtendedTools = extendedTools.map((tool: LooseTool) => ({
           ...tool,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           created_by: null,
           meta_title: null,
           meta_description: null,
-          categories: getCategoryById(tool.category_id),
+          categories: getCategoryById(String(tool.category_id || "")),
           tool_tags: null,
-          tags: getTagsForTool(tool.id),
+          tags: getTagsForTool(String(tool.id || "")),
         }));
 
         tools.value = [...mockTools, ...mappedExtendedTools];
@@ -223,11 +252,10 @@ export const useToolsStore = defineStore("tools", () => {
       // 处理标签数据，将 tool_tags 转换为简单的 tags 数组
       const processedTools =
         (data as unknown as Tool[])?.map((tool) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mapping generated rpc result
           const tags =
-            tool.tool_tags?.map((tt: any) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generated relation shape
-              return (tt?.tags && (tt.tags as any).name) || "";
+            tool.tool_tags?.map((tt) => {
+              const t = tt?.tags as unknown as { name?: string } | null;
+              return (t && t.name) || "";
             }) || [];
 
           return {
@@ -281,17 +309,19 @@ export const useToolsStore = defineStore("tools", () => {
         ];
 
         // 添加额外的工具数据
-        const extendedFallbackTools = additionalTools.map((tool) => ({
+        const extendedFallbackTools = (
+          additionalTools as { id?: unknown; category_id?: unknown }[]
+        ).map((tool) => ({
           ...tool,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           created_by: null,
           meta_title: null,
           meta_description: null,
-          categories: getCategoryById(tool.category_id),
+          categories: getCategoryById(String(tool.category_id || "")),
           tool_tags: null,
-          tags: getTagsForTool(tool.id),
-        }));
+          tags: getTagsForTool(String(tool.id || "")),
+        })) as unknown as Tool[];
 
         tools.value = [...fallbackTools, ...extendedFallbackTools];
         initialized.value = true;
@@ -407,7 +437,7 @@ export const useToolsStore = defineStore("tools", () => {
 
 // 辅助函数：根据分类ID获取分类信息
 function getCategoryById(categoryId: string) {
-  const categories: Record<string, unknown> = {
+  const categories: Record<string, CategoryRow> = {
     "550e8400-e29b-41d4-a716-446655440001": {
       id: "550e8400-e29b-41d4-a716-446655440001",
       name: "开发工具",

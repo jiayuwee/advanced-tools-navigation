@@ -147,7 +147,7 @@
             class="popular-item"
             @click="$emit('search', search)"
           >
-            <TrendingUpIcon class="icon" />
+            <TrendingUp class="icon" />
             {{ search }}
           </button>
         </div>
@@ -175,7 +175,7 @@ import {
   ArrowUpIcon,
   ArrowDownIcon,
   ClockIcon,
-  TrendingUpIcon,
+  TrendingUp,
   RotateCcwIcon,
   SearchIcon,
 } from "lucide-vue-next";
@@ -375,7 +375,9 @@ watch(
 }
 
 .tags-container {
-  space-y: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .tags-subtitle {

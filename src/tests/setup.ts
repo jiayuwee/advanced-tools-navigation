@@ -14,8 +14,8 @@ vi.mock("@/stores/categories", () => ({
     fetchCategories: vi.fn().mockResolvedValue([]),
     getCategoryById: vi.fn(),
     loading: false,
-    error: null
-  })
+    error: null,
+  }),
 }));
 
 vi.mock("@/stores/tools", () => ({
@@ -25,8 +25,8 @@ vi.mock("@/stores/tools", () => ({
     fetchTools: vi.fn().mockResolvedValue([]),
     getToolById: vi.fn(),
     loading: false,
-    error: null
-  })
+    error: null,
+  }),
 }));
 
 vi.mock("@/stores/auth", () => ({
@@ -37,8 +37,8 @@ vi.mock("@/stores/auth", () => ({
     initialize: vi.fn().mockResolvedValue(null),
     login: vi.fn(),
     logout: vi.fn(),
-    error: null
-  })
+    error: null,
+  }),
 }));
 
 // Mock IntersectionObserver
@@ -48,7 +48,7 @@ global.IntersectionObserver = vi.fn(() => ({
   unobserve: vi.fn(),
   takeRecords: vi.fn(() => []),
   root: null,
-  rootMargin: '',
+  rootMargin: "",
   thresholds: [] as number[],
 }));
 
@@ -133,11 +133,11 @@ Object.defineProperty(window, "matchMedia", {
       dispatchEvent: vi.fn(),
     };
     // Ensure addEventListener exists and is callable
-    Object.defineProperty(mql, 'addEventListener', {
+    Object.defineProperty(mql, "addEventListener", {
       value: vi.fn(),
       writable: true,
       enumerable: true,
-      configurable: true
+      configurable: true,
     });
     return mql;
   }),

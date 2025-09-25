@@ -3,7 +3,7 @@ import { loadStripe } from "@stripe/stripe-js";
 
 // 支付网关配置
 const PAYMENT_CONFIG = {
-  // Stripe配置
+  //           orderId: paymentIntent.metadata?.order_id || ""tripe配置
   stripe: {
     publicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY || "",
     secretKey: import.meta.env.VITE_STRIPE_SECRET_KEY || "",
@@ -147,7 +147,7 @@ export class PaymentService {
         return {
           success: true,
           paymentId: paymentIntent.id,
-          orderId: paymentIntent.metadata?.order_id || "",
+          orderId: (paymentIntent as any).metadata?.order_id || "",
           amount: paymentIntent.amount / 100, // 转换回元
           currency: paymentIntent.currency.toUpperCase(),
           method: "stripe",

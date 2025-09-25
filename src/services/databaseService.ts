@@ -53,7 +53,7 @@ class DatabaseService {
 
     // 检查缓存
     if (cacheOptions?.ttl) {
-      const cached = this.getFromCache(cacheKey);
+      const cached = this.getFromCache<QueryResult<T>>(cacheKey);
       if (cached) {
         return cached;
       }

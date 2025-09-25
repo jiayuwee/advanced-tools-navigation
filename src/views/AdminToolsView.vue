@@ -95,7 +95,7 @@
           </div>
           <div class="col-category">
             <span class="category-badge">{{
-              getCategoryName(tool.category_id) || "未分类"
+              tool.categories?.name || '未分类'
             }}</span>
           </div>
           <div class="col-status">

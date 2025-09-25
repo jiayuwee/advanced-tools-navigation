@@ -53,10 +53,10 @@
         </div>
 
         <!-- 评价图片 -->
-        <div v-if="review.images && review.images.length > 0" class="mt-3">
+  <div v-if="review.images?.length > 0" class="mt-3">
           <div class="flex space-x-2">
             <img
-              v-for="(image, index) in review.images.slice(0, 3)"
+              v-for="(image, index) in (review.images || []).slice(0, 3)"
               :key="index"
               :src="image"
               :alt="`评价图片 ${index + 1}`"
@@ -64,11 +64,11 @@
               @click="openImageModal(image)"
             />
             <div
-              v-if="review.images.length > 3"
+              v-if="(review.images?.length || 0) > 3"
               class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-500 cursor-pointer hover:bg-gray-200"
-              @click="openImageModal(review.images[3])"
+              @click="openImageModal((review.images || [])[3])"
             >
-              +{{ review.images.length - 3 }}
+              +{{ (review.images?.length || 0) - 3 }}
             </div>
           </div>
         </div>
@@ -113,10 +113,10 @@ import {
   HandThumbUpIcon,
   HandThumbDownIcon,
 } from "@heroicons/vue/24/solid";
-import type { ProductReview } from "@/types";
+import type { Review } from "@/services/reviewService";
 
 interface Props {
-  review: ProductReview;
+  review: Review;
 }
 
 const props = defineProps<Props>();

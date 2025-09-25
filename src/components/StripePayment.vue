@@ -7,23 +7,23 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
-  clientSecret: { type: String, default: '' },
+  clientSecret: { type: String, default: "" },
   amount: { type: [Number, String], default: 0 },
-  orderId: { type: String, default: '' },
-})
+  orderId: { type: String, default: "" },
+});
 
-const emit = defineEmits(['success', 'error'])
+const emit = defineEmits(["success", "error"]);
 
 function simulateSuccess() {
   // emit a success payload similar to real integration
-  emit('success', { orderId: props.orderId })
+  emit("success", { orderId: props.orderId });
 }
 
 function simulateError() {
-  emit('error', '模拟支付错误')
+  emit("error", "模拟支付错误");
 }
 </script>
 

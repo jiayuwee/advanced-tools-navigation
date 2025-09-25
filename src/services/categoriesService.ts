@@ -1,8 +1,19 @@
 import { supabase, TABLES, handleSupabaseError } from "../lib/supabaseClient";
 import type { Category } from "../types";
-import type { Database } from "../types/database";
 
-type CategoryRow = Database["public"]["Tables"]["categories"]["Row"];
+// 最小化的数据库行类型，避免依赖生成的 Database 类型模块
+type CategoryRow = {
+  id: string;
+  name: string;
+  description: string | null;
+  icon: string;
+  color: string;
+  parent_id: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
 
 // 分类服务类
 export class CategoriesService {
@@ -87,7 +98,7 @@ export class CategoriesService {
     categoryData: Partial<Category>,
   ): Promise<Category> {
     try {
-      const updateData: any = {};
+      const updateData: Partial<CategoryRow> = {};
 
       if (categoryData.name) updateData.name = categoryData.name;
       if (categoryData.description !== undefined)
@@ -270,12 +281,12 @@ export class CategoriesService {
         description: "编程开发相关工具",
         icon: "code",
         color: "#0078d4",
-        parentId: undefined,
+        parent_id: undefined,
         count: 5,
-        sortOrder: 1,
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        sort_order: 1,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         children: [],
       },
       {
@@ -284,12 +295,12 @@ export class CategoriesService {
         description: "UI/UX设计相关工具",
         icon: "palette",
         color: "#ff6b6b",
-        parentId: undefined,
+        parent_id: undefined,
         count: 3,
-        sortOrder: 2,
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        sort_order: 2,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         children: [],
       },
       {
@@ -298,12 +309,12 @@ export class CategoriesService {
         description: "人工智能相关工具",
         icon: "brain",
         color: "#4ecdc4",
-        parentId: undefined,
+        parent_id: undefined,
         count: 8,
-        sortOrder: 3,
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        sort_order: 3,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         children: [],
       },
       {
@@ -312,12 +323,12 @@ export class CategoriesService {
         description: "提升工作效率的工具",
         icon: "zap",
         color: "#45b7d1",
-        parentId: undefined,
+        parent_id: undefined,
         count: 6,
-        sortOrder: 4,
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        sort_order: 4,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         children: [],
       },
     ];
@@ -331,12 +342,12 @@ export class CategoriesService {
       description: row.description,
       icon: row.icon,
       color: row.color,
-      parentId: row.parent_id,
+      parent_id: row.parent_id,
       count: 0, // 将在获取统计信息时更新
-      sortOrder: row.sort_order,
-      isActive: row.is_active,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at,
+      sort_order: row.sort_order,
+      is_active: row.is_active,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
     };
   }
 }

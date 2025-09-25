@@ -158,7 +158,7 @@
               <button
                 type="button"
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                @click="$refs.fileInput.click()"
+                @click="($refs.fileInput as HTMLInputElement)?.click()"
               >
                 选择文件
               </button>

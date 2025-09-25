@@ -21,6 +21,7 @@ export interface Review {
   reply_count: number;
   created_at: string;
   updated_at: string;
+  images?: string[]; // 添加评价图片
 
   // 关联数据
   user?: {

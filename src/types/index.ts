@@ -8,7 +8,7 @@ export interface Tool {
   url: string;
   icon: string;
   category_id: string; // 修改为 category_id
-  tags: string[]; // 简化为字符串数组
+  tags?: string[]; // 简化为字符串数组，可选
   is_favorite?: boolean; // 修改为 is_favorite
   click_count: number; // 修改为 click_count
   is_featured: boolean; // 修改为 is_featured

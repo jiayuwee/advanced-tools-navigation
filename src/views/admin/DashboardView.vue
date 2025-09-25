@@ -77,7 +77,7 @@
           </div>
           <div class="card-content">
             <div class="chart-placeholder">
-              <TrendingUpIcon class="chart-icon" />
+              <TrendingUp class="chart-icon" />
               <p>访问量图表</p>
               <small
                 >{{
@@ -113,7 +113,7 @@
                   <div class="item-stats">{{ tool.clickCount }} 次访问</div>
                 </div>
                 <div class="item-trend">
-                  <TrendingUpIcon class="trend-icon" />
+                  <TrendingUp class="trend-icon" />
                 </div>
               </div>
             </div>
@@ -196,7 +196,7 @@ import {
   ShoppingBagIcon,
   UsersIcon,
   DollarSignIcon,
-  TrendingUpIcon,
+  TrendingUp,
 } from "lucide-vue-next";
 
 // 响应式状态
