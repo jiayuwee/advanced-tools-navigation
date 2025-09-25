@@ -77,6 +77,19 @@ export interface Product {
   total_reviews?: number; // 修改为 total_reviews
 }
 
+// 用户资料类型
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  display_name?: string;
+  avatar_url?: string;
+  bio?: string;
+  website?: string;
+  location?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // 用户相关类型
 export interface User {
   id: string;
@@ -93,6 +106,11 @@ export interface User {
   created_at: string; // 修改为 created_at
   updated_at: string; // 修改为 updated_at
   last_login_at?: string; // 修改为 last_login_at
+  // 添加缺失的属性
+  status?: string; // 用户状态
+  last_sign_in_at?: string; // 最后登录时间
+  email_confirmed_at?: string; // 邮箱确认时间
+  user_profiles?: UserProfile; // 用户资料
 }
 
 // 收藏类型

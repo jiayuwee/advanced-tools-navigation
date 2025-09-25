@@ -47,6 +47,7 @@
 import {
   ref,
   computed,
+  watch,
   onMounted,
   onUnmounted,
   defineAsyncComponent,
@@ -55,9 +56,9 @@ import { useLazyComponent } from "@/composables/useLazyLoading";
 
 interface Props {
   // 组件导入函数
-  componentLoader: () => Promise<any>;
+  componentLoader: () => Promise<Record<string, unknown>>;
   // 组件属性
-  componentProps?: Record<string, any>;
+  componentProps?: Record<string, unknown>;
   // 是否显示占位符
   showPlaceholder?: boolean;
   // 占位符文本
@@ -73,6 +74,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  componentProps: () => ({}),
   showPlaceholder: true,
   placeholderText: "正在加载...",
   placeholderStyle: () => ({ minHeight: "200px" }),
@@ -91,7 +93,7 @@ const { componentRef, isVisible, shouldLoad } = useLazyComponent();
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 const retryCount = ref(0);
-const component = ref<any>(null);
+const component = ref<Record<string, unknown> | null>(null);
 
 // 设置容器引用
 const containerRef = componentRef;
@@ -131,7 +133,7 @@ const handleLoaded = () => {
 };
 
 // 处理加载错误
-const handleError = (err: any) => {
+const handleError = (err: Error | unknown) => {
   error.value = err instanceof Error ? err.message : "组件运行错误";
   isLoading.value = false;
   emit("error", error.value);

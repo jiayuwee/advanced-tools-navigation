@@ -379,7 +379,7 @@ const getStatusClass = (status: string) => {
 };
 
 const getActivityIcon = (type: string) => {
-  const iconMap: Record<string, any> = {
+  const iconMap: Record<string, unknown> = {
     login: LogInIcon,
     order: ShoppingBagIcon,
     favorite: StarIcon,

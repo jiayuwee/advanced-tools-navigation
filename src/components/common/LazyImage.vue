@@ -89,12 +89,17 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   alt: "",
+  placeholder: "",
+  width: "auto",
+  height: "auto",
   showPlaceholder: true,
   showErrorPlaceholder: true,
   enableRetry: true,
   rootMargin: "50px",
   threshold: 0.1,
   quality: "medium",
+  srcset: "",
+  sizes: "",
 });
 
 const emit = defineEmits<{

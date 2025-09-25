@@ -161,6 +161,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  tool: undefined,
   isEditing: false,
 });
 
@@ -182,7 +183,7 @@ const form = reactive<ToolForm>({
   url: "",
   category_id: "",
   tags: [],
-  icon: "",
+  icon: undefined,
   is_featured: false,
   meta_title: "",
   meta_description: "",
@@ -286,8 +287,8 @@ const loadFormData = () => {
       description: props.tool.description,
       url: props.tool.url,
       category_id: props.tool.category_id,
-      tags: props.tool.tags.map((tag) => tag.name),
-      icon: props.tool.icon || "",
+      tags: props.tool.tags,
+      icon: undefined, // Tool.icon 是 string，ToolForm.icon 是 File，编辑时不设置
       is_featured: props.tool.is_featured,
       meta_title: props.tool.meta_title || "",
       meta_description: props.tool.meta_description || "",
