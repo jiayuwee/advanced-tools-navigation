@@ -7,8 +7,8 @@
   NODE_ENV = "production"
   # 指定 Node 版本，确保与 GitHub Actions 一致
   NODE_VERSION = "20.x"
-  # 移除可能引起冲突的环境变量
-  # 让 Netlify 使用其默认的依赖安装策略
+  # 强制安装可选依赖，解决 Rollup 二进制问题
+  NPM_CONFIG_INCLUDE_OPTIONAL = "true"
 
 [context.production.environment]
   VITE_APP_ENV = "production"
