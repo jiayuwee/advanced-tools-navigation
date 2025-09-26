@@ -1,18 +1,14 @@
 [build]
-  # 明确使用 npm ci 进行依赖安装，确保与 package-lock.json 一致
-  command = "npm ci && npm run build"
+  # 简化构建命令，让 Netlify 使用默认的依赖管理
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_ENV = "production"
   # 指定 Node 版本，确保与 GitHub Actions 一致
   NODE_VERSION = "20.x"
-  # 强制使用 npm 而不是 yarn
-  YARN_VERSION = "0"  # 禁用 yarn
-  # 确保使用 npm 进行依赖安装
-  NPM_FLAGS = "--production"
-  # 启用 legacy peer deps 以避免依赖冲突
-  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
+  # 移除可能引起冲突的环境变量
+  # 让 Netlify 使用其默认的依赖安装策略
 
 [context.production.environment]
   VITE_APP_ENV = "production"
