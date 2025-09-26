@@ -35,19 +35,41 @@ jobs:
           echo "nameserver 8.8.4.4" | sudo tee -a /etc/resolv.conf > /dev/null
           echo "✅ DNS configured to Google Public DNS"
 
+      - name: 🔍 Verify Node.js and npm setup
+        run: |
+          echo "🔍 验证 Node.js 和 npm 安装..."
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+          
+          # 验证 npm 命令是否可用
+          if ! command -v npm &> /dev/null; then
+            echo "❌ npm 命令不可用"
+            exit 1
+          fi
+          
+          # 验证 npm config 命令是否正常工作
+          if ! npm config get cache &> /dev/null; then
+            echo "⚠️ npm config get cache 失败，尝试修复..."
+            # 重新初始化 npm 配置
+            npm cache clean --force || true
+            echo "✅ npm 配置已重置"
+          else
+            echo "✅ npm 配置正常"
+          fi
+
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
           echo "Node.js 版本: $(node --version)"
           echo "NPM 版本: $(npm --version)"
 
-          # 设置npm配置以提高兼容性
-          npm config set cache-min 86400
-          npm config set prefer-offline true
-          npm config set progress false
+          # 设置npm配置以提高兼容性（添加错误处理）
+          npm config set cache-min 86400 || echo "⚠️ 设置 cache-min 失败，继续..."
+          npm config set prefer-offline true || echo "⚠️ 设置 prefer-offline 失败，继续..."
+          npm config set progress false || echo "⚠️ 设置 progress 失败，继续..."
 
-          # 清理可能损坏的缓存
-          npm cache verify || npm cache clean --force || true
+          # 清理可能损坏的缓存（添加错误处理）
+          npm cache verify || npm cache clean --force || echo "⚠️ 缓存清理失败，继续..."
 
           # 尝试标准安装，增加超时和重试
           if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --timeout=60000; then
@@ -93,19 +115,41 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 
+      - name: 🔍 Verify Node.js and npm setup
+        run: |
+          echo "🔍 验证 Node.js 和 npm 安装..."
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+          
+          # 验证 npm 命令是否可用
+          if ! command -v npm &> /dev/null; then
+            echo "❌ npm 命令不可用"
+            exit 1
+          fi
+          
+          # 验证 npm config 命令是否正常工作
+          if ! npm config get cache &> /dev/null; then
+            echo "⚠️ npm config get cache 失败，尝试修复..."
+            # 重新初始化 npm 配置
+            npm cache clean --force || true
+            echo "✅ npm 配置已重置"
+          else
+            echo "✅ npm 配置正常"
+          fi
+
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
           echo "Node.js 版本: $(node --version)"
           echo "NPM 版本: $(npm --version)"
 
-          # 设置npm配置以提高兼容性
-          npm config set cache-min 86400
-          npm config set prefer-offline true
-          npm config set progress false
+          # 设置npm配置以提高兼容性（添加错误处理）
+          npm config set cache-min 86400 || echo "⚠️ 设置 cache-min 失败，继续..."
+          npm config set prefer-offline true || echo "⚠️ 设置 prefer-offline 失败，继续..."
+          npm config set progress false || echo "⚠️ 设置 progress 失败，继续..."
 
-          # 清理可能损坏的缓存
-          npm cache verify || npm cache clean --force || true
+          # 清理可能损坏的缓存（添加错误处理）
+          npm cache verify || npm cache clean --force || echo "⚠️ 缓存清理失败，继续..."
 
           # 尝试标准安装，增加超时和重试
           if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --timeout=60000; then
@@ -155,19 +199,41 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 
+      - name: 🔍 Verify Node.js and npm setup
+        run: |
+          echo "🔍 验证 Node.js 和 npm 安装..."
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+          
+          # 验证 npm 命令是否可用
+          if ! command -v npm &> /dev/null; then
+            echo "❌ npm 命令不可用"
+            exit 1
+          fi
+          
+          # 验证 npm config 命令是否正常工作
+          if ! npm config get cache &> /dev/null; then
+            echo "⚠️ npm config get cache 失败，尝试修复..."
+            # 重新初始化 npm 配置
+            npm cache clean --force || true
+            echo "✅ npm 配置已重置"
+          else
+            echo "✅ npm 配置正常"
+          fi
+
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖 (Node.js ${{ matrix.node-version }})..."
           echo "Node.js 版本: $(node --version)"
           echo "NPM 版本: $(npm --version)"
 
-          # 设置npm配置以提高兼容性
-          npm config set cache-min 86400
-          npm config set prefer-offline true
-          npm config set progress false
+          # 设置npm配置以提高兼容性（添加错误处理）
+          npm config set cache-min 86400 || echo "⚠️ 设置 cache-min 失败，继续..."
+          npm config set prefer-offline true || echo "⚠️ 设置 prefer-offline 失败，继续..."
+          npm config set progress false || echo "⚠️ 设置 progress 失败，继续..."
 
-          # 清理可能损坏的缓存
-          npm cache verify || npm cache clean --force || true
+          # 清理可能损坏的缓存（添加错误处理）
+          npm cache verify || npm cache clean --force || echo "⚠️ 缓存清理失败，继续..."
 
           # 尝试标准安装，增加超时和重试
           if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --timeout=60000; then

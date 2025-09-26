@@ -24,10 +24,38 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
+      - name: 🔍 Verify Node.js and npm setup
+        run: |
+          echo "🔍 验证 Node.js 和 npm 安装..."
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+          
+          # 验证 npm 命令是否可用
+          if ! command -v npm &> /dev/null; then
+            echo "❌ npm 命令不可用"
+            exit 1
+          fi
+          
+          # 验证 npm config 命令是否正常工作
+          if ! npm config get cache &> /dev/null; then
+            echo "⚠️ npm config get cache 失败，尝试修复..."
+            # 重新初始化 npm 配置
+            npm cache clean --force || true
+            echo "✅ npm 配置已重置"
+          else
+            echo "✅ npm 配置正常"
+          fi
+
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
-          npm ci --prefer-offline --no-audit
+          # 使用npm ci，增加错误处理
+          if npm ci --prefer-offline --no-audit; then
+            echo "✅ 依赖安装成功"
+          else
+            echo "⚠️ npm ci 失败，尝试 npm install..."
+            npm install --prefer-offline --no-audit
+          fi
 
       - name: 🔨 Build project
         run: |

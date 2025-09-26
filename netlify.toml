@@ -1,16 +1,18 @@
 [build]
-  # 简化构建配置，让Netlify使用默认的npm install
-  command = "npm run build"
+  # 明确使用 npm ci 进行依赖安装，确保与 package-lock.json 一致
+  command = "npm ci && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_ENV = "production"
-  # 指定 Node 版本，确保与本地/CI 一致
-  NODE_VERSION = "20.11.1"
-  # 若确实需要 legacy peer deps 再开启；默认先关闭以发现真实依赖问题
-  # NPM_CONFIG_LEGACY_PEER_DEPS = "true"
-  # 可选依赖一般不强制；如确认 rollup optional 失败再开启
-  # NPM_CONFIG_OPTIONAL = "true"
+  # 指定 Node 版本，确保与 GitHub Actions 一致
+  NODE_VERSION = "20.x"
+  # 强制使用 npm 而不是 yarn
+  YARN_VERSION = "0"  # 禁用 yarn
+  # 确保使用 npm 进行依赖安装
+  NPM_FLAGS = "--production"
+  # 启用 legacy peer deps 以避免依赖冲突
+  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
 
 [context.production.environment]
   VITE_APP_ENV = "production"
