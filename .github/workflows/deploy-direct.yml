@@ -31,13 +31,37 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 
+      - name: 🔍 Verify Node.js and npm setup
+        run: |
+          echo "🔍 验证 Node.js 和 npm 安装..."
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+          
+          # 验证 npm 命令是否可用
+          if ! command -v npm &> /dev/null; then
+            echo "❌ npm 命令不可用"
+            exit 1
+          fi
+          
+          # 验证 npm config 命令是否正常工作
+          if ! npm config get cache &> /dev/null; then
+            echo "⚠️ npm config get cache 失败，尝试修复..."
+            # 重新初始化 npm 配置
+            npm cache clean --force || true
+            echo "✅ npm 配置已重置"
+          else
+            echo "✅ npm 配置正常"
+          fi
+
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
           echo "Node: $(node -v)"
-          echo "NPM(before): $(npm -v)"
-          npm install -g npm@10.8.2 --silent || true
-          echo "NPM(after): $(npm -v)"
+          echo "NPM: $(npm -v)"
+          
+          # 移除全局npm升级，避免路径问题
+          # npm install -g npm@10.8.2 --silent || true
+          
           if [ -f "package-lock.json" ]; then
             if ! npm ci --no-audit --include=optional; then
               echo "⚠️ npm ci 失败，回退 npm install"
