@@ -86,8 +86,6 @@ export default defineConfig({
       },
     },
     rollupOptions: {
-      // 外部化平台相关的 rollup 可选二进制包，避免 CI 上 EBADPLATFORM
-      external: (id: string) => id.startsWith("@rollup/rollup-"),
       output: {
         manualChunks: {
           vendor: ["vue", "pinia"],

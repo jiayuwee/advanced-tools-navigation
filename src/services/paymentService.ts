@@ -30,7 +30,7 @@ const PAYMENT_CONFIG = {
 
 // 检测可用支付平台
 export const AVAILABLE_PAYMENT_METHODS = Object.entries(PAYMENT_CONFIG)
-  .filter(([_, config]) => config.enabled)
+  .filter(([, config]) => config.enabled)
   .map(([method]) => method);
 
 if (AVAILABLE_PAYMENT_METHODS.length === 0) {
@@ -156,7 +156,7 @@ export class PaymentService {
         return {
           success: true,
           paymentId: paymentIntent.id,
-          orderId: (paymentIntent as any).metadata?.order_id || "",
+          orderId: (paymentIntent as { metadata?: { order_id?: string } }).metadata?.order_id || "",
           amount: paymentIntent.amount / 100, // 转换回元
           currency: paymentIntent.currency.toUpperCase(),
           method: "stripe",

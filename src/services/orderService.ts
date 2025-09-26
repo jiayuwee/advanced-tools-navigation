@@ -25,6 +25,75 @@ const convertBillingAddress = (address: BillingAddress) => {
   };
 };
 
+// 数据库表类型定义
+interface ProductRow {
+  id: string;
+  name: string;
+  price: number;
+  is_digital?: boolean;
+  [key: string]: unknown;
+}
+
+interface OrderRow {
+  id: string;
+  user_id: string;
+  total_amount: number;
+  currency: string;
+  status: string;
+  payment_method?: string;
+  payment_id?: string;
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+  [key: string]: unknown;
+}
+
+interface OrderItemRow {
+  id: string;
+  order_id: string;
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  created_at: string;
+  [key: string]: unknown;
+}
+
+interface OrderInsertData {
+  user_id: string;
+  total_amount: number;
+  currency: string;
+  status: string;
+  billing_address: BillingAddress;
+}
+
+interface OrderItemInsertData {
+  order_id: string;
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+}
+
+interface OrderUpdateData {
+  status: string;
+  payment_method: string;
+  payment_id: string;
+  completed_at: string;
+  updated_at: string;
+}
+
+interface PaymentInsertData {
+  order_id: string;
+  amount: number;
+  currency: string;
+  payment_method: string;
+  provider_payment_id: string;
+  status: string;
+  completed_at: string;
+  updated_at: string;
+}
+
 export class OrderService {
   // 创建订单
   static async createOrder(
@@ -45,10 +114,10 @@ export class OrderService {
         throw new Error("产品不存在或已下架");
       }
 
-      const totalAmount = (product as any).price * orderData.quantity;
+      const totalAmount = (product as ProductRow).price * orderData.quantity;
 
       // 创建订单
-      const orderInsertData: any = {
+      const orderInsertData: OrderInsertData = {
         user_id: userId,
         total_amount: totalAmount,
         currency: "CNY",
@@ -67,11 +136,11 @@ export class OrderService {
       if (!order) throw new Error("创建订单失败");
 
       // 创建订单项
-      const orderItemInsertData: any = {
-        order_id: (order as any).id,
+      const orderItemInsertData: OrderItemInsertData = {
+        order_id: (order as OrderRow).id,
         product_id: orderData.product_id,
         quantity: orderData.quantity,
-        unit_price: (product as any).price,
+        unit_price: (product as ProductRow).price,
         total_price: totalAmount,
       };
 
@@ -86,29 +155,29 @@ export class OrderService {
       if (!orderItem) throw new Error("创建订单项失败");
 
       return {
-        id: (order as any).id,
-        user_id: (order as any).user_id,
+        id: (order as OrderRow).id,
+        user_id: (order as OrderRow).user_id,
         items: [
           {
-            id: (orderItem as any).id,
-            order_id: (order as any).id,
+            id: (orderItem as OrderItemRow).id,
+            order_id: (order as OrderRow).id,
             product_id: orderData.product_id,
             quantity: orderData.quantity,
-            unit_price: (product as any).price,
+            unit_price: (product as ProductRow).price,
             total_price: totalAmount,
-            created_at: (orderItem as any).created_at,
+            created_at: (orderItem as OrderItemRow).created_at,
             product: {
-              id: (product as any).id,
-              name: (product as any).name,
+              id: (product as ProductRow).id,
+              name: (product as ProductRow).name,
               description: "",
               short_description: "",
-              price: (product as any).price,
+              price: (product as ProductRow).price,
               currency: "CNY",
               category_id: "",
               images: [],
               features: [],
               is_featured: false,
-              is_digital: (product as any).is_digital || false,
+              is_digital: (product as ProductRow).is_digital || false,
               status: "active",
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
@@ -116,18 +185,18 @@ export class OrderService {
           },
         ],
         total_amount: totalAmount,
-        currency: (order as any).currency,
-        status: (order as any).status as
+        currency: (order as OrderRow).currency,
+        status: (order as OrderRow).status as
           | "pending"
           | "paid"
           | "cancelled"
           | "refunded",
-        payment_method: (order as any).payment_method || undefined,
-        payment_id: (order as any).payment_id || undefined,
+        payment_method: (order as OrderRow).payment_method || undefined,
+        payment_id: (order as OrderRow).payment_id || undefined,
         billing_address: orderData.billing_address,
-        created_at: (order as any).created_at,
-        updated_at: (order as any).updated_at,
-        completed_at: (order as any).completed_at || undefined,
+        created_at: (order as OrderRow).created_at,
+        updated_at: (order as OrderRow).updated_at,
+        completed_at: (order as OrderRow).completed_at || undefined,
       };
     } catch (error) {
       console.error("创建订单失败:", error);
@@ -138,7 +207,7 @@ export class OrderService {
   // 处理支付
   static async processPayment(paymentData: PaymentData): Promise<void> {
     try {
-      const orderUpdateData: any = {
+      const orderUpdateData: OrderUpdateData = {
         status: "paid",
         payment_method: paymentData.payment_method,
         payment_id: paymentData.payment_id,
@@ -156,7 +225,7 @@ export class OrderService {
       if (error) throw error;
 
       // 创建支付记录
-      const paymentInsertData: any = {
+      const paymentInsertData: PaymentInsertData = {
         order_id: paymentData.order_id,
         amount: paymentData.amount,
         currency: "CNY",
@@ -229,7 +298,7 @@ export class OrderService {
 
       if (error) throw error;
 
-      return (data || []).map((order: any) => ({
+      return (data || []).map((order: OrderRow & { order_items?: OrderItemRow[] }) => ({
         id: order.id,
         user_id: order.user_id,
         items:

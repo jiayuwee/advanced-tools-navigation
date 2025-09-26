@@ -25,6 +25,7 @@ interface ToolBase {
   icon: string | null;
   category_id: string | null;
   is_featured: boolean;
+  is_favorite?: boolean; // 添加收藏状态
   click_count: number;
   status: 'active' | 'inactive';
   created_at: string;
@@ -73,6 +74,7 @@ export function normalizeTool(data: unknown): Tool {
     icon: typeof raw.icon === 'string' ? raw.icon : null,
     category_id: typeof raw.category_id === 'string' ? raw.category_id : null,
     is_featured: Boolean(raw.is_featured),
+    is_favorite: Boolean(raw.is_favorite),
     click_count: Number(raw.click_count) || 0,
     status: raw.status === 'inactive' ? 'inactive' : 'active',
     created_at: typeof raw.created_at === 'string' ? raw.created_at : new Date().toISOString(),
@@ -188,8 +190,11 @@ export const useToolsStore = defineStore('tools', () => {
   }
   
   async function toggleFavorite(toolId: string) {
-    // TODO: 实现收藏切换逻辑
-    console.log('Toggle favorite for tool:', toolId)
+    const tool = getToolById(toolId)
+    if (tool) {
+      tool.is_favorite = !tool.is_favorite
+    }
+    // TODO: 调用 API 更新服务器端数据
   }
 
   async function initialize() {
@@ -198,14 +203,87 @@ export const useToolsStore = defineStore('tools', () => {
     try {
       isLoading.value = true
       error.value = null
-      // 模拟异步加载工具数据
+      
+      // 模拟工具数据，在实际项目中应该从 API 加载
+      const mockTools: Tool[] = [
+        {
+          id: '1',
+          name: 'GitHub',
+          description: '世界上最大的代码托管平台',
+          url: 'https://github.com',
+          icon: '🐙',
+          category_id: 'dev-tools',
+          is_featured: true,
+          is_favorite: false,
+          click_count: 1250,
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'VS Code',
+          description: '微软开发的免费代码编辑器',
+          url: 'https://code.visualstudio.com',
+          icon: '💻',
+          category_id: 'dev-tools',
+          is_featured: true,
+          is_favorite: false,
+          click_count: 980,
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '3',
+          name: 'Figma',
+          description: '协作式界面设计工具',
+          url: 'https://figma.com',
+          icon: '🎨',
+          category_id: 'design-tools',
+          is_featured: false,
+          is_favorite: false,
+          click_count: 750,
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '4',
+          name: 'Notion',
+          description: '多功能笔记和知识管理工具',
+          url: 'https://notion.so',
+          icon: '📝',
+          category_id: 'productivity',
+          is_featured: true,
+          is_favorite: false,
+          click_count: 892,
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '5',
+          name: 'ChatGPT',
+          description: 'OpenAI 开发的 AI 对话助手',
+          url: 'https://chat.openai.com',
+          icon: '🤖',
+          category_id: 'ai-tools',
+          is_featured: true,
+          is_favorite: false,
+          click_count: 2100,
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ]
+      
       await new Promise(resolve => setTimeout(resolve, 500))
-      // 实际项目中这里应该是API调用
-      setTools([])
+      setTools(mockTools)
       initialized.value = true
       return true
     } catch (err) {
-      error.value = 'Failed to load tools'
+      error.value = '加载工具数据失败'
       console.error('ToolsStore initialization error:', err)
       return false
     } finally {

@@ -3,17 +3,24 @@
  */
 
 // 类型定义
+interface AxiosErrorResponse {
+  status: number;
+  data: unknown;
+}
+
 interface AxiosError {
-  response?: {
-    status: number;
-    data: any;
-  };
-  request?: any;
+  response?: AxiosErrorResponse;
+  request?: unknown;
   message: string;
 }
 
 interface NetworkError {
-  request: any;
+  request: unknown;
+}
+
+interface DatabaseError {
+  code?: string;
+  message?: string;
 }
 
 function isAxiosError(error: unknown): error is AxiosError {
@@ -64,7 +71,7 @@ export class ErrorHandler {
         case 400:
           return this.createError(
             "BAD_REQUEST",
-            data.message || "请求参数错误",
+            (data as { message?: string })?.message || "请求参数错误",
             data,
           );
         case 401:
@@ -116,7 +123,7 @@ export class ErrorHandler {
 
   // 处理数据库错误
   static handleDatabaseError(error: unknown): AppError {
-    const dbError = error as { code?: string; message?: string };
+    const dbError = error as DatabaseError;
 
     if (dbError.code) {
       switch (dbError.code) {

@@ -38,7 +38,7 @@
               :search-history="searchHistory"
               :popular-searches="popularSearches"
               @close="showAdvancedSearch = false"
-              @update:filters="(newFilters: any) => updateFilters(newFilters)"
+              @update:filters="updateFilters"
               @search="handleAdvancedSearch"
             />
           </div>
@@ -117,7 +117,7 @@
             <div class="tool-icon">{{ tool.icon || "🔧" }}</div>
             <button
               class="favorite-button"
-              :class="{ active: (tool as any).is_favorite ?? false }"
+              :class="{ active: tool.is_favorite ?? false }"
               @click.stop="toolsStore.toggleFavorite(tool.id)"
             >
               <StarIcon class="icon" />
@@ -210,7 +210,7 @@
             <div class="tool-actions">
               <button
                 class="favorite-button"
-                :class="{ active: (tool as any).is_favorite ?? false }"
+                :class="{ active: tool.is_favorite ?? false }"
                 @click.stop="toolsStore.toggleFavorite(tool.id)"
               >
                 <StarIcon class="icon" />
@@ -256,7 +256,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useToolsStore } from "../stores/tools";
+import { useToolsStore, type Tool } from "../stores/tools";
 import { useAdvancedSearch } from "@/composables/useAdvancedSearch";
 import AdvancedSearchPanel from "@/components/search/AdvancedSearchPanel.vue";
 import {
@@ -338,7 +338,7 @@ const handleSearch = () => {
   toolsStore.setSearchQuery(searchQuery.value);
 };
 
-const updateFilters = (newFilters: typeof filters) => {
+const updateFilters = (newFilters: unknown) => {
   Object.assign(filters, newFilters);
 };
 
@@ -351,7 +351,7 @@ const goToToolDetail = (toolId: string) => {
   router.push(`/tools/${toolId}`);
 };
 
-const handleToolClick = async (tool: any) => {
+const handleToolClick = async (tool: Tool) => {
   console.log("点击工具:", tool.name, "URL:", tool.url);
 
   if (!tool.url || tool.url.trim() === "") {

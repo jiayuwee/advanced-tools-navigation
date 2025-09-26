@@ -1,11 +1,15 @@
 [build]
-  # 优化构建命令，使用 --legacy-peer-deps 解决依赖冲突
-  command = "npm install --legacy-peer-deps --prefer-offline --no-audit --include=optional && npm run build"
+  # 简化构建配置，让Netlify使用默认的npm install
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_ENV = "production"
   NPM_CONFIG_INCLUDE_OPTIONAL = "true"
+  # 确保rollup可选依赖正确安装
+  NPM_CONFIG_OPTIONAL = "true"
+  # 使用legacy peer deps解决依赖冲突
+  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
 
 [context.production.environment]
   VITE_APP_ENV = "production"
