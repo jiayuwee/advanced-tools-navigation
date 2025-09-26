@@ -1,5 +1,4 @@
-// 临时修复 Supabase 类型问题的文件
-// @ts-nocheck
+// 评价服务：移除临时 @ts-nocheck 并尽量使用显式类型约束
 import { supabase } from "@/lib/supabaseClient";
 import { databaseService } from "./databaseService";
 import type { QueryOptions } from "./databaseService";
@@ -102,6 +101,107 @@ export interface ReviewFilters {
     | "most_helpful";
 }
 
+// 数据库查询原始行类型与转换函数
+interface ReviewRow {
+  id: string;
+  product_id: string;
+  user_id: string;
+  rating: number;
+  title: string;
+  content: string | null;
+  pros: string[] | null;
+  cons: string[] | null;
+  is_verified_purchase: boolean;
+  is_anonymous: boolean;
+  status: string;
+  helpful_count: number;
+  unhelpful_count: number;
+  reply_count: number;
+  created_at: string;
+  updated_at: string;
+  images?: string[] | null;
+  user_profiles?: {
+    id: string;
+    username: string;
+    full_name: string;
+    avatar_url: string;
+  } | null;
+  products?: {
+    id: string;
+    name: string;
+    images: string[];
+  } | null;
+  review_replies?: Array<{
+    id: string;
+    content: string;
+    is_official: boolean;
+    created_at: string;
+    user_profiles?: {
+      id: string;
+      username: string;
+      full_name: string;
+      avatar_url: string;
+    } | null;
+  }> | null;
+}
+
+function transformReviewRow(row: ReviewRow): Review {
+  return {
+    id: row.id,
+    product_id: row.product_id,
+    user_id: row.user_id,
+    rating: row.rating,
+    title: row.title,
+    content: row.content ?? "",
+    pros: row.pros ?? [],
+    cons: row.cons ?? [],
+    is_verified_purchase: row.is_verified_purchase,
+    is_anonymous: row.is_anonymous,
+    status: (row.status as Review["status"]) || "pending",
+    helpful_count: row.helpful_count,
+    unhelpful_count: row.unhelpful_count,
+    reply_count: row.reply_count,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+    images: row.images ?? undefined,
+    user: row.user_profiles
+      ? {
+          id: row.user_profiles.id,
+          username: row.user_profiles.username,
+          full_name: row.user_profiles.full_name,
+          avatar_url: row.user_profiles.avatar_url,
+        }
+      : undefined,
+    product: row.products
+      ? {
+          id: row.products.id,
+          name: row.products.name,
+          images: row.products.images,
+        }
+      : undefined,
+    replies: row.review_replies
+      ? row.review_replies.map((r) => ({
+          id: r.id,
+          review_id: row.id,
+          user_id: r.user_profiles?.id || "",
+          content: r.content,
+          is_official: r.is_official,
+          created_at: r.created_at,
+          updated_at: r.created_at,
+          user: r.user_profiles
+            ? {
+                id: r.user_profiles.id,
+                username: r.user_profiles.username,
+                full_name: r.user_profiles.full_name,
+                avatar_url: r.user_profiles.avatar_url,
+              }
+            : undefined,
+        }))
+      : undefined,
+    user_vote: null,
+  };
+}
+
 class ReviewService {
   // 获取产品评价列表
   async getProductReviews(
@@ -184,11 +284,9 @@ class ReviewService {
       // 获取统计信息
       const stats = await this.getProductReviewStats(productId);
 
-      return {
-        reviews: data || [],
-        total: count || 0,
-        stats,
-      };
+      const reviews =
+        (data as ReviewRow[] | null)?.map(transformReviewRow) || [];
+      return { reviews, total: count || 0, stats };
     } catch (error) {
       console.error("获取产品评价失败:", error);
       throw error;
@@ -311,7 +409,7 @@ class ReviewService {
 
       if (error) throw error;
 
-      return data;
+      return transformReviewRow(data as ReviewRow);
     } catch (error) {
       console.error("创建评价失败:", error);
       throw error;
@@ -354,7 +452,7 @@ class ReviewService {
 
       if (error) throw error;
 
-      return data;
+      return transformReviewRow(data as ReviewRow);
     } catch (error) {
       console.error("更新评价失败:", error);
       throw error;
@@ -489,14 +587,12 @@ class ReviewService {
       if (error) throw error;
 
       // 更新评价的回复计数
-      await supabase.rpc(
-        "increment_review_reply_count" as any,
-        {
-          review_id: reviewId,
-        } as any,
-      );
+      // 使用 RPC：Supabase JS v2 对自定义函数暂未生成类型，保持最小 any 包裹
+      await supabase.rpc("increment_review_reply_count", {
+        review_id: reviewId,
+      } as { review_id: string });
 
-      return data;
+      return data as ReviewReply;
     } catch (error) {
       console.error("添加评价回复失败:", error);
       throw error;
@@ -542,7 +638,7 @@ class ReviewService {
           status,
           moderated_by: moderatorId,
           moderated_at: new Date().toISOString(),
-        } as any)
+        })
         .eq("id", reviewId);
 
       if (error) throw error;
@@ -601,7 +697,7 @@ class ReviewService {
         throw error;
       }
 
-      return data;
+      return data ? (transformReviewRow(data as ReviewRow) as Review) : null;
     } catch (error) {
       console.error("获取评价详情失败:", error);
       throw error;

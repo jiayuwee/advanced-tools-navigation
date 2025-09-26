@@ -19,6 +19,16 @@ import { useSimpleTheme } from "@/composables/useSimpleTheme";
  */
 async function initializeCoreStores() {
   console.log("🚀 Initializing core stores and theme system...");
+  
+  // 添加平台诊断信息
+  console.log("🔍 Platform diagnostics:", {
+    platform: navigator.platform,
+    userAgent: navigator.userAgent,
+    env: import.meta.env.MODE,
+    baseUrl: import.meta.env.BASE_URL,
+    supabaseUrl: import.meta.env.VITE_SUPABASE_URL ? "✅ Set" : "❌ Not set",
+    supabaseKey: import.meta.env.VITE_SUPABASE_ANON_KEY ? "✅ Set" : "❌ Not set"
+  });
 
   try {
     // 必须在 Pinia 实例被 app 使用后，才能获取 store 实例

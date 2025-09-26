@@ -38,23 +38,31 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
-          # 清理缓存以避免平台兼容性问题
-          npm cache clean --force || true
-          
-          # 尝试标准安装
-          if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts; then
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+
+          # 设置npm配置以提高兼容性
+          npm config set cache-min 86400
+          npm config set prefer-offline true
+          npm config set progress false
+
+          # 清理可能损坏的缓存
+          npm cache verify || npm cache clean --force || true
+
+          # 尝试标准安装，增加超时和重试
+          if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --timeout=60000; then
             echo "✅ 标准安装成功"
           else
             echo "⚠️ 标准安装失败，尝试替代方案..."
-            
+
             # 删除 node_modules 和 package-lock.json
             rm -rf node_modules package-lock.json
-            
+
             # 重新生成 package-lock.json 并安装
-            npm install --prefer-offline --no-audit --ignore-scripts
+            npm install --prefer-offline --no-audit --ignore-scripts --timeout=60000
             echo "✅ 替代安装方案完成"
           fi
-          
+
           echo "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
 
       - name: 🔍 ESLint Check
@@ -88,23 +96,31 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
-          # 清理缓存以避免平台兼容性问题
-          npm cache clean --force || true
-          
-          # 尝试标准安装
-          if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts; then
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+
+          # 设置npm配置以提高兼容性
+          npm config set cache-min 86400
+          npm config set prefer-offline true
+          npm config set progress false
+
+          # 清理可能损坏的缓存
+          npm cache verify || npm cache clean --force || true
+
+          # 尝试标准安装，增加超时和重试
+          if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --timeout=60000; then
             echo "✅ 标准安装成功"
           else
             echo "⚠️ 标准安装失败，尝试替代方案..."
-            
+
             # 删除 node_modules 和 package-lock.json
             rm -rf node_modules package-lock.json
-            
+
             # 重新生成 package-lock.json 并安装
-            npm install --prefer-offline --no-audit --ignore-scripts
+            npm install --prefer-offline --no-audit --ignore-scripts --timeout=60000
             echo "✅ 替代安装方案完成"
           fi
-          
+
           echo "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
 
       - name: 🧪 Run unit tests
@@ -142,23 +158,31 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖 (Node.js ${{ matrix.node-version }})..."
-          # 清理缓存以避免平台兼容性问题
-          npm cache clean --force || true
-          
-          # 尝试标准安装
-            npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --silent
+          echo "Node.js 版本: $(node --version)"
+          echo "NPM 版本: $(npm --version)"
+
+          # 设置npm配置以提高兼容性
+          npm config set cache-min 86400
+          npm config set prefer-offline true
+          npm config set progress false
+
+          # 清理可能损坏的缓存
+          npm cache verify || npm cache clean --force || true
+
+          # 尝试标准安装，增加超时和重试
+          if npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --timeout=60000; then
             echo "✅ 标准安装成功"
           else
             echo "⚠️ 标准安装失败，尝试替代方案..."
-            
+
             # 删除 node_modules 和 package-lock.json
             rm -rf node_modules package-lock.json
-            
+
             # 重新生成 package-lock.json 并安装
-            npm install --prefer-offline --no-audit --ignore-scripts
+            npm install --prefer-offline --no-audit --ignore-scripts --timeout=60000
             echo "✅ 替代安装方案完成"
           fi
-          
+
           echo "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
 
       - name: 🔨 Build project

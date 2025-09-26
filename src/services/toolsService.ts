@@ -29,6 +29,38 @@ interface ToolInput {
   updated_at?: string; // 添加更新字段
 }
 
+// 数据库工具原始行类型（匹配 select *, categories(*)）
+interface ToolRow {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  icon: string | null;
+  category_id: string;
+  categories?: {
+    id: string;
+    name: string;
+    description?: string | null;
+    icon?: string | null;
+    color?: string | null;
+    parent_id?: string | null;
+    sort_order?: number | null;
+    is_active?: boolean;
+    created_at?: string;
+    updated_at?: string;
+  };
+  is_favorite?: boolean;
+  click_count?: number;
+  is_featured?: boolean;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  created_by?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  sort_order?: number | null;
+}
+
 /**
  * 工具服务类
  * 提供工具数据的CRUD操作和搜索功能
@@ -446,7 +478,7 @@ export class ToolsService {
   }
 
   // 转换数据库行为业务对象
-  private static transformToolRow(row: any): Tool {
+  private static transformToolRow(row: ToolRow): Tool {
     return {
       id: row.id,
       name: row.name,
@@ -454,12 +486,26 @@ export class ToolsService {
       url: row.url,
       icon: row.icon,
       category_id: row.category_id,
-      category: row.categories, // 添加分类信息
+      category: row.categories
+        ? {
+            id: row.categories.id,
+            name: row.categories.name,
+            description: row.categories.description || "",
+            icon: row.categories.icon || undefined,
+            color: row.categories.color || undefined,
+            parent_id: row.categories.parent_id || undefined,
+            count: 0, // 未在此查询中返回，默认0
+            sort_order: row.categories.sort_order || 0,
+            is_active: row.categories.is_active ?? true,
+            created_at: row.categories.created_at || new Date().toISOString(),
+            updated_at: row.categories.updated_at || new Date().toISOString(),
+          }
+        : undefined, // 添加分类信息
       tags: [], // TODO: 实现标签关联
       is_favorite: row.is_favorite,
       click_count: row.click_count,
       is_featured: row.is_featured,
-      status: row.status,
+  status: (row.status as Tool["status"]) || "active",
       created_at: row.created_at,
       updated_at: row.updated_at,
       created_by: row.created_by,
@@ -600,6 +646,198 @@ export class ToolsService {
         meta_description:
           "Notion是一个集成了笔记、任务管理和数据库的全能工作空间",
         sort_order: 1,
+      },
+      {
+        id: "mock-5",
+        name: "VS Code",
+        description: "轻量但强大的源代码编辑器，支持丰富插件生态",
+        url: "https://code.visualstudio.com",
+        icon: "https://code.visualstudio.com/favicon.ico",
+        category_id: "mock-cat-1",
+        category: {
+          id: "mock-cat-1",
+          name: "开发工具",
+          description: "编程开发相关工具",
+          icon: "code",
+          color: "#0078d4",
+          parent_id: undefined,
+          count: 5,
+          sort_order: 1,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        tags: ["IDE", "编辑器", "开发"],
+        is_favorite: false,
+        click_count: 0,
+        is_featured: false,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: "system",
+        meta_title: "VS Code - 源代码编辑器",
+        meta_description: "VS Code 是一个跨平台的现代源码编辑器",
+        sort_order: 2,
+      },
+      {
+        id: "mock-6",
+        name: "GitHub Copilot",
+        description: "AI 编程助手，自动补全代码与函数",
+        url: "https://github.com/features/copilot",
+        icon: "https://github.githubassets.com/favicons/favicon.svg",
+        category_id: "mock-cat-3",
+        category: {
+          id: "mock-cat-3",
+          name: "AI工具",
+          description: "人工智能相关工具",
+          icon: "brain",
+          color: "#4ecdc4",
+          parent_id: undefined,
+          count: 8,
+          sort_order: 3,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        tags: ["AI", "代码生成", "助手"],
+        is_favorite: false,
+        click_count: 0,
+        is_featured: true,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: "system",
+        meta_title: "GitHub Copilot - AI 编程助手",
+        meta_description: "GitHub Copilot 使用 AI 帮助编写代码",
+        sort_order: 2,
+      },
+      {
+        id: "mock-7",
+        name: "Postman",
+        description: "API 开发与调试协作平台",
+        url: "https://www.postman.com",
+        icon: "https://www.postman.com/favicon.ico",
+        category_id: "mock-cat-1",
+        category: {
+          id: "mock-cat-1",
+          name: "开发工具",
+          description: "编程开发相关工具",
+          icon: "code",
+          color: "#0078d4",
+          parent_id: undefined,
+          count: 5,
+          sort_order: 1,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        tags: ["API", "调试", "测试"],
+        is_favorite: false,
+        click_count: 0,
+        is_featured: false,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: "system",
+        meta_title: "Postman - API 开发平台",
+        meta_description: "Postman 提供 API 设计、调试、测试工具",
+        sort_order: 3,
+      },
+      {
+        id: "mock-8",
+        name: "Canva",
+        description: "在线平面设计工具，快速创建视觉内容",
+        url: "https://www.canva.com",
+        icon: "https://www.canva.com/favicon.ico",
+        category_id: "mock-cat-2",
+        category: {
+          id: "mock-cat-2",
+          name: "设计工具",
+          description: "UI/UX设计相关工具",
+          icon: "palette",
+          color: "#ff6b6b",
+          parent_id: undefined,
+          count: 3,
+          sort_order: 2,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        tags: ["设计", "图形", "创意"],
+        is_favorite: false,
+        click_count: 0,
+        is_featured: false,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: "system",
+        meta_title: "Canva - 在线平面设计工具",
+        meta_description: "Canva 让每个人都能创建设计",
+        sort_order: 2,
+      },
+      {
+        id: "mock-9",
+        name: "Slack",
+        description: "团队沟通与协作平台，支持频道与集成",
+        url: "https://slack.com",
+        icon: "https://slack.com/favicon.ico",
+        category_id: "mock-cat-4",
+        category: {
+          id: "mock-cat-4",
+          name: "效率工具",
+          description: "提升工作效率的工具",
+          icon: "zap",
+          color: "#45b7d1",
+          parent_id: undefined,
+          count: 6,
+          sort_order: 4,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        tags: ["沟通", "协作", "团队"],
+        is_favorite: false,
+        click_count: 0,
+        is_featured: false,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: "system",
+        meta_title: "Slack - 团队协作平台",
+        meta_description: "Slack 提供高效的团队沟通方式",
+        sort_order: 2,
+      },
+      {
+        id: "mock-10",
+        name: "Linear",
+        description: "现代化项目与任务管理平台，适合产品与工程团队",
+        url: "https://linear.app",
+        icon: "https://linear.app/favicon.ico",
+        category_id: "mock-cat-4",
+        category: {
+          id: "mock-cat-4",
+          name: "效率工具",
+          description: "提升工作效率的工具",
+          icon: "zap",
+          color: "#45b7d1",
+          parent_id: undefined,
+          count: 6,
+          sort_order: 4,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        tags: ["项目管理", "任务", "协作"],
+        is_favorite: false,
+        click_count: 0,
+        is_featured: true,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: "system",
+        meta_title: "Linear - 现代项目管理",
+        meta_description: "Linear 提供快速流畅的项目管理体验",
+        sort_order: 3,
       },
     ];
 

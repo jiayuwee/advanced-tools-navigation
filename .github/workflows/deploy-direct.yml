@@ -34,20 +34,21 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖..."
-          npm config set prefer-offline true
-          npm config set audit-level moderate
-          npm config set fund false
-          
-          npm cache clean --force 2>/dev/null || true
-          
+          echo "Node: $(node -v)"
+          echo "NPM(before): $(npm -v)"
+          npm install -g npm@10.8.2 --silent || true
+          echo "NPM(after): $(npm -v)"
           if [ -f "package-lock.json" ]; then
-            npm ci --no-optional --prefer-offline --no-audit --ignore-scripts --silent
+            if ! npm ci --no-audit --include=optional; then
+              echo "⚠️ npm ci 失败，回退 npm install"
+              rm -rf node_modules
+              npm install --no-audit --include=optional
+            fi
           else
-            npm install --prefer-offline --no-audit --ignore-scripts --silent
+            npm install --no-audit --include=optional
           fi
-          
           echo "✅ 依赖安装完成"
-          echo "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
+          echo "📋 顶层依赖数量: $(npm ls --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
 
       - name: 🔍 Quick lint check
         run: |
@@ -106,6 +107,7 @@ jobs:
           echo "✅ Netlify CLI 安装完成"
 
       - name: 🚀 Deploy to Netlify
+        id: deploy_netlify
         run: |
           echo "🚀 开始部署到 Netlify..."
           
@@ -186,7 +188,7 @@ jobs:
           echo "- GitHub 仓库: ${{ github.repository }}"
           echo "- 构建日志: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
-          DEPLOY_URL: ${{ steps.deploy.outputs.DEPLOY_URL }}
+          DEPLOY_URL: ${{ steps.deploy_netlify.outputs.DEPLOY_URL }}
 
       - name: 💬 Success notification
         if: success()

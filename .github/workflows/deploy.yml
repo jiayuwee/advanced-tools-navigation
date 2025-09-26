@@ -43,8 +43,20 @@ jobs:
 
       - name: 📦 Install dependencies
         run: |
-          echo "📦 安装依赖..."
-          npm ci --no-optional --prefer-offline --no-audit --ignore-scripts
+          echo "📦 安装依赖 (部署任务)..."
+          echo "Node: $(node -v)"
+          echo "NPM(before): $(npm -v)"
+          npm install -g npm@10.8.2 --silent || true
+          echo "NPM(after): $(npm -v)"
+          if [ -f "package-lock.json" ]; then
+            if ! npm ci --no-audit --include=optional; then
+              echo "⚠️ npm ci 失败，回退 npm install"
+              rm -rf node_modules
+              npm install --no-audit --include=optional
+            fi
+          else
+            npm install --no-audit --include=optional
+          fi
           echo "✅ 依赖安装完成"
 
       - name: 📦 Install Netlify CLI

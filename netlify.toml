@@ -5,11 +5,12 @@
 
 [build.environment]
   NODE_ENV = "production"
-  NPM_CONFIG_INCLUDE_OPTIONAL = "true"
-  # 确保rollup可选依赖正确安装
-  NPM_CONFIG_OPTIONAL = "true"
-  # 使用legacy peer deps解决依赖冲突
-  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
+  # 指定 Node 版本，确保与本地/CI 一致
+  NODE_VERSION = "20.11.1"
+  # 若确实需要 legacy peer deps 再开启；默认先关闭以发现真实依赖问题
+  # NPM_CONFIG_LEGACY_PEER_DEPS = "true"
+  # 可选依赖一般不强制；如确认 rollup optional 失败再开启
+  # NPM_CONFIG_OPTIONAL = "true"
 
 [context.production.environment]
   VITE_APP_ENV = "production"

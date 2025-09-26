@@ -31,27 +31,30 @@ jobs:
 
       - name: 📦 Install dependencies (Enhanced)
         run: |
-          echo "📦 安装依赖..."
-          # 设置npm配置以提高稳定性
-          npm config set prefer-offline true
-          npm config set audit-level moderate
-          npm config set fund false
-          npm config set update-notifier false
+          echo "📦 安装依赖 (简化 & 稳定模式)..."
+          echo "Node: $(node -v)"
+          echo "NPM (before): $(npm -v)"
+          # 固定 npm 版本以避免 GitHub 托管镜像中的潜在 bug（含 cache 读取问题）
+          npm install -g npm@10.8.2 --silent || true
+          echo "NPM (after): $(npm -v)"
 
-          # 清理缓存以避免平台兼容性问题
-          npm cache clean --force 2>/dev/null || true
-
-          # 优先使用 npm ci 进行快速安装
+          # 尝试快速、最小副作用的安装。不使用 --ignore-scripts 以允许必要的 postinstall (如二进制解压)。
           if [ -f "package-lock.json" ]; then
-            echo "使用 npm ci 进行快速安装... (包含可选依赖)"
-            npm ci --prefer-offline --no-audit --ignore-scripts --silent --include=optional
+            echo "使用 npm ci (包含可选依赖)..."
+            if npm ci --no-audit --include=optional; then
+              echo "✅ npm ci 成功"
+            else
+              echo "⚠️ npm ci 失败，尝试回退 npm install"
+              rm -rf node_modules
+              npm install --no-audit --include=optional
+            fi
           else
-            echo "package-lock.json 不存在，使用 npm install..."
-            npm install --prefer-offline --no-audit --ignore-scripts --silent --include=optional
+            echo "无 package-lock.json，使用 npm install"
+            npm install --no-audit --include=optional
           fi
 
-          echo "📋 已安装的包数量: $(npm list --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
-          echo "✅ 依赖安装完成"
+          echo "📋 顶层依赖数量: $(npm ls --depth=0 2>/dev/null | grep -c '├\|└' || echo '未知')"
+          echo "✅ 依赖安装阶段完成"
 
       - name: 🔍 ESLint Check
         run: |
@@ -84,19 +87,17 @@ jobs:
 
       - name: 📦 Install dependencies (Enhanced)
         run: |
-          echo "📦 安装依赖..."
-          npm config set prefer-offline true
-          npm config set audit-level moderate
-          npm config set fund false
-
-          npm cache clean --force 2>/dev/null || true
-
+          echo "📦 安装依赖 (测试任务)..."
+          echo "Node: $(node -v) | NPM: $(npm -v)"
           if [ -f "package-lock.json" ]; then
-            npm ci --prefer-offline --no-audit --ignore-scripts --silent --include=optional
+            if ! npm ci --no-audit --include=optional; then
+              echo "⚠️ npm ci 失败，回退 npm install"
+              rm -rf node_modules
+              npm install --no-audit --include=optional
+            fi
           else
-            npm install --prefer-offline --no-audit --ignore-scripts --silent --include=optional
+            npm install --no-audit --include=optional
           fi
-
           echo "✅ 依赖安装完成"
 
       - name: 🧪 Run unit tests
@@ -141,20 +142,15 @@ jobs:
       - name: 📦 Install dependencies (Enhanced)
         run: |
           echo "📦 安装依赖 (Node.js ${{ matrix.node-version }})..."
-          npm config set prefer-offline true
-          npm config set audit-level moderate
-          npm config set fund false
-
-          npm cache clean --force 2>/dev/null || true
-
           if [ -f "package-lock.json" ]; then
-            echo "使用 npm ci 安装依赖 (包含可选依赖)..."
-            npm ci --prefer-offline --no-audit --ignore-scripts --silent --include=optional
+            if ! npm ci --no-audit --include=optional; then
+              echo "⚠️ npm ci 失败，回退 npm install"
+              rm -rf node_modules
+              npm install --no-audit --include=optional
+            fi
           else
-            echo "package-lock.json 不存在，使用 npm install..."
-            npm install --prefer-offline --no-audit --ignore-scripts --silent --include=optional
+            npm install --no-audit --include=optional
           fi
-
           echo "✅ 依赖安装完成"
 
       - name: 🔍 Pre-build validation
@@ -254,7 +250,76 @@ jobs:
           echo "CSS: $(find dist -name "*.css" | wc -l) 个"
           echo "图片: $(find dist \( -name "*.png" -o -name "*.jpg" -o -name "*.svg" \) | wc -l) 个"
 
-      - name: 📤 Upload build artifacts
+      - name: � Generate dependency snapshot
+        run: |
+          echo "📦 生成依赖快照..."
+          npm ls --depth=0 > dependency-tree.txt 2>&1 || true
+          jq -n --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg commit "${GITHUB_SHA}" '{generated_at:$date, commit:$commit}' > meta.json
+          echo "✅ 依赖快照生成完成"
+
+      - name: 📊 Bundle size report
+        run: |
+           echo "📊 统计 bundle 大小..."
+           du -ah dist | sort -h | tail -40 > bundle-size-top40.txt
+           find dist -type f -name '*.js' -exec wc -c {} + | awk '{sum+=$1} END {print "Total JS bytes:", sum}' > bundle-summary.txt
+           echo "✅ Bundle 统计完成"
+
+      - name: 📤 Upload build analysis artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-analysis
+          path: |
+            dependency-tree.txt
+            bundle-size-top40.txt
+            bundle-summary.txt
+            meta.json
+          retention-days: 7
+
+      - name: � Enforce bundle gzip thresholds
+        run: |
+          echo "🚨 检查 gzip 体积阈值..."
+          # 阈值 (可根据实际情况调整)
+          MAX_MAIN_GZIP_KB=300
+          MAX_TOTAL_GZIP_KB=900
+
+          # 统计 dist 下所有 JS/CSS gzip 后大小
+          mapfile -t files < <(find dist -type f \( -name '*.js' -o -name '*.css' \))
+          total_bytes=0
+          main_bytes=0
+          for f in "${files[@]}"; do
+            sz=$(gzip -c "$f" | wc -c)
+            total_bytes=$((total_bytes + sz))
+            if [[ "$f" == *"main"* || "$f" == *"index"* ]]; then
+              main_bytes=$((main_bytes + sz))
+            fi
+          done
+
+            echo "Total gzip(KB): $total_kb"
+            echo "Main bundle gzip(KB): $main_kb"
+          total_kb=$(( (total_bytes + 1023)/1024 ))
+          main_kb=$(( (main_bytes + 1023)/1024 ))
+
+          status=0
+          if [ $main_kb -gt $MAX_MAIN_GZIP_KB ]; then
+            echo "❌ 主入口 gzip 大小超出阈值 ($main_kb KB > $MAX_MAIN_GZIP_KB KB)"
+            status=1
+          else
+            echo "✅ 主入口 gzip 大小: $main_kb KB"
+          fi
+
+          if [ $total_kb -gt $MAX_TOTAL_GZIP_KB ]; then
+            echo "❌ 总 gzip 大小超出阈值 ($total_kb KB > $MAX_TOTAL_GZIP_KB KB)"
+            status=1
+          else
+            echo "✅ 总 gzip 大小: $total_kb KB"
+          fi
+
+          echo "main_gzip_kb=$main_kb" >> $GITHUB_OUTPUT
+          echo "total_gzip_kb=$total_kb" >> $GITHUB_OUTPUT
+
+          exit $status
+
+      - name: ��📤 Upload build artifacts
         if: matrix.node-version == '20.x'
         uses: actions/upload-artifact@v4
         with:
@@ -279,8 +344,16 @@ jobs:
 
       - name: 📦 Install dependencies
         run: |
-          npm config set audit-level moderate
-          npm ci --prefer-offline --no-audit --ignore-scripts --silent --include=optional
+          echo "📦 安装依赖 (安全审计任务)..."
+          if [ -f "package-lock.json" ]; then
+            if ! npm ci --no-audit --include=optional; then
+              echo "⚠️ npm ci 失败，回退 npm install"
+              rm -rf node_modules
+              npm install --no-audit --include=optional
+            fi
+          else
+            npm install --no-audit --include=optional
+          fi
 
       - name: 🔒 Security audit
         run: |

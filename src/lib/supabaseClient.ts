@@ -138,10 +138,9 @@ export const createRecord = async <T = unknown>(
   table: string,
   data: Record<string, unknown>,
 ): Promise<T> => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
-  const { data: result, error } = await (supabase as any)
-    .from(table)
-    .insert(data)
+  const { data: result, error } = await supabase
+    .from(table as never)
+    .insert(data as never)
     .select()
     .single();
 
@@ -157,10 +156,9 @@ export const updateRecord = async <T = unknown>(
   id: string,
   data: Record<string, unknown>,
 ): Promise<T> => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
-  const { data: result, error } = await (supabase as any)
-    .from(table)
-    .update(data)
+  const { data: result, error } = await supabase
+    .from(table as never)
+    .update(data as never)
     .eq("id", id)
     .select()
     .single();
@@ -173,8 +171,10 @@ export const updateRecord = async <T = unknown>(
 };
 
 export const deleteRecord = async (table: string, id: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
-  const { error } = await (supabase as any).from(table).delete().eq("id", id);
+  const { error } = await supabase
+    .from(table as never)
+    .delete()
+    .eq("id", id);
 
   if (error) {
     throw new Error(handleSupabaseError(error));
@@ -182,9 +182,8 @@ export const deleteRecord = async (table: string, id: string) => {
 };
 
 export const getRecord = async <T = unknown>(table: string, id: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
-  const { data, error } = await (supabase as any)
-    .from(table)
+  const { data, error } = await supabase
+    .from(table as never)
     .select("*")
     .eq("id", id)
     .single();
@@ -206,8 +205,9 @@ export const getRecords = async <T = unknown>(
     offset?: number;
   },
 ) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
-  let query = (supabase as any).from(table).select(options?.select || "*");
+  let query = supabase
+    .from(table as never)
+    .select(options?.select || "*");
 
   // 应用过滤条件
   if (options?.filter) {

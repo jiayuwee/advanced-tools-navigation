@@ -235,3 +235,22 @@ npm run type-check
 ---
 
 ⭐ 如果这个项目对你有帮助，请给它一个星标！
+
+### 数据库类型与唯一索引
+运行：
+```bash
+supabase gen types typescript --project-id <YOUR_ID> > src/types/database.ts
+```
+执行 SQL: supabase/favorites_indexes.sql 防止重复收藏。
+
+### 数据库唯一索引 & 类型生成
+执行防重复收藏索引：
+```bash
+psql < supabase/favorites_indexes.sql
+# 或在 Supabase SQL Editor 粘贴执行
+```
+生成最新数据库类型：
+```bash
+supabase gen types typescript --project-id <YOUR_PROJECT_ID> > src/types/database.ts
+```
+然后可在 favoritesService 中替换内部行类型为生成的 Database 类型。

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vue-tsc -b && vite build",
     "build:vercel": "vite build",
     "build:netlify": "vite build",
     "preview": "vite preview",
@@ -36,22 +36,9 @@
     "deployment:trigger": "node scripts/deployment/trigger-deployment.js",
     "secrets:check": "node scripts/deployment/check-github-secrets.js",
     "deps:clean": "node scripts/deployment/clean-dependencies.js",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "test:integration": "vitest run src/tests/integration",
-    "test:e2e": "vitest run src/tests/e2e",
-    "test:deployment": "node scripts/deployment/test-deployment-workflow.js",
-    "pre-deploy": "node scripts/deployment/pre-deploy-check.mjs",
-    "pre-deploy:enhanced": "node scripts/deployment/enhanced-pre-deploy-check.mjs",
-    "build:optimize": "node scripts/performance/optimize-build.mjs",
-    "analyze": "npm run build && npx vite-bundle-analyzer dist",
-    "monitor:health": "node scripts/deployment/monitor-deployment.js",
-    "monitor:watch": "node scripts/deployment/monitor-deployment.js --monitor",
-    "config:verify": "node scripts/deployment/verify-config-match.js",
-    "deploy:guide": "echo '📖 查看部署指南: docs/deployment/UPDATE_DEPLOYMENT_GUIDE.md'",
-    "postinstall": "echo 'Postinstall checks disabled'"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . --ext .ts,.vue"
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
@@ -95,10 +82,11 @@
     "tailwindcss": "^3.4.0",
     "terser": "^5.43.1",
     "ts-node": "10.9.2",
-    "vitest": "^0.34.3"
+    "vitest": "^2.0.5",
+    "@types/node": "^20.11.30"
   },
   "engines": {
-    "node": ">=18.19.0 <=20.x",
+    "node": ">=18.18.0 <21",
     "npm": ">=8.0.0"
   },
   "optionalDependencies": {

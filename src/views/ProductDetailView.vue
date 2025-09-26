@@ -1,220 +1,248 @@
 <template>
   <div class="product-detail-view">
     <div class="container">
-      <!-- 返回按钮 -->
-      <div class="back-section">
-        <button class="back-btn" @click="goBack">
-          <ArrowLeftIcon class="icon" />
-          返回产品列表
-        </button>
-      </div>
+      <!-- 面包屑导航 -->
+      <nav class="breadcrumb">
+        <router-link to="/products">产品</router-link>
+        <span class="separator">/</span>
+        <span class="current">{{ product?.name || '产品详情' }}</span>
+      </nav>
 
-      <!-- 产品详情 -->
-      <div v-if="product" class="product-detail">
-        <div class="product-gallery">
-          <div class="main-image">
-            <img :src="product.image" :alt="product.name" />
+      <!-- 产品详情内容 -->
+      <div v-if="product" class="product-content">
+        <!-- 产品图片和基本信息 -->
+        <div class="product-header">
+          <div class="product-gallery">
+            <img 
+              :src="product.images[0] || '/placeholder-product.jpg'" 
+              :alt="product.name"
+              class="main-image"
+            />
+            <div v-if="product.images.length > 1" class="thumbnail-list">
+              <img 
+                v-for="(image, index) in product.images.slice(0, 4)" 
+                :key="index"
+                :src="image" 
+                :alt="`${product.name} ${index + 1}`"
+                class="thumbnail"
+                @click="currentImageIndex = index"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="product-info">
-          <div class="product-header">
+          <div class="product-info">
             <h1 class="product-title">{{ product.name }}</h1>
-            <div class="product-price">
-              <span class="current-price">¥{{ product.price }}</span>
-              <span v-if="product.originalPrice" class="original-price">
-                ¥{{ product.originalPrice }}
+            <p class="product-description">{{ product.description }}</p>
+            
+            <div class="price-section">
+              <div class="current-price">¥{{ product.price }}</div>
+              <div v-if="product.original_price" class="original-price">
+                ¥{{ product.original_price }}
+              </div>
+              <div class="discount" v-if="product.original_price">
+                {{ calculateDiscount(product.price, product.original_price) }}% OFF
+              </div>
+            </div>
+
+            <div class="rating-section">
+              <div class="stars">
+                <span 
+                  v-for="star in 5" 
+                  :key="star"
+                  :class="['star', star <= Math.floor(product.average_rating || 0) ? 'filled' : '']"
+                >
+                  ★
+                </span>
+              </div>
+              <span class="rating-text">
+                {{ product.average_rating?.toFixed(1) || '0.0' }} 
+                ({{ product.total_reviews || 0 }} 条评价)
               </span>
             </div>
-          </div>
 
-          <div class="product-description">
-            <h3>产品描述</h3>
-            <p>{{ product.description }}</p>
-          </div>
+            <div class="actions">
+              <button class="buy-btn" @click="handleBuy">
+                {{ product.is_digital ? '立即购买' : '加入购物车' }}
+              </button>
+              <button class="favorite-btn" @click="toggleFavorite">
+                {{ isFavorite ? '❤️ 已收藏' : '🤍 收藏' }}
+              </button>
+            </div>
 
-          <div class="product-tags">
-            <h3>标签</h3>
-            <div class="tags-list">
-              <span v-for="tag in product.tags" :key="tag" class="tag">
-                {{ tag }}
-              </span>
+            <div class="features">
+              <h3>产品特点</h3>
+              <ul>
+                <li v-for="feature in product.features" :key="feature">
+                  {{ feature }}
+                </li>
+              </ul>
             </div>
           </div>
+        </div>
 
-          <div class="product-actions">
-            <button class="buy-btn" @click="buyProduct">
-              <ShoppingCartIcon class="icon" />
-              立即购买
+        <!-- 产品详情标签页 -->
+        <div class="product-tabs">
+          <div class="tab-header">
+            <button 
+              v-for="tab in tabs" 
+              :key="tab.id"
+              :class="['tab-btn', { active: activeTab === tab.id }]"
+              @click="activeTab = tab.id"
+            >
+              {{ tab.label }}
             </button>
-            <button class="demo-btn" @click="viewDemo">
-              <EyeIcon class="icon" />
-              在线预览
-            </button>
-            <button class="favorite-btn" @click="toggleFavorite">
-              <HeartIcon class="icon" :class="{ filled: isFavorite }" />
-              {{ isFavorite ? "已收藏" : "收藏" }}
-            </button>
+          </div>
+
+          <div class="tab-content">
+            <!-- 详情描述 -->
+            <div v-if="activeTab === 'description'" class="tab-panel">
+              <div class="description-content" v-html="product.description"></div>
+            </div>
+
+            <!-- 用户评价 -->
+            <div v-if="activeTab === 'reviews'" class="tab-panel">
+              <div class="reviews-section">
+                <div class="reviews-header">
+                  <h3>用户评价</h3>
+                  <button class="write-review-btn" @click="showReviewModal = true">
+                    写评价
+                  </button>
+                </div>
+                <div v-if="product.reviews && product.reviews.length" class="reviews-list">
+                  <div 
+                    v-for="review in product.reviews" 
+                    :key="review.id"
+                    class="review-item"
+                  >
+                    <div class="review-header">
+                      <div class="reviewer-info">
+                        <img 
+                          :src="review.user?.avatar_url || '/default-avatar.png'" 
+                          :alt="review.user?.full_name"
+                          class="reviewer-avatar"
+                        />
+                        <div>
+                          <div class="reviewer-name">{{ review.user?.full_name || '匿名用户' }}</div>
+                          <div class="review-date">{{ formatDate(review.created_at) }}</div>
+                        </div>
+                      </div>
+                      <div class="review-rating">
+                        <span class="stars">
+                          <span 
+                            v-for="star in 5" 
+                            :key="star"
+                            :class="['star', star <= review.rating ? 'filled' : '']"
+                          >
+                            ★
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="review-content">
+                      {{ review.content }}
+                    </div>
+                  </div>
+                </div>
+                <div v-else class="no-reviews">
+                  <p>暂无评价</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 相关产品 -->
+            <div v-if="activeTab === 'related'" class="tab-panel">
+              <div class="related-products">
+                <h3>相关产品</h3>
+                <div class="products-grid">
+                  <!-- 这里可以显示相关产品 -->
+                  <div class="placeholder">相关产品功能待实现</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 加载状态 -->
-      <div v-else-if="loading" class="loading-state">
-        <div class="loading-spinner"></div>
+      <div v-else class="loading">
         <p>加载中...</p>
-      </div>
-
-      <!-- 错误状态 -->
-      <div v-else class="error-state">
-        <div class="error-icon">❌</div>
-        <h3>产品未找到</h3>
-        <p>抱歉，您访问的产品不存在或已下架</p>
-        <button class="error-action" @click="goBack">返回产品列表</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import {
-  ArrowLeftIcon,
-  ShoppingCartIcon,
-  EyeIcon,
-  HeartIcon,
-} from "lucide-vue-next";
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import type { Product } from '@/types'
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const product = ref<Product | null>(null)
+const isFavorite = ref(false)
+const activeTab = ref('description')
+const showReviewModal = ref(false)
+const currentImageIndex = ref(0)
 
-// 响应式状态
-const product = ref<any>(null);
-const loading = ref(true);
-const isFavorite = ref(false);
+const tabs = [
+  { id: 'description', label: '产品详情' },
+  { id: 'reviews', label: '用户评价' },
+  { id: 'related', label: '相关产品' }
+]
 
-// 模拟产品数据
-const mockProducts = [
-  {
-    id: 1,
-    name: "高效办公套件",
-    description:
-      "提升办公效率的完整解决方案，包含文档处理、项目管理、时间管理、团队协作等多个模块。支持多平台同步，让您随时随地高效办公。",
+onMounted(async () => {
+  // 模拟加载产品数据
+  await loadProductData()
+})
+
+async function loadProductData() {
+  // 这里应该调用API获取产品详情
+  // 暂时使用模拟数据
+  product.value = {
+    id: route.params.id as string,
+    name: '示例产品',
+    description: '这是一个示例产品的详细描述，包含产品的各种特性和优势。',
     price: 299,
-    originalPrice: 399,
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-    category: "office",
-    tags: ["办公", "效率", "文档", "项目管理", "团队协作"],
-  },
-  {
-    id: 2,
-    name: "设计师工具包",
-    description:
-      "专业设计师必备工具集合，包含UI设计、图标制作、原型设计、色彩搭配等功能。提供丰富的设计素材和模板，助力创意实现。",
-    price: 199,
-    image:
-      "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=600&fit=crop",
-    category: "design",
-    tags: ["设计", "UI", "图标", "创意", "原型"],
-  },
-  {
-    id: 3,
-    name: "开发者助手",
-    description:
-      "程序员开发必备工具，代码编辑、调试、部署一站式解决。支持多种编程语言，集成版本控制，提供智能代码补全和错误检测。",
-    price: 399,
-    originalPrice: 499,
-    image:
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop",
-    category: "development",
-    tags: ["开发", "编程", "调试", "部署", "版本控制"],
-  },
-];
-
-// 方法
-const loadProduct = () => {
-  const productId = parseInt(route.params.id as string);
-
-  // 模拟API调用
-  setTimeout(() => {
-    const foundProduct = mockProducts.find((p) => p.id === productId);
-    if (foundProduct) {
-      product.value = foundProduct;
-      // 模拟检查收藏状态
-      isFavorite.value = Math.random() > 0.5;
-    }
-    loading.value = false;
-  }, 300); // 优化：减少延迟提升用户体验
-};
-
-const goBack = () => {
-  // 优先使用浏览器历史记录返回
-  if (window.history.length > 1) {
-    router.go(-1);
-  } else {
-    // 如果没有历史记录，跳转到产品列表
-    router.push("/products");
+    original_price: 399,
+    currency: 'CNY',
+    category_id: 'category-1',
+    images: ['/placeholder-product.jpg'],
+    features: ['高质量材料', '易于使用', '长期支持', '免费更新'],
+    is_featured: true,
+    is_digital: true,
+    status: 'active',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    created_by: 'user-1',
+    sort_order: 1,
+    average_rating: 4.5,
+    total_reviews: 10,
+    reviews: []
   }
-};
+}
 
-const buyProduct = async () => {
-  if (!product.value) return;
+function calculateDiscount(current: number, original: number): number {
+  return Math.round((1 - current / original) * 100)
+}
 
-  try {
-    console.log("购买产品:", product.value.name);
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('zh-CN')
+}
 
-    // 检查用户登录状态
-    const { useAuthStore } = await import("@/stores/auth");
-    const authStore = useAuthStore();
+function handleBuy() {
+  // 处理购买逻辑
+  console.log('购买产品:', product.value?.id)
+}
 
-    if (!authStore.isAuthenticated) {
-      // 未登录，跳转到登录页面
-      router.push({
-        name: "Login",
-        query: { redirect: `/product/${product.value.id}` },
-      });
-      return;
-    }
-
-    // 已登录，跳转到支付页面
-    router.push({
-      path: "/payment",
-      query: {
-        product: product.value.id,
-      },
-    });
-  } catch (error) {
-    console.error("购买流程错误:", error);
-    alert("购买失败，请稍后重试");
-  }
-};
-
-const viewDemo = () => {
-  if (product.value) {
-    console.log("预览产品:", product.value.name);
-    // TODO: 实现预览逻辑
-  }
-};
-
-const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value;
-  console.log(isFavorite.value ? "已添加到收藏" : "已取消收藏");
-  // TODO: 实现收藏逻辑
-};
-
-// 生命周期
-onMounted(() => {
-  loadProduct();
-});
+function toggleFavorite() {
+  isFavorite.value = !isFavorite.value
+  // 这里应该调用API更新收藏状态
+}
 </script>
 
 <style scoped>
 .product-detail-view {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 2rem;
+  background: hsl(var(--background));
 }
 
 .container {
@@ -222,279 +250,312 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-/* 返回按钮 */
-.back-section {
+.breadcrumb {
   margin-bottom: 2rem;
-}
-
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  color: white;
   font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  color: hsl(var(--muted-foreground));
 }
 
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.4);
+.breadcrumb a {
+  color: hsl(var(--primary));
+  text-decoration: none;
 }
 
-/* 产品详情 */
-.product-detail {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.separator {
+  margin: 0 0.5rem;
+}
+
+.product-content {
+  background: hsl(var(--card));
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1);
-}
-
-.product-gallery {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.main-image {
-  width: 100%;
-  height: 400px;
-  border-radius: 0.75rem;
-  overflow: hidden;
-}
-
-.main-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.product-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  border: 1px solid hsl(var(--border));
 }
 
 .product-header {
-  border-bottom: 1px solid #e1dfdd;
-  padding-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.product-gallery .main-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.thumbnail-list {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.thumbnail:hover {
+  border-color: hsl(var(--primary));
 }
 
 .product-title {
   font-size: 2rem;
-  font-weight: 700;
-  color: #323130;
-  margin: 0 0 1rem 0;
+  color: hsl(var(--foreground));
+  margin-bottom: 1rem;
 }
 
-.product-price {
+.product-description {
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.price-section {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .current-price {
   font-size: 2rem;
-  font-weight: 700;
-  color: #0078d4;
+  font-weight: bold;
+  color: hsl(var(--primary));
 }
 
 .original-price {
-  font-size: 1.25rem;
-  color: #8a8886;
+  font-size: 1.2rem;
+  color: hsl(var(--muted-foreground));
   text-decoration: line-through;
 }
 
-.product-description h3,
-.product-tags h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #323130;
-  margin: 0 0 1rem 0;
+.discount {
+  background: hsl(var(--destructive));
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
 }
 
-.product-description p {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #605e5c;
-  margin: 0;
-}
-
-.tags-list {
+.rating-section {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.tag {
-  padding: 0.5rem 1rem;
-  background: rgba(0, 120, 212, 0.1);
-  color: #0078d4;
-  border-radius: 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+.stars {
+  display: flex;
 }
 
-.product-actions {
+.star {
+  color: hsl(var(--muted-foreground));
+  font-size: 1.2rem;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+.rating-text {
+  color: hsl(var(--muted-foreground));
+}
+
+.actions {
   display: flex;
   gap: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e1dfdd;
+  margin-bottom: 2rem;
 }
 
 .buy-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #0078d4, #106ebe);
+  flex: 2;
+  padding: 1rem 2rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   border: none;
   border-radius: 0.5rem;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
 }
 
 .buy-btn:hover {
-  background: linear-gradient(135deg, #106ebe, #005a9e);
-  transform: translateY(-1px);
+  background: hsl(var(--primary) / 0.9);
 }
 
-.demo-btn,
 .favorite-btn {
+  flex: 1;
+  padding: 1rem;
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.favorite-btn:hover {
+  background: hsl(var(--secondary) / 0.8);
+}
+
+.features h3 {
+  margin-bottom: 1rem;
+  color: hsl(var(--foreground));
+}
+
+.features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.features li {
+  padding: 0.5rem 0;
+  color: hsl(var(--muted-foreground));
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: hsl(var(--primary));
+}
+
+.product-tabs {
+  border-top: 1px solid hsl(var(--border));
+  padding-top: 2rem;
+}
+
+.tab-header {
+  display: flex;
+  border-bottom: 1px solid hsl(var(--border));
+  margin-bottom: 2rem;
+}
+
+.tab-btn {
+  padding: 1rem 2rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: hsl(var(--primary));
+  border-bottom-color: hsl(var(--primary));
+}
+
+.tab-btn:hover {
+  color: hsl(var(--foreground));
+}
+
+.tab-panel {
+  min-height: 200px;
+}
+
+.description-content {
+  line-height: 1.8;
+  color: hsl(var(--foreground));
+}
+
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.write-review-btn {
+  padding: 0.5rem 1rem;
+  background: hsl(var(--primary));
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.review-item {
+  border-bottom: 1px solid hsl(var(--border));
+  padding: 1.5rem 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.reviewer-info {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem 1.5rem;
-  background: rgba(0, 120, 212, 0.1);
-  border: 1px solid rgba(0, 120, 212, 0.2);
-  border-radius: 0.5rem;
-  color: #0078d4;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  gap: 1rem;
 }
 
-.demo-btn:hover,
-.favorite-btn:hover {
-  background: rgba(0, 120, 212, 0.2);
-  border-color: rgba(0, 120, 212, 0.3);
-}
-
-.favorite-btn .icon.filled {
-  color: #e74c3c;
-}
-
-/* 加载和错误状态 */
-.loading-state,
-.error-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 1rem;
-  color: #323130;
-}
-
-.loading-spinner {
-  width: 3rem;
-  height: 3rem;
-  border: 3px solid #e1dfdd;
-  border-top: 3px solid #0078d4;
+.reviewer-avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
+  object-fit: cover;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.error-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-}
-
-.error-state h3 {
-  font-size: 1.5rem;
+.reviewer-name {
   font-weight: 600;
-  margin: 0 0 0.75rem 0;
+  color: hsl(var(--foreground));
 }
 
-.error-state p {
-  font-size: 1rem;
-  color: #605e5c;
-  margin: 0 0 1.5rem 0;
+.review-date {
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
 }
 
-.error-action {
-  padding: 0.75rem 1.5rem;
-  background: #0078d4;
-  border: none;
-  border-radius: 0.5rem;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.review-content {
+  color: hsl(var(--foreground));
+  line-height: 1.6;
 }
 
-.error-action:hover {
-  background: #106ebe;
+.no-reviews {
+  text-align: center;
+  padding: 3rem;
+  color: hsl(var(--muted-foreground));
 }
 
-.icon {
-  width: 1.25rem;
-  height: 1.25rem;
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: hsl(var(--muted-foreground));
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
+  .product-header {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
   .product-detail-view {
     padding: 1rem;
   }
-
-  .product-detail {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 1.5rem;
-  }
-
-  .product-title {
-    font-size: 1.5rem;
-  }
-
-  .current-price {
-    font-size: 1.5rem;
-  }
-
-  .product-actions {
+  
+  .tab-header {
     flex-direction: column;
   }
-
-  .buy-btn,
-  .demo-btn,
-  .favorite-btn {
-    width: 100%;
+  
+  .tab-btn {
+    text-align: left;
   }
 }
 </style>

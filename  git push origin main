@@ -1,4 +1,3 @@
-advanced-tools-navigation/.gitignore
 advanced-tools-navigation/.vscode/extensions.json
 advanced-tools-navigation/github/workflows/build-verification.yml
 advanced-tools-navigation/github/workflows/health-check.yml

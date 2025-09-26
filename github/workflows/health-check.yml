@@ -1,0 +1,11 @@
+name: Health Check (Merged)
+
+// 已合并进 github/workflows/build-verification.yml，保留此文件仅作提示，可后续删除。
+on:
+  workflow_dispatch:
+
+jobs:
+  notice:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "健康检查流程已合并到 build-verification.yml"

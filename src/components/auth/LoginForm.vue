@@ -84,20 +84,27 @@ async function handleSubmit() {
 
 label {
   font-weight: 500;
-  color: var(--text-primary);
+  color: hsl(var(--foreground));
 }
 
 input {
   padding: 0.75rem;
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
   border-radius: 0.5rem;
   font-size: 1rem;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+input:focus {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
 }
 
 .submit-btn {
   padding: 0.75rem;
-  background-color: var(--primary);
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -106,7 +113,7 @@ input {
 }
 
 .submit-btn:hover {
-  background-color: var(--primary-dark);
+  background-color: hsl(var(--primary) / 0.9);
 }
 
 .submit-btn:disabled {
@@ -115,7 +122,7 @@ input {
 }
 
 .error-message {
-  color: var(--error);
+  color: hsl(var(--destructive));
   text-align: center;
   margin-top: 1rem;
 }
