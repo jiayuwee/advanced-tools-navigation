@@ -26,8 +26,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 🌐 Configure DNS
         run: |
@@ -47,14 +45,12 @@ jobs:
             exit 1
           fi
           
-          # 验证 npm config 命令是否正常工作
-          if ! npm config get cache &> /dev/null; then
-            echo "⚠️ npm config get cache 失败，尝试修复..."
-            # 重新初始化 npm 配置
-            npm cache clean --force || true
-            echo "✅ npm 配置已重置"
+          # 简化验证，只检查基本功能
+          if npm --version &> /dev/null; then
+            echo "✅ npm 基本功能正常"
           else
-            echo "✅ npm 配置正常"
+            echo "❌ npm 基本功能异常"
+            exit 1
           fi
 
       - name: 📦 Install dependencies
@@ -112,8 +108,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 🔍 Verify Node.js and npm setup
         run: |
@@ -127,14 +121,12 @@ jobs:
             exit 1
           fi
           
-          # 验证 npm config 命令是否正常工作
-          if ! npm config get cache &> /dev/null; then
-            echo "⚠️ npm config get cache 失败，尝试修复..."
-            # 重新初始化 npm 配置
-            npm cache clean --force || true
-            echo "✅ npm 配置已重置"
+          # 简化验证，只检查基本功能
+          if npm --version &> /dev/null; then
+            echo "✅ npm 基本功能正常"
           else
-            echo "✅ npm 配置正常"
+            echo "❌ npm 基本功能异常"
+            exit 1
           fi
 
       - name: 📦 Install dependencies
@@ -196,8 +188,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 🔍 Verify Node.js and npm setup
         run: |
@@ -211,14 +201,12 @@ jobs:
             exit 1
           fi
           
-          # 验证 npm config 命令是否正常工作
-          if ! npm config get cache &> /dev/null; then
-            echo "⚠️ npm config get cache 失败，尝试修复..."
-            # 重新初始化 npm 配置
-            npm cache clean --force || true
-            echo "✅ npm 配置已重置"
+          # 简化验证，只检查基本功能
+          if npm --version &> /dev/null; then
+            echo "✅ npm 基本功能正常"
           else
-            echo "✅ npm 配置正常"
+            echo "❌ npm 基本功能异常"
+            exit 1
           fi
 
       - name: 📦 Install dependencies
@@ -302,8 +290,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 🔒 Security audit
         run: |
