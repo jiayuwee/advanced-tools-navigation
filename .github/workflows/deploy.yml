@@ -38,16 +38,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 📦 Install dependencies
         run: |
           echo "📦 安装依赖 (部署任务)..."
           echo "Node: $(node -v)"
-          echo "NPM(before): $(npm -v)"
-          npm install -g npm@10.8.2 --silent || true
-          echo "NPM(after): $(npm -v)"
+          echo "NPM: $(npm -v)"
           if [ -f "package-lock.json" ]; then
             if ! npm ci --no-audit --include=optional; then
               echo "⚠️ npm ci 失败，回退 npm install"

@@ -26,17 +26,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 📦 Install dependencies (Enhanced)
         run: |
           echo "📦 安装依赖 (简化 & 稳定模式)..."
           echo "Node: $(node -v)"
-          echo "NPM (before): $(npm -v)"
-          # 固定 npm 版本以避免 GitHub 托管镜像中的潜在 bug（含 cache 读取问题）
-          npm install -g npm@10.8.2 --silent || true
-          echo "NPM (after): $(npm -v)"
+          echo "NPM: $(npm -v)"
 
           # 尝试快速、最小副作用的安装。不使用 --ignore-scripts 以允许必要的 postinstall (如二进制解压)。
           if [ -f "package-lock.json" ]; then
@@ -82,8 +77,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 📦 Install dependencies (Enhanced)
         run: |
@@ -136,8 +129,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 📦 Install dependencies (Enhanced)
         run: |
@@ -339,8 +330,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
       - name: 📦 Install dependencies
         run: |
