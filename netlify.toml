@@ -1,14 +1,56 @@
+# =================================================================
+# Netlify 部署配置 - 解决 Rollup 平台兼容性问题
+# =================================================================
+
 [build]
-  # 简化构建命令，让 Netlify 使用默认的依赖管理
+  # 使用简单的构建命令，让Netlify自动处理依赖安装
   command = "npm run build"
+  # 发布目录
   publish = "dist"
 
-[build.environment]
-  NODE_ENV = "production"
-  # 指定 Node 版本，确保与 GitHub Actions 一致
-  NODE_VERSION = "20.x"
-  # 强制安装可选依赖，解决 Rollup 二进制问题
-  NPM_CONFIG_INCLUDE_OPTIONAL = "true"
+# =================================================================
+# 构建环境变量配置 - 关键的平台兼容性设置
+# =================================================================
 
-[context.production.environment]
+[build.environment]
+  # Node.js 环境
+  NODE_ENV = "production"
+  
+  # 确保可选依赖正确安装（关键配置）
+  NPM_CONFIG_OPTIONAL = "true"
+  NPM_CONFIG_INCLUDE_OPTIONAL = "true"
+  
+  # 使用legacy peer deps避免依赖冲突
+  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
+  
+  # 禁用不必要的功能提高构建速度
+  NPM_CONFIG_FUND = "false"
+  NPM_CONFIG_AUDIT = "false"
+  
+  # 构建环境标识
   VITE_APP_ENV = "production"
+
+# =================================================================
+# SPA 重定向配置
+# =================================================================
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# =================================================================
+# 安全头配置
+# =================================================================
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+
+# 静态资源缓存优化
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

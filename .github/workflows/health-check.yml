@@ -1,10 +1,8 @@
 name: 🏥 Website Health Monitor
 
 on:
-  push:
-    branches: [main]
   schedule:
-    - cron: "0 */6 * * *" # 每6小时运行一次
+    - cron: "0 0 * * 1" # 每周一早上8点运行
   workflow_dispatch:
 
 env:
