@@ -139,24 +139,24 @@ export function useLazyComponent() {
 
 // 内容预加载
 export function usePreloader() {
-  const preloadedData = ref<Map<string, any>>(new Map());
+  const preloadedData = ref<Map<string, unknown>>(new Map());
   const loadingState = ref<Map<string, boolean>>(new Map());
 
-  const preloadData = async (
+  const preloadData = async <T = unknown>(
     key: string,
-    fetcher: () => Promise<any>,
+    fetcher: () => Promise<T>,
     priority: "high" | "normal" | "low" = "normal",
-  ) => {
+  ): Promise<T> => {
     if (preloadedData.value.has(key)) {
-      return preloadedData.value.get(key);
+      return preloadedData.value.get(key) as T;
     }
 
     if (loadingState.value.get(key)) {
       // 已在加载中，等待完成
-      return new Promise((resolve) => {
+      return new Promise<T>((resolve) => {
         const checkLoading = () => {
           if (!loadingState.value.get(key)) {
-            resolve(preloadedData.value.get(key));
+            resolve(preloadedData.value.get(key) as T);
           } else {
             setTimeout(checkLoading, 50);
           }
@@ -172,7 +172,7 @@ export function usePreloader() {
 
       if (priority === "low") {
         // 低优先级在 requestIdleCallback 中执行
-        data = await new Promise((resolve, reject) => {
+        data = await new Promise<T>((resolve, reject) => {
           if ("requestIdleCallback" in window) {
             window.requestIdleCallback(async () => {
               try {

@@ -37,6 +37,9 @@
     "deployment:trigger": "node scripts/deployment/trigger-deployment.js",
     "secrets:check": "node scripts/deployment/check-github-secrets.js",
     "deps:clean": "node scripts/deployment/clean-dependencies.js",
+    "env:setup": "node scripts/env-setup.js setup",
+    "env:check": "node scripts/env-setup.js check",
+    "env:template": "node scripts/env-setup.js template",
     "test": "vitest run",
     "test:watch": "vitest"
   },

@@ -114,7 +114,7 @@ export function validateEnvironment(): ValidationResult {
   // 如果有错误，在生产环境返回警告而不是失败
   if (errors.length > 0) {
     if (import.meta.env.PROD) {
-      console.warn('⚠️ 生产环境配置问题，将使用默认配置:', errors)
+      console.warn("⚠️ 生产环境配置问题，将使用默认配置:", errors);
       // 在生产环境返回默认配置以确保应用能运行
       return {
         isValid: true, // 设为true以避免应用崩溃
@@ -129,13 +129,17 @@ export function validateEnvironment(): ValidationResult {
           enableAnalytics: false,
           payment: {
             stripe: { publicKey: undefined, secretKey: undefined },
-            alipay: { appId: undefined, privateKey: undefined, publicKey: undefined },
+            alipay: {
+              appId: undefined,
+              privateKey: undefined,
+              publicKey: undefined,
+            },
             wechat: { appId: undefined, mchId: undefined, apiKey: undefined },
           },
-        }
-      }
+        },
+      };
     }
-    
+
     return {
       isValid: false,
       errors,
