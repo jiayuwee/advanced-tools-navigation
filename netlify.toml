@@ -16,6 +16,10 @@
   # Node.js 环境
   NODE_ENV = "production"
   
+  # 强制跳过平台检查，允许rollup自动选择正确的平台依赖
+  NPM_CONFIG_TARGET_PLATFORM = ""
+  NPM_CONFIG_TARGET_ARCH = ""
+  
   # 确保可选依赖正确安装（关键配置）
   NPM_CONFIG_OPTIONAL = "true"
   NPM_CONFIG_INCLUDE_OPTIONAL = "true"
@@ -23,9 +27,15 @@
   # 使用legacy peer deps避免依赖冲突
   NPM_CONFIG_LEGACY_PEER_DEPS = "true"
   
+  # 禁用平台检查，让npm自动处理平台依赖
+  NPM_CONFIG_FORCE = "false"
+  
   # 禁用不必要的功能提高构建速度
   NPM_CONFIG_FUND = "false"
   NPM_CONFIG_AUDIT = "false"
+  
+  # 确保使用清洁安装
+  NPM_CONFIG_PREFER_OFFLINE = "false"
   
   # 构建环境标识
   VITE_APP_ENV = "production"
