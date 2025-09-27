@@ -204,91 +204,416 @@ export const useToolsStore = defineStore('tools', () => {
       isLoading.value = true
       error.value = null
       
-      // 模拟工具数据，在实际项目中应该从 API 加载
-      const mockTools: Tool[] = [
-        {
-          id: '1',
-          name: 'GitHub',
-          description: '世界上最大的代码托管平台',
-          url: 'https://github.com',
-          icon: '🐙',
-          category_id: 'dev-tools',
-          is_featured: true,
-          is_favorite: false,
-          click_count: 1250,
-          status: 'active',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        {
-          id: '2',
-          name: 'VS Code',
-          description: '微软开发的免费代码编辑器',
-          url: 'https://code.visualstudio.com',
-          icon: '💻',
-          category_id: 'dev-tools',
-          is_featured: true,
-          is_favorite: false,
-          click_count: 980,
-          status: 'active',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        {
-          id: '3',
-          name: 'Figma',
-          description: '协作式界面设计工具',
-          url: 'https://figma.com',
-          icon: '🎨',
-          category_id: 'design-tools',
-          is_featured: false,
-          is_favorite: false,
-          click_count: 750,
-          status: 'active',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        {
-          id: '4',
-          name: 'Notion',
-          description: '多功能笔记和知识管理工具',
-          url: 'https://notion.so',
-          icon: '📝',
-          category_id: 'productivity',
-          is_featured: true,
-          is_favorite: false,
-          click_count: 892,
-          status: 'active',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        {
-          id: '5',
-          name: 'ChatGPT',
-          description: 'OpenAI 开发的 AI 对话助手',
-          url: 'https://chat.openai.com',
-          icon: '🤖',
-          category_id: 'ai-tools',
-          is_featured: true,
-          is_favorite: false,
-          click_count: 2100,
-          status: 'active',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }
-      ]
+      // 检查环境配置
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       
-      await new Promise(resolve => setTimeout(resolve, 500))
-      setTools(mockTools)
+      // 如果环境变量未配置或使用默认值，使用模拟数据
+      if (!supabaseUrl || !supabaseAnonKey || 
+          supabaseUrl.includes('your-project') || 
+          supabaseAnonKey.includes('your-anon-key')) {
+        console.warn('Supabase环境变量未配置，使用模拟工具数据');
+        await loadMockTools();
+        initialized.value = true
+        return true
+      }
+      
+      // 尝试从Supabase加载数据
+      try {
+        const { supabase, TABLES } = await import('@/lib/supabaseClient');
+        const { data, error: queryError } = await supabase
+          .from(TABLES.TOOLS)
+          .select('*')
+          .eq('status', 'active')
+          .order('click_count', { ascending: false });
+        
+        if (queryError) throw queryError;
+        
+        if (data && data.length > 0) {
+          setTools(data);
+          console.log(`成功加载 ${data.length} 个工具`);
+        } else {
+          console.warn('Supabase返回空数据，使用模拟数据');
+          await loadMockTools();
+        }
+      } catch (supabaseError) {
+        console.warn('Supabase连接失败，使用模拟数据:', supabaseError);
+        await loadMockTools();
+      }
+      
       initialized.value = true
       return true
     } catch (err) {
       error.value = '加载工具数据失败'
       console.error('ToolsStore initialization error:', err)
+      // 即使出错也尝试加载模拟数据
+      await loadMockTools();
+      initialized.value = true
       return false
     } finally {
       isLoading.value = false
     }
+  }
+  
+  // 加载模拟工具数据
+  async function loadMockTools() {
+    const mockTools: Tool[] = [
+      {
+        id: '1',
+        name: 'GitHub',
+        description: '世界上最大的代码托管平台，程序员的必备工具',
+        url: 'https://github.com',
+        icon: '🐙',
+        category_id: '1', // 对应开发工具
+        is_featured: true,
+        is_favorite: false,
+        click_count: 1250,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '2',
+        name: 'VS Code',
+        description: '微软开发的免费代码编辑器，支持丰富的扩展插件',
+        url: 'https://code.visualstudio.com',
+        icon: '💻',
+        category_id: '1', // 对应开发工具
+        is_featured: true,
+        is_favorite: false,
+        click_count: 980,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '3',
+        name: 'Figma',
+        description: '协作式界面设计工具，支持团队实时协作',
+        url: 'https://figma.com',
+        icon: '🎨',
+        category_id: '2', // 对应设计工具
+        is_featured: false,
+        is_favorite: false,
+        click_count: 750,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '4',
+        name: 'Notion',
+        description: '多功能笔记和知识管理工具，集文档、数据库、看板于一体',
+        url: 'https://notion.so',
+        icon: '📝',
+        category_id: 'productivity',
+        is_featured: true,
+        is_favorite: false,
+        click_count: 892,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '5',
+        name: 'ChatGPT',
+        description: 'OpenAI 开发的 AI 对话助手，支持多种语言和任务',
+        url: 'https://chat.openai.com',
+        icon: '🤖',
+        category_id: 'ai-tools',
+        is_featured: true,
+        is_favorite: false,
+        click_count: 2100,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '6',
+        name: 'Claude',
+        description: 'Anthropic 开发的AI助手，擅长分析和推理',
+        url: 'https://claude.ai',
+        icon: '🧠',
+        category_id: 'ai-tools',
+        is_featured: true,
+        is_favorite: false,
+        click_count: 845,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '7',
+        name: 'Canva',
+        description: '在线设计平台，提供丰富的模板和设计元素',
+        url: 'https://canva.com',
+        icon: '🎨',
+        category_id: 'design-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 567,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '8',
+        name: 'Slack',
+        description: '团队协作和沟通工具，支持频道、私信和文件共享',
+        url: 'https://slack.com',
+        icon: '💬',
+        category_id: 'productivity',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 432,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '9',
+        name: 'Trello',
+        description: '看板式项目管理工具，适合敏捷开发和任务管理',
+        url: 'https://trello.com',
+        icon: '📋',
+        category_id: 'productivity',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 398,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '10',
+        name: 'Stack Overflow',
+        description: '程序员问答社区，解决编程问题的首选平台',
+        url: 'https://stackoverflow.com',
+        icon: '❓',
+        category_id: 'dev-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 1123,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '11',
+        name: 'Dribbble',
+        description: '设计师作品展示和灵感分享平台',
+        url: 'https://dribbble.com',
+        icon: '🏀',
+        category_id: 'design-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 234,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '12',
+        name: 'Behance',
+        description: 'Adobe 旗下的创意作品展示平台',
+        url: 'https://behance.net',
+        icon: '🎭',
+        category_id: 'design-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 189,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '13',
+        name: 'Linear',
+        description: '现代化的项目管理和问题跟踪工具',
+        url: 'https://linear.app',
+        icon: '📐',
+        category_id: 'productivity',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 312,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '14',
+        name: 'Vercel',
+        description: '前端部署和托管平台，支持静态站点和Serverless',
+        url: 'https://vercel.com',
+        icon: '⚡',
+        category_id: 'dev-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 445,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '15',
+        name: 'Netlify',
+        description: '现代化的Web应用部署和托管服务',
+        url: 'https://netlify.com',
+        icon: '🌐',
+        category_id: 'dev-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 378,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '16',
+        name: 'Midjourney',
+        description: 'AI 图像生成工具，创造艺术级别的图像',
+        url: 'https://midjourney.com',
+        icon: '🖼️',
+        category_id: 'ai-tools',
+        is_featured: true,
+        is_favorite: false,
+        click_count: 789,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '17',
+        name: 'Stable Diffusion',
+        description: '开源AI图像生成模型，支持本地部署',
+        url: 'https://stability.ai',
+        icon: '🎨',
+        category_id: 'ai-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 623,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '18',
+        name: 'Postman',
+        description: 'API开发和测试工具，支持REST、GraphQL等',
+        url: 'https://postman.com',
+        icon: '📮',
+        category_id: 'dev-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 567,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '19',
+        name: 'Docker',
+        description: '容器化平台，简化应用部署和环境管理',
+        url: 'https://docker.com',
+        icon: '🐳',
+        category_id: 'dev-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 834,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '20',
+        name: 'MongoDB Atlas',
+        description: '云端NoSQL数据库服务，易于扩展',
+        url: 'https://mongodb.com/atlas',
+        icon: '🍃',
+        category_id: 'dev-tools',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 445,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '21',
+        name: 'Zoom',
+        description: '视频会议和远程协作平台',
+        url: 'https://zoom.us',
+        icon: '📹',
+        category_id: 'productivity',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 678,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '22',
+        name: 'Airtable',
+        description: '现代化的数据库工具，结合电子表格和数据库功能',
+        url: 'https://airtable.com',
+        icon: '📊',
+        category_id: 'productivity',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 234,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '23',
+        name: 'Grammarly',
+        description: 'AI驱动的语法和写作助手',
+        url: 'https://grammarly.com',
+        icon: '✍️',
+        category_id: 'productivity',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 456,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '24',
+        name: 'Loom',
+        description: '屏幕录制和视频分享工具，支持异步沟通',
+        url: 'https://loom.com',
+        icon: '🎥',
+        category_id: 'productivity',
+        is_featured: false,
+        is_favorite: false,
+        click_count: 321,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      },
+      {
+        id: '25',
+        name: 'Supabase',
+        description: '开源的Firebase替代方案，提供数据库、认证等服务',
+        url: 'https://supabase.com',
+        icon: '⚡',
+        category_id: 'dev-tools',
+        is_featured: true,
+        is_favorite: false,
+        click_count: 567,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+    ]
+    
+    // 模拟网络延迟
+    await new Promise(resolve => setTimeout(resolve, 800))
+    setTools(mockTools)
+    console.log(`已加载 ${mockTools.length} 个模拟工具`)
   }
 
   return {
@@ -314,6 +639,7 @@ export const useToolsStore = defineStore('tools', () => {
     clearError,
     incrementClickCount,
     toggleFavorite,
-    initialize
+    initialize,
+    loadMockTools
   }
 })

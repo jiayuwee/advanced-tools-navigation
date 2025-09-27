@@ -201,18 +201,28 @@ const toggleFavorite = async (tool: any) => {
 // 生命周期
 onMounted(async () => {
   try {
+    console.log('🏠 HomeView 开始初始化...')
+    
     // 等待 store 初始化完成
     if (!toolsStore.initialized) {
-      await toolsStore.initialize();
+      console.log('🔧 初始化工具数据...')
+      await toolsStore.initialize()
+      console.log(`✅ 工具数据初始化完成: ${toolsStore.tools.length} 个工具`)
     }
+    
     if (!categoriesStore.initialized) {
-      await categoriesStore.initialize();
+      console.log('📋 初始化分类数据...')
+      await categoriesStore.initialize()
+      console.log(`✅ 分类数据初始化完成: ${categoriesStore.categories.length} 个分类`)
     }
-
+    
+    console.log('🎯 当前显示工具数量:', displayTools.value.length)
+    console.log('🏷️ 当前分类数量:', categories.value.length)
+    
     // 添加鼠标跟踪光标效果
     document.addEventListener("mousemove", mousemoveHandler);
   } catch (error) {
-    console.error("初始化页面失败:", error);
+    console.error("❌ 初始化页面失败:", error);
   }
 });
 
